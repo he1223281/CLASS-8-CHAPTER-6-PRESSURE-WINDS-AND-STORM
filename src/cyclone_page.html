@@ -1,0 +1,298 @@
+<title>How a Cyclone Forms</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@600&display=swap">
+<style>
+/* Layout: fixed 1920×1080 TV stage scaled to fit. Left = realistic animated cross-section,
+   right = step explanation + satellite view. Single dark theme by choice (classroom TV). */
+:root{color-scheme:dark;--bg:#060a13;--panel:#0c1424;--panel2:#152138;--line:#2a3b5c;--text:#f1f5fc;--muted:#b4c3da;
+  --hi:#5fb0ff;--lo:#ff6266;--warm:#ffa63d;--cool:#58dcff;--accent:#ffe15a;
+  --fd:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;--fb:"Atkinson Hyperlegible","Segoe UI",Verdana,sans-serif}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--fb)}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;background:linear-gradient(180deg,#0a1222,#070c17)}
+header{position:absolute;left:48px;top:28px;right:48px;display:flex;align-items:flex-end}
+.kick{font-family:var(--fd);font-weight:700;font-size:28px;letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+h1{margin:0;font-family:var(--fd);font-size:66px;font-weight:900;line-height:1}
+header .note{margin-left:auto;font-size:24px;color:var(--muted)}
+#scene{position:absolute;left:48px;top:128px;width:1240px;height:760px;border-radius:18px;border:1px solid var(--line);display:block}
+#cap{position:absolute;left:48px;top:900px;width:1240px;height:150px;display:flex;align-items:center;gap:24px;padding:0 30px;
+  background:var(--panel);border:2px solid var(--accent);border-radius:18px}
+#capn{font-family:var(--fd);font-size:88px;font-weight:900;color:var(--accent);line-height:1;min-width:70px;text-align:center}
+#capt{font-size:38px;font-weight:700;line-height:1.2}
+#capt b{color:var(--accent)}
+#panel{position:absolute;left:1312px;top:128px;width:560px;height:922px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px 22px}
+#steptitle{font-family:var(--fd);font-size:44px;font-weight:900;line-height:1.02;margin:0 0 8px}
+#steptext{font-size:27px;line-height:1.32}
+#steptext b{color:var(--accent)}
+.chips{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+.chip{height:54px;border-radius:12px;border:2px solid var(--line);background:var(--panel2);color:var(--text);font:700 26px var(--fb);cursor:pointer}
+.chip.done{background:#1d3a66;border-color:var(--hi)}
+.chip.on{background:var(--accent);color:#141000;border-color:var(--accent)}
+.ctrls{display:flex;gap:12px}
+.btn{flex:1;height:62px;border-radius:14px;border:2px solid var(--line);background:var(--panel2);color:var(--text);font:700 27px var(--fb);cursor:pointer}
+.btn.go{background:var(--accent);border-color:var(--accent);color:#141000}
+.btn:disabled{opacity:.4}
+.btn:focus-visible,.chip:focus-visible{outline:4px solid #fff;outline-offset:3px}
+#sat{display:block;border-radius:14px;margin:0 auto}
+.satcap{text-align:center;font-size:22px;color:var(--muted);margin-top:6px}
+</style>
+
+<div id="stage">
+  <header><div><div class="kick">Chapter 6 · Cyclones</div><h1>How does a cyclone form?</h1></div>
+    <div class="note">Side view through the middle of the storm · not to scale</div></header>
+  <canvas id="scene" width="1240" height="760" aria-label="Animated cross-section of a cyclone forming over a warm ocean"></canvas>
+  <div id="cap"><div id="capn">1</div><div id="capt"></div></div>
+  <div id="panel">
+    <div class="card" style="flex:1"><div id="steptitle"></div><div id="steptext"></div></div>
+    <div class="card"><canvas id="sat" width="300" height="300" style="width:300px;height:300px"></canvas><div class="satcap">Same storm seen from a satellite (from above)</div></div>
+    <div class="chips" id="chips"></div>
+    <div class="ctrls"><button class="btn" id="prev">◀ Back</button><button class="btn go" id="play">▶ Play all</button><button class="btn" id="next">Next ▶</button></div>
+  </div>
+</div>
+
+<script>
+const UI = { labels: true };
+/*LIB*/
+(function () {
+  const $ = id => document.getElementById(id);
+  const W = 1240, H = 760, SEA = 560, CX = 620;
+  const STEPS = [
+    { t: 'The Sun heats the ocean', cap: 'The Sun heats the <b>warm ocean</b>. The air above it becomes <b>warm and moist</b>.',
+      x: 'Cyclones form over <b>warm ocean waters</b>. Water evaporates from the warm sea, so the air just above it is <b>warm and full of water vapour</b>.', mb: 1008, dark: 0 },
+    { t: 'Warm, moist air rises', cap: 'Warm, moist air is <b>lighter</b>, so it <b>rises</b>. A <b>LOW-pressure</b> area forms below it.',
+      x: 'Warm air is lighter than the cooler air around it, so it <b>rises</b>. As air leaves the sea surface, the pressure there drops: a <b>low-pressure area (L)</b> forms.', mb: 1005, dark: .1 },
+    { t: 'Water vapour condenses', cap: 'Rising air <b>cools</b>. Water vapour <b>condenses</b> into droplets: <b>clouds</b> and rain.',
+      x: 'High up, the air is colder. The rising air cools, and its water vapour <b>condenses</b> into tiny droplets and raindrops. A tall <b>cloud</b> begins to grow.', mb: 1003, dark: .3 },
+    { t: 'Condensation releases heat', cap: 'Condensation <b>releases heat</b>. The air warms up and <b>rises even higher</b>.',
+      x: 'When water evaporated, it took in heat. When the vapour condenses, that <b>heat is given back</b> to the air. The warmer air <b>rises even higher</b>, and the cloud grows taller.', mb: 1001, dark: .4 },
+    { t: 'Air rushes in from all sides', cap: 'Pressure falls <b>even lower</b>. Air from <b>HIGH-pressure</b> areas <b>rushes in</b> and rises too.',
+      x: 'The pressure at the centre falls further. Air always moves from <b>high pressure to low pressure</b>, so air from the surrounding regions <b>rushes in</b>, gets heated, and also rises.', mb: 998, dark: .55 },
+    { t: "Earth's rotation makes it spin", cap: "<b>Earth's rotation</b> turns the inrushing air, so it <b>spins</b> around the centre.",
+      x: "Because the <b>Earth rotates</b>, the air rushing in does not go straight to the centre. It <b>turns and spins</b> around it. Over India, it spins <b>anticlockwise</b> when seen from above.", mb: 996, dark: .7 },
+    { t: 'The cycle repeats: a cyclone!', cap: 'The cycle repeats → a <b>CYCLONE</b>: a calm <b>eye</b>, with fierce spinning winds and heavy rain around it.',
+      x: 'Steps 2–6 repeat again and again. The result is a <b>very low-pressure centre (the eye)</b> with <b>high-speed winds</b> and heavy rain spinning around it: a <b>cyclone</b>. In the eye itself, the wind is <b>calm</b>.', mb: 994, dark: .85 },
+    { t: 'Over land, it weakens', cap: 'Over land, the supply of <b>warm, moist air is cut off</b>, so the cyclone <b>weakens</b>.',
+      x: 'On reaching land, the cyclone loses its source of <b>warm, moist air</b>. Less vapour condenses, less heat is released, so it <b>gradually loses strength</b>. It can still cause great damage on the way.', mb: 1001, dark: .65 },
+  ];
+  let step = 0, prevStep = 0, t0 = 0, T = 0, playing = false, playT = 0, mbShown = 1008, satRot = 0;
+
+  const cv = $('scene'), c = cv.getContext('2d'), sv = $('sat'), sc = sv.getContext('2d');
+  function fitCanvas(k) {
+    const K = Math.min(2, k * (devicePixelRatio || 1));
+    cv.width = W * K; cv.height = H * K; c.setTransform(K, 0, 0, K, 0, 0); cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    sv.width = 300 * K; sv.height = 300 * K; sc.setTransform(K, 0, 0, K, 0, 0);
+  }
+
+  // ---------- helpers ----------
+  function smooth(ctx, pts) {
+    ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+    for (let i = 1; i < pts.length - 1; i++) { const m = [(pts[i][0] + pts[i + 1][0]) / 2, (pts[i][1] + pts[i + 1][1]) / 2]; ctx.quadraticCurveTo(pts[i][0], pts[i][1], m[0], m[1]); }
+    const l = pts[pts.length - 1]; ctx.lineTo(l[0], l[1]);
+  }
+  // a big flowing arrow: soft glow band + moving bright dashes + head
+  function flow(pts, col, w = 12, a = 1) {
+    if (a <= 0) return;
+    c.save(); c.globalAlpha = a; c.lineCap = 'round'; c.lineJoin = 'round';
+    smooth(c, pts); c.strokeStyle = rgba(col, .22); c.lineWidth = w * 2.6; c.stroke();
+    smooth(c, pts); c.setLineDash([w * 2.4, w * 1.6]); c.lineDashOffset = -T * w * 8; c.strokeStyle = col; c.lineWidth = w; c.stroke();
+    c.setLineDash([]);
+    const [x2, y2] = pts[pts.length - 1], [x1, y1] = pts[pts.length - 2], L = Math.hypot(x2 - x1, y2 - y1), ux = (x2 - x1) / L, uy = (y2 - y1) / L;
+    const hw = w * 1.7, hl = w * 2.6;
+    c.beginPath(); c.moveTo(x2 + ux * hl * .4, y2 + uy * hl * .4); c.lineTo(x2 - ux * hl - uy * hw, y2 - uy * hl + ux * hw); c.lineTo(x2 - ux * hl + uy * hw, y2 - uy * hl - ux * hw); c.closePath();
+    c.fillStyle = col; c.fill(); c.restore();
+  }
+  function tag(x, y, txt, col = '#fff', size = 26) { D.label(c, txt, x, y, { size, color: col, force: true, bg: 'rgba(6,10,19,.8)' }); }
+  function pointer(x1, y1, x2, y2) { c.save(); c.strokeStyle = 'rgba(255,255,255,.85)'; c.lineWidth = 3; c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke(); c.fillStyle = '#fff'; c.beginPath(); c.arc(x2, y2, 6, 0, TAU); c.fill(); c.restore(); }
+  function glow(x, y, r, a) { const g = c.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(255,140,50,${.7 * a})`); g.addColorStop(1, 'rgba(255,140,50,0)'); c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, TAU); c.fill(); }
+
+  const RN = rng(5), drops = Array.from({ length: 260 }, () => ({ x: RN(), y: RN(), v: .6 + RN() * .5 }));
+  const wisps = Array.from({ length: 14 }, (_, i) => ({ x: 120 + i * 72 + RN() * 30, ph: RN() }));
+  // cloud tower size per step (side view)
+  const TOWER = { 3: [340, 290, 430], 4: [460, 470, 340], 5: [560, 540, 300], 6: [580, 560, 290] };
+
+  function drawRain(x0, x1, yTop, a, wind = 0) {
+    c.save(); c.globalAlpha = a; c.lineCap = 'round';
+    drops.forEach((d, i) => {
+      const y = yTop + ((d.y + T * d.v * .5) % 1) * (SEA - yTop), x = x0 + d.x * (x1 - x0) + wind * (y - yTop) * .15;
+      const k = (i % 3) / 2; c.strokeStyle = `rgba(200,215,235,${.3 + k * .35})`; c.lineWidth = 1 + k; c.beginPath(); c.moveTo(x, y); c.lineTo(x + wind * 6, y + 14 + k * 10); c.stroke();
+    });
+    c.restore();
+  }
+  function spinRing(cx, cy, rx, ry, a) {
+    c.save(); c.globalAlpha = a;
+    c.strokeStyle = 'rgba(255,225,90,.35)'; c.lineWidth = 4; c.beginPath(); c.ellipse(cx, cy, rx, ry, 0, 0, TAU); c.stroke();
+    for (let k = 0; k < 7; k++) {
+      const ang = k * TAU / 7 - T * 1.1, x = cx + rx * Math.cos(ang), y = cy + ry * Math.sin(ang);
+      const dx = rx * Math.sin(ang), dy = -ry * Math.cos(ang), L = Math.hypot(dx, dy), front = Math.sin(ang) > 0;
+      c.globalAlpha = a * (front ? 1 : .45);
+      D.arrow(c, x - dx / L * 34, y - dy / L * 34, x + dx / L * 10, y + dy / L * 10, { color: '#ffe15a', w: front ? 8 : 5, outline: false });
+    }
+    c.restore();
+  }
+
+  // ---------- main scene ----------
+  function draw() {
+    const s = step + 1, p = clamp((T - t0) / 1.6, 0, 1), e = ease(p);
+    const dark = lerp(STEPS[prevStep].dark, STEPS[step].dark, e);
+    c.clearRect(0, 0, W, H);
+    // sky
+    D.sky(c, 0, 0, W, SEA, mix('#4b8fd2', '#232c39', dark), mix('#cfe3f3', '#56606e', dark));
+    if (s <= 4) D.sun(c, 120, 100, 46, (1 - dark) * (s === 4 ? 1 - e * .6 : 1));
+    // distant haze clouds
+    D.cloud(c, 160, 230, 300, 120, { seed: 3, dark, alpha: .55 }); D.cloud(c, 1100, 200, 260, 110, { seed: 9, dark, alpha: .55 });
+    // sea (+ land on step 8)
+    D.sea(c, 0, SEA, W, H - SEA, T, { top: mix('#3f8fc8', '#2a4a66', dark * .7), bot: '#06264a' });
+    const g = c.createLinearGradient(0, SEA, 0, SEA + 70); g.addColorStop(0, `rgba(255,150,60,${s <= 6 ? .45 : .3})`); g.addColorStop(1, 'rgba(255,150,60,0)');
+    c.fillStyle = g; c.fillRect(0, SEA, s === 8 ? 860 : W, 70);
+    if (s === 8) {
+      c.save(); c.globalAlpha = e;
+      c.beginPath(); c.moveTo(860, SEA - 4); c.lineTo(W, SEA - 14); c.lineTo(W, H); c.lineTo(840, H); c.closePath(); c.clip();
+      D.ground(c, 820, SEA - 30, W - 820, H - SEA + 30, { top: '#6d8a3e', bot: '#3a2d1c' }); c.restore();
+      c.save(); c.globalAlpha = e; D.palm(c, 1150, SEA - 10, 120, .5, 4); D.palm(c, 1060, SEA - 8, 100, .55, 6); c.restore();
+    }
+
+    // evaporation wisps (steps 1-2)
+    if (s <= 2) wisps.forEach(w => {
+      const u = (w.ph + T * .25) % 1, y = SEA - u * 150;
+      c.save(); c.globalAlpha = Math.sin(u * Math.PI) * .55; c.strokeStyle = '#ffffff'; c.lineWidth = 3; c.beginPath();
+      for (let k = 0; k < 8; k++) c.lineTo(w.x + Math.sin(k * .9 + T * 2 + w.ph * 6) * 7, y - k * 8); c.stroke(); c.restore();
+    });
+
+    // clouds
+    let base = SEA;
+    if (s >= 3 && s <= 6) {
+      const a = TOWER[s], b = TOWER[Math.max(3, Math.min(6, prevStep + 1))] || a;
+      const k = prevStep + 1 >= 3 && prevStep + 1 <= 6 ? e : 1;
+      const w = lerp(b[0], a[0], k), h = lerp(b[1], a[1], k), y = lerp(b[2], a[2], k);
+      const grow = prevStep + 1 < 3 ? e : 1;
+      D.cloud(c, CX, y + (1 - grow) * 80, w * (.6 + .4 * grow), h * (.6 + .4 * grow), { type: 'cb', seed: 31, dark: .25 + dark * .6, alpha: grow });
+      base = y + h * .42;
+      drawRain(CX - w * .28, CX + w * .28, base, .8 * grow);
+    }
+    if (s >= 7) {
+      const sh = s === 8 ? lerp(0, 150, e) : 0, sz = s === 8 ? lerp(1, .78, e) : 1, al = s === 8 ? lerp(1, .8, e) : (prevStep === 5 ? e : 1);
+      c.save(); c.translate(CX + sh, SEA); c.scale(sz, sz); c.translate(-CX, -SEA); c.globalAlpha = al;
+      D.cloud(c, CX, 120, 1150, 170, { type: 'st', seed: 44, dark: .75 });
+      [[-430, 0], [430, 1]].forEach(([dx, k]) => D.cloud(c, CX + dx, 400, 300, 220, { seed: 51 + k, dark: .8 }));
+      [[-590, 0], [590, 1]].forEach(([dx, k]) => D.cloud(c, CX + dx, 450, 200, 150, { seed: 61 + k, dark: .75, alpha: .9 }));
+      D.cloud(c, CX - 175, 300, 340, 540, { type: 'cb', seed: 71, dark: .7 });
+      D.cloud(c, CX + 175, 300, 340, 540, { type: 'cb', seed: 72, dark: .7 });
+      c.restore();
+      c.save(); c.globalAlpha = al;
+      drawRain(CX - 330 + sh, CX - 30 + sh, 470, .9, .5); drawRain(CX + 30 + sh, CX + 330 + sh, 470, .9, .5);
+      drawRain(CX - 640 + sh, CX - 360 + sh, 500, .6, .5); drawRain(CX + 360 + sh, CX + 640 + sh, 500, .6, .5);
+      c.restore();
+    }
+
+    // heat released (step 4 strong, 5-7 faint)
+    if (s >= 4 && s <= 7) {
+      const a = s === 4 ? e : .35;
+      const pts = s >= 7 ? [[CX - 175, 330], [CX + 175, 300], [CX - 160, 210], [CX + 170, 220]] : [[CX - 60, 330], [CX + 70, 260], [CX - 30, 200], [CX + 40, 390]];
+      pts.forEach(([x, y], i) => glow(x, y, 60 + 14 * Math.sin(T * 3 + i), a));
+    }
+
+    // AIR FLOW
+    const cx = CX + (s === 8 ? lerp(0, 150, e) : 0);
+    if (s === 2) flow([[CX, SEA - 15], [CX, 400], [CX, 230]], '#ffa63d', 14, e);
+    if (s >= 3 && s <= 6) flow([[CX, SEA - 15], [CX, 380], [CX, s >= 4 ? 140 : 250]], '#ffa63d', 14, 1);
+    if (s >= 5 && s <= 6) {
+      const a = s === 5 ? e : 1;
+      flow([[40, SEA - 40], [300, SEA - 40], [CX - 120, SEA - 45], [CX - 40, SEA - 90]], '#58dcff', 13, a);
+      flow([[W - 40, SEA - 40], [W - 300, SEA - 40], [CX + 120, SEA - 45], [CX + 40, SEA - 90]], '#58dcff', 13, a);
+    }
+    if (s >= 7) {
+      const a = s === 7 && prevStep === 5 ? e : 1, k = s === 8 ? .5 : 1;
+      [[-1], [1]].forEach(([sd]) => {
+        flow([[cx + sd * 600, SEA - 40], [cx + sd * 380, SEA - 40], [cx + sd * 230, SEA - 55], [cx + sd * 185, SEA - 110]], '#58dcff', 12 * k, a);
+        flow([[cx + sd * 180, SEA - 90], [cx + sd * 175, 330], [cx + sd * 170, 150]], '#ffa63d', 12 * k, a);
+      });
+    }
+    if (s === 6) spinRing(CX, SEA - 80, 330, 46, e);
+    if (s === 7) spinRing(CX, SEA - 80, 300, 42, 1);
+
+    // H / L markers
+    if (s >= 2) D.HL(c, cx, SEA - 40, 'L', 34, s === 2 ? e : 1);
+    if (s >= 5) { D.HL(c, 70, 470, 'H', 38, s === 5 ? e : 1); if (s !== 8) D.HL(c, W - 70, 470, 'H', 38, s === 5 ? e : 1); }
+
+    // pointer labels (few, large)
+    const la = e;
+    c.save(); c.globalAlpha = la;
+    if (s === 1) { tag(620, 650, 'WARM OCEAN WATER', '#ffb15e', 30); tag(420, 450, 'warm, moist air', '#ffffff', 26); }
+    if (s === 2) { tag(830, 300, 'warm air rises', '#ffb15e', 28); tag(820, SEA - 40, '← LOW pressure', '#ff8a8e', 26); }
+    if (s === 3) { pointer(930, 330, CX + 140, 380); tag(990, 300, 'cloud forms', '#ffffff', 28); tag(960, 470, 'rain falls', '#cfe3f3', 24); }
+    if (s === 4) { pointer(950, 230, CX + 75, 260); tag(1010, 200, 'HEAT released', '#ff9a5a', 30); tag(320, 180, 'air rises\neven higher', '#ffb15e', 28); }
+    if (s === 5) { tag(250, 420, 'air rushes IN', '#58dcff', 28); tag(990, 420, 'air rushes IN', '#58dcff', 28); }
+    if (s === 6) { tag(620, 660, "Earth's rotation → the air SPINS", '#ffe15a', 30); }
+    if (s === 7) {
+      pointer(CX, 230, CX, 300); tag(CX, 200, 'EYE: calm, lowest pressure', '#ffffff', 26);
+      pointer(300, 250, CX - 200, 300); tag(230, 225, 'EYEWALL', '#ffe15a', 26);
+      tag(300, 640, 'strongest winds & heaviest rain\naround the eye', '#ffe15a', 24);
+      pointer(1060, 300, CX + 440, 400); tag(1080, 270, 'RAIN BANDS', '#cfe3f3', 24);
+    }
+    if (s === 8) { tag(1060, 640, 'LAND: no warm, moist air', '#b8f5cf', 26); tag(500, 640, 'cyclone weakens', '#ff9aa0', 28); }
+    c.restore();
+
+    // pressure gauge
+    D.meter(c, 1135, 140, 62, clamp((1010 - mbShown) / 18, 0, 1), 'Pressure at centre', Math.round(mbShown) + ' mb', mbShown < 1000 ? '#ff6266' : '#ffe15a');
+  }
+
+  // ---------- satellite view ----------
+  function drawSat(dt) {
+    const s = step + 1, e = ease(clamp((T - t0) / 1.6, 0, 1));
+    sc.clearRect(0, 0, 300, 300);
+    sc.save(); D.rr(sc, 0, 0, 300, 300, 14); sc.clip();
+    D.oceanTop(sc, 0, 0, 300, 300);
+    if (s === 8) { sc.fillStyle = '#56713a'; sc.beginPath(); sc.moveTo(210, 0); sc.bezierCurveTo(190, 100, 230, 200, 205, 300); sc.lineTo(300, 300); sc.lineTo(300, 0); sc.fill(); D.tex(sc, 190, 0, 110, 300, 'grain', .5); }
+    const R = s <= 2 ? 0 : s <= 5 ? 50 + (s - 3) * 15 : s === 6 ? 100 : s === 7 ? 135 : 110;
+    satRot -= dt * (s >= 6 ? (s === 7 ? 1.1 : .6) : 0);
+    const x = s === 8 ? lerp(150, 200, e) : 150;
+    if (s >= 3 && s <= 5) { D.cloud(sc, 150, 150, R * 2.2, R * 1.6, { seed: 8, alpha: .9 }); }
+    if (s >= 6) D.cyclone(sc, x, 150, R, satRot, s === 8 ? .7 : 1);
+    if (s >= 5) {
+      sc.save(); sc.translate(x, 150);
+      for (let k = 0; k < 4; k++) {
+        sc.save(); sc.rotate(k * TAU / 4 + (s >= 6 ? satRot * .6 : 0));
+        if (s >= 6) { sc.strokeStyle = '#58dcff'; sc.lineWidth = 4; sc.beginPath(); sc.arc(0, 0, 118, -.1, -.75, true); sc.stroke(); }
+        else D.arrow(sc, 140, 0, 95, 0, { color: '#58dcff', w: 5, outline: false });
+        sc.restore();
+      }
+      sc.restore();
+    }
+    if (s <= 2) D.text(sc, s === 1 ? 'clear warm ocean' : 'air starts rising', 150, 150, { size: 20, color: '#cfe3f3' });
+    sc.restore();
+  }
+
+  // ---------- UI ----------
+  function setStep(i) {
+    i = Math.max(0, Math.min(STEPS.length - 1, i)); if (i === step && t0) return;
+    prevStep = step; step = i; t0 = T;
+    const d = STEPS[i];
+    $('capn').textContent = i + 1; $('capt').innerHTML = d.cap; $('steptitle').textContent = d.t; $('steptext').innerHTML = d.x;
+    [...$('chips').children].forEach((b, k) => { b.classList.toggle('on', k === i); b.classList.toggle('done', k < i); });
+    $('prev').disabled = i === 0; $('next').disabled = i === STEPS.length - 1;
+  }
+  STEPS.forEach((_, i) => { const b = document.createElement('button'); b.className = 'chip'; b.textContent = i + 1; b.setAttribute('aria-label', 'Step ' + (i + 1)); b.onclick = () => { stop(); setStep(i); }; $('chips').appendChild(b); });
+  function stop() { playing = false; $('play').textContent = '▶ Play all'; }
+  $('prev').onclick = () => { stop(); setStep(step - 1); };
+  $('next').onclick = () => { stop(); setStep(step + 1); };
+  $('play').onclick = () => { if (playing) return stop(); if (step === STEPS.length - 1) setStep(0); playing = true; playT = 0; $('play').textContent = '❚❚ Pause'; };
+  addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { stop(); setStep(step + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { stop(); setStep(step - 1); }
+    if (e.key === ' ') { e.preventDefault(); $('play').click(); }
+  });
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(.05, (now - last) / 1000); last = now; T += dt;
+    if (playing) { playT += dt; if (playT > 8) { playT = 0; if (step < STEPS.length - 1) setStep(step + 1); else stop(); } }
+    mbShown += (STEPS[step].mb - mbShown) * Math.min(1, dt * 2);
+    draw(); drawSat(dt);
+    requestAnimationFrame(frame);
+  }
+  function fit() { const k = Math.min(innerWidth / 1920, innerHeight / 1080); $('stage').style.transform = `translate(-50%,-50%) scale(${k})`; fitCanvas(k); }
+  addEventListener('resize', fit); fit();
+  step = 0; prevStep = 0; t0 = 0; setStep(0); t0 = -5;
+  requestAnimationFrame(frame);
+})();
+</script>

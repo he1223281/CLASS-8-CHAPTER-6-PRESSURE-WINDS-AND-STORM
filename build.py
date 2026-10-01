@@ -18,3 +18,12 @@ open(os.path.join(ROOT, 'index.html'), 'w', encoding='utf-8').write(full)
 os.makedirs(os.path.join(ROOT, 'dist'), exist_ok=True)
 open(os.path.join(ROOT, 'dist', 'artifact.html'), 'w', encoding='utf-8').write(head + body)
 print('built', len(full) // 1024, 'KB')
+
+# ---- standalone cyclone-formation explainer (uses the same realistic renderers) ----
+cy = S('cyclone_page.html').replace('/*LIB*/', S('draw.js') + '\n' + S('real.js'))
+cy_full = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
+           '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+           + cy.replace('</style>', '</style>\n</head>\n<body>', 1) + '</body>\n</html>\n')
+open(os.path.join(ROOT, 'cyclone-formation.html'), 'w', encoding='utf-8').write(cy_full)
+open(os.path.join(ROOT, 'dist', 'cyclone-formation.html'), 'w', encoding='utf-8').write(cy)
+print('built cyclone-formation.html')
