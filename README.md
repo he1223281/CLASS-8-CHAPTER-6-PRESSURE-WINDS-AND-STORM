@@ -45,7 +45,7 @@ Open them with the **Teacher Controls** button or the **T** key:
 
 ## Editing
 
-The source lives in `src/` (one file per section, plus `engine.js` and `draw.js`). After editing, rebuild the single-file page:
+The source lives in `src/` (one file per section, plus `engine.js`, `draw.js`, and `real.js` for the realistic procedural textures: clouds, terrain, water, foliage, skin and materials). After editing, rebuild the single-file page:
 
 ```
 python3 build.py

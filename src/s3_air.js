@@ -36,23 +36,13 @@ S({
           c.save(); c.globalAlpha = 1 - z;
           c.fillStyle = '#02040a'; c.fillRect(0, 0, 1080, 660); D.stars(c, 1080, 660, 1, 8);
           const ex = 540, ey = 360, er = 230 * (1 + z * 3);
-          let g = c.createRadialGradient(ex, ey, er * .95, ex, ey, er * 1.18);
-          g.addColorStop(0, 'rgba(110,180,255,.75)'); g.addColorStop(1, 'rgba(110,180,255,0)');
-          c.fillStyle = g; c.beginPath(); c.arc(ex, ey, er * 1.18, 0, TAU); c.fill();
-          g = c.createRadialGradient(ex - er * .35, ey - er * .35, er * .1, ex, ey, er);
-          g.addColorStop(0, '#5aa6e6'); g.addColorStop(.6, '#1d5fa3'); g.addColorStop(1, '#0b2a52');
-          c.fillStyle = g; c.beginPath(); c.arc(ex, ey, er, 0, TAU); c.fill();
-          c.save(); c.beginPath(); c.arc(ex, ey, er, 0, TAU); c.clip();
-          c.fillStyle = 'rgba(80,140,70,.85)';
-          [[-.3, -.2, .35, .22], [.25, .1, .28, .35], [-.1, .45, .2, .12], [.45, -.4, .15, .1]].forEach(([dx, dy, rx, ry]) => { c.beginPath(); c.ellipse(ex + dx * er + Math.sin(t * .1) * 4, ey + dy * er, rx * er, ry * er, .4, 0, TAU); c.fill(); });
-          c.fillStyle = 'rgba(255,255,255,.35)'; for (let i = 0; i < 6; i++) { c.beginPath(); c.ellipse(ex + Math.cos(i * 1.7 + t * .05) * er * .6, ey + Math.sin(i * 2.3) * er * .6, er * .25, er * .05, i, 0, TAU); c.fill(); }
-          c.restore();
+          D.earth(c, ex, ey, er);
           D.label(c, 'Atmosphere: a thin blanket of air', ex, ey - er * 1.18 - 34, { size: 28, color: COL.cool });
           c.restore();
         }
         if (z > 0) {
           c.save(); c.globalAlpha = z;
-          D.sky(c, 0, 0, 1080, 660, '#6fb0e6', '#d6ebf8'); D.ground(c, 0, 600, 1080, 60);
+          D.sky(c, 0, 0, 1080, 660, '#6fb0e6', '#d6ebf8'); D.hills(c, 1080, 560, { layers: 2, amp: 70 }); D.ground(c, 0, 600, 1080, 60);
           D.person(c, 540, 600, 300, { shirt: '#c1497a' });
           parts.forEach(p => { c.fillStyle = p.hit > 0 ? '#ffe15a' : 'rgba(30,70,140,.75)'; c.beginPath(); c.arc(p.x, p.y, p.hit > 0 ? 6 : 4, 0, TAU); c.fill(); });
           const pts = [[430, 340, 0], [430, 470, 0], [650, 340, Math.PI], [650, 470, Math.PI], [540, 230, Math.PI / 2]];
@@ -94,7 +84,7 @@ S({
       draw(c, s) {
         D.sky(c, 0, 0, 1080, 600, '#1b2436', '#121a2a');
         const tableY = 470;
-        c.fillStyle = '#7a5532'; c.fillRect(40, tableY, 1000, 26); c.fillStyle = '#5c3e22'; c.fillRect(80, tableY + 26, 30, 110); c.fillRect(970, tableY + 26, 30, 110);
+        c.fillStyle = '#7a5532'; c.fillRect(40, tableY, 1000, 26); c.fillStyle = '#5c3e22'; c.fillRect(80, tableY + 26, 30, 110); c.fillRect(970, tableY + 26, 30, 110); D.tex(c, 40, tableY, 1000, 136, 'wood', .8);
         const cx = 470, ly = -s.lift * 60;
         const half = sheet === 'fold' ? 140 : 360;
         // sheet (lying on plate) + plate
@@ -291,7 +281,7 @@ S({
         const wx = 700;
         // wall
         if (surf === 'smooth') { const g = c.createLinearGradient(wx, 0, wx + 120, 0); g.addColorStop(0, 'rgba(200,230,255,.55)'); g.addColorStop(1, 'rgba(120,170,220,.3)'); c.fillStyle = g; c.fillRect(wx, 30, 120, 560); D.label(c, 'smooth glass', wx + 60, 590 - 14, { size: 22 }); }
-        else { c.fillStyle = '#9a5a3a'; c.fillRect(wx, 30, 120, 560); c.fillStyle = '#7a4128'; for (let y = 30; y < 590; y += 40) for (let x = wx + ((y / 40) % 2) * 30; x < wx + 120; x += 60) c.fillRect(x, y, 54, 34); c.fillStyle = '#9a5a3a'; for (let y = 60; y < 580; y += 22) { c.beginPath(); c.arc(wx - 2, y, 6, 0, TAU); c.fill(); } D.label(c, 'rough surface (gaps)', wx + 60, 576, { size: 22 }); }
+        else { c.fillStyle = '#8f8a80'; c.fillRect(wx, 30, 120, 560); c.fillStyle = '#9a5a3a'; for (let y = 30; y < 590; y += 40) for (let x = wx + ((y / 40) % 2) * 30 - 30; x < wx + 120; x += 60) c.fillRect(Math.max(wx, x), y, 54, 34); D.tex(c, wx, 30, 120, 560, 'speck', .7); c.fillStyle = '#9a5a3a'; for (let y = 60; y < 580; y += 22) { c.beginPath(); c.arc(wx - 2, y, 6, 0, TAU); c.fill(); } D.label(c, 'rough surface (gaps)', wx + 60, 576, { size: 22 }); }
         const cy = 310, off = st.off * 240, flat = st.press;
         const cupDepth = 90 * (1 - flat * .75), cupH = 220 + flat * 30;
         const rimX = wx - 4 - off;

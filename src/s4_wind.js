@@ -10,7 +10,8 @@ function coastScene(c, W, H, t, night, o = {}) {
   // land
   const lg = c.createLinearGradient(0, gy - 20, 0, H);
   lg.addColorStop(0, mix('#8a9b4c', '#2a331c', night)); lg.addColorStop(.15, mix('#c9a76a', '#3d3322', night)); lg.addColorStop(1, mix('#7a5b34', '#1f1810', night));
-  c.fillStyle = lg; c.beginPath(); c.moveTo(0, gy - 10); c.lineTo(shore - 60, gy - 10); c.quadraticCurveTo(shore, gy - 6, shore + 40, gy + 20); c.lineTo(shore + 40, H); c.lineTo(0, H); c.closePath(); c.fill();
+  c.save(); c.fillStyle = lg; c.beginPath(); c.moveTo(0, gy - 10); c.lineTo(shore - 60, gy - 10); c.quadraticCurveTo(shore, gy - 6, shore + 40, gy + 20); c.lineTo(shore + 40, H); c.lineTo(0, H); c.closePath(); c.fill();
+  c.clip(); D.tex(c, 0, gy - 12, shore + 40, H - gy + 12, 'speck', .55); D.tex(c, 0, gy - 12, shore + 40, H - gy + 12, 'grain', .4); c.restore();
   D.sea(c, shore + 10, gy - 2, W - shore - 10, H - gy + 2, t, { night });
   c.fillStyle = mix('#e8d39e', '#4a4030', night); c.beginPath(); c.moveTo(shore - 70, gy - 10); c.quadraticCurveTo(shore, gy - 6, shore + 40, gy + 20); c.lineTo(shore + 10, gy + 8); c.closePath(); c.fill();
   return { shore, gy };

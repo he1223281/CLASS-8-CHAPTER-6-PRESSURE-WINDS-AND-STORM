@@ -19,7 +19,8 @@ S({
         const t = this.t, k = Math.min(9, Math.floor(t / DT)), W = 1180, gy = 560;
         const dark = seg01(t, 6 * DT, 9 * DT);
         D.sky(c, 0, 0, W, gy, mix('#5aa0e0', '#2c3644', dark), mix('#cfe3f3', '#5b6573', dark));
-        const lg = c.createLinearGradient(0, gy, 0, 650); lg.addColorStop(0, '#b9894e'); lg.addColorStop(1, '#6b4a26'); c.fillStyle = lg; c.fillRect(0, gy, W, 90);
+        D.hills(c, W, gy - 10, { layers: 2, amp: 70, far: mix('#a9bccb', '#4a5462', dark), near: mix('#8a9a6a', '#3a4430', dark) });
+        D.ground(c, 0, gy, W, 90, { top: '#a07a46', mid: '#8a6438', bot: '#4a321a', grass: false });
         if (k <= 5) D.sun(c, 1060, 90, 48, 1 - dark);
         // heat glow
         const hg = c.createRadialGradient(590, gy, 10, 590, gy, 300); hg.addColorStop(0, `rgba(255,140,40,${.45 - dark * .3})`); hg.addColorStop(1, 'rgba(255,140,40,0)'); c.fillStyle = hg; c.fillRect(250, gy - 300, 680, 300);
@@ -74,16 +75,10 @@ S({
       draw(c) {
         const t = this.t, k = Math.min(6, Math.floor(t / DT)), W = 1180, gy = 600;
         D.sky(c, 0, 0, W, gy, '#1d2533', '#3d4654');
-        c.fillStyle = '#2f3a24'; c.fillRect(0, gy, W, 50);
+        D.ground(c, 0, gy, W, 50, { top: '#3d4a2a', bot: '#1d2414' });
         // tall cumulonimbus with anvil
         const grow = seg01(t, 0, DT * 1.2);
-        c.save(); c.globalAlpha = .95;
-        c.fillStyle = 'rgba(160,170,185,.9)'; c.beginPath(); c.ellipse(590, 95, 260 + grow * 120, 50, 0, 0, TAU); c.fill();
-        D.cloud(c, 590, 110, 600 + grow * 160, 150, { seed: 31, dark: .35 });
-        D.cloud(c, 590, 250, 520, 240, { seed: 32, dark: .45 });
-        D.cloud(c, 590, 390, 620, 260, { seed: 33, dark: .6 });
-        D.cloud(c, 590, 470, 700, 170, { seed: 34, dark: .75 });
-        c.restore();
+        D.cloud(c, 590, 300, 780 + grow * 120, 600, { seed: 31, type: 'cb', dark: .35 });
         D.label(c, 'very cold top: ICE', 990, 100, { size: 24, color: COL.cool });
         // up/down drafts
         if (k >= 2) {
@@ -145,7 +140,7 @@ S({
       draw(c, s) {
         const W = 1180, gy = 560, q = s.q;
         D.sky(c, 0, 0, W, gy, '#151b26', '#353d4a');
-        c.fillStyle = '#2b3420'; c.fillRect(0, gy, W, 60);
+        D.ground(c, 0, gy, W, 60, { top: '#3d4a2a', bot: '#1d2414' });
         D.tree(c, 600, gy + 2, 150, 0, 3, { dark: true }); c.fillStyle = '#3c424c'; c.fillRect(820, gy - 150, 80, 150);
         const n = Math.round(q * 12);
         if (mode === 'between') {
@@ -202,7 +197,7 @@ S({
       },
       draw(c) {
         const W = 1180, gy = 470, d = +Dd.value, sx = 150, ox = 160 + d * 190;
-        D.sky(c, 0, 0, W, gy, '#18202d', '#3c4554'); c.fillStyle = '#2b3420'; c.fillRect(0, gy, W, 90);
+        D.sky(c, 0, 0, W, gy, '#18202d', '#3c4554'); D.ground(c, 0, gy, W, 90, { top: '#3d4a2a', bot: '#1d2414' });
         D.cloud(c, sx + 60, 120, 380, 180, { seed: 51, dark: .75 });
         D.person(c, ox, gy, 150, { shirt: '#c1497a' });
         D.label(c, 'You', ox, gy + 40, { size: 26, force: true });

@@ -104,7 +104,7 @@ S({
         D.cyclone(c, cx, cy, CR + 40, -t * .3, 1);
         // rotating wind arrows (anticlockwise, northern hemisphere)
         for (let i = 0; i < 8; i++) { const a = -t * .5 + i * TAU / 8, r = CR * .55; const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r; D.arrow(c, x, y, x + Math.sin(a) * 50, y - Math.cos(a) * 50, { color: COL.cool, w: 6, alpha: .85 }); }
-        if (st.iso) [[.12, 996], [.3, 998], [.6, 1002], [.95, 1008]].forEach(([k, mb], j) => { c.strokeStyle = 'rgba(255,225,90,.55)'; c.lineWidth = 2; c.setLineDash([8, 8]); c.beginPath(); c.arc(cx, cy, CR * k, 0, TAU); c.stroke(); c.setLineDash([]); const la = [.5, -.4, 2.6, 1.1][j]; D.label(c, mb + ' mb', cx + CR * k * Math.cos(la), cy + CR * k * Math.sin(la), { size: 20, color: COL.bolt }); });
+        if (st.iso) [[.12, 996], [.3, 998], [.6, 1002], [.95, 1008]].forEach(([k, mb], j) => { c.strokeStyle = 'rgba(255,225,90,.55)'; c.lineWidth = 2; c.setLineDash([8, 8]); c.beginPath(); c.arc(cx, cy, CR * k, 0, TAU); c.stroke(); c.setLineDash([]); const la = [-1.2, -.4, 2.6, 1.1][j]; D.label(c, mb + ' mb', cx + CR * k * Math.cos(la), cy + CR * k * Math.sin(la), { size: 20, color: COL.bolt }); });
         D.HL(c, 70, 610, 'H', 32); D.HL(c, 930, 70, 'H', 32);
         D.label(c, 'Eye', cx, cy, { size: 24, bg: 'rgba(6,10,19,.6)' });
         D.label(c, 'Eyewall', cx + 90, cy - 70, { size: 22 });

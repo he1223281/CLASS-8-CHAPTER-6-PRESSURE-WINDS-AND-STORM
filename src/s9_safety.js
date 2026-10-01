@@ -9,17 +9,11 @@ const SAFE_CASES = [
 ];
 function safetyScene(c, kind, t) {
   const W = 400, H = 200, gy = 170;
-  D.sky(c, 0, 0, 700, gy, '#1e2633', '#4a5462'); c.fillStyle = '#34402a'; c.fillRect(0, gy, 700, H - gy);
+  D.sky(c, 0, 0, 700, gy, '#1e2633', '#4a5462'); D.hills(c, 700, gy - 6, { layers: 2, amp: 30, far: '#3c4654', near: '#2c3626' }); D.ground(c, 0, gy, 700, H - gy, { top: '#3d4a2a', bot: '#1d2414' });
   D.cloud(c, 200, 30, 380, 90, { seed: 61, dark: .75 }); D.cloud(c, 560, 34, 300, 80, { seed: 62, dark: .75 });
   c.translate(150, 0);
   if (kind === 'tree') { D.tree(c, 200, gy + 2, 160, 0, 4, { dark: true }); D.person(c, 230, gy, 70, { shirt: '#c1497a' }); }
-  if (kind === 'bus') {
-    const g = c.createLinearGradient(0, 90, 0, gy); g.addColorStop(0, '#e2b33a'); g.addColorStop(1, '#b8861a');
-    c.fillStyle = g; D.rr(c, 80, 88, 250, 72, 12); c.fill();
-    c.fillStyle = '#9ec9e8'; for (let i = 0; i < 5; i++) c.fillRect(96 + i * 44, 100, 34, 26);
-    c.fillStyle = '#222'; [130, 280].forEach(x => { c.beginPath(); c.arc(x, gy - 4, 14, 0, TAU); c.fill(); });
-    c.fillStyle = '#a86d48'; c.beginPath(); c.arc(160, 116, 8, 0, TAU); c.fill();
-  }
+  if (kind === 'bus') D.bus(c, 70, gy + 4, 270);
   if (kind === 'water') { D.sea(c, -150, gy - 30, 700, 60, t, { top: '#2f6f9f', bot: '#123a5c' }); D.person(c, 200, gy - 24, 70, { pose: 'swim' }); }
   if (kind === 'umbrella') {
     D.person(c, 200, gy, 90, { shirt: '#2e6fb3' });
@@ -67,7 +61,7 @@ S({
       autoplay: true,
       draw(c) {
         const t = this.t, gy = 560, fl = (t % 4) < .15 ? 1 : 0;
-        D.sky(c, 0, 0, 760, gy, '#1a212d', '#454e5c'); c.fillStyle = '#3a4a2a'; c.fillRect(0, gy, 760, 100);
+        D.sky(c, 0, 0, 760, gy, '#1a212d', '#454e5c'); D.hills(c, 760, gy - 10, { layers: 2, amp: 60, far: '#3c4654', near: '#2c3626' }); D.ground(c, 0, gy, 760, 100, { top: '#3d4a2a', bot: '#1d2414' });
         D.cloud(c, 380, 90, 760, 200, { seed: 71, dark: .8 });
         if (fl) { c.fillStyle = 'rgba(230,230,255,.25)'; c.fillRect(0, 0, 760, 660); }
         D.tree(c, 650, gy + 4, 360, 0, 6, { dark: true });
@@ -107,7 +101,7 @@ S({
         const gg = c.createLinearGradient(0, gy, 0, 640); gg.addColorStop(0, '#4a3a26'); gg.addColorStop(1, '#2a2016'); c.fillStyle = gg; c.fillRect(0, gy, 1080, 120);
         // building
         const g = c.createLinearGradient(bx, 0, bx + bw, 0); g.addColorStop(0, '#8a919c'); g.addColorStop(1, '#5d646e');
-        c.fillStyle = g; c.fillRect(bx, gy - bh, bw, bh);
+        c.fillStyle = g; c.fillRect(bx, gy - bh, bw, bh); D.tex(c, bx, gy - bh, bw, bh, 'plaster', .6);
         c.fillStyle = '#c9dbe9'; for (let r = 0; r < 6; r++) for (let k = 0; k < 3; k++) c.fillRect(bx + 26 + k * 72, gy - bh + 26 + r * 50, 44, 30);
         const hit = st.t >= 0 && st.t < 1.2;
         if (withC) {

@@ -111,7 +111,7 @@ S({
         const bx = 140, bw = 470, floorH = 112, base = 600, roof = base - floorH * 3;
         // building
         const bgw = c.createLinearGradient(bx, 0, bx + bw, 0); bgw.addColorStop(0, '#efe2c6'); bgw.addColorStop(1, '#cdb994');
-        c.fillStyle = bgw; c.fillRect(bx, roof, bw, floorH * 3);
+        c.fillStyle = bgw; c.fillRect(bx, roof, bw, floorH * 3); D.tex(c, bx, roof, bw, floorH * 3, 'plaster', .6);
         c.strokeStyle = '#8a7656'; c.lineWidth = 6;
         for (let i = 0; i <= 3; i++) { c.beginPath(); c.moveTo(bx, base - floorH * i); c.lineTo(bx + bw, base - floorH * i); c.stroke(); }
         ['Ground floor', 'First floor', 'Second floor'].forEach((n, i) => {
@@ -248,6 +248,7 @@ S({
       draw(c) {
         const t = this.t, lev = +L.value;
         D.sky(c, 0, 0, 1080, 620, '#7ab8e8', '#d8ecf8');
+        D.hills(c, 1080, 300, { layers: 3, amp: 160, far: '#9fb4c6', near: '#5a6e48' });
         // valley floor
         c.fillStyle = '#6b5a40'; c.fillRect(0, 560, 1080, 60);
         // reservoir
@@ -255,7 +256,7 @@ S({
         D.sea(c, 0, wl, damX - 10, bot - wl, t, { top: '#3d8fd0', bot: '#0d3a66' });
         // dam: trapezoid (narrow top, broad bottom)
         const g = c.createLinearGradient(damX, 0, damX + 260, 0); g.addColorStop(0, '#b9b4a8'); g.addColorStop(1, '#8a857a');
-        c.fillStyle = g; c.beginPath(); c.moveTo(damX - 20, top); c.lineTo(damX + 40, top); c.lineTo(damX + 300, bot); c.lineTo(damX - 20, bot); c.closePath(); c.fill();
+        c.save(); c.fillStyle = g; c.beginPath(); c.moveTo(damX - 20, top); c.lineTo(damX + 40, top); c.lineTo(damX + 300, bot); c.lineTo(damX - 20, bot); c.closePath(); c.fill(); c.clip(); D.tex(c, damX - 20, top, 330, bot - top, 'speck', .6); D.tex(c, damX - 20, top, 330, bot - top, 'grain', .4); c.restore();
         c.strokeStyle = 'rgba(0,0,0,.25)'; c.lineWidth = 2; for (let y = top + 40; y < bot; y += 40) { c.beginPath(); c.moveTo(damX - 20, y); c.lineTo(damX + 40 + (y - top) / (bot - top) * 260, y); c.stroke(); }
         // downstream river
         c.fillStyle = '#5c8fbf'; c.fillRect(damX + 300, bot - 16, 220, 16);

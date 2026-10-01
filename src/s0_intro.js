@@ -47,11 +47,10 @@ S({
           D.sky(c, 0, 0, 1920, 936, mix('#4f9ee6', '#262f3c', dark), mix('#cfe6f7', '#4b5664', dark));
           D.sun(c, 1500, 150, 70, 1 - dark);
           // distant hills
-          c.fillStyle = mix('#5d7f8f', '#2c3540', dark); c.beginPath(); c.moveTo(0, 700);
-          for (let x = 0; x <= 1920; x += 40) c.lineTo(x, 640 + Math.sin(x * .004) * 50 + Math.sin(x * .011) * 20); c.lineTo(1920, 936); c.lineTo(0, 936); c.fill();
+          D.hills(c, 1920, 690, { layers: 3, amp: 140, far: mix('#9db3c7', '#3a4452', dark), near: mix('#5f7a48', '#2c3a24', dark), step: 26 });
           for (let i = 0; i < 5; i++) D.cloud(c, ((i * 430 + t * (12 + wind * 70)) % 2400) - 240, 120 + (i % 2) * 70, 420, 170, { seed: i + 1, dark: dark * .8 });
-          for (let i = 0; i < 6; i++) D.cloud(c, ((i * 380 + 150 + t * (20 + wind * 90)) % 2400) - 240, 90 + (i % 3) * 60, 680, 280, { seed: i + 11, dark: .55 + dark * .4, alpha: dark });
-          D.ground(c, 0, 760, 1920, 176, { top: mix('#79a646', '#3d5228', dark), mid: mix('#5f8a38', '#2f4220', dark) });
+          for (let i = 0; i < 6; i++) D.cloud(c, ((i * 380 + 150 + t * (20 + wind * 90)) % 2400) - 240, 110 + (i % 3) * 60, 760, 300, { seed: i + 11, type: 'st', dark: .55 + dark * .45, alpha: dark });
+          D.ground(c, 0, 760, 1920, 176, { top: mix('#6f9440', '#33461f', dark), mid: mix('#56782f', '#26361a', dark) });
           D.house(c, 1000, 820, 260, 170, { lit: dark > .6 });
           trees.forEach(([x, y, h, sd], i) => D.tree(c, x, y, h, wind * (.75 + .25 * Math.sin(t * (2 + wind * 4) + i)), sd, { dark: dark > .5 }));
           c.fillStyle = mix('#c98a3a', '#6b4a22', dark);
