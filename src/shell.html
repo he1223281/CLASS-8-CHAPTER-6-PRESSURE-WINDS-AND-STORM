@@ -1,0 +1,49 @@
+<div id="viewport">
+<div id="stage">
+  <div id="topbar">
+    <div class="chap">Ch 6 · Pressure, Winds, Storms &amp; Cyclones</div>
+    <div id="progress" aria-label="Chapter sections"></div>
+    <div id="secname"></div>
+    <div id="count"></div>
+  </div>
+  <div id="slides"></div>
+  <div id="botbar">
+    <button class="navbtn" id="prev" aria-label="Previous slide">◀ Back</button>
+    <button class="navbtn" id="t-road" title="Chapter roadmap">Roadmap</button>
+    <div id="hint" class="spacer"></div>
+    <button class="navbtn" id="tbtn">Teacher Controls</button>
+    <button class="navbtn primary" id="next" aria-label="Next slide">Next ▶</button>
+  </div>
+  <div id="teacher" role="dialog" aria-label="Teacher controls">
+    <div style="display:flex;align-items:center;justify-content:space-between"><h3>Teacher Controls</h3><button class="btn sm" id="tclose">Close ✕</button></div>
+    <div class="tg">
+      <button class="btn" id="t-ans">Reveal all answers</button>
+      <button class="btn" id="t-reset">Restart simulation</button>
+      <button class="btn" id="t-lab">Hide diagram labels</button>
+      <button class="btn" id="t-exp">Hide explanations</button>
+      <button class="btn" id="t-full">Fullscreen</button>
+      <button class="btn" id="t-pres">Presentation mode</button>
+      <button class="btn" id="t-slow">Slow motion (all)</button>
+      <button class="btn" id="t-snd">Mute thunder</button>
+    </div>
+    <label for="jump" style="font-size:24px;font-weight:700">Skip to slide</label>
+    <select id="jump"></select>
+    <div class="keys"><b>→ / PgDn</b> next · <b>← / PgUp</b> back · <b>Space</b> play/pause · <b>R</b> restart sim · <b>A</b> answers · <b>L</b> labels · <b>F</b> fullscreen · <b>P</b> presentation mode · <b>T</b> this panel<br>Presentation mode hides the bars; move the mouse to show them.</div>
+  </div>
+  <div id="overlay" role="dialog" aria-label="Think and discuss">
+    <div class="box">
+      <div class="tag">Think &amp; Discuss</div>
+      <div class="qq" id="ov-q"></div>
+      <div class="aa" id="ov-a"></div>
+      <div class="row2"><button class="btn go" id="ov-show">Show an idea</button><button class="btn" id="ov-close">Back to lesson ▶</button></div>
+    </div>
+  </div>
+  <div id="start">
+    <canvas id="startcv"></canvas>
+    <div class="grade">GRADE 8 · SCIENCE · CURIOSITY · CHAPTER 6</div>
+    <h1>Pressure, Winds,<br><span>Storms</span> &amp; Cyclones</h1>
+    <p>An interactive science lesson · Best viewed fullscreen (press F)</p>
+    <button class="btn go" id="begin">▶ Begin the lesson</button>
+  </div>
+</div>
+</div>
