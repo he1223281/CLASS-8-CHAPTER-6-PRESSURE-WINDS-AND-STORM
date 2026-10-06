@@ -41,6 +41,7 @@ function ensure(i) {
   $('#slides').appendChild(root);
   const c = { root, i, d, t: 0, stepT: 0, n: 0, q: s => root.querySelector(s), qa: s => $$(s, root) };
   E.ctx[i] = c;
+  fixTex(root);
   try { d.init && d.init(c); } catch (err) { console.error('init', i, err); }
   return c;
 }
@@ -212,6 +213,10 @@ function frame(ts) {
 }
 
 function boot() {
+  const t0 = performance.now();
+  try { bakeAll(); } catch (err) { console.error('bake', err); }
+  console.log('baked in', Math.round(performance.now() - t0), 'ms');
+  cinematicLayers();
   buildJourney(); buildOverview(); fit();
   addEventListener('resize', fit);
   addEventListener('keydown', onKey);

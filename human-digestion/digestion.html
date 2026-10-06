@@ -143,6 +143,10 @@ button{font-family:inherit}
 .nt .tt{font:600 38px/1.15 Georgia,serif;margin-bottom:6px}
 .nt .meta{font:500 20px/1.3 var(--sans);color:#93a1ae;letter-spacing:.08em}
 
+@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-30px,20px)}50%{transform:translate(20px,-40px)}75%{transform:translate(-50px,-10px)}100%{transform:translate(0,0)}}
+#slides{z-index:1}
+#loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:600 28px var(--sans);letter-spacing:.3em;color:var(--teal);z-index:30;background:#05080c}
+
 </style>
 </head>
 <body>
@@ -200,6 +204,7 @@ button{font-family:inherit}
     <div><kbd>Home</kbd><kbd>End</kbd> first / last slide &nbsp; <kbd>Esc</kbd> close</div>
   </div>
   <div id="drawer"></div>
+  <div id="loading">PREPARING THE JOURNEY…</div>
 </div>
 
 <script>
@@ -246,6 +251,7 @@ function ensure(i) {
   $('#slides').appendChild(root);
   const c = { root, i, d, t: 0, stepT: 0, n: 0, q: s => root.querySelector(s), qa: s => $$(s, root) };
   E.ctx[i] = c;
+  fixTex(root);
   try { d.init && d.init(c); } catch (err) { console.error('init', i, err); }
   return c;
 }
@@ -417,6 +423,10 @@ function frame(ts) {
 }
 
 function boot() {
+  const t0 = performance.now();
+  try { bakeAll(); } catch (err) { console.error('bake', err); }
+  console.log('baked in', Math.round(performance.now() - t0), 'ms');
+  cinematicLayers();
   buildJourney(); buildOverview(); fit();
   addEventListener('resize', fit);
   addEventListener('keydown', onKey);
@@ -484,7 +494,10 @@ class Track {
    stomach and descending colon on the viewer's RIGHT. */
 const BODY = (() => {
   const B = {};
-  B.TORSO = 'M268,170 C268,198 262,214 238,224 C192,238 150,250 136,292 C124,334 126,420 138,500 C148,568 150,620 148,690 C146,770 150,880 160,975 L440,975 C450,880 454,770 452,690 C450,620 452,568 462,500 C474,420 476,334 464,292 C450,250 408,238 362,224 C338,214 332,198 332,170 Z';
+  B.TORSO = 'M276,168 C276,198 270,212 250,222 C222,234 196,240 178,248 C166,266 162,292 162,320 C160,380 154,440 156,500 C158,560 164,600 160,640 C152,700 142,760 144,830 C146,890 152,940 158,975 L442,975 C448,940 454,890 456,830 C458,760 448,700 440,640 C436,600 442,560 444,500 C446,440 440,380 438,320 C438,292 434,266 422,248 C404,240 378,234 350,222 C330,212 324,198 324,168 Z';
+  B.ARMS = 'M180,246 C140,254 116,284 110,340 C104,400 100,470 96,560 L142,560 C146,480 150,420 154,370 C156,346 158,330 162,318 Z M420,246 C460,254 484,284 490,340 C496,400 500,470 504,560 L458,560 C454,480 450,420 446,370 C444,346 442,330 438,318 Z';
+  B.HEAD = 'M300,24 C340,24 362,58 362,100 C362,128 356,150 344,164 C332,178 316,188 300,188 C284,188 268,178 256,164 C244,150 238,128 238,100 C238,58 260,24 300,24 Z';
+  B.APP = 'M210,836 C206,850 214,862 226,864';
   B.MOUTH = 'M300,140 L300,158';
   B.OES = 'M300,158 C300,230 302,320 312,385 C316,405 326,415 335,422';
   B.STOM_ORG = 'M335,420 C338,396 362,380 392,386 C428,394 444,430 438,470 C432,520 398,556 350,563 C318,567 292,560 276,546 L268,530 C288,532 312,528 330,516 C346,504 350,482 348,460 C346,442 340,430 335,420 Z';
@@ -500,17 +513,22 @@ const BODY = (() => {
   B.REC = 'M326,862 C310,872 302,900 301,930';
   B.ANUS = 'M301,930 L300,952';
   // small intestine coils (generated, continuous)
-  const P = [[320, 606], [352, 626], [380, 650], [390, 672]];
-  const rows = [686, 714, 742, 770, 798], xL = 248, xR = 384, r = 14;
-  rows.forEach((y, i) => {
-    const dir = i % 2 === 0 ? -1 : 1, xs = dir < 0 ? xR : xL, xe = dir < 0 ? xL : xR;
-    for (let k = 0; k <= 24; k++) { const x = xs + (xe - xs) * k / 24; P.push([x, y + 7 * Math.sin(k * 1.15 + i * 1.7) * Math.sin(Math.PI * k / 24)]); }
-    if (i < rows.length - 1) for (let a = 1; a < 6; a++) { const th = a * Math.PI / 6; P.push([xe + dir * r * Math.sin(th), y + 14 - 14 * Math.cos(th)]); }
-  });
-  P.push([234, 801], [222, 800]);
+  const P = [[320, 606], [334, 618]];
+  { const R = rng(11); let x = 334, y = 618, th = 1.25; const cx = 310, cy = 744, rx = 100, ry = 82, N = 560;
+    for (let i = 0; i < N; i++) {
+      const ex = (x - cx) / rx, ey = (y - cy) / ry, d = ex * ex + ey * ey;
+      const late = i > N - 90, tx = late ? 240 : cx, ty = late ? 795 : cy;
+      let diff = Math.atan2(ty - y, tx - x) - th; while (diff > Math.PI) diff -= 6.2832; while (diff < -Math.PI) diff += 6.2832;
+      th += .3 * Math.sin(i * .19) + .2 * Math.sin(i * .053 + 2) + (R() - .5) * .35 + (late ? diff * .12 : d > .62 ? diff * Math.min(1, (d - .62) * 1.8) : 0);
+      x += Math.cos(th) * 3.8; y += Math.sin(th) * 3.8; P.push([x, y]);
+      if (late && Math.hypot(x - 240, y - 795) < 8) break;
+    }
+    const e = P[P.length - 1]; for (let k = 1; k <= 3; k++) { const t = k / 3; P.push([lerp(e[0], 236, t), lerp(e[1], 801, t)]); }
+    P.push([222, 800]); }
   B.COIL = P;
   B.SI_COIL = smoothPath(P);
   B.SI_TRK = B.DUO + catmull(P);
+  B.SI_CHUNKS = []; for (let i = 0; i < P.length - 1; i += 26) B.SI_CHUNKS.push(smoothPath(P.slice(Math.max(0, i - 1), i + 28)));
   B.TRACK = [B.MOUTH, B.OES, B.STOM_TRK, B.SI_TRK, B.LI_TRK, B.REC, B.ANUS];
   B.VESS = [
     'M300,735 C302,620 312,480 314,335',
@@ -530,28 +548,40 @@ const LI_COL = ['#5a3021', '#c98a68', '#f2c7a6'];
 const REC_COL = ['#5a2a24', '#c07763', '#f0b8a0'];
 const OES_COL = ['#6e2633', '#d8737d', '#ffc1c1'];
 
+function skeletonArt() {
+  let r = '';
+  for (let i = 0; i < 10; i++) {
+    const y0 = 262 + i * 19, w = 92 + i * 5.5, dy = 26 + i * 2;
+    r += `<path d="M294,${y0} C${f1(300 - w * .5)},${y0 - 9} ${f1(300 - w)},${y0 + 2} ${f1(300 - w)},${y0 + dy}" /><path d="M306,${y0} C${f1(300 + w * .5)},${y0 - 9} ${f1(300 + w)},${y0 + 2} ${f1(300 + w)},${y0 + dy}" />`;
+  }
+  return `<g class="skel" fill="none" stroke="rgba(232,222,204,.13)" stroke-width="5" stroke-linecap="round">${r}
+    <path d="M296,236 C262,226 224,232 184,246 M304,236 C338,226 376,232 416,246" stroke-width="7"/>
+    <path d="M300,248 L300,400" stroke-width="12"/>
+    <path d="M214,452 C250,486 286,470 300,446 C314,470 350,486 386,452" stroke-width="4"/>
+    <path d="M204,800 C176,780 170,840 196,872 C220,900 262,904 286,912 M396,800 C424,780 430,840 404,872 C380,900 338,904 314,912" stroke-width="7"/>
+    <path d="M282,908 C290,930 310,930 318,908" stroke-width="6"/></g>`;
+}
 function bodyArt(o = {}) {
   const B = BODY;
   return `
   <g class="sil">
-    <path d="${B.TORSO}" fill="url(#gSkin)" stroke="url(#gSkinS)" stroke-width="2.2"/>
-    <ellipse cx="300" cy="98" rx="58" ry="74" fill="url(#gSkin)" stroke="rgba(184,212,255,.42)" stroke-width="2.2"/>
-    <path class="mouthm" d="M285,147 Q300,155 315,147" fill="none" stroke="rgba(255,180,180,.7)" stroke-width="3" stroke-linecap="round"/>
+    <path d="${B.TORSO}" fill="none" stroke="rgba(150,200,255,.07)" stroke-width="16"/>
+    ${txImg('arms')}${txImg('torso')}${txImg('head')}
+    ${skeletonArt()}
+    <path class="mouthm" d="M285,150 Q300,157 315,150" fill="none" stroke="rgba(255,170,170,.75)" stroke-width="3" stroke-linecap="round"/>
   </g>
-  ${o.vessels ? `<g class="vess" opacity="0">${B.VESS.map(d => `<path d="${d}" fill="none" stroke="#ff4f5e" stroke-width="3.2" stroke-linecap="round" stroke-opacity=".75"/>`).join('')}</g>` : ''}
-  <g class="org oes">${tube(B.OES, 11, OES_COL)}</g>
-  <g class="org panc"><path d="${B.PANC}" fill="url(#gPanc)" stroke="#a8703f" stroke-width="1.5"/><path d="M290,575 C330,580 370,570 405,557" fill="none" stroke="rgba(150,90,40,.35)" stroke-width="2" stroke-dasharray="3 5"/></g>
-  <g class="org stom"><path d="${B.STOM_ORG}" fill="url(#gStom)" stroke="#6b1f2c" stroke-width="2"/>
-     <path d="M396,398 C420,410 430,440 426,470" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="5" stroke-linecap="round"/></g>
-  <g class="org liver"><path d="${B.LIVER}" fill="url(#gLiver)" stroke="#3d130e" stroke-width="2"/>
-     <path d="M188,402 C230,378 290,372 338,382" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="6" stroke-linecap="round"/></g>
-  <g class="org gall"><path d="${B.GALL}" fill="url(#gGall)" stroke="#2f5a22" stroke-width="1.5"/></g>
-  <g class="duct"><path class="bileduct" d="${B.BILE}" fill="none" stroke="#7cc35a" stroke-width="3.5" stroke-linecap="round"/>
-     <path class="pancduct" d="${B.PDUCT}" fill="none" stroke="#e6b45c" stroke-width="3" stroke-linecap="round"/></g>
-  <g class="org si">${tube(B.DUO, 15, SI_COL)}${tube(B.SI_COIL, 15, SI_COL)}</g>
-  <g class="org li">${tube(B.LI_ORG, 28, LI_COL)}<path d="${B.LI_ORG}" fill="none" stroke="#5c3424" stroke-width="28" stroke-dasharray="1.6 11" opacity=".32"/></g>
-  <g class="org rec">${tube(B.REC, 24, REC_COL)}</g>
-  <g class="org anus"><ellipse cx="300.5" cy="944" rx="12" ry="6.5" fill="#4a2020" stroke="#c9787a" stroke-width="3"/></g>
+  ${o.vessels ? `<g class="vess" opacity="0">${B.VESS.map(d => `<path d="${d}" fill="none" stroke="#ff4f5e" stroke-width="3.2" stroke-linecap="round" stroke-opacity=".8"/>`).join('')}</g>` : ''}
+  <g class="org oes">${txImg('oes')}</g>
+  <g class="org panc">${txImg('panc')}</g>
+  <g class="org stom">${txImg('stom')}</g>
+  <g class="org liver">${txImg('liver')}<path d="M300,368 C298,392 296,420 292,446" fill="none" stroke="rgba(60,10,10,.35)" stroke-width="1.6"/></g>
+  <g class="org gall">${txImg('gall')}</g>
+  <g class="duct"><path class="bileduct" d="${B.BILE}" fill="none" stroke="#6fb84e" stroke-width="3" stroke-linecap="round"/>
+     <path class="pancduct" d="${B.PDUCT}" fill="none" stroke="#e0ad58" stroke-width="2.6" stroke-linecap="round" opacity=".85"/></g>
+  <g class="org si">${txImg('duo')}${B.SI_CHUNKS.map((d, i) => txImg('si' + i)).join('')}</g>
+  <g class="org li">${txImg('app')}${txImg('li')}</g>
+  <g class="org rec">${txImg('rec')}</g>
+  <g class="org anus"><ellipse cx="300.5" cy="944" rx="11" ry="6" fill="#3a1414" stroke="#c9787a" stroke-width="3"/></g>
   ${o.track ? `<g class="trk" filter="url(#fGlow2)">${B.TRACK.map(d => `<path d="${d}" fill="none" stroke="#ffd36e" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="0 99999"/>`).join('')}</g>` : ''}
   <g class="fx"></g>`;
 }
@@ -673,6 +703,187 @@ class Chain {
 /* simple particle sprite */
 function dotEl(parent, r, fill, extra) { return el('circle', Object.assign({ r, fill }, extra || {}), parent); }
 
+/* ============ Realistic tissue rendering ============
+   Organs are baked once (at start-up) into lit, textured bitmaps:
+   periodic value-noise mottling, a height map from the blurred shape (+ noise bumps),
+   per-pixel normals -> diffuse light, wet specular gloss, edge occlusion and surface vessels.
+   The bitmaps are then placed in the SVG scenes as <image data-tx="name">. */
+const TEXN = (() => {
+  const P = 256, R = rng(777), g = new Float32Array(P * P);
+  for (let i = 0; i < P * P; i++) g[i] = R();
+  const sm = t => t * t * (3 - 2 * t);
+  const vn = (x, y, per) => {
+    const xi = Math.floor(x), yi = Math.floor(y), fx = x - xi, fy = y - yi;
+    const a = (i, j) => g[(((j % per) + per) % per) * P + (((i % per) + per) % per)];
+    const u = sm(fx), v = sm(fy);
+    return lerp(lerp(a(xi, yi), a(xi + 1, yi), u), lerp(a(xi, yi + 1), a(xi + 1, yi + 1), u), v);
+  };
+  const tile = (N, p, oct) => {
+    const out = new Float32Array(N * N);
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      let s = 0, amp = .5, f = 1, nrm = 0;
+      for (let o = 0; o < oct; o++) { s += amp * vn(x / N * p * f, y / N * p * f, p * f); nrm += amp; amp *= .5; f *= 2; }
+      out[y * N + x] = s / nrm;
+    }
+    return out;
+  };
+  return { t1: tile(512, 6, 5), t2: tile(512, 40, 2) };
+})();
+const TEXI = {};
+
+function bboxOf(d, sw = 0) {
+  const s = el('svg', { width: 0, height: 0, style: 'position:absolute' }, document.body);
+  const p = el('path', { d }, s); const b = p.getBBox(); s.remove();
+  return [b.x - sw / 2, b.y - sw / 2, b.width + sw, b.height + sw];
+}
+/* o: {d, sw (stroke width → tube), s (px per unit), c1 light rgb, c2 dark rgb, bump, ns, gloss, spec, kf, veins(ctx), creases(ctx), glass:{a0,a1}} */
+function bake(o) {
+  const s = o.s || 4, pad = o.pad === undefined ? 4 : o.pad;
+  const [bx, by, bw, bh] = o.bbox || bboxOf(o.d, o.sw || 0);
+  const W = Math.ceil((bw + 2 * pad) * s), H = Math.ceil((bh + 2 * pad) * s);
+  const mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return c; };
+  const tr = [s, 0, 0, s, (pad - bx) * s, (pad - by) * s];
+  const P2 = new Path2D(o.d);
+  const paint = (ctx, style) => { ctx.setTransform(...tr); if (o.sw) { ctx.lineWidth = o.sw; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = style; ctx.stroke(P2); } else { ctx.fillStyle = style; ctx.fill(P2); } ctx.setTransform(1, 0, 0, 1, 0, 0); };
+  const m = mk(), mc = m.getContext('2d', { willReadFrequently: true }); paint(mc, '#fff');
+  const h = mk(), hc = h.getContext('2d', { willReadFrequently: true });
+  const br = o.blur || (o.sw ? o.sw * s * .34 : Math.min(bw, bh) * s * .17);
+  hc.filter = `blur(${f1(br)}px)`; hc.drawImage(m, 0, 0); hc.filter = 'none';
+  hc.globalCompositeOperation = 'destination-in'; hc.drawImage(m, 0, 0); hc.globalCompositeOperation = 'source-over';
+  if (o.creases) { hc.save(); hc.setTransform(...tr); hc.globalCompositeOperation = 'destination-out'; o.creases(hc); hc.restore(); }
+  const v = mk(), vc = v.getContext('2d', { willReadFrequently: true });
+  if (o.veins) { vc.setTransform(...tr); o.veins(vc); }
+  const MD = mc.getImageData(0, 0, W, H).data, HD = hc.getImageData(0, 0, W, H).data, VD = vc.getImageData(0, 0, W, H).data;
+  const N = W * H, hs = new Float32Array(N), mo = new Float32Array(N);
+  const T1 = TEXN.t1, T2 = TEXN.t2, ns = o.ns || 1, bump = o.bump === undefined ? 1 : o.bump;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = y * W + x, ux = x / s + bx - pad, uy = y / s + by - pad;
+    const a = T1[((uy * 2.2 * ns) & 511) * 512 + ((ux * 2.2 * ns) & 511)], b = T2[((uy * 5 * ns) & 511) * 512 + ((ux * 5 * ns) & 511)];
+    mo[i] = a * .75 + b * .25;
+    hs[i] = HD[i * 4 + 3] / 255 + bump * ((b - .5) * .012 + (a - .5) * .07);
+  }
+  const L = [-.46, -.62, .64], Ln = Math.hypot(...L); L[0] /= Ln; L[1] /= Ln; L[2] /= Ln;
+  const Hv = [L[0], L[1], L[2] + 1], Hn = Math.hypot(...Hv); Hv[0] /= Hn; Hv[1] /= Hn; Hv[2] /= Hn;
+  const k = 2 * br * (o.kf || .9), c1 = o.c1, c2 = o.c2, vcl = o.vc || [90, 20, 40], gl = o.gloss || 34, sp = o.spec === undefined ? .55 : o.spec;
+  const out = mc.createImageData(W, H), OD = out.data;
+  for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+    const i = y * W + x, A = MD[i * 4 + 3]; if (!A) continue;
+    const dx = (hs[i + 1] - hs[i - 1]) * .5, dy = (hs[i + W] - hs[i - W]) * .5;
+    let nx = -dx * k, ny = -dy * k, nz = 1; const nn = Math.hypot(nx, ny, nz); nx /= nn; ny /= nn; nz /= nn;
+    const dif = Math.max(0, nx * L[0] + ny * L[1] + nz * L[2]);
+    const spc = Math.pow(Math.max(0, nx * Hv[0] + ny * Hv[1] + nz * Hv[2]), gl) * sp;
+    const hv = Math.min(1, hs[i] * 1.5), ao = .42 + .58 * hv;
+    const t = clamp(mo[i] * 1.5 - .3 + hv * .3);
+    let r = lerp(c2[0], c1[0], t), gg = lerp(c2[1], c1[1], t), bb = lerp(c2[2], c1[2], t);
+    const va = VD[i * 4 + 3] / 255 * .7; r = lerp(r, vcl[0], va); gg = lerp(gg, vcl[1], va); bb = lerp(bb, vcl[2], va);
+    const sh = (.26 + .9 * dif) * ao;
+    const rim = Math.pow(1 - nz, 3) * (o.rim || 0);
+    OD[i * 4] = Math.min(255, r * sh + 255 * spc + rim * 180);
+    OD[i * 4 + 1] = Math.min(255, gg * sh + 255 * spc + rim * 200);
+    OD[i * 4 + 2] = Math.min(255, bb * sh + 255 * spc + rim * 255);
+    const fd = o.fade ? 1 - clamp((y / s + by - pad - o.fade[0]) / (o.fade[1] - o.fade[0])) : 1;
+    OD[i * 4 + 3] = (o.glass ? A * clamp(o.glass[0] + o.glass[1] * Math.pow(1 - hv, 2) + spc * .5) : A) * fd;
+  }
+  mc.putImageData(out, 0, 0);
+  return { url: m.toDataURL('image/png'), x: bx - pad, y: by - pad, w: bw + 2 * pad, h: bh + 2 * pad };
+}
+function veins(n, seed, wid, col = 'rgba(80,10,30,1)') {
+  return ctx => {
+    const R = rng(seed); ctx.strokeStyle = col; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    const br = (x, y, a, w, len, d) => {
+      ctx.lineWidth = w; ctx.globalAlpha = .35 + .35 * (1 - d / 4); ctx.beginPath(); ctx.moveTo(x, y);
+      for (let j = 0; j < len; j++) {
+        a += (R() - .5) * .7; x += Math.cos(a) * 1.6; y += Math.sin(a) * 1.6; ctx.lineTo(x, y);
+        if (d < 3 && R() < .07) { ctx.stroke(); br(x, y, a + (R() < .5 ? -1 : 1) * (.5 + R() * .7), w * .62, (len * .6) | 0, d + 1); ctx.lineWidth = w; ctx.globalAlpha = .35 + .35 * (1 - d / 4); ctx.beginPath(); ctx.moveTo(x, y); }
+      }
+      ctx.stroke();
+    };
+    const b = ctx.__bb || [0, 0, 1, 1];
+    for (let k = 0; k < n; k++) br(b[0] + R() * b[2], b[1] + R() * b[3], R() * 6.28, wid, (25 + R() * 35) | 0, 0);
+  };
+}
+function bakeWithVeins(o, n, seed, wid, col) { const bb = o.bbox || bboxOf(o.d, o.sw || 0); o.bbox = bb; const f = veins(n, seed, wid, col); o.veins = ctx => { ctx.__bb = bb; f(ctx); }; return bake(o); }
+/* grooves across a tube every `step` units (haustra / rings) */
+function ringCreases(d, step, len, w = 1.6) {
+  return ctx => {
+    const pts = samplePath(d, 400), L = pts.length; let acc = 0;
+    ctx.lineWidth = w; ctx.strokeStyle = 'rgba(0,0,0,.75)'; ctx.lineCap = 'round';
+    for (let i = 1; i < L - 1; i++) {
+      acc += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+      if (acc < step) continue; acc = 0;
+      const tx = pts[i + 1][0] - pts[i - 1][0], ty = pts[i + 1][1] - pts[i - 1][1], tl = Math.hypot(tx, ty) || 1, nx = -ty / tl, ny = tx / tl;
+      ctx.beginPath(); ctx.moveTo(pts[i][0] - nx * len, pts[i][1] - ny * len); ctx.quadraticCurveTo(pts[i][0] + tx / tl * 3, pts[i][1] + ty / tl * 3, pts[i][0] + nx * len, pts[i][1] + ny * len); ctx.stroke();
+    }
+  };
+}
+function txImg(name, cls = '') { return `<image class="tx ${cls}" data-tx="${name}" preserveAspectRatio="none"/>`; }
+function fixTex(root) {
+  $$('image[data-tx]', root).forEach(im => {
+    const T = TEXI[im.dataset.tx]; if (!T) return;
+    setA(im, { href: T.url, x: f1(T.x), y: f1(T.y), width: f1(T.w), height: f1(T.h) });
+  });
+}
+
+/* ---------- bake everything used by the scenes ---------- */
+function bakeAll() {
+  const B = BODY;
+  const add = (k, o, vn) => { TEXI[k] = vn ? bakeWithVeins(o, ...vn) : bake(o); };
+  add('liver', { d: B.LIVER, s: 5, c1: [196, 92, 72], c2: [104, 34, 28], gloss: 30, spec: .5, bump: 1.2 }, [26, 3, .9, 'rgba(70,10,20,1)']);
+  add('gall', { d: B.GALL, s: 6, c1: [150, 208, 104], c2: [56, 112, 40], gloss: 40, spec: .7 });
+  add('stom', { d: B.STOM_ORG, s: 5, c1: [238, 136, 138], c2: [150, 46, 62], gloss: 30, spec: .6, bump: 1 }, [30, 7, .9, 'rgba(120,20,50,1)']);
+  add('panc', { d: B.PANC, s: 6, c1: [250, 214, 158], c2: [200, 136, 80], gloss: 24, spec: .35, bump: 2, ns: 3 });
+  add('oes', { d: B.OES, sw: 11, s: 5, c1: [236, 132, 138], c2: [150, 56, 70], gloss: 34, spec: .55 }, [6, 9, .6, 'rgba(110,20,40,1)']);
+  add('duo', { d: B.DUO, sw: 15, s: 5, c1: [246, 172, 156], c2: [172, 82, 82], gloss: 30, spec: .55 });
+  B.SI_CHUNKS.forEach((d, i) => add('si' + i, { d, sw: 17, s: 4.5, c1: [246, 176, 160], c2: [168, 80, 82], gloss: 30, spec: .6, kf: 1 }, [3, 40 + i, .55, 'rgba(150,30,50,1)']));
+  add('li', { d: B.LI_ORG, sw: 28, s: 4, c1: [222, 160, 120], c2: [128, 70, 50], gloss: 26, spec: .45, creases: ringCreases(B.LI_ORG, 12, 15, 1.8), blur: 28 * 4 * .3 }, [10, 21, .8, 'rgba(120,30,40,1)']);
+  add('app', { d: B.APP, sw: 6, s: 5, c1: [222, 160, 120], c2: [128, 70, 50] });
+  add('rec', { d: B.REC, sw: 24, s: 5, c1: [214, 140, 116], c2: [124, 62, 52], gloss: 28, spec: .5, creases: ringCreases(B.REC, 16, 11, 1.4) });
+  add('torso', { fade: [860, 975], d: B.TORSO, s: 2, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .25, glass: [.035, .42], rim: .7, bump: 0, blur: 60 });
+  add('arms', { fade: [430, 560], d: B.ARMS, s: 2, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .25, glass: [.035, .42], rim: .7, bump: 0, blur: 30 });
+  add('head', { d: B.HEAD, s: 2.5, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .3, glass: [.035, .42], rim: .7, bump: 0, blur: 40 });
+  add('fig', { d: FIG_D, s: 1.4, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .3, glass: [.04, .45], rim: .7, bump: 0, blur: 44 });
+  // head (sagittal)
+  add('tongue', { d: HEAD.TONGUE, s: 3, c1: [240, 140, 150], c2: [160, 56, 78], gloss: 22, spec: .55, bump: 2.5, ns: 3 });
+  add('soft', { d: HEAD.SOFT, s: 3, c1: [236, 140, 150], c2: [170, 70, 86], spec: .5 });
+  // stomach lining for the big stomach scene (screen units)
+  add('rugae', { d: 'M150,150 L1020,150 L1020,1030 L150,1030 Z', s: 1, pad: 0, c1: [176, 66, 82], c2: [92, 22, 38], gloss: 40, spec: .7, bump: 1.6, blur: 2, kf: 14,
+    creases: ctx => { const R = rng(5); ctx.strokeStyle = 'rgba(0,0,0,.6)'; ctx.lineCap = 'round'; for (let i = 0; i < 22; i++) { const y = 170 + i * 40; ctx.lineWidth = 10 + R() * 8; ctx.beginPath(); for (let x = 150; x <= 1020; x += 20) { const yy = y + 26 * Math.sin(x * .012 + i * 1.3) + 10 * Math.sin(x * .05 + i); x === 150 ? ctx.moveTo(x, yy) : ctx.lineTo(x, yy); } ctx.stroke(); } } });
+  // villus (local coords, centred at x=0)
+  add('villus', { d: villusPath(0) + ' Z', s: 1.5, c1: [246, 168, 160], c2: [176, 78, 92], gloss: 30, spec: .55, bump: 2.2, ns: 2.5, glass: [.82, .18] });
+  // large intestine wall (screen units)
+  add('liwall', { d: LI_WALL_D, s: 1, pad: 2, c1: [222, 158, 118], c2: [128, 70, 48], gloss: 26, spec: .5, bump: 1.4, blur: 24,
+    creases: ctx => { ctx.strokeStyle = 'rgba(0,0,0,.8)'; ctx.lineWidth = 9; for (let x = 160; x < 1780; x += 210) { ctx.beginPath(); ctx.moveTo(x, 300); ctx.lineTo(x + 6, 920); ctx.stroke(); } } }, [24, 77, 2.2, 'rgba(120,30,40,1)']);
+}
+
+/* ---------- cinematic layers: drifting bokeh + film grain ---------- */
+function cinematicLayers() {
+  const st = $('#stage');
+  const cv = document.createElement('canvas'); cv.id = 'bokeh'; cv.width = 960; cv.height = 540;
+  cv.style.cssText = 'position:absolute;inset:0;width:1920px;height:1080px;pointer-events:none;z-index:0;opacity:.9';
+  st.insertBefore(cv, $('#slides'));
+  const ctx = cv.getContext('2d'), R = rng(3);
+  const bk = Array.from({ length: 26 }, () => ({ x: R() * 960, y: R() * 540, r: 8 + R() * 40, vx: (R() - .5) * 4, vy: -2 - R() * 5, h: R() < .5 ? '111,227,214' : '255,184,107', a: .02 + R() * .05 }));
+  let last = 0;
+  const draw = ts => {
+    const dt = Math.min(.05, (ts - last) / 1000 || 0); last = ts;
+    ctx.clearRect(0, 0, 960, 540);
+    bk.forEach(b => {
+      b.x += b.vx * dt; b.y += b.vy * dt; if (b.y < -60) { b.y = 600; b.x = R() * 960; }
+      const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r); g.addColorStop(0, `rgba(${b.h},${b.a})`); g.addColorStop(.7, `rgba(${b.h},${b.a * .6})`); g.addColorStop(1, `rgba(${b.h},0)`);
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 6.283); ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  };
+  requestAnimationFrame(draw);
+  // grain
+  const gc = document.createElement('canvas'); gc.width = gc.height = 200; const gx = gc.getContext('2d'), id = gx.createImageData(200, 200);
+  for (let i = 0; i < 40000; i++) { const v = (R() * 255) | 0; id.data[i * 4] = id.data[i * 4 + 1] = id.data[i * 4 + 2] = v; id.data[i * 4 + 3] = 255; }
+  gx.putImageData(id, 0, 0);
+  const gr = document.createElement('div'); gr.id = 'grain';
+  gr.style.cssText = `position:absolute;inset:-100px;pointer-events:none;z-index:6;opacity:.045;mix-blend-mode:overlay;background:url(${gc.toDataURL()});animation:grain .5s steps(4) infinite`;
+  st.appendChild(gr);
+}
+
 /* ===================== ACT 1 · THE MYSTERY ===================== */
 
 /* ---------- 1. Opening ---------- */
@@ -735,6 +946,7 @@ function figurePath() {
   const pts = [[0, -278], ...half, [0, 74], ...half.slice().reverse().map(p => [-p[0], p[1]])];
   return closedPath(pts);
 }
+const FIG_D = figurePath() + ' M-54,-332 a54,54 0 1,0 108,0 a54,54 0 1,0 -108,0 Z';
 slide({
   act: 1, organ: -1, title: 'Life processes',
   steps: ['Show the life processes', 'Which one begins with food?'],
@@ -2113,6 +2325,9 @@ slide({
 /* ===================== ACT 5 · THE CLEAN-UP ===================== */
 const LIY = 610, LIH = 145;
 const liHalf = x => LIH + 24 * Math.pow(Math.abs(Math.sin(Math.PI * (x - 160) / 210)), .6);
+const LI_WALL_D = (() => { const o = [], i = []; for (let x = 140; x <= 1780; x += 10) { const h = liHalf(x); o.push([x, LIY - h - 30]); i.push([x, LIY - h]); }
+  const ob = [], ib = []; for (let x = 140; x <= 1780; x += 10) { const h = liHalf(x); ob.push([x, LIY + h + 30]); ib.push([x, LIY + h]); }
+  return polyD([...o, ...i.slice().reverse()]) + ' ' + polyD([...ib, ...ob.slice().reverse()]); })();
 slide({
   act: 5, organ: 4, title: 'The large intestine',
   steps: ['Into the large intestine', 'Water is absorbed', 'Waste becomes semi-solid', 'Did you know?'],
@@ -2380,7 +2595,7 @@ slide({
   }
 });
 
-boot();
+setTimeout(() => { boot(); const l = document.getElementById("loading"); if (l) l.remove(); }, 30);
 </script>
 </body>
 </html>

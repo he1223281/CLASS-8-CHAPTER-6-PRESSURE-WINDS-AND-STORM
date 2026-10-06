@@ -183,6 +183,9 @@ slide({
 /* ===================== ACT 5 · THE CLEAN-UP ===================== */
 const LIY = 610, LIH = 145;
 const liHalf = x => LIH + 24 * Math.pow(Math.abs(Math.sin(Math.PI * (x - 160) / 210)), .6);
+const LI_WALL_D = (() => { const o = [], i = []; for (let x = 140; x <= 1780; x += 10) { const h = liHalf(x); o.push([x, LIY - h - 30]); i.push([x, LIY - h]); }
+  const ob = [], ib = []; for (let x = 140; x <= 1780; x += 10) { const h = liHalf(x); ob.push([x, LIY + h + 30]); ib.push([x, LIY + h]); }
+  return polyD([...o, ...i.slice().reverse()]) + ' ' + polyD([...ib, ...ob.slice().reverse()]); })();
 slide({
   act: 5, organ: 4, title: 'The large intestine',
   steps: ['Into the large intestine', 'Water is absorbed', 'Waste becomes semi-solid', 'Did you know?'],

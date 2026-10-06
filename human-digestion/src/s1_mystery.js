@@ -60,6 +60,7 @@ function figurePath() {
   const pts = [[0, -278], ...half, [0, 74], ...half.slice().reverse().map(p => [-p[0], p[1]])];
   return closedPath(pts);
 }
+const FIG_D = figurePath() + ' M-54,-332 a54,54 0 1,0 108,0 a54,54 0 1,0 -108,0 Z';
 slide({
   act: 1, organ: -1, title: 'Life processes',
   steps: ['Show the life processes', 'Which one begins with food?'],

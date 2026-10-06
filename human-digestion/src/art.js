@@ -51,7 +51,10 @@ class Track {
    stomach and descending colon on the viewer's RIGHT. */
 const BODY = (() => {
   const B = {};
-  B.TORSO = 'M268,170 C268,198 262,214 238,224 C192,238 150,250 136,292 C124,334 126,420 138,500 C148,568 150,620 148,690 C146,770 150,880 160,975 L440,975 C450,880 454,770 452,690 C450,620 452,568 462,500 C474,420 476,334 464,292 C450,250 408,238 362,224 C338,214 332,198 332,170 Z';
+  B.TORSO = 'M276,168 C276,198 270,212 250,222 C222,234 196,240 178,248 C166,266 162,292 162,320 C160,380 154,440 156,500 C158,560 164,600 160,640 C152,700 142,760 144,830 C146,890 152,940 158,975 L442,975 C448,940 454,890 456,830 C458,760 448,700 440,640 C436,600 442,560 444,500 C446,440 440,380 438,320 C438,292 434,266 422,248 C404,240 378,234 350,222 C330,212 324,198 324,168 Z';
+  B.ARMS = 'M180,246 C140,254 116,284 110,340 C104,400 100,470 96,560 L142,560 C146,480 150,420 154,370 C156,346 158,330 162,318 Z M420,246 C460,254 484,284 490,340 C496,400 500,470 504,560 L458,560 C454,480 450,420 446,370 C444,346 442,330 438,318 Z';
+  B.HEAD = 'M300,24 C340,24 362,58 362,100 C362,128 356,150 344,164 C332,178 316,188 300,188 C284,188 268,178 256,164 C244,150 238,128 238,100 C238,58 260,24 300,24 Z';
+  B.APP = 'M210,836 C206,850 214,862 226,864';
   B.MOUTH = 'M300,140 L300,158';
   B.OES = 'M300,158 C300,230 302,320 312,385 C316,405 326,415 335,422';
   B.STOM_ORG = 'M335,420 C338,396 362,380 392,386 C428,394 444,430 438,470 C432,520 398,556 350,563 C318,567 292,560 276,546 L268,530 C288,532 312,528 330,516 C346,504 350,482 348,460 C346,442 340,430 335,420 Z';
@@ -67,17 +70,22 @@ const BODY = (() => {
   B.REC = 'M326,862 C310,872 302,900 301,930';
   B.ANUS = 'M301,930 L300,952';
   // small intestine coils (generated, continuous)
-  const P = [[320, 606], [352, 626], [380, 650], [390, 672]];
-  const rows = [686, 714, 742, 770, 798], xL = 248, xR = 384, r = 14;
-  rows.forEach((y, i) => {
-    const dir = i % 2 === 0 ? -1 : 1, xs = dir < 0 ? xR : xL, xe = dir < 0 ? xL : xR;
-    for (let k = 0; k <= 24; k++) { const x = xs + (xe - xs) * k / 24; P.push([x, y + 7 * Math.sin(k * 1.15 + i * 1.7) * Math.sin(Math.PI * k / 24)]); }
-    if (i < rows.length - 1) for (let a = 1; a < 6; a++) { const th = a * Math.PI / 6; P.push([xe + dir * r * Math.sin(th), y + 14 - 14 * Math.cos(th)]); }
-  });
-  P.push([234, 801], [222, 800]);
+  const P = [[320, 606], [334, 618]];
+  { const R = rng(11); let x = 334, y = 618, th = 1.25; const cx = 310, cy = 744, rx = 100, ry = 82, N = 560;
+    for (let i = 0; i < N; i++) {
+      const ex = (x - cx) / rx, ey = (y - cy) / ry, d = ex * ex + ey * ey;
+      const late = i > N - 90, tx = late ? 240 : cx, ty = late ? 795 : cy;
+      let diff = Math.atan2(ty - y, tx - x) - th; while (diff > Math.PI) diff -= 6.2832; while (diff < -Math.PI) diff += 6.2832;
+      th += .3 * Math.sin(i * .19) + .2 * Math.sin(i * .053 + 2) + (R() - .5) * .35 + (late ? diff * .12 : d > .62 ? diff * Math.min(1, (d - .62) * 1.8) : 0);
+      x += Math.cos(th) * 3.8; y += Math.sin(th) * 3.8; P.push([x, y]);
+      if (late && Math.hypot(x - 240, y - 795) < 8) break;
+    }
+    const e = P[P.length - 1]; for (let k = 1; k <= 3; k++) { const t = k / 3; P.push([lerp(e[0], 236, t), lerp(e[1], 801, t)]); }
+    P.push([222, 800]); }
   B.COIL = P;
   B.SI_COIL = smoothPath(P);
   B.SI_TRK = B.DUO + catmull(P);
+  B.SI_CHUNKS = []; for (let i = 0; i < P.length - 1; i += 26) B.SI_CHUNKS.push(smoothPath(P.slice(Math.max(0, i - 1), i + 28)));
   B.TRACK = [B.MOUTH, B.OES, B.STOM_TRK, B.SI_TRK, B.LI_TRK, B.REC, B.ANUS];
   B.VESS = [
     'M300,735 C302,620 312,480 314,335',
@@ -97,28 +105,40 @@ const LI_COL = ['#5a3021', '#c98a68', '#f2c7a6'];
 const REC_COL = ['#5a2a24', '#c07763', '#f0b8a0'];
 const OES_COL = ['#6e2633', '#d8737d', '#ffc1c1'];
 
+function skeletonArt() {
+  let r = '';
+  for (let i = 0; i < 10; i++) {
+    const y0 = 262 + i * 19, w = 92 + i * 5.5, dy = 26 + i * 2;
+    r += `<path d="M294,${y0} C${f1(300 - w * .5)},${y0 - 9} ${f1(300 - w)},${y0 + 2} ${f1(300 - w)},${y0 + dy}" /><path d="M306,${y0} C${f1(300 + w * .5)},${y0 - 9} ${f1(300 + w)},${y0 + 2} ${f1(300 + w)},${y0 + dy}" />`;
+  }
+  return `<g class="skel" fill="none" stroke="rgba(232,222,204,.13)" stroke-width="5" stroke-linecap="round">${r}
+    <path d="M296,236 C262,226 224,232 184,246 M304,236 C338,226 376,232 416,246" stroke-width="7"/>
+    <path d="M300,248 L300,400" stroke-width="12"/>
+    <path d="M214,452 C250,486 286,470 300,446 C314,470 350,486 386,452" stroke-width="4"/>
+    <path d="M204,800 C176,780 170,840 196,872 C220,900 262,904 286,912 M396,800 C424,780 430,840 404,872 C380,900 338,904 314,912" stroke-width="7"/>
+    <path d="M282,908 C290,930 310,930 318,908" stroke-width="6"/></g>`;
+}
 function bodyArt(o = {}) {
   const B = BODY;
   return `
   <g class="sil">
-    <path d="${B.TORSO}" fill="url(#gSkin)" stroke="url(#gSkinS)" stroke-width="2.2"/>
-    <ellipse cx="300" cy="98" rx="58" ry="74" fill="url(#gSkin)" stroke="rgba(184,212,255,.42)" stroke-width="2.2"/>
-    <path class="mouthm" d="M285,147 Q300,155 315,147" fill="none" stroke="rgba(255,180,180,.7)" stroke-width="3" stroke-linecap="round"/>
+    <path d="${B.TORSO}" fill="none" stroke="rgba(150,200,255,.07)" stroke-width="16"/>
+    ${txImg('arms')}${txImg('torso')}${txImg('head')}
+    ${skeletonArt()}
+    <path class="mouthm" d="M285,150 Q300,157 315,150" fill="none" stroke="rgba(255,170,170,.75)" stroke-width="3" stroke-linecap="round"/>
   </g>
-  ${o.vessels ? `<g class="vess" opacity="0">${B.VESS.map(d => `<path d="${d}" fill="none" stroke="#ff4f5e" stroke-width="3.2" stroke-linecap="round" stroke-opacity=".75"/>`).join('')}</g>` : ''}
-  <g class="org oes">${tube(B.OES, 11, OES_COL)}</g>
-  <g class="org panc"><path d="${B.PANC}" fill="url(#gPanc)" stroke="#a8703f" stroke-width="1.5"/><path d="M290,575 C330,580 370,570 405,557" fill="none" stroke="rgba(150,90,40,.35)" stroke-width="2" stroke-dasharray="3 5"/></g>
-  <g class="org stom"><path d="${B.STOM_ORG}" fill="url(#gStom)" stroke="#6b1f2c" stroke-width="2"/>
-     <path d="M396,398 C420,410 430,440 426,470" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="5" stroke-linecap="round"/></g>
-  <g class="org liver"><path d="${B.LIVER}" fill="url(#gLiver)" stroke="#3d130e" stroke-width="2"/>
-     <path d="M188,402 C230,378 290,372 338,382" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="6" stroke-linecap="round"/></g>
-  <g class="org gall"><path d="${B.GALL}" fill="url(#gGall)" stroke="#2f5a22" stroke-width="1.5"/></g>
-  <g class="duct"><path class="bileduct" d="${B.BILE}" fill="none" stroke="#7cc35a" stroke-width="3.5" stroke-linecap="round"/>
-     <path class="pancduct" d="${B.PDUCT}" fill="none" stroke="#e6b45c" stroke-width="3" stroke-linecap="round"/></g>
-  <g class="org si">${tube(B.DUO, 15, SI_COL)}${tube(B.SI_COIL, 15, SI_COL)}</g>
-  <g class="org li">${tube(B.LI_ORG, 28, LI_COL)}<path d="${B.LI_ORG}" fill="none" stroke="#5c3424" stroke-width="28" stroke-dasharray="1.6 11" opacity=".32"/></g>
-  <g class="org rec">${tube(B.REC, 24, REC_COL)}</g>
-  <g class="org anus"><ellipse cx="300.5" cy="944" rx="12" ry="6.5" fill="#4a2020" stroke="#c9787a" stroke-width="3"/></g>
+  ${o.vessels ? `<g class="vess" opacity="0">${B.VESS.map(d => `<path d="${d}" fill="none" stroke="#ff4f5e" stroke-width="3.2" stroke-linecap="round" stroke-opacity=".8"/>`).join('')}</g>` : ''}
+  <g class="org oes">${txImg('oes')}</g>
+  <g class="org panc">${txImg('panc')}</g>
+  <g class="org stom">${txImg('stom')}</g>
+  <g class="org liver">${txImg('liver')}<path d="M300,368 C298,392 296,420 292,446" fill="none" stroke="rgba(60,10,10,.35)" stroke-width="1.6"/></g>
+  <g class="org gall">${txImg('gall')}</g>
+  <g class="duct"><path class="bileduct" d="${B.BILE}" fill="none" stroke="#6fb84e" stroke-width="3" stroke-linecap="round"/>
+     <path class="pancduct" d="${B.PDUCT}" fill="none" stroke="#e0ad58" stroke-width="2.6" stroke-linecap="round" opacity=".85"/></g>
+  <g class="org si">${txImg('duo')}${B.SI_CHUNKS.map((d, i) => txImg('si' + i)).join('')}</g>
+  <g class="org li">${txImg('app')}${txImg('li')}</g>
+  <g class="org rec">${txImg('rec')}</g>
+  <g class="org anus"><ellipse cx="300.5" cy="944" rx="11" ry="6" fill="#3a1414" stroke="#c9787a" stroke-width="3"/></g>
   ${o.track ? `<g class="trk" filter="url(#fGlow2)">${B.TRACK.map(d => `<path d="${d}" fill="none" stroke="#ffd36e" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="0 99999"/>`).join('')}</g>` : ''}
   <g class="fx"></g>`;
 }

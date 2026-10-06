@@ -134,3 +134,7 @@ button{font-family:inherit}
 .nt p{font:400 27px/1.5 var(--sans);color:#e6ecf2}
 .nt .tt{font:600 38px/1.15 Georgia,serif;margin-bottom:6px}
 .nt .meta{font:500 20px/1.3 var(--sans);color:#93a1ae;letter-spacing:.08em}
+
+@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-30px,20px)}50%{transform:translate(20px,-40px)}75%{transform:translate(-50px,-10px)}100%{transform:translate(0,0)}}
+#slides{z-index:1}
+#loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:600 28px var(--sans);letter-spacing:.3em;color:var(--teal);z-index:30;background:#05080c}
