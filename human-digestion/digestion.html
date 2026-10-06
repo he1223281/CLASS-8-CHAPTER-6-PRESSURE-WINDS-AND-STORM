@@ -596,7 +596,7 @@ function headArt() {
     ${[0, 1, 2, 3, 4, 5].map(k => `<path d="M576,${830 + k * 30} L624,${826 + k * 30}" stroke="rgba(170,200,230,.38)" stroke-width="6" stroke-linecap="round"/>`).join('')}</g>
   <path class="hard" d="${H.HARD}" fill="#ead9c7"/>
   <path class="soft" d="${H.SOFT}" fill="#d97a84"/>
-  <g class="glands" opacity=".75">
+  <g class="glands" opacity=".5">
     <path d="M590,520 C620,515 646,540 640,575 C634,605 600,612 584,592 C566,570 568,526 590,520 Z" fill="#f3c9a8" stroke="#c99a76" stroke-width="2" opacity=".9"/>
     <path d="M676,740 C700,730 728,746 724,772 C720,794 690,800 676,786 C662,772 660,748 676,740 Z" fill="#f3c9a8" stroke="#c99a76" stroke-width="2" opacity=".9"/>
     <path d="${H.PAROTID_DUCT}" fill="none" stroke="#c99a76" stroke-width="4" stroke-linecap="round"/>
@@ -1856,7 +1856,7 @@ slide({
   act: 3, organ: 3, title: 'Pancreatic and intestinal juices',
   steps: ['Pancreatic juice arrives', 'It breaks down food', 'Juice from the intestine wall', 'Digestion complete!'],
   html: `
-  <div class="abs" style="left:520px;top:110px;width:520px"><div class="kicker c-panc" style="color:var(--panc);line-height:1.4">Pancreas · intestine wall</div>
+  <div class="abs" style="left:520px;top:110px;width:520px"><div class="kicker c-panc" style="color:var(--panc);">The final juices</div>
     <div class="h3" style="margin-top:12px">Finishing the job</div></div>
   <svg class="full" viewBox="0 0 1920 1080">
     <g transform="translate(130,140) scale(1.5)"><path d="M10,60 C10,30 50,20 100,30 C160,40 220,20 270,10 C300,5 310,35 285,48 C230,80 160,96 100,96 C50,98 10,90 10,60 Z" fill="url(#gPanc)" stroke="#a8703f" stroke-width="2"/></g>
@@ -1998,11 +1998,11 @@ slide({
     <div class="h3" style="margin:12px 0 20px;font-size:50px">Thousands of <span class="c-warm">finger-like projections</span></div>
     <div class="r" data-s="1"><div class="sub" style="font-size:31px">The lining is <b style="color:#fff">thin</b>, with blood vessels just inside.</div></div>
     <div class="r" data-s="2" style="margin-top:22px"><div class="sub" style="font-size:31px">They give a <b style="color:#fff">huge surface</b> for absorption.</div>
-      <svg viewBox="0 0 440 210" style="width:440px;height:210px;margin-top:10px;overflow:visible">
+      <svg viewBox="0 0 440 210" style="width:440px;height:240px;margin-top:10px;overflow:visible">
         <path class="fl" d="M10,40 L430,40" stroke="#ffd36e" stroke-width="6" fill="none" stroke-linecap="round"/>
         <text x="10" y="20" font-size="22" fill="#93a1ae">flat</text>
         <path class="fo" d="M10,190 ${[0, 1, 2, 3, 4, 5].map(k => `L${10 + k * 70},90 C${10 + k * 70},60 ${45 + k * 70},60 ${45 + k * 70},90 L${45 + k * 70},190 L${80 + k * 70},190`).join(' ')}" stroke="#ffd36e" stroke-width="6" fill="none" stroke-linejoin="round"/>
-        <text x="10" y="80" font-size="22" fill="#93a1ae">with projections</text></svg></div>
+        <text x="10" y="226" font-size="22" fill="#93a1ae">with projections</text></svg></div>
     <div class="r" data-s="3" style="margin-top:14px"><div class="sub" style="font-size:31px">Digested nutrients pass into the <b class="c-blood">blood</b>.</div></div>
     <div class="r" data-s="4" style="margin-top:24px"><div class="term">Scientific term: <b>Villi</b></div>
       <div class="small" style="margin-top:12px">This is called <b style="color:#fff">absorption</b>.</div></div>
@@ -2117,8 +2117,8 @@ slide({
   act: 5, organ: 4, title: 'The large intestine',
   steps: ['Into the large intestine', 'Water is absorbed', 'Waste becomes semi-solid', 'Did you know?'],
   html: `
-  <div class="abs" style="left:120px;top:110px;width:1700px"><div class="kicker">Part 8 · The large intestine</div>
-    <div class="q" style="margin-top:12px;font-size:54px">Not everything we ate could be digested or absorbed…</div></div>
+  <div class="abs" style="left:120px;top:110px;width:960px"><div class="kicker">Part 8 · The large intestine</div>
+    <div class="q" style="margin-top:12px;font-size:52px">Not everything we ate could be digested or absorbed…</div></div>
   <svg class="full" viewBox="0 0 1920 1080">
     <defs><linearGradient id="gLIc" x1="0" x2="1"><stop offset="0" stop-color="#7d6a4c"/><stop offset=".5" stop-color="#6e4f2e"/><stop offset="1" stop-color="#4f3218"/></linearGradient></defs>
     <path class="capT" fill="none" stroke="#ff4f5e" stroke-width="6" opacity=".6"/><path class="capB" fill="none" stroke="#ff4f5e" stroke-width="6" opacity=".6"/>
@@ -2127,12 +2127,12 @@ slide({
     <g class="folds"></g>
     <g class="cont"></g>
   </svg>
-  <div class="lbl" style="left:120px;top:870px;font-size:28px;color:#ffc9bd">from the small intestine →</div>
-  <div class="lbl r" data-s="1" style="left:1240px;top:250px;font-size:30px;color:#e7b08f">about 1.5 m long · wider tube</div>
+  <div class="lbl" style="left:140px;top:330px;font-size:28px;color:#ffc9bd">from the small intestine →</div>
+  <div class="lbl r" data-s="1" style="left:1180px;top:330px;font-size:30px;color:#e7b08f">about 1.5 m long · wider tube</div>
   <div class="abs r" data-s="2" style="left:120px;top:900px;width:900px"><div class="key2" style="font-size:38px"><span class="c-water">Water</span> and some <span style="color:#fff">salts</span> are absorbed</div></div>
   <div class="abs r" data-s="3" style="left:1180px;top:900px;width:700px"><div class="key2" style="font-size:38px">Waste becomes <span style="color:#d9a26b">semi-solid</span>: <span style="color:#d9a26b">stool</span></div></div>
   <div class="abs r" data-s="3" style="left:120px;top:980px;width:1700px"><div class="small">Nutrients were absorbed in the <b style="color:#fff">small</b> intestine · Here, mainly <b class="c-water">water</b> and some <b style="color:#fff">salts</b> are absorbed</div></div>
-  <div class="fact r" data-s="4" style="left:1180px;top:110px;width:680px"><div class="fk">DID YOU KNOW?</div><div class="ft">Tiny friendly bacteria living here break down undigested food — especially <b>fibre</b> — and keep our gut healthy.</div></div>`,
+  <div class="fact r" data-s="4" style="left:1120px;top:96px;width:740px"><div class="fk">DID YOU KNOW?</div><div class="ft">Tiny friendly bacteria living here break down undigested food — especially <b>fibre</b> — and keep our gut healthy.</div></div>`,
   init(c) {
     const top = [], bot = [], wt = [], wb = [];
     for (let x = 140; x <= 1780; x += 10) { const h = liHalf(x); top.push([x, LIY - h]); bot.push([x, LIY + h]); wt.push([x, LIY - h - 30]); wb.push([x, LIY + h + 30]); }
@@ -2247,13 +2247,14 @@ const RECAP_CAP = [
   [33, 'Intestinal juices'], [35.5, 'Digested nutrients'], [38, 'Absorption'], [40.5, 'Blood'], [43, 'Body'], [46.5, 'Large intestine'],
   [49.5, 'Water absorption'], [54, 'Rectum'], [57.5, 'Anus'], [59.5, 'Egestion'], [63, 'One bite. One incredible journey.']];
 const RECAP_S = [[0, .3], [11.5, .6], [12.5, 1], [18.5, 2], [20, 2.15], [25.5, 2.6], [27, 3], [35, 3.1], [46, 3.995], [47, 4], [54, 4.98], [57.5, 5.9], [60, 6.99], [70, 6.99]];
-const RECAP_CAM = [[0, 170, 1], [11, 170, 1], [13.5, 320, 1], [18.5, 300, 1], [26, 330, 1], [28, 280, 1], [35, 330, 1], [39, 700, .5], [40.5, 1100, 0], [45, 1100, 0], [47.5, 420, 1], [54, 360, 1], [60, 360, 1], [63.5, 1100, 0], [70, 1100, 0]];
+const RECAP_CAM = [[0, 260, 1], [11, 260, 1], [13.5, 480, 1], [18.5, 460, 1], [26, 480, 1], [28, 440, 1], [35, 480, 1], [39, 800, .5], [40.5, 1100, 0], [45, 1100, 0], [47.5, 560, 1], [54, 520, 1], [60, 520, 1], [63.5, 1100, 0], [70, 1100, 0]];
 const RECAP_END = 66;
 
 slide({
   act: 6, title: 'The complete journey (recap)',
   html: `
   <svg class="full body" viewBox="0 0 10 10" preserveAspectRatio="xMidYMid meet">${bodyArt({ vessels: true })}</svg>
+  <div class="abs" style="left:1060px;top:0;width:860px;height:1080px;background:linear-gradient(90deg,rgba(4,7,11,0),rgba(4,7,11,.9) 32%,rgba(4,7,11,.94));pointer-events:none"></div>
   <div class="abs" style="left:1300px;top:150px;width:580px">
     <div class="kicker">The complete journey</div>
     <div class="abs" style="left:0;top:60px;width:4px;height:640px;background:rgba(255,255,255,.1);border-radius:2px"><i class="rbar" style="display:block;width:4px;background:var(--teal);border-radius:2px;height:0"></i></div>
@@ -2290,7 +2291,7 @@ slide({
     const p = c.trk.pt(s);
     const h = keyInterp(RECAP_CAM, T, 1), fw = keyInterp(RECAP_CAM, T, 2);
     const fx_ = lerp(300, p[0], fw), fy_ = lerp(510, p[1], fw);
-    cam(c.svg, fx_ + 300 * (h / 1080), fy_, h);
+    cam(c.svg, fx_ + 360 * (h / 1080), fy_, h);
     // captions
     let ci = 0; RECAP_CAP.forEach((k, i) => { if (T >= k[0]) ci = i; });
     if (ci !== c.capI) {

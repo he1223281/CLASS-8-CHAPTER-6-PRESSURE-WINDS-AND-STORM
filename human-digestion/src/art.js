@@ -163,7 +163,7 @@ function headArt() {
     ${[0, 1, 2, 3, 4, 5].map(k => `<path d="M576,${830 + k * 30} L624,${826 + k * 30}" stroke="rgba(170,200,230,.38)" stroke-width="6" stroke-linecap="round"/>`).join('')}</g>
   <path class="hard" d="${H.HARD}" fill="#ead9c7"/>
   <path class="soft" d="${H.SOFT}" fill="#d97a84"/>
-  <g class="glands" opacity=".75">
+  <g class="glands" opacity=".5">
     <path d="M590,520 C620,515 646,540 640,575 C634,605 600,612 584,592 C566,570 568,526 590,520 Z" fill="#f3c9a8" stroke="#c99a76" stroke-width="2" opacity=".9"/>
     <path d="M676,740 C700,730 728,746 724,772 C720,794 690,800 676,786 C662,772 660,748 676,740 Z" fill="#f3c9a8" stroke="#c99a76" stroke-width="2" opacity=".9"/>
     <path d="${H.PAROTID_DUCT}" fill="none" stroke="#c99a76" stroke-width="4" stroke-linecap="round"/>

@@ -237,7 +237,7 @@ slide({
   act: 3, organ: 3, title: 'Pancreatic and intestinal juices',
   steps: ['Pancreatic juice arrives', 'It breaks down food', 'Juice from the intestine wall', 'Digestion complete!'],
   html: `
-  <div class="abs" style="left:520px;top:110px;width:520px"><div class="kicker c-panc" style="color:var(--panc);line-height:1.4">Pancreas · intestine wall</div>
+  <div class="abs" style="left:520px;top:110px;width:520px"><div class="kicker c-panc" style="color:var(--panc);">The final juices</div>
     <div class="h3" style="margin-top:12px">Finishing the job</div></div>
   <svg class="full" viewBox="0 0 1920 1080">
     <g transform="translate(130,140) scale(1.5)"><path d="M10,60 C10,30 50,20 100,30 C160,40 220,20 270,10 C300,5 310,35 285,48 C230,80 160,96 100,96 C50,98 10,90 10,60 Z" fill="url(#gPanc)" stroke="#a8703f" stroke-width="2"/></g>

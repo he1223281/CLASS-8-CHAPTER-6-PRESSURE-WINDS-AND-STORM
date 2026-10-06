@@ -68,11 +68,11 @@ slide({
     <div class="h3" style="margin:12px 0 20px;font-size:50px">Thousands of <span class="c-warm">finger-like projections</span></div>
     <div class="r" data-s="1"><div class="sub" style="font-size:31px">The lining is <b style="color:#fff">thin</b>, with blood vessels just inside.</div></div>
     <div class="r" data-s="2" style="margin-top:22px"><div class="sub" style="font-size:31px">They give a <b style="color:#fff">huge surface</b> for absorption.</div>
-      <svg viewBox="0 0 440 210" style="width:440px;height:210px;margin-top:10px;overflow:visible">
+      <svg viewBox="0 0 440 210" style="width:440px;height:240px;margin-top:10px;overflow:visible">
         <path class="fl" d="M10,40 L430,40" stroke="#ffd36e" stroke-width="6" fill="none" stroke-linecap="round"/>
         <text x="10" y="20" font-size="22" fill="#93a1ae">flat</text>
         <path class="fo" d="M10,190 ${[0, 1, 2, 3, 4, 5].map(k => `L${10 + k * 70},90 C${10 + k * 70},60 ${45 + k * 70},60 ${45 + k * 70},90 L${45 + k * 70},190 L${80 + k * 70},190`).join(' ')}" stroke="#ffd36e" stroke-width="6" fill="none" stroke-linejoin="round"/>
-        <text x="10" y="80" font-size="22" fill="#93a1ae">with projections</text></svg></div>
+        <text x="10" y="226" font-size="22" fill="#93a1ae">with projections</text></svg></div>
     <div class="r" data-s="3" style="margin-top:14px"><div class="sub" style="font-size:31px">Digested nutrients pass into the <b class="c-blood">blood</b>.</div></div>
     <div class="r" data-s="4" style="margin-top:24px"><div class="term">Scientific term: <b>Villi</b></div>
       <div class="small" style="margin-top:12px">This is called <b style="color:#fff">absorption</b>.</div></div>
@@ -187,8 +187,8 @@ slide({
   act: 5, organ: 4, title: 'The large intestine',
   steps: ['Into the large intestine', 'Water is absorbed', 'Waste becomes semi-solid', 'Did you know?'],
   html: `
-  <div class="abs" style="left:120px;top:110px;width:1700px"><div class="kicker">Part 8 · The large intestine</div>
-    <div class="q" style="margin-top:12px;font-size:54px">Not everything we ate could be digested or absorbed…</div></div>
+  <div class="abs" style="left:120px;top:110px;width:960px"><div class="kicker">Part 8 · The large intestine</div>
+    <div class="q" style="margin-top:12px;font-size:52px">Not everything we ate could be digested or absorbed…</div></div>
   <svg class="full" viewBox="0 0 1920 1080">
     <defs><linearGradient id="gLIc" x1="0" x2="1"><stop offset="0" stop-color="#7d6a4c"/><stop offset=".5" stop-color="#6e4f2e"/><stop offset="1" stop-color="#4f3218"/></linearGradient></defs>
     <path class="capT" fill="none" stroke="#ff4f5e" stroke-width="6" opacity=".6"/><path class="capB" fill="none" stroke="#ff4f5e" stroke-width="6" opacity=".6"/>
@@ -197,12 +197,12 @@ slide({
     <g class="folds"></g>
     <g class="cont"></g>
   </svg>
-  <div class="lbl" style="left:120px;top:870px;font-size:28px;color:#ffc9bd">from the small intestine →</div>
-  <div class="lbl r" data-s="1" style="left:1240px;top:250px;font-size:30px;color:#e7b08f">about 1.5 m long · wider tube</div>
+  <div class="lbl" style="left:140px;top:330px;font-size:28px;color:#ffc9bd">from the small intestine →</div>
+  <div class="lbl r" data-s="1" style="left:1180px;top:330px;font-size:30px;color:#e7b08f">about 1.5 m long · wider tube</div>
   <div class="abs r" data-s="2" style="left:120px;top:900px;width:900px"><div class="key2" style="font-size:38px"><span class="c-water">Water</span> and some <span style="color:#fff">salts</span> are absorbed</div></div>
   <div class="abs r" data-s="3" style="left:1180px;top:900px;width:700px"><div class="key2" style="font-size:38px">Waste becomes <span style="color:#d9a26b">semi-solid</span>: <span style="color:#d9a26b">stool</span></div></div>
   <div class="abs r" data-s="3" style="left:120px;top:980px;width:1700px"><div class="small">Nutrients were absorbed in the <b style="color:#fff">small</b> intestine · Here, mainly <b class="c-water">water</b> and some <b style="color:#fff">salts</b> are absorbed</div></div>
-  <div class="fact r" data-s="4" style="left:1180px;top:110px;width:680px"><div class="fk">DID YOU KNOW?</div><div class="ft">Tiny friendly bacteria living here break down undigested food — especially <b>fibre</b> — and keep our gut healthy.</div></div>`,
+  <div class="fact r" data-s="4" style="left:1120px;top:96px;width:740px"><div class="fk">DID YOU KNOW?</div><div class="ft">Tiny friendly bacteria living here break down undigested food — especially <b>fibre</b> — and keep our gut healthy.</div></div>`,
   init(c) {
     const top = [], bot = [], wt = [], wb = [];
     for (let x = 140; x <= 1780; x += 10) { const h = liHalf(x); top.push([x, LIY - h]); bot.push([x, LIY + h]); wt.push([x, LIY - h - 30]); wb.push([x, LIY + h + 30]); }

@@ -15,13 +15,14 @@ const RECAP_CAP = [
   [33, 'Intestinal juices'], [35.5, 'Digested nutrients'], [38, 'Absorption'], [40.5, 'Blood'], [43, 'Body'], [46.5, 'Large intestine'],
   [49.5, 'Water absorption'], [54, 'Rectum'], [57.5, 'Anus'], [59.5, 'Egestion'], [63, 'One bite. One incredible journey.']];
 const RECAP_S = [[0, .3], [11.5, .6], [12.5, 1], [18.5, 2], [20, 2.15], [25.5, 2.6], [27, 3], [35, 3.1], [46, 3.995], [47, 4], [54, 4.98], [57.5, 5.9], [60, 6.99], [70, 6.99]];
-const RECAP_CAM = [[0, 170, 1], [11, 170, 1], [13.5, 320, 1], [18.5, 300, 1], [26, 330, 1], [28, 280, 1], [35, 330, 1], [39, 700, .5], [40.5, 1100, 0], [45, 1100, 0], [47.5, 420, 1], [54, 360, 1], [60, 360, 1], [63.5, 1100, 0], [70, 1100, 0]];
+const RECAP_CAM = [[0, 260, 1], [11, 260, 1], [13.5, 480, 1], [18.5, 460, 1], [26, 480, 1], [28, 440, 1], [35, 480, 1], [39, 800, .5], [40.5, 1100, 0], [45, 1100, 0], [47.5, 560, 1], [54, 520, 1], [60, 520, 1], [63.5, 1100, 0], [70, 1100, 0]];
 const RECAP_END = 66;
 
 slide({
   act: 6, title: 'The complete journey (recap)',
   html: `
   <svg class="full body" viewBox="0 0 10 10" preserveAspectRatio="xMidYMid meet">${bodyArt({ vessels: true })}</svg>
+  <div class="abs" style="left:1060px;top:0;width:860px;height:1080px;background:linear-gradient(90deg,rgba(4,7,11,0),rgba(4,7,11,.9) 32%,rgba(4,7,11,.94));pointer-events:none"></div>
   <div class="abs" style="left:1300px;top:150px;width:580px">
     <div class="kicker">The complete journey</div>
     <div class="abs" style="left:0;top:60px;width:4px;height:640px;background:rgba(255,255,255,.1);border-radius:2px"><i class="rbar" style="display:block;width:4px;background:var(--teal);border-radius:2px;height:0"></i></div>
@@ -58,7 +59,7 @@ slide({
     const p = c.trk.pt(s);
     const h = keyInterp(RECAP_CAM, T, 1), fw = keyInterp(RECAP_CAM, T, 2);
     const fx_ = lerp(300, p[0], fw), fy_ = lerp(510, p[1], fw);
-    cam(c.svg, fx_ + 300 * (h / 1080), fy_, h);
+    cam(c.svg, fx_ + 360 * (h / 1080), fy_, h);
     // captions
     let ci = 0; RECAP_CAP.forEach((k, i) => { if (T >= k[0]) ci = i; });
     if (ci !== c.capI) {
