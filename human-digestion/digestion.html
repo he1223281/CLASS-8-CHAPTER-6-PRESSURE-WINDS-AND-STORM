@@ -1,0 +1,2385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digestion in Human Beings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#04070b; --ink:#f4efe6; --soft:#d6dde4; --muted:#93a1ae; --dim:#5b6774;
+  --teal:#6fe3d6; --warm:#ffb86b; --saliva:#8fd3ff; --acid:#d4f25a; --mucus:#86b9ff;
+  --juice:#ffb347; --bile:#8fd46a; --panc:#f5d06b; --blood:#ff5a64; --nut:#ffd36e; --water:#6fb8ff;
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  --sans:'Inter','Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden;color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;overflow:hidden;
+  background:radial-gradient(ellipse 80% 75% at 50% 46%,#0e1824 0%,#070c13 55%,#020406 100%)}
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 120% 100% at 50% 50%,transparent 60%,rgba(0,0,0,.55) 100%);z-index:5}
+#slides{position:absolute;inset:0}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .8s ease,visibility 0s linear .8s}
+.slide.cur{opacity:1;visibility:visible;transition:opacity .8s ease}
+.slide svg{overflow:visible}
+.slide svg.head{overflow:hidden}
+.abs{position:absolute}
+.full{position:absolute;left:0;top:0;width:1920px;height:1080px}
+
+/* reveal system */
+.r{opacity:0;transform:translateY(20px);transition:opacity .75s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.r.on{opacity:1;transform:none}
+.rf{opacity:0;transition:opacity .9s ease}
+.rf.on{opacity:1}
+.d1{transition-delay:.9s!important}.d2{transition-delay:1.6s!important}.d3{transition-delay:2.3s!important}
+.r:not(.on),.rf:not(.on){transition-delay:0s!important}
+.inst .r,.inst .rf{transition:none!important}
+
+/* type */
+.kicker{font:600 24px/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--teal)}
+.h1{font:600 108px/1.02 var(--serif);letter-spacing:-.01em}
+.h2{font:600 74px/1.08 var(--serif);letter-spacing:-.005em}
+.h3{font:600 56px/1.12 var(--serif)}
+.q{font:italic 500 64px/1.2 var(--serif);color:#fff}
+.key{font:700 52px/1.12 var(--sans);letter-spacing:.01em}
+.key2{font:700 40px/1.15 var(--sans)}
+.sub{font:400 36px/1.38 var(--sans);color:var(--soft)}
+.small{font:500 29px/1.38 var(--sans);color:var(--muted)}
+.caps{text-transform:uppercase;letter-spacing:.12em}
+.c-teal{color:var(--teal)}.c-warm{color:var(--warm)}.c-sal{color:var(--saliva)}.c-acid{color:var(--acid)}
+.c-muc{color:var(--mucus)}.c-juice{color:var(--juice)}.c-bile{color:var(--bile)}.c-panc{color:var(--panc)}
+.c-blood{color:var(--blood)}.c-nut{color:var(--nut)}.c-water{color:var(--water)}.c-mut{color:var(--muted)}
+.term{display:inline-flex;align-items:center;gap:14px;font:500 28px/1 var(--sans);color:#cfe6f5;
+  border:1.5px solid rgba(143,211,255,.42);border-radius:999px;padding:13px 26px;background:rgba(143,211,255,.07)}
+.term b{font-weight:700;color:#fff;letter-spacing:.06em;text-transform:uppercase}
+.fact{position:absolute;width:560px;padding:26px 30px 28px;border-radius:22px;background:rgba(255,184,107,.08);
+  border:1.5px solid rgba(255,184,107,.38);backdrop-filter:blur(4px)}
+.fact .fk{font:700 22px/1 var(--sans);letter-spacing:.28em;color:var(--warm);margin-bottom:14px}
+.fact .ft{font:500 31px/1.35 var(--sans);color:#f6eee2}
+.card{position:absolute;border-radius:22px;padding:26px 32px;background:rgba(255,255,255,.045);border:1.5px solid rgba(255,255,255,.12)}
+.card .ct{font:700 38px/1.1 var(--sans);letter-spacing:.04em;margin-bottom:10px}
+.card .cd{font:500 31px/1.35 var(--sans);color:var(--soft)}
+.dot{display:inline-block;width:22px;height:22px;border-radius:50%;margin-right:16px;vertical-align:-1px;box-shadow:0 0 18px currentColor}
+.flow{display:flex;align-items:center;gap:22px;font:700 36px/1.1 var(--sans)}
+.flow .ar{color:var(--dim);font-weight:400}
+.flowv{display:flex;flex-direction:column;align-items:flex-start;gap:6px;font:700 40px/1.15 var(--sans)}
+.flowv .ar{color:var(--dim);font-weight:400;font-size:34px;padding-left:14px}
+.lbl{position:absolute;font:600 30px/1.15 var(--sans);color:#fff;white-space:nowrap;text-shadow:0 2px 12px rgba(0,0,0,.8)}
+.lbl small{display:block;font:500 25px/1.2 var(--sans);color:var(--muted);margin-top:4px}
+.center{text-align:center}
+.no{font:700 72px/1 var(--sans);color:#ff8a7a;letter-spacing:.04em}
+.line{position:absolute;height:2px;background:linear-gradient(90deg,rgba(111,227,214,.0),rgba(111,227,214,.6),rgba(111,227,214,0))}
+.banner{position:absolute;left:50%;transform:translateX(-50%);padding:22px 40px;border-radius:18px;
+  background:rgba(8,14,22,.78);border:1.5px solid rgba(255,255,255,.14);font:600 36px/1.3 var(--sans);text-align:center;white-space:nowrap}
+.banner.r{transform:translate(-50%,20px)}.banner.r.on{transform:translate(-50%,0)}
+
+/* journey map */
+#journey{position:absolute;top:24px;left:50%;transform:translateX(-50%);display:flex;align-items:center;z-index:8;
+  font:600 21px/1 var(--sans);letter-spacing:.13em;text-transform:uppercase;transition:opacity .8s}
+#journey.off{opacity:.28}
+#journey .jn{display:flex;align-items:center;gap:11px;color:rgba(230,240,250,.36);transition:color .6s,font-size .6s;white-space:nowrap}
+#journey .jn i{width:12px;height:12px;border-radius:50%;background:rgba(230,240,250,.22);transition:all .6s;flex:none}
+#journey .jl{width:30px;height:2px;margin:0 13px;background:rgba(230,240,250,.14);transition:background .6s}
+#journey .jn.done{color:rgba(111,227,214,.62)}
+#journey .jn.done i{background:rgba(111,227,214,.7)}
+#journey .jl.done{background:rgba(111,227,214,.45)}
+#journey .jn.cur{color:#fff;font-size:24px}
+#journey .jn.cur i{background:var(--teal);box-shadow:0 0 0 5px rgba(111,227,214,.18),0 0 22px 4px rgba(111,227,214,.7);width:14px;height:14px}
+#journey.all .jn{color:rgba(255,255,255,.85)}#journey.all .jn i{background:var(--teal)}#journey.all .jl{background:rgba(111,227,214,.5)}
+
+/* act card */
+#act{position:absolute;left:0;right:0;bottom:150px;text-align:center;z-index:9;pointer-events:none;opacity:0;transition:opacity 1s}
+#act.on{opacity:1}
+#act .an{font:600 24px/1 var(--sans);letter-spacing:.42em;color:var(--teal)}
+#act .at{font:600 84px/1.1 var(--serif);margin:16px 0 8px}
+#act .as{font:italic 400 36px/1.3 var(--serif);color:var(--soft)}
+#act .bg{position:absolute;left:50%;top:50%;width:1400px;height:340px;transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse at center,rgba(2,4,8,.85),rgba(2,4,8,0) 70%);z-index:-1}
+
+/* progress + controls */
+#progress{position:absolute;left:0;bottom:0;height:5px;width:100%;background:rgba(255,255,255,.06);z-index:8}
+#progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3fb7aa,var(--teal));transition:width .6s ease}
+#ui{position:absolute;right:30px;bottom:22px;display:flex;gap:10px;align-items:center;z-index:10;transition:opacity .6s}
+#ui.idle{opacity:0}
+#ui button{height:58px;min-width:58px;padding:0 18px;border-radius:14px;border:1.5px solid rgba(255,255,255,.16);
+  background:rgba(10,16,24,.72);color:#e9eef3;font:600 22px/1 var(--sans);cursor:pointer;display:flex;align-items:center;gap:10px;
+  backdrop-filter:blur(6px);transition:background .2s,border-color .2s}
+#ui button:hover{background:rgba(40,60,80,.85);border-color:rgba(111,227,214,.6)}
+#ui button svg{width:24px;height:24px}
+#ui #bNext{background:rgba(111,227,214,.16);border-color:rgba(111,227,214,.55);max-width:520px}
+#ui #bNext span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#count{position:absolute;left:30px;bottom:26px;font:600 22px/1 var(--sans);letter-spacing:.12em;color:rgba(230,240,250,.38);z-index:8}
+#paused{position:absolute;left:50%;top:84px;transform:translateX(-50%);font:700 20px/1 var(--sans);letter-spacing:.3em;color:var(--warm);
+  padding:10px 20px;border:1.5px solid rgba(255,184,107,.5);border-radius:999px;background:rgba(0,0,0,.6);z-index:9;display:none}
+#paused.on{display:block}
+
+/* overview */
+#overview{position:absolute;inset:0;z-index:20;background:rgba(3,6,10,.94);padding:70px 90px;display:none;overflow:auto}
+#overview.on{display:block}
+#overview h2{font:600 46px/1 var(--serif);margin-bottom:34px}
+#overview .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px}
+#overview .oc{border-radius:16px;padding:20px 22px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);cursor:pointer;min-height:132px}
+#overview .oc:hover{border-color:rgba(111,227,214,.7);background:rgba(111,227,214,.08)}
+#overview .oc.cur{border-color:var(--teal)}
+#overview .oc .on1{font:600 18px/1 var(--sans);letter-spacing:.2em;color:var(--teal);margin-bottom:12px}
+#overview .oc .ot{font:600 27px/1.2 var(--sans)}
+
+/* help */
+#help{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:21;width:900px;padding:44px 54px;border-radius:24px;
+  background:rgba(6,10,16,.97);border:1.5px solid rgba(255,255,255,.16);display:none;font:500 28px/1.7 var(--sans)}
+#help.on{display:block}
+#help h3{font:600 40px/1 var(--serif);margin-bottom:22px}
+#help kbd{display:inline-block;min-width:44px;text-align:center;padding:2px 12px;border-radius:8px;border:1.5px solid rgba(255,255,255,.3);font:600 24px/1.4 var(--sans);margin-right:12px}
+
+/* fallback notes drawer (only if popup blocked) */
+#drawer{position:absolute;right:0;top:0;bottom:0;width:720px;z-index:22;background:rgba(6,10,16,.97);border-left:1.5px solid rgba(255,255,255,.15);
+  padding:40px 44px;overflow:auto;transform:translateX(100%);transition:transform .4s}
+#drawer.on{transform:none}
+#drawer .warn{font:600 20px/1.3 var(--sans);color:var(--warm);margin-bottom:18px;letter-spacing:.06em}
+.nt h4{font:700 20px/1 var(--sans);letter-spacing:.24em;color:#6fe3d6;margin:26px 0 10px}
+.nt p{font:400 27px/1.5 var(--sans);color:#e6ecf2}
+.nt .tt{font:600 38px/1.15 Georgia,serif;margin-bottom:6px}
+.nt .meta{font:500 20px/1.3 var(--sans);color:#93a1ae;letter-spacing:.08em}
+
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg id="gdefs" width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    <radialGradient id="gStom" cx="62%" cy="36%" r="78%"><stop offset="0" stop-color="#f7a9a4"/><stop offset=".45" stop-color="#da6570"/><stop offset="1" stop-color="#86283a"/></radialGradient>
+    <radialGradient id="gLiver" cx="40%" cy="28%" r="82%"><stop offset="0" stop-color="#b9604a"/><stop offset=".6" stop-color="#7d3126"/><stop offset="1" stop-color="#4a1a14"/></radialGradient>
+    <radialGradient id="gPanc" cx="45%" cy="35%" r="80%"><stop offset="0" stop-color="#ffe3b8"/><stop offset="1" stop-color="#d3955c"/></radialGradient>
+    <radialGradient id="gGall" cx="40%" cy="35%" r="80%"><stop offset="0" stop-color="#a6d77f"/><stop offset="1" stop-color="#4c8436"/></radialGradient>
+    <linearGradient id="gSkin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a9c9ff" stop-opacity=".13"/><stop offset=".8" stop-color="#a9c9ff" stop-opacity=".06"/><stop offset="1" stop-color="#a9c9ff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="gSkinS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8d4ff" stop-opacity=".42"/><stop offset=".85" stop-color="#b8d4ff" stop-opacity=".22"/><stop offset="1" stop-color="#b8d4ff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="gSkinW" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffd9c4" stop-opacity=".04"/><stop offset="1" stop-color="#ffd9c4" stop-opacity=".1"/></linearGradient>
+    <radialGradient id="gFood" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#f6dca6"/><stop offset=".6" stop-color="#d9a860"/><stop offset="1" stop-color="#9c6a2e"/></radialGradient>
+    <radialGradient id="gBolus" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#fbe7bf"/><stop offset=".6" stop-color="#e0b274"/><stop offset="1" stop-color="#a6773c"/></radialGradient>
+    <radialGradient id="gChyme" cx="40%" cy="35%" r="80%"><stop offset="0" stop-color="#f2dcae"/><stop offset="1" stop-color="#c79d63"/></radialGradient>
+    <radialGradient id="gStool" cx="38%" cy="32%" r="80%"><stop offset="0" stop-color="#a8774a"/><stop offset="1" stop-color="#5b3a1f"/></radialGradient>
+    <radialGradient id="gFat" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#fffbe0"/><stop offset=".45" stop-color="#ffd95e"/><stop offset="1" stop-color="#cf9116"/></radialGradient>
+    <radialGradient id="gTongue" cx="45%" cy="30%" r="80%"><stop offset="0" stop-color="#f19aa0"/><stop offset=".7" stop-color="#cf5d6c"/><stop offset="1" stop-color="#9c3346"/></radialGradient>
+    <linearGradient id="gTooth" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d9d2c3"/><stop offset=".45" stop-color="#fffdf5"/><stop offset="1" stop-color="#cfc6b4"/></linearGradient>
+    <linearGradient id="gGlass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#cfe8ff" stop-opacity=".22"/><stop offset=".18" stop-color="#cfe8ff" stop-opacity=".05"/><stop offset=".8" stop-color="#cfe8ff" stop-opacity=".04"/><stop offset="1" stop-color="#cfe8ff" stop-opacity=".2"/></linearGradient>
+    <radialGradient id="gGold"><stop offset="0" stop-color="#fff6d8" stop-opacity="1"/><stop offset=".25" stop-color="#ffd36e" stop-opacity=".8"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient>
+    <radialGradient id="gBlue"><stop offset="0" stop-color="#e8f6ff" stop-opacity="1"/><stop offset=".3" stop-color="#8fd3ff" stop-opacity=".75"/><stop offset="1" stop-color="#4fa8ff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="gGreen"><stop offset="0" stop-color="#f4ffd8" stop-opacity="1"/><stop offset=".3" stop-color="#b6e86a" stop-opacity=".75"/><stop offset="1" stop-color="#6fc04a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="gRed"><stop offset="0" stop-color="#fff0f0" stop-opacity="1"/><stop offset=".3" stop-color="#ff7a82" stop-opacity=".8"/><stop offset="1" stop-color="#ff3a4a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="gTeal"><stop offset="0" stop-color="#eafffb" stop-opacity="1"/><stop offset=".3" stop-color="#6fe3d6" stop-opacity=".7"/><stop offset="1" stop-color="#6fe3d6" stop-opacity="0"/></radialGradient>
+    <radialGradient id="gVig" cx="50%" cy="50%" r="50%"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".75"/></radialGradient>
+    <filter id="fGlow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="fGlow2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="fSoft"><feGaussianBlur stdDeviation="3"/></filter>
+    <filter id="fTex" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="3" seed="7" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .5 -.08" result="na"/>
+      <feComposite in="na" in2="SourceGraphic" operator="in" result="m"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="m"/></feMerge></filter>
+  </defs></svg>
+  <div id="slides"></div>
+  <nav id="journey" class="off" aria-label="Where are we?"></nav>
+  <div id="act"><div class="bg"></div><div class="an"></div><div class="at"></div><div class="as"></div></div>
+  <div id="paused">PAUSED · press P</div>
+  <div id="count"></div>
+  <div id="ui">
+    <button id="bPrev" title="Previous (←)" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button id="bNext" title="Next (→ or Space)" aria-label="Next"><span id="nextLbl">Next</span><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button id="bOver" title="Slide overview (O)" aria-label="Overview"><svg viewBox="0 0 24 24"><g fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></g></svg></button>
+    <button id="bNotes" title="Speaker notes in a separate window (N)" aria-label="Speaker notes">Notes</button>
+    <button id="bFull" title="Fullscreen (F)" aria-label="Fullscreen"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+  <div id="progress"><i></i></div>
+  <div id="overview"><h2>All slides</h2><div class="grid"></div></div>
+  <div id="help">
+    <h3>Presenter keys</h3>
+    <div><kbd>→</kbd><kbd>Space</kbd> next reveal / next slide</div>
+    <div><kbd>←</kbd> back</div>
+    <div><kbd>F</kbd> fullscreen &nbsp; <kbd>O</kbd> slide overview</div>
+    <div><kbd>N</kbd> speaker notes (opens on your laptop window)</div>
+    <div><kbd>R</kbd> replay this animation &nbsp; <kbd>P</kbd> pause / play</div>
+    <div><kbd>Home</kbd><kbd>End</kbd> first / last slide &nbsp; <kbd>Esc</kbd> close</div>
+  </div>
+  <div id="drawer"></div>
+</div>
+
+<script>
+'use strict';
+/* ================= helpers ================= */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const lerp = (a, b, t) => a + (b - a) * t;
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const ease = t => (t = clamp(t), t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const eout = t => (t = clamp(t), 1 - Math.pow(1 - t, 3));
+const ein = t => (t = clamp(t), t * t * t);
+const f1 = x => Math.round(x * 10) / 10;
+function rng(seed) { let s = (seed >>> 0) || 1; return () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296; }
+function hexRGB(c) { c = c.replace('#', ''); return [0, 2, 4].map(i => parseInt(c.substr(i, 2), 16)); }
+function mix(a, b, t) { const p = hexRGB(a), q = hexRGB(b); t = clamp(t); return `rgb(${Math.round(lerp(p[0], q[0], t))},${Math.round(lerp(p[1], q[1], t))},${Math.round(lerp(p[2], q[2], t))})`; }
+function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function setA(e, attrs) { for (const k in attrs) e.setAttribute(k, attrs[k]); }
+
+/* ================= registry ================= */
+const ORGANS = ['Mouth', 'Oesophagus', 'Stomach', 'Small intestine', 'Large intestine', 'Rectum', 'Anus'];
+const ACTS = {
+  1: ['ACT 1', 'The Mystery', 'What happens to the food we eat?'],
+  2: ['ACT 2', 'The Journey', 'Let’s follow one bite.'],
+  3: ['ACT 3', 'The Transformation', 'Food is broken down.'],
+  4: ['ACT 4', 'The Absorption', 'Useful nutrients enter the blood.'],
+  5: ['ACT 5', 'The Clean-up', 'Undigested waste is removed.'],
+  6: ['ACT 6', 'The Big Picture', 'The complete journey.']
+};
+const SLIDES = [];
+function slide(d) { d.steps = d.steps || []; SLIDES.push(d); }
+
+const E = { cur: -1, paused: false, ctx: [], organ: null, last: 0, nw: null };
+
+/* ================= slide lifecycle ================= */
+function ensure(i) {
+  if (E.ctx[i]) return E.ctx[i];
+  const d = SLIDES[i];
+  const root = document.createElement('section');
+  root.className = 'slide';
+  root.innerHTML = typeof d.html === 'function' ? d.html() : (d.html || '');
+  $('#slides').appendChild(root);
+  const c = { root, i, d, t: 0, stepT: 0, n: 0, q: s => root.querySelector(s), qa: s => $$(s, root) };
+  E.ctx[i] = c;
+  try { d.init && d.init(c); } catch (err) { console.error('init', i, err); }
+  return c;
+}
+
+function go(i, n = 0, dir = 1) {
+  i = clamp(i, 0, SLIDES.length - 1);
+  const prev = E.cur;
+  if (i !== prev) {
+    if (prev >= 0) { const pc = E.ctx[prev]; pc.root.classList.remove('cur'); SLIDES[prev].leave && SLIDES[prev].leave(pc); }
+    const c = ensure(i);
+    c.root.classList.add('cur');
+    c.t = 0; E.cur = i;
+    SLIDES[i].enter && SLIDES[i].enter(c);
+    const a = SLIDES[i].act, pa = prev >= 0 ? SLIDES[prev].act : 0;
+    if (dir > 0 && a && a !== pa) showAct(a); else hideAct();
+    setTimeout(() => { if (i + 1 < SLIDES.length) ensure(i + 1); }, 900);
+  }
+  setStep(n, dir < 0);
+}
+
+function setStep(n, instant) {
+  const c = E.ctx[E.cur], d = SLIDES[E.cur];
+  c.n = n; c.stepT = instant ? 60 : 0; c.instant = !!instant;
+  if (instant) c.root.classList.add('inst');
+  c.qa('[data-s]').forEach(e => {
+    const [a, b] = e.dataset.s.split('-');
+    const lo = +a, hi = b === undefined ? 1e9 : +b;
+    e.classList.toggle('on', n >= lo && n <= hi);
+  });
+  try { d.step && d.step(c, n, instant); } catch (err) { console.error('step', E.cur, err); }
+  if (instant) requestAnimationFrame(() => requestAnimationFrame(() => c.root.classList.remove('inst')));
+  const o = typeof d.organ === 'function' ? d.organ(c) : d.organ;
+  if (o !== undefined && o !== null) setOrgan(o);
+  updateUI();
+}
+
+function next() {
+  if (closeOverlays()) return;
+  const c = E.ctx[E.cur], d = SLIDES[E.cur];
+  if (c.n < d.steps.length) setStep(c.n + 1, false);
+  else if (E.cur < SLIDES.length - 1) go(E.cur + 1, 0, 1);
+}
+function prev() {
+  if (closeOverlays()) return;
+  const c = E.ctx[E.cur];
+  if (c.n > 0) setStep(c.n - 1, true);
+  else if (E.cur > 0) { const j = E.cur - 1; go(j, SLIDES[j].steps.length, -1); }
+}
+function replay() { const c = E.ctx[E.cur]; if (SLIDES[E.cur].replay) SLIDES[E.cur].replay(c); setStep(c.n, false); c.t = 0; }
+
+/* ================= journey map ================= */
+function buildJourney() {
+  const j = $('#journey');
+  j.innerHTML = ORGANS.map((o, k) => (k ? `<span class="jl" data-j="${k}"></span>` : '') + `<span class="jn" data-j="${k}"><i></i>${o}</span>`).join('');
+}
+function setOrgan(o) {
+  if (E.organ === o) return; E.organ = o;
+  const j = $('#journey');
+  j.classList.toggle('off', o === -1);
+  j.classList.toggle('all', o === 'all');
+  $$('.jn', j).forEach(e => { const k = +e.dataset.j; e.classList.toggle('cur', o === k); e.classList.toggle('done', typeof o === 'number' && k < o); });
+  $$('.jl', j).forEach(e => { const k = +e.dataset.j; e.classList.toggle('done', typeof o === 'number' && k <= o); });
+}
+
+/* ================= act card ================= */
+let actTimer = 0;
+function showAct(a) {
+  const A = ACTS[a], el_ = $('#act'); if (!A) return;
+  $('.an', el_).textContent = A[0]; $('.at', el_).textContent = A[1]; $('.as', el_).textContent = A[2];
+  el_.classList.add('on'); clearTimeout(actTimer);
+  actTimer = setTimeout(() => el_.classList.remove('on'), 3200);
+}
+function hideAct() { clearTimeout(actTimer); $('#act').classList.remove('on'); }
+
+/* ================= UI ================= */
+function updateUI() {
+  const c = E.ctx[E.cur], d = SLIDES[E.cur];
+  const total = SLIDES.length;
+  $('#count').textContent = `${E.cur + 1} / ${total}`;
+  const sub = d.steps.length ? c.n / (d.steps.length + 1) : 0;
+  $('#progress i').style.width = ((E.cur + sub) / (total - 1) * 100).toFixed(2) + '%';
+  const lbl = c.n < d.steps.length ? d.steps[c.n] : (E.cur < total - 1 ? 'Next' : 'End');
+  $('#nextLbl').textContent = lbl;
+  $$('#overview .oc').forEach((e, k) => e.classList.toggle('cur', k === E.cur));
+  renderNotes();
+}
+
+function buildOverview() {
+  const g = $('#overview .grid');
+  g.innerHTML = SLIDES.map((d, k) => `<div class="oc" data-k="${k}"><div class="on1">${k + 1} · ${ACTS[d.act] ? ACTS[d.act][1] : ''}</div><div class="ot">${d.title}</div></div>`).join('');
+  g.addEventListener('click', e => { const oc = e.target.closest('.oc'); if (!oc) return; $('#overview').classList.remove('on'); go(+oc.dataset.k, 0, 1); });
+}
+function closeOverlays() {
+  let any = false;
+  ['#overview', '#help'].forEach(s => { if ($(s).classList.contains('on')) { $(s).classList.remove('on'); any = true; } });
+  return any;
+}
+
+/* ================= speaker notes ================= */
+function notesHTML() {
+  const d = SLIDES[E.cur], c = E.ctx[E.cur], N = d.notes || {};
+  const nxt = c.n < d.steps.length ? 'Next click: ' + d.steps[c.n] : (E.cur < SLIDES.length - 1 ? 'Next slide: ' + SLIDES[E.cur + 1].title : 'End of presentation');
+  const sec = (h, t) => t ? `<h4>${h}</h4><p>${t}</p>` : '';
+  return `<div class="nt"><div class="meta">SLIDE ${E.cur + 1} / ${SLIDES.length} · ${ACTS[d.act] ? ACTS[d.act][1].toUpperCase() : ''} · REVEAL ${c.n} / ${d.steps.length}</div>
+  <div class="tt">${d.title}</div><div class="meta" style="color:#ffb86b">${nxt}</div>
+  ${sec('WHAT TO SAY', N.say)}${sec('ASK THE CLASS', N.ask)}${sec('EXPLAIN', N.explain)}${sec('COMMON CONFUSION', N.confusion)}${sec('TRANSITION', N.transition)}</div>`;
+}
+const NOTES_CSS = `body{margin:0;background:#070b10;color:#eef2f6;font-family:'Segoe UI',system-ui,Arial,sans-serif;padding:28px 34px 110px}
+.nt h4{font:700 15px/1 sans-serif;letter-spacing:.24em;color:#6fe3d6;margin:24px 0 8px}.nt p{font:400 21px/1.5 sans-serif;margin:0;color:#e6ecf2}
+.nt .tt{font:600 32px/1.15 Georgia,serif;margin:6px 0}.nt .meta{font:600 14px/1.4 sans-serif;color:#93a1ae;letter-spacing:.08em}
+.bar{position:fixed;left:0;right:0;bottom:0;display:flex;gap:12px;padding:16px 34px;background:#0c131b;border-top:1px solid #223}
+.bar button{flex:1;height:58px;font:700 20px sans-serif;border-radius:12px;border:1px solid #2c4a52;background:#12303a;color:#fff;cursor:pointer}`;
+function openNotes() {
+  try {
+    if (E.nw && !E.nw.closed) { E.nw.focus(); renderNotes(); return; }
+    const w = window.open('', 'digestion_notes', 'width=780,height=960');
+    if (!w) throw new Error('blocked');
+    w.document.open();
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Speaker notes · Digestion</title><style>${NOTES_CSS}</style></head><body><div id="nb"></div><div class="bar"><button id="p">◀ Back</button><button id="n">Next ▶</button></div></body></html>`);
+    w.document.close();
+    w.document.getElementById('p').onclick = () => prev();
+    w.document.getElementById('n').onclick = () => next();
+    w.document.addEventListener('keydown', onKey);
+    E.nw = w; renderNotes();
+  } catch (err) { $('#drawer').classList.toggle('on'); renderNotes(); }
+}
+function renderNotes() {
+  try { if (E.nw && !E.nw.closed) { const b = E.nw.document.getElementById('nb'); if (b) b.innerHTML = notesHTML(); } } catch (e) { }
+  const dr = $('#drawer');
+  if (dr.classList.contains('on')) dr.innerHTML = `<div class="warn">⚠ NOTES ARE VISIBLE ON THIS SCREEN · press N to hide</div>` + notesHTML();
+}
+
+/* ================= keyboard / fullscreen / scaling ================= */
+function full() {
+  const d = document;
+  if (!d.fullscreenElement) (d.documentElement.requestFullscreen || d.documentElement.webkitRequestFullscreen || (() => { })).call(d.documentElement);
+  else (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+}
+function onKey(e) {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key;
+  if (k === 'ArrowRight' || k === ' ' || k === 'PageDown' || k === 'Enter' || k === 'ArrowDown') { e.preventDefault(); next(); }
+  else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'Backspace' || k === 'ArrowUp') { e.preventDefault(); prev(); }
+  else if (k === 'f' || k === 'F') full();
+  else if (k === 'o' || k === 'O' || k === 'g' || k === 'G') { $('#help').classList.remove('on'); $('#overview').classList.toggle('on'); }
+  else if (k === 'n' || k === 'N') { if ($('#drawer').classList.contains('on')) $('#drawer').classList.remove('on'); else openNotes(); }
+  else if (k === 'r' || k === 'R') replay();
+  else if (k === 'p' || k === 'P') { E.paused = !E.paused; $('#paused').classList.toggle('on', E.paused); }
+  else if (k === 'Home') go(0, 0, 1);
+  else if (k === 'End') go(SLIDES.length - 1, 0, 1);
+  else if (k === 'Escape') { closeOverlays(); $('#drawer').classList.remove('on'); }
+  else if (k === '?' || k === 'h' || k === 'H') { $('#overview').classList.remove('on'); $('#help').classList.toggle('on'); }
+}
+function fit() {
+  const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+  $('#stage').style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+let idleT = 0;
+function poke() { $('#ui').classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(() => $('#ui').classList.add('idle'), 3000); }
+
+function frame(ts) {
+  const dt = Math.min(.05, Math.max(0, (ts - (E.last || ts)) / 1000)); E.last = ts;
+  if (E.cur >= 0 && !E.paused) {
+    const c = E.ctx[E.cur], d = SLIDES[E.cur];
+    c.t += dt; c.stepT += dt;
+    if (d.tick) { try { d.tick(c, dt); } catch (err) { if (!c.err) console.error('tick', E.cur, err); c.err = 1; } }
+  }
+  requestAnimationFrame(frame);
+}
+
+function boot() {
+  buildJourney(); buildOverview(); fit();
+  addEventListener('resize', fit);
+  addEventListener('keydown', onKey);
+  addEventListener('mousemove', poke); poke();
+  const bind = (id, fn) => { const b = $(id); b.addEventListener('click', () => { fn(); b.blur(); }); };
+  bind('#bPrev', prev); bind('#bNext', next); bind('#bFull', full); bind('#bNotes', openNotes);
+  bind('#bOver', () => $('#overview').classList.toggle('on'));
+  addEventListener('beforeunload', () => { try { E.nw && E.nw.close(); } catch (e) { } });
+  let start = 0;
+  const m = /[#&]s=(\d+)/.exec(location.hash); if (m) start = clamp(+m[1] - 1, 0, SLIDES.length - 1);
+  go(start, 0, 1);
+  requestAnimationFrame(frame);
+}
+
+/* ================= path helpers ================= */
+function catmull(pts) {
+  let d = '';
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    d += `C${f1(p1[0] + (p2[0] - p0[0]) / 6)},${f1(p1[1] + (p2[1] - p0[1]) / 6)} ${f1(p2[0] - (p3[0] - p1[0]) / 6)},${f1(p2[1] - (p3[1] - p1[1]) / 6)} ${f1(p2[0])},${f1(p2[1])}`;
+  }
+  return d;
+}
+function smoothPath(pts) { return `M${f1(pts[0][0])},${f1(pts[0][1])}` + catmull(pts); }
+function closedPath(pts) {
+  const n = pts.length; let d = `M${f1(pts[0][0])},${f1(pts[0][1])}`;
+  for (let i = 0; i < n; i++) {
+    const p0 = pts[(i - 1 + n) % n], p1 = pts[i], p2 = pts[(i + 1) % n], p3 = pts[(i + 2) % n];
+    d += `C${f1(p1[0] + (p2[0] - p0[0]) / 6)},${f1(p1[1] + (p2[1] - p0[1]) / 6)} ${f1(p2[0] - (p3[0] - p1[0]) / 6)},${f1(p2[1] - (p3[1] - p1[1]) / 6)} ${f1(p2[0])},${f1(p2[1])}`;
+  }
+  return d + 'Z';
+}
+function polyD(pts) { return 'M' + pts.map(p => f1(p[0]) + ',' + f1(p[1])).join('L') + 'Z'; }
+function samplePath(d, n) {
+  const p = el('path', { d }); const s = el('svg', { width: 0, height: 0, style: 'position:absolute' }, document.body); s.appendChild(p);
+  const L = p.getTotalLength(), out = [];
+  for (let i = 0; i < n; i++) { const q = p.getPointAtLength(L * i / n); out.push([q.x, q.y]); }
+  s.remove(); return out;
+}
+function inPoly(x, y, P) {
+  let c = false;
+  for (let i = 0, j = P.length - 1; i < P.length; j = i++) {
+    const a = P[i], b = P[j];
+    if ((a[1] > y) !== (b[1] > y) && x < (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]) + a[0]) c = !c;
+  }
+  return c;
+}
+/* tube = dark rim + body + specular line */
+function tube(d, w, c, cls = '') {
+  return `<path class="${cls}" d="${d}" fill="none" stroke="${c[0]}" stroke-width="${w + 3}" stroke-linecap="round" stroke-linejoin="round"/>` +
+    `<path d="${d}" fill="none" stroke="${c[1]}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>` +
+    `<path d="${d}" fill="none" stroke="${c[2]}" stroke-width="${f1(w * .26)}" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".5" transform="translate(${f1(-w * .17)},${f1(-w * .17)})"/>`;
+}
+function cam(svg, cx, cy, h, ar = 16 / 9) { const w = h * ar; svg.setAttribute('viewBox', `${f1(cx - w / 2)} ${f1(cy - h / 2)} ${f1(w)} ${f1(h)}`); }
+/* map svg coords -> stage px for an svg that fills the stage (1920x1080, xMidYMid meet, 16:9 viewBox) */
+function projVB(svg, x, y) { const v = svg.viewBox.baseVal; return [(x - v.x) * 1920 / v.width, (y - v.y) * 1080 / v.height]; }
+
+class Track {
+  constructor(svg, ds) { this.ps = ds.map(d => el('path', { d, fill: 'none', stroke: 'none' }, svg)); this.L = this.ps.map(p => p.getTotalLength()); }
+  pt(s) { s = clamp(s, 0, this.ps.length - 1e-4); const i = Math.floor(s), v = s - i; const p = this.ps[i].getPointAtLength(v * this.L[i]); return [p.x, p.y]; }
+}
+
+/* ================= BODY (front view, viewBox units 600 x 1000) =================
+   Body's right side appears on the viewer's LEFT (liver, ascending colon);
+   stomach and descending colon on the viewer's RIGHT. */
+const BODY = (() => {
+  const B = {};
+  B.TORSO = 'M268,170 C268,198 262,214 238,224 C192,238 150,250 136,292 C124,334 126,420 138,500 C148,568 150,620 148,690 C146,770 150,880 160,975 L440,975 C450,880 454,770 452,690 C450,620 452,568 462,500 C474,420 476,334 464,292 C450,250 408,238 362,224 C338,214 332,198 332,170 Z';
+  B.MOUTH = 'M300,140 L300,158';
+  B.OES = 'M300,158 C300,230 302,320 312,385 C316,405 326,415 335,422';
+  B.STOM_ORG = 'M335,420 C338,396 362,380 392,386 C428,394 444,430 438,470 C432,520 398,556 350,563 C318,567 292,560 276,546 L268,530 C288,532 312,528 330,516 C346,504 350,482 348,460 C346,442 340,430 335,420 Z';
+  B.STOM_TRK = 'M335,422 C362,416 402,428 408,466 C414,510 386,540 342,546 C312,549 290,542 272,538';
+  B.DUO = 'M272,538 C248,545 240,575 252,598 C262,615 300,618 320,606';
+  B.LIVER = 'M160,395 C175,360 260,352 330,368 C352,373 365,380 368,388 C350,402 330,410 315,425 C292,448 262,472 228,478 C198,483 170,470 163,447 C158,430 157,412 160,395 Z';
+  B.GALL = 'M248,458 C240,474 248,494 263,492 C276,489 276,470 266,456 Z';
+  B.PANC = 'M262,580 C262,565 285,560 310,566 C350,572 385,560 415,548 C428,544 434,556 422,564 C392,580 350,592 310,592 C285,594 262,592 262,580 Z';
+  B.BILE = 'M262,488 C266,515 262,548 250,572';
+  B.PDUCT = 'M412,556 C362,574 300,582 252,575';
+  B.LI_ORG = 'M212,838 C199,826 197,790 198,720 C199,670 200,640 214,628 C240,612 270,650 305,648 C340,646 380,612 405,620 C422,626 420,660 419,700 C418,760 420,800 410,830 C398,862 350,846 326,862';
+  B.LI_TRK = 'M222,800 C205,798 197,770 198,720 C199,670 200,640 214,628 C240,612 270,650 305,648 C340,646 380,612 405,620 C422,626 420,660 419,700 C418,760 420,800 410,830 C398,862 350,846 326,862';
+  B.REC = 'M326,862 C310,872 302,900 301,930';
+  B.ANUS = 'M301,930 L300,952';
+  // small intestine coils (generated, continuous)
+  const P = [[320, 606], [352, 626], [380, 650], [390, 672]];
+  const rows = [686, 714, 742, 770, 798], xL = 248, xR = 384, r = 14;
+  rows.forEach((y, i) => {
+    const dir = i % 2 === 0 ? -1 : 1, xs = dir < 0 ? xR : xL, xe = dir < 0 ? xL : xR;
+    for (let k = 0; k <= 24; k++) { const x = xs + (xe - xs) * k / 24; P.push([x, y + 7 * Math.sin(k * 1.15 + i * 1.7) * Math.sin(Math.PI * k / 24)]); }
+    if (i < rows.length - 1) for (let a = 1; a < 6; a++) { const th = a * Math.PI / 6; P.push([xe + dir * r * Math.sin(th), y + 14 - 14 * Math.cos(th)]); }
+  });
+  P.push([234, 801], [222, 800]);
+  B.COIL = P;
+  B.SI_COIL = smoothPath(P);
+  B.SI_TRK = B.DUO + catmull(P);
+  B.TRACK = [B.MOUTH, B.OES, B.STOM_TRK, B.SI_TRK, B.LI_TRK, B.REC, B.ANUS];
+  B.VESS = [
+    'M300,735 C302,620 312,480 314,335',
+    'M314,335 C306,270 300,220 300,170 C300,140 300,110 300,60',
+    'M314,335 C262,300 202,282 146,300',
+    'M314,335 C362,302 420,286 456,302',
+    'M300,735 C262,790 222,860 200,975',
+    'M300,735 C338,790 378,860 400,975',
+    'M314,335 C276,430 206,520 176,640',
+    'M314,335 C352,430 418,520 428,640',
+    'M300,170 C280,140 262,110 262,70', 'M300,170 C320,140 338,110 338,70'
+  ];
+  return B;
+})();
+const SI_COL = ['#7a2f38', '#e79a8f', '#ffd6cc'];
+const LI_COL = ['#5a3021', '#c98a68', '#f2c7a6'];
+const REC_COL = ['#5a2a24', '#c07763', '#f0b8a0'];
+const OES_COL = ['#6e2633', '#d8737d', '#ffc1c1'];
+
+function bodyArt(o = {}) {
+  const B = BODY;
+  return `
+  <g class="sil">
+    <path d="${B.TORSO}" fill="url(#gSkin)" stroke="url(#gSkinS)" stroke-width="2.2"/>
+    <ellipse cx="300" cy="98" rx="58" ry="74" fill="url(#gSkin)" stroke="rgba(184,212,255,.42)" stroke-width="2.2"/>
+    <path class="mouthm" d="M285,147 Q300,155 315,147" fill="none" stroke="rgba(255,180,180,.7)" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  ${o.vessels ? `<g class="vess" opacity="0">${B.VESS.map(d => `<path d="${d}" fill="none" stroke="#ff4f5e" stroke-width="3.2" stroke-linecap="round" stroke-opacity=".75"/>`).join('')}</g>` : ''}
+  <g class="org oes">${tube(B.OES, 11, OES_COL)}</g>
+  <g class="org panc"><path d="${B.PANC}" fill="url(#gPanc)" stroke="#a8703f" stroke-width="1.5"/><path d="M290,575 C330,580 370,570 405,557" fill="none" stroke="rgba(150,90,40,.35)" stroke-width="2" stroke-dasharray="3 5"/></g>
+  <g class="org stom"><path d="${B.STOM_ORG}" fill="url(#gStom)" stroke="#6b1f2c" stroke-width="2"/>
+     <path d="M396,398 C420,410 430,440 426,470" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="5" stroke-linecap="round"/></g>
+  <g class="org liver"><path d="${B.LIVER}" fill="url(#gLiver)" stroke="#3d130e" stroke-width="2"/>
+     <path d="M188,402 C230,378 290,372 338,382" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="6" stroke-linecap="round"/></g>
+  <g class="org gall"><path d="${B.GALL}" fill="url(#gGall)" stroke="#2f5a22" stroke-width="1.5"/></g>
+  <g class="duct"><path class="bileduct" d="${B.BILE}" fill="none" stroke="#7cc35a" stroke-width="3.5" stroke-linecap="round"/>
+     <path class="pancduct" d="${B.PDUCT}" fill="none" stroke="#e6b45c" stroke-width="3" stroke-linecap="round"/></g>
+  <g class="org si">${tube(B.DUO, 15, SI_COL)}${tube(B.SI_COIL, 15, SI_COL)}</g>
+  <g class="org li">${tube(B.LI_ORG, 28, LI_COL)}<path d="${B.LI_ORG}" fill="none" stroke="#5c3424" stroke-width="28" stroke-dasharray="1.6 11" opacity=".32"/></g>
+  <g class="org rec">${tube(B.REC, 24, REC_COL)}</g>
+  <g class="org anus"><ellipse cx="300.5" cy="944" rx="12" ry="6.5" fill="#4a2020" stroke="#c9787a" stroke-width="3"/></g>
+  ${o.track ? `<g class="trk" filter="url(#fGlow2)">${B.TRACK.map(d => `<path d="${d}" fill="none" stroke="#ffd36e" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="0 99999"/>`).join('')}</g>` : ''}
+  <g class="fx"></g>`;
+}
+/* reveal portion of the glowing track up to s (0..7) */
+function setTrackReveal(c, s) {
+  c.trkP = c.trkP || c.qa('.trk path').map(p => [p, p.getTotalLength()]);
+  c.trkP.forEach(([p, L], i) => { const v = clamp(s - i) * L; p.setAttribute('stroke-dasharray', `${f1(v)} 99999`); });
+}
+function dimOrgans(c, keep) { c.qa('.org').forEach(g => { const k = keep === null || keep.some(n => g.classList.contains(n)); g.style.opacity = k ? 1 : .22; g.style.transition = 'opacity .8s'; }); }
+
+/* ================= HEAD (sagittal section, facing right; viewBox 0 0 1000 1000) ================= */
+const HEAD = {
+  OUT: 'M300,1000 C305,900 300,820 280,760 C210,700 160,620 156,500 C150,340 240,190 420,150 C580,115 720,180 778,300 C800,345 806,380 812,410 C820,445 838,480 862,515 C880,540 884,556 866,566 C852,574 840,574 836,580 C838,592 846,600 852,612 C860,626 858,638 846,644 L842,647 C858,656 862,672 852,686 C846,694 836,700 838,712 C846,740 838,775 800,790 C760,804 700,806 660,800 C630,820 622,880 624,1000 Z',
+  CAV: 'M844,646 C800,612 720,594 640,596 C600,598 572,612 558,640 C548,672 546,720 548,780 L592,780 C602,742 622,712 662,700 C730,690 800,680 844,650 Z',
+  PHAR: 'M500,560 L500,1000 L548,1000 L548,830 C552,806 560,792 568,776 L568,650 C562,618 552,588 540,560 Z',
+  HARD: 'M840,616 C790,594 700,582 630,586 L626,600 C700,598 790,606 836,630 Z',
+  SOFT: 'M630,586 C600,588 578,600 566,624 C560,640 564,656 574,654 C582,634 600,612 626,600 Z',
+  TONGUE: 'M842,652 C800,668 730,676 660,684 C610,690 578,712 568,752 C562,780 570,800 588,806 C640,808 700,792 754,770 C800,752 830,730 846,700 C850,680 848,664 842,652 Z',
+  EPI: 'M576,800 C566,782 560,764 558,742 C566,750 574,772 586,797 Z',
+  JAWBONE: 'M846,704 C840,744 820,772 780,784 C730,798 680,798 656,790',
+  PAROTID_DUCT: 'M626,566 C664,578 700,598 728,610',
+  SUBM_DUCT: 'M706,758 C742,730 786,706 812,690',
+  BOLUS_PATH: 'M712,640 C690,646 660,652 630,660 C600,668 584,690 574,720 C566,748 548,770 528,800 C522,840 524,900 524,1060'
+};
+function tooth(x, y, w, h, up) {
+  const r = Math.min(8, w / 3);
+  return up ? `<path d="M${x},${y} L${x + w},${y} L${x + w},${y + h - r} Q${x + w},${y + h} ${x + w - r},${y + h} L${x + r},${y + h} Q${x},${y + h} ${x},${y + h - r} Z" fill="url(#gTooth)" stroke="#9c927f" stroke-width="1.5"/>`
+    : `<path d="M${x},${y + h} L${x + w},${y + h} L${x + w},${y + r} Q${x + w},${y} ${x + w - r},${y} L${x + r},${y} Q${x},${y} ${x},${y + r} Z" fill="url(#gTooth)" stroke="#9c927f" stroke-width="1.5"/>`;
+}
+function headArt() {
+  const H = HEAD;
+  const upper = [[818, 606, 14, 44], [796, 602, 18, 44], [768, 598, 24, 42], [740, 596, 24, 42], [704, 594, 32, 44], [668, 594, 32, 44], [634, 596, 30, 42]];
+  const lower = [[818, 652, 13, 40], [796, 650, 18, 40], [768, 648, 24, 40], [740, 648, 24, 40], [704, 648, 32, 40], [668, 648, 32, 40], [634, 650, 30, 38]];
+  return `
+  <path d="${H.OUT}" fill="url(#gSkinW)" stroke="rgba(255,220,200,.42)" stroke-width="3"/>
+  <path d="M560,470 C620,452 720,460 800,500" fill="none" stroke="rgba(255,220,200,.12)" stroke-width="3"/>
+  <path d="${H.CAV}" fill="#2b0c13"/>
+  <path d="${H.PHAR}" fill="#2b0c13"/>
+  <rect x="488" y="560" width="14" height="440" fill="#c9606c" opacity=".85"/>
+  <path d="M548,830 L560,830 L560,1000 L548,1000 Z" fill="#c9606c" opacity=".85"/>
+  <g class="trachea" opacity=".75"><path d="M576,800 L576,1000 M624,790 L624,1000" stroke="rgba(170,200,230,.6)" stroke-width="4"/>
+    ${[0, 1, 2, 3, 4, 5].map(k => `<path d="M576,${830 + k * 30} L624,${826 + k * 30}" stroke="rgba(170,200,230,.38)" stroke-width="6" stroke-linecap="round"/>`).join('')}</g>
+  <path class="hard" d="${H.HARD}" fill="#ead9c7"/>
+  <path class="soft" d="${H.SOFT}" fill="#d97a84"/>
+  <g class="glands" opacity=".75">
+    <path d="M590,520 C620,515 646,540 640,575 C634,605 600,612 584,592 C566,570 568,526 590,520 Z" fill="#f3c9a8" stroke="#c99a76" stroke-width="2" opacity=".9"/>
+    <path d="M676,740 C700,730 728,746 724,772 C720,794 690,800 676,786 C662,772 660,748 676,740 Z" fill="#f3c9a8" stroke="#c99a76" stroke-width="2" opacity=".9"/>
+    <path d="${H.PAROTID_DUCT}" fill="none" stroke="#c99a76" stroke-width="4" stroke-linecap="round"/>
+    <path d="${H.SUBM_DUCT}" fill="none" stroke="#c99a76" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g class="upper">${upper.map(t => tooth(...t, true)).join('')}</g>
+  <g class="jaw">
+    <path class="tongue" d="${H.TONGUE}" fill="url(#gTongue)" stroke="#8a2c3e" stroke-width="2"/>
+    <path d="M820,664 C760,676 700,682 650,690" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="4" stroke-linecap="round"/>
+    <g class="lower">${lower.map(t => tooth(...t, false)).join('')}</g>
+    <path d="${H.JAWBONE}" fill="none" stroke="rgba(232,214,196,.35)" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <path class="epi" d="${H.EPI}" fill="#e7a3a8" stroke="#a65a64" stroke-width="1.5"/>
+  <g class="food"></g>
+  <g class="sal"></g>
+  <g class="fx"></g>`;
+}
+
+/* ================= molecule chains (starch / protein / generic) ================= */
+const SHAPES = {
+  hex: r => { let p = ''; for (let k = 0; k < 6; k++) { const a = Math.PI / 6 + k * Math.PI / 3; p += f1(r * Math.cos(a)) + ',' + f1(r * Math.sin(a)) + ' '; } return p; }
+};
+class Chain {
+  /* o: {x,y,n,gap,ang,r,shape:'hex'|'circle',colors:[...],simple:'#hex',levels:[...per link], seed, spread} */
+  constructor(g, o) {
+    this.o = o; const R = rng(o.seed || 1); this.R = R;
+    this.g = el('g', {}, g);
+    const n = o.n, gap = o.gap || o.r * 2.3, ang = o.ang || 0;
+    this.u = []; this.l = [];
+    for (let i = 0; i < n; i++) {
+      const s = (i - (n - 1) / 2) * gap, w = (o.wave || 10) * Math.sin(i * .9 + (o.seed || 0));
+      const hx = o.x + s * Math.cos(ang) - w * Math.sin(ang), hy = o.y + s * Math.sin(ang) + w * Math.cos(ang);
+      this.u.push({ hx, hy, x: hx, y: hy, tx: hx, ty: hy, c: o.colors[i % o.colors.length], free: false, ph: R() * 6.28 });
+    }
+    for (let i = 0; i < n - 1; i++) {
+      this.l.push({ lvl: o.levels ? o.levels[i] : 1, at: R() * (o.spreadT || 2.5), broken: false,
+        e: el('line', { stroke: o.link || 'rgba(255,240,210,.55)', 'stroke-width': o.lw || 4, 'stroke-linecap': 'round' }, this.g) });
+    }
+    this.u.forEach(u => {
+      u.glow = el('circle', { r: o.r * 2.2, fill: o.glowFill || 'url(#gGold)', opacity: 0 }, this.g);
+      u.e = o.shape === 'hex' ? el('polygon', { points: SHAPES.hex(o.r), fill: u.c, stroke: 'rgba(0,0,0,.35)', 'stroke-width': 1.5 }, this.g)
+        : el('circle', { r: o.r, fill: u.c, stroke: 'rgba(0,0,0,.3)', 'stroke-width': 1.5 }, this.g);
+    });
+    this.dirty = true; this.draw(0);
+  }
+  /* T[level] = seconds since that level was switched on (or -1 if off) */
+  update(dt, T, t) {
+    let ch = false;
+    this.l.forEach(l => { const on = T[l.lvl] !== undefined && T[l.lvl] >= 0 && T[l.lvl] > l.at; if (on !== l.broken) { l.broken = on; ch = true; } });
+    if (ch) this.regroup();
+    const k = 1 - Math.exp(-dt * 1.6);
+    this.u.forEach(u => { u.x += (u.tx - u.x) * k; u.y += (u.ty - u.y) * k; });
+    this.draw(t);
+  }
+  regroup() {
+    const n = this.u.length; let s = 0; const sp = this.o.spread || 40;
+    for (let i = 0; i <= n - 1; i++) {
+      if (i === n - 1 || this.l[i].broken) {
+        const R = rng(s * 977 + i * 131 + (this.o.seed || 0) * 7);
+        const single = s === i, ox = (R() - .5) * sp * 2, oy = (R() - .5) * sp * 2;
+        for (let k = s; k <= i; k++) { const u = this.u[k]; u.tx = u.hx + ((s === 0 && i === n - 1) ? 0 : ox); u.ty = u.hy + ((s === 0 && i === n - 1) ? 0 : oy); u.free = single; }
+        s = i + 1;
+      }
+    }
+    this.u.forEach(u => { const col = u.free && this.o.simple ? this.o.simple : u.c; u.e.setAttribute('fill', col); u.glow.setAttribute('opacity', u.free && this.o.simple ? .9 : 0); });
+  }
+  draw(t) {
+    const j = this.o.jit === undefined ? 3 : this.o.jit;
+    this.u.forEach(u => { const x = u.x + j * Math.sin(t * 1.3 + u.ph), y = u.y + j * Math.cos(t * 1.1 + u.ph * 1.3); u.px = x; u.py = y; const tr = `translate(${f1(x)},${f1(y)})`; u.e.setAttribute('transform', tr); u.glow.setAttribute('transform', tr); });
+    this.l.forEach((l, i) => { const a = this.u[i], b = this.u[i + 1]; if (l.broken) { l.e.setAttribute('opacity', 0); return; } l.e.setAttribute('opacity', 1); setA(l.e, { x1: f1(a.px), y1: f1(a.py), x2: f1(b.px), y2: f1(b.py) }); });
+  }
+}
+
+/* simple particle sprite */
+function dotEl(parent, r, fill, extra) { return el('circle', Object.assign({ r, fill }, extra || {}), parent); }
+
+/* ===================== ACT 1 · THE MYSTERY ===================== */
+
+/* ---------- 1. Opening ---------- */
+slide({
+  act: 1, organ: -1, title: 'One bite…',
+  steps: ['Where does it go?', 'Does it fall into the stomach?', 'Is it used as it is?', 'So what really happens?'],
+  html: `
+  <svg class="abs" style="left:120px;top:190px;width:720px;height:720px" viewBox="-360 -360 720 720">
+    <defs><mask id="mBite"><rect x="-400" y="-400" width="800" height="800" fill="#fff"/>
+      <circle cx="168" cy="-170" r="70" fill="#000"/><circle cx="215" cy="-95" r="58" fill="#000"/><circle cx="105" cy="-222" r="56" fill="#000"/></mask>
+      <radialGradient id="gChap" cx="42%" cy="38%" r="70%"><stop offset="0" stop-color="#f4d9a2"/><stop offset=".7" stop-color="#e0b26a"/><stop offset="1" stop-color="#b98443"/></radialGradient></defs>
+    <circle r="330" fill="url(#gGold)" opacity=".12" class="halo"/>
+    <g class="chap"><g mask="url(#mBite)">
+      <circle r="250" fill="url(#gChap)"/>
+      <g class="spots" filter="url(#fSoft)"></g>
+      <circle r="248" fill="none" stroke="rgba(120,70,20,.45)" stroke-width="6"/>
+      <circle r="225" fill="none" stroke="rgba(255,240,210,.18)" stroke-width="10"/>
+    </g></g>
+    <g class="piece"><path d="M120,-196 C150,-238 196,-226 214,-176 C238,-150 258,-110 236,-70 C200,-80 160,-120 120,-196 Z" fill="url(#gChap)" stroke="rgba(120,70,20,.4)" stroke-width="3"/></g>
+    <g class="crumbs"></g>
+  </svg>
+  <div class="abs" style="left:900px;top:330px;width:900px">
+    <div class="q r abs" data-s="0-0" style="top:0">Imagine you take <span class="c-warm">ONE bite</span> of your favourite food…</div>
+    <div class="q r abs" data-s="1-1" style="top:40px;font-size:84px">Where does that bite go?</div>
+    <div class="q r abs" data-s="2-2" style="top:0">Does it simply fall into your stomach?</div>
+    <div class="no r d1 abs" data-s="2-2" style="top:200px">No.</div>
+    <div class="q r abs" data-s="3-3" style="top:0">Does your body use the food exactly as you swallowed it?</div>
+    <div class="no r d1 abs" data-s="3-3" style="top:200px">No.</div>
+    <div class="r abs" data-s="4" style="top:10px"><div class="h1">So what <span class="c-warm">really</span> happens?</div></div>
+  </div>`,
+  init(c) {
+    const R = rng(4), sp = c.q('.spots');
+    for (let i = 0; i < 46; i++) { const a = R() * 6.28, d = Math.sqrt(R()) * 220; el('ellipse', { cx: f1(d * Math.cos(a)), cy: f1(d * Math.sin(a)), rx: f1(6 + R() * 16), ry: f1(4 + R() * 10), fill: R() < .5 ? '#8a5522' : '#a8692c', opacity: f1(.25 + R() * .45) }, sp); }
+    c.crumbs = []; const cg = c.q('.crumbs');
+    for (let i = 0; i < 26; i++) c.crumbs.push({ e: dotEl(cg, 2 + R() * 4, '#e7c27f', { opacity: .5 }), x: (R() - .5) * 640, y: (R() - .5) * 640, v: 6 + R() * 14, ph: R() * 6 });
+  },
+  tick(c) {
+    const t = c.t, n = c.n, st = c.stepT;
+    c.q('.chap').setAttribute('transform', `translate(0,${f1(8 * Math.sin(t * .6))}) rotate(${f1(t * 2)})`);
+    // the bite piece drifts away once we ask "where does it go?"
+    const p = n >= 1 ? eout(n === 1 ? st / 3.2 : 1) : 0;
+    const px = lerp(0, 260, p), py = lerp(0, 160, p), sc = lerp(1, .35, p);
+    c.q('.piece').setAttribute('transform', `translate(${f1(px)},${f1(py + 8 * Math.sin(t * .6))}) scale(${f1(sc * 100) / 100})`);
+    c.q('.piece').setAttribute('opacity', n >= 4 ? .95 : 1);
+    c.q('.halo').setAttribute('opacity', f1((.1 + .05 * Math.sin(t * 1.4)) * 100) / 100);
+    c.crumbs.forEach(k => { k.y -= k.v * .016; if (k.y < -340) k.y = 340; k.e.setAttribute('cx', f1(k.x + 10 * Math.sin(t * .5 + k.ph))); k.e.setAttribute('cy', f1(k.y)); });
+  },
+  notes: {
+    say: 'Close your eyes for a second. Imagine your favourite food in front of you – hot chapati, rice, dosa, anything. Now imagine taking just ONE bite. (Pause.) Where does that bite go?',
+    ask: 'Hands up – where do you think the bite goes first? And where does it finally end up?',
+    explain: 'Let students give answers freely (stomach, intestine, “it turns into energy”). Do not correct yet. The two “No.” answers create the mystery: food does not simply drop into the stomach, and the body cannot use food in the form we swallow it.',
+    confusion: 'Many students imagine the stomach as a bag directly below the mouth into which food falls. Today’s journey will show that food is pushed through a long tube and changed at every stage.',
+    transition: '“To understand this, let us first remember why living beings need food at all.”'
+  }
+});
+
+/* ---------- 2. Life processes ---------- */
+function figurePath() {
+  const half = [[18, -276], [34, -262], [80, -250], [112, -232], [128, -196], [136, -120], [146, -40], [152, 28], [156, 60], [144, 80], [128, 64], [122, 20], [112, -60], [100, -136], [92, -166], [88, -100], [82, -30], [92, 40], [90, 120], [80, 240], [72, 360], [74, 400], [98, 424], [94, 438], [42, 438], [36, 400], [34, 300], [28, 180], [14, 84]];
+  const pts = [[0, -278], ...half, [0, 74], ...half.slice().reverse().map(p => [-p[0], p[1]])];
+  return closedPath(pts);
+}
+slide({
+  act: 1, organ: -1, title: 'Life processes',
+  steps: ['Show the life processes', 'Which one begins with food?'],
+  html: `
+  <div class="abs" style="left:140px;top:120px"><div class="kicker">Before we begin</div><div class="h2" style="margin-top:14px">Every living being must…</div></div>
+  <svg class="abs" style="left:660px;top:250px;width:600px;height:760px" viewBox="-300 -400 600 860">
+    <circle cx="0" cy="-60" r="300" fill="url(#gTeal)" opacity=".08"/>
+    <circle cx="0" cy="-332" r="54" fill="url(#gSkin)" stroke="rgba(184,212,255,.55)" stroke-width="3"/>
+    <path d="${figurePath()}" fill="url(#gSkin)" stroke="rgba(184,212,255,.55)" stroke-width="3"/>
+    <g class="belly" opacity="0"><ellipse cx="0" cy="-20" rx="70" ry="95" fill="url(#gGold)"/></g>
+  </svg>
+  <div class="card r lp1" data-s="1" style="left:120px;top:330px;width:560px;transition-delay:.1s"><div class="ct c-warm">NUTRITION</div><div class="cd">getting and using food</div></div>
+  <div class="card r lp2" data-s="1" style="left:1240px;top:330px;width:560px;transition-delay:.5s"><div class="ct c-teal">RESPIRATION</div><div class="cd">releasing energy from food</div></div>
+  <div class="card r lp3" data-s="1" style="left:120px;top:540px;width:560px;transition-delay:.9s"><div class="ct c-blood">CIRCULATION</div><div class="cd">carrying materials around the body</div></div>
+  <div class="card r lp4" data-s="1" style="left:1240px;top:540px;width:560px;transition-delay:1.3s"><div class="ct c-sal">EXCRETION</div><div class="cd">removing wastes from the body</div></div>
+  <div class="card r lp5" data-s="1" style="left:120px;top:750px;width:560px;transition-delay:1.7s"><div class="ct" style="color:#d9a6ff">REPRODUCTION</div><div class="cd">producing young ones</div></div>
+  <div class="abs r" data-s="1" style="left:1240px;top:770px;width:600px;transition-delay:2.2s"><div class="sub">These <b style="color:#fff">life processes</b> help living beings <b style="color:#fff">survive</b>.</div></div>
+  <div class="banner r" data-s="2" style="top:960px">Today: <span class="c-warm">NUTRITION</span> — what happens to the food we eat</div>`,
+  step(c, n) {
+    ['.lp2', '.lp3', '.lp4', '.lp5'].forEach(s => { c.q(s).style.opacity = n >= 2 ? .3 : ''; });
+    const l1 = c.q('.lp1'); l1.style.borderColor = n >= 2 ? 'rgba(255,184,107,.8)' : ''; l1.style.boxShadow = n >= 2 ? '0 0 50px rgba(255,184,107,.35)' : '';
+  },
+  tick(c) { c.q('.belly').setAttribute('opacity', c.n >= 2 ? f1((.55 + .25 * Math.sin(c.t * 2)) * 100) / 100 : 0); },
+  notes: {
+    say: 'You learnt in Grade 6 that all living beings carry out some basic processes to stay alive. Let us name them together: nutrition, respiration, circulation, excretion and reproduction. Together we call them life processes.',
+    ask: 'Which of these life processes do you think starts the moment you take a bite of food?',
+    explain: 'Nutrition is how living beings get food and use it. Our body needs energy and materials from food to carry out all the other life processes too.',
+    confusion: 'Students sometimes think respiration means only breathing. Respiration is about releasing energy from food – breathing helps it happen. (Keep this brief; it is a later topic.)',
+    transition: '“Today we are going inside one of the most amazing machines in your body – the one that handles your food.”'
+  }
+});
+
+/* ---------- 3. Enter the machine ---------- */
+slide({
+  act: 1, organ: -1, title: 'Enter the body',
+  steps: ['Enter the body'],
+  html: `
+  <svg class="full body" viewBox="0 0 10 10" preserveAspectRatio="xMidYMid meet">${bodyArt()}</svg>
+  <div class="abs intro" style="left:140px;top:360px;width:780px;transition:opacity 1s">
+    <div class="q" style="font-size:60px">Today, we are going to enter one of the most amazing machines inside <span class="c-warm">your</span> body…</div>
+  </div>
+  <div class="abs ttl center" style="left:0;right:0;top:380px;opacity:0">
+    <div class="kicker">Chapter 9 · Life Processes in Animals</div>
+    <div class="h1" style="font-size:124px;margin-top:26px;letter-spacing:.02em">DIGESTION</div>
+    <div class="h3 c-mut" style="font-weight:400;margin-top:10px">in Human Beings</div>
+  </div>
+  <div class="abs flash" style="inset:0;background:radial-gradient(circle at 50% 50%,rgba(70,22,30,.9),rgba(14,3,6,.98) 65%);opacity:0;pointer-events:none"></div>`,
+  init(c) { c.svg = c.q('svg.body'); cam(c.svg, -15, 500, 1040); },
+  tick(c) {
+    const p = c.n >= 1 ? c.stepT : 0;
+    const z = ease(seg(p, 0, 3.2));
+    const cx = lerp(-15, 300, z), cy = lerp(500, 150, z), h = Math.exp(lerp(Math.log(1040), Math.log(70), z));
+    cam(c.svg, cx, cy, h);
+    c.q('.intro').style.opacity = c.n >= 1 ? 0 : 1;
+    c.q('.flash').style.opacity = f1(seg(p, 2.4, 3.3) * 100) / 100;
+    c.q('.ttl').style.opacity = f1(seg(p, 3.2, 4.4) * 100) / 100;
+    c.q('.ttl').style.zIndex = 2;
+    c.q('.mouthm').setAttribute('stroke-width', f1(3 + 1.5 * Math.sin(c.t * 3)));
+  },
+  notes: {
+    say: 'Look at this body. Inside it is a system that works every single time you eat – without you even thinking about it. We are going to shrink down and travel inside, starting at the mouth.',
+    ask: 'Where does the journey of food begin?',
+    explain: 'The journey starts in the mouth. This chapter is about digestion in human beings.',
+    confusion: '',
+    transition: '“But first – why can’t the body simply use food as it is?”'
+  }
+});
+
+/* ---------- 4. Why break food down? ---------- */
+slide({
+  act: 1, organ: -1, title: 'Why break food down?',
+  steps: ['What is in our food?', 'Can the body use it like this?', 'Break it down', 'Name it'],
+  html: `
+  <div class="abs" style="left:140px;top:120px"><div class="kicker">The big question</div><div class="h2" style="margin-top:14px">Why can’t the body use food as it is?</div></div>
+  <svg class="full" viewBox="0 0 1920 1080">
+    <defs><linearGradient id="gBloodSide" x1="0" x2="1"><stop offset="0" stop-color="#ff5a64" stop-opacity=".0"/><stop offset=".25" stop-color="#ff5a64" stop-opacity=".13"/><stop offset="1" stop-color="#ff5a64" stop-opacity=".06"/></linearGradient></defs>
+    <rect x="1240" y="290" width="680" height="640" fill="url(#gBloodSide)"/>
+    <g class="wall"></g>
+    <g class="mol"></g>
+    <g class="fat"></g>
+  </svg>
+  <div class="lbl r" data-s="1" style="left:180px;top:330px">Carbohydrate<small>(like starch)</small></div>
+  <div class="lbl r" data-s="1" style="left:180px;top:560px">Protein</div>
+  <div class="lbl r" data-s="1" style="left:180px;top:760px">Fat</div>
+  <div class="lbl r" data-s="1" style="left:1290px;top:310px;color:#ffb3b8">Inside the body<small>(blood)</small></div>
+  <div class="banner r" data-s="2-2" style="top:950px">Too big and complex to pass into the body</div>
+  <div class="banner r" data-s="3-3" style="top:950px">Broken into <span class="c-nut">simpler forms</span> — now they can pass in and be used</div>
+  <div class="abs r" data-s="4" style="left:1300px;top:420px;width:560px;padding:34px 38px;border-radius:24px;background:rgba(6,10,16,.85);border:1.5px solid rgba(111,227,214,.4)">
+    <div class="kicker">This is called</div><div class="h2" style="margin:12px 0 14px">Digestion</div>
+    <div class="sub">Breaking down complex food into <b class="c-nut">simpler forms</b> in the body.</div></div>`,
+  init(c) {
+    const W = c.q('.wall');
+    c.pores = [];
+    for (let y = 300; y < 930; y += 60) { el('line', { x1: 1240, y1: y + 14, x2: 1240, y2: y + 60, stroke: 'rgba(255,190,170,.55)', 'stroke-width': 10, 'stroke-linecap': 'round' }, W); c.pores.push(y + 7); }
+    const g = c.q('.mol');
+    c.carb = new Chain(g, { x: 640, y: 420, n: 12, r: 20, gap: 46, shape: 'hex', colors: ['#f3e6c4'], simple: '#ffd36e', seed: 3, spread: 70, spreadT: 1.6, wave: 22 });
+    c.prot = new Chain(g, { x: 640, y: 620, n: 11, r: 19, gap: 44, shape: 'circle', colors: ['#ff8fa3', '#c99bff', '#7fd1ff', '#ffb36b'], simple: null, seed: 8, spread: 70, spreadT: 1.6, wave: 26 });
+    c.prot.o.simple = null;
+    const fg = c.q('.fat');
+    c.big = el('circle', { cx: 640, cy: 820, r: 78, fill: 'url(#gFat)' }, fg);
+    const R = rng(11);
+    c.fd = []; for (let i = 0; i < 14; i++) { const a = R() * 6.28, d = R() * 70; c.fd.push({ hx: 640 + d * Math.cos(a), hy: 820 + d * Math.sin(a), x: 640, y: 820, e: el('circle', { r: 10, fill: 'url(#gFat)', opacity: 0 }, fg) }); }
+    c.all = () => [...c.carb.u, ...c.prot.u];
+    c.mig = []; // migration assignments
+  },
+  step(c, n) {
+    c.q('.mol').style.opacity = n >= 1 ? 1 : 0; c.q('.fat').style.opacity = n >= 1 ? 1 : 0;
+    c.q('.mol').style.transition = c.q('.fat').style.transition = 'opacity .8s';
+    if (n < 3) { // reset to whole molecules
+      [c.carb, c.prot].forEach(ch => { ch.l.forEach(l => l.broken = false); ch.regroup(); ch.u.forEach(u => { u.x = u.tx; u.y = u.ty; }); });
+      c.fd.forEach(d => { d.x = 640; d.y = 820; }); c.mig = [];
+    }
+  },
+  tick(c, dt) {
+    const n = c.n, st = c.stepT;
+    const bump = n === 2 ? Math.max(0, Math.sin(Math.min(st, 6) * 1.6)) * 330 * (st < 6 ? 1 : 0) : 0;
+    const bx = n === 2 ? Math.min(330, 330 * Math.abs(Math.sin(st * 1.3))) : 0;
+    const off = n === 2 ? bx : 0;
+    c.q('.mol').setAttribute('transform', `translate(${f1(off)},0)`);
+    c.q('.fat').setAttribute('transform', `translate(${f1(off)},0)`);
+    const T = n >= 3 ? { 1: st } : {};
+    c.carb.update(dt, T, c.t); c.prot.update(dt, T, c.t);
+    // fat splits
+    const fs = n >= 3 ? eout(seg(st, .3, 1.8)) : 0;
+    c.big.setAttribute('r', f1(78 * (1 - fs)));
+    c.fd.forEach(d => { if (n < 3) { d.e.setAttribute('opacity', 0); return; } d.e.setAttribute('opacity', 1); });
+    // migration through pores after breaking
+    if (n >= 3 && st > 2.6) {
+      if (!c.mig.length) {
+        const R = rng(5); const units = [...c.carb.u, ...c.prot.u];
+        units.forEach((u, i) => c.mig.push({ o: u, pore: c.pores[i % c.pores.length], d: R() * 2.2, fx: 1330 + R() * 520, fy: 320 + R() * 580, ph: 0 }));
+        c.fd.forEach((u, i) => c.mig.push({ o: u, pore: c.pores[(i * 3 + 1) % c.pores.length], d: R() * 2.2, fx: 1330 + R() * 520, fy: 320 + R() * 580, fat: 1 }));
+      }
+      c.mig.forEach(m => {
+        const tt = st - 2.6 - m.d; if (tt < 0) return;
+        const u = m.o;
+        if (tt < 1.4) { u.tx = 1240; u.ty = m.pore; } else { u.tx = m.fx; u.ty = m.fy; }
+        if (m.fat) { const k = 1 - Math.exp(-dt * 1.6); u.x += (u.tx - u.x) * k; u.y += (u.ty - u.y) * k; }
+      });
+    }
+    c.fd.forEach(d => {
+      if (n >= 3 && !(c.mig.length && st > 2.6)) { d.x = lerp(640, d.hx, fs); d.y = lerp(820, d.hy, fs); }
+      d.e.setAttribute('cx', f1(d.x)); d.e.setAttribute('cy', f1(d.y));
+    });
+    if (n >= 3) c.prot.u.forEach(u => { if (u.free) u.e.setAttribute('stroke', 'rgba(255,255,255,.7)'); });
+  },
+  notes: {
+    say: 'Our food contains complex components – carbohydrates like starch, proteins and fats. These are big, complicated substances. Imagine trying to push a whole chapati through the wall of a blood vessel! It cannot pass. The body must first break them down into simpler, smaller forms.',
+    ask: 'Why do you think the body needs to break food into tiny pieces before using it?',
+    explain: 'Breaking down complex food components into simpler forms in the body is called DIGESTION. Only these simpler forms can pass into the blood and be used by the body.',
+    confusion: 'Students think “digestion” only means food getting crushed. Crushing helps, but true digestion means changing complex substances into simpler ones.',
+    transition: '“So where does this breaking down happen? In a very long tube. Let us look at it.”'
+  }
+});
+
+/* ---------- 5. Alimentary canal ---------- */
+const CANAL_LABELS = [
+  ['Mouth', 300, 150, 1], ['Oesophagus (food pipe)', 304, 282, 1], ['Stomach', 425, 470, 1], ['Small intestine', 250, 750, -1],
+  ['Large intestine', 424, 720, 1], ['Rectum', 312, 892, -1], ['Anus', 302, 948, 1]];
+slide({
+  act: 1, title: 'The alimentary canal',
+  steps: ['Trace the path of food', 'Meet the two helpers'],
+  organ: c => c.n >= 1 ? 'all' : -1,
+  html: () => `
+  <div class="abs" style="left:120px;top:150px;width:660px">
+    <div class="kicker">The route</div>
+    <div class="h2" style="margin:16px 0 22px">One long tube</div>
+    <div class="sub r" data-s="1">Food travels from the <b style="color:#fff">mouth</b> to the <b style="color:#fff">anus</b> through the</div>
+    <div class="key r c-nut" data-s="1" style="margin-top:14px">alimentary canal</div>
+    <div class="sub r" data-s="2" style="margin-top:46px">Two helpers are <b style="color:#fff">not</b> part of the tube, but send juices into it:</div>
+    <div class="key2 r" data-s="2" style="margin-top:14px"><span class="c-blood" style="color:#d9826b">Liver</span> &nbsp;·&nbsp; <span class="c-panc">Pancreas</span></div>
+  </div>
+  <svg class="full body" viewBox="0 0 10 10" preserveAspectRatio="xMidYMid meet">${bodyArt({ track: true })}
+    <g class="lbls">${CANAL_LABELS.map(([t, x, y, s], i) => {
+      const lx = s > 0 ? 610 : -10;
+      return `<g class="cl" data-i="${i}" opacity="0"><path d="M${x},${y} L${s > 0 ? x + 20 : x - 20},${y} L${lx},${y}" stroke="rgba(255,255,255,.45)" stroke-width="1.6" fill="none"/><circle cx="${x}" cy="${y}" r="4" fill="#fff"/>
+      <text x="${s > 0 ? lx + 10 : lx - 10}" y="${y + 11}" font-size="32" font-weight="600" fill="#fff" text-anchor="${s > 0 ? 'start' : 'end'}">${t}</text></g>`;
+    }).join('')}
+    <g class="hl" opacity="0">
+      <path d="M215,420 L-10,420" stroke="#d9826b" stroke-width="1.6"/><circle cx="215" cy="420" r="4" fill="#d9826b"/><text x="-20" y="431" font-size="32" font-weight="700" fill="#e79a80" text-anchor="end">Liver</text>
+      <path d="M380,568 L610,568" stroke="#f5d06b" stroke-width="1.6"/><circle cx="380" cy="568" r="4" fill="#f5d06b"/><text x="620" y="579" font-size="32" font-weight="700" fill="#f5d06b">Pancreas</text>
+    </g></g>
+  </svg>`,
+  init(c) { c.svg = c.q('svg.body'); cam(c.svg, 117, 487, 1120); c.trk = new Track(c.svg, BODY.TRACK); c.bol = el('circle', { r: 9, fill: 'url(#gGold)' }, c.q('.fx')); c.bol2 = el('circle', { r: 4, fill: '#fff4cf' }, c.q('.fx')); },
+  step(c, n) {
+    dimOrgans(c, n >= 2 ? ['liver', 'panc', 'gall'] : null);
+    c.q('.duct').style.opacity = n >= 2 ? 1 : .5;
+  },
+  tick(c) {
+    const n = c.n, st = c.stepT;
+    const s = n >= 1 ? 7 * ease(seg(st, .2, 7.5)) : 0;
+    setTrackReveal(c, s);
+    c.qa('.cl').forEach((g, i) => g.setAttribute('opacity', n >= 1 && s > i + .25 ? 1 : 0));
+    c.q('.hl').setAttribute('opacity', n >= 2 ? 1 : 0);
+    const vis = n >= 1 && s < 6.98;
+    const p = c.trk.pt(Math.min(s, 6.99));
+    [c.bol, c.bol2].forEach(b => { setA(b, { cx: f1(p[0]), cy: f1(p[1]), opacity: vis ? 1 : 0 }); });
+  },
+  notes: {
+    say: 'From the mouth to the anus, our food travels through one long, continuous tube called the alimentary canal. Watch the path: mouth, food pipe or oesophagus, stomach, small intestine, large intestine, rectum and finally the anus.',
+    ask: 'Point to where you think your stomach is on your own body. (Most will point to the belly button – it is actually higher and to the left.)',
+    explain: 'Digestive juices are poured into this canal at different places. The liver and the pancreas are associated with the canal – food does not pass through them, but they send their juices into the small intestine.',
+    confusion: 'Food does NOT pass through the liver or pancreas. Also, the stomach is not in the middle of the belly – it sits in the upper left of the abdomen.',
+    transition: '“Now, let us follow our bite from the very first step – the mouth.”'
+  }
+});
+
+/* ===================== ACT 2 · THE JOURNEY (mouth → food pipe) ===================== */
+
+/* ---- shared mouth simulation: food fragments, jaw, saliva ---- */
+function svgLabel(x, y, tx, ty, text, fs, col = '#fff', anchor = 'start', cls = '') {
+  return `<g class="${cls}"><path d="M${x},${y} L${tx},${ty}" stroke="rgba(255,255,255,.55)" stroke-width="${fs * .09}" fill="none"/><circle cx="${x}" cy="${y}" r="${fs * .18}" fill="${col}"/>
+  <text x="${tx + (anchor === 'start' ? fs * .4 : -fs * .4)}" y="${ty + fs * .35}" font-size="${fs}" font-weight="600" fill="${col}" text-anchor="${anchor}" style="paint-order:stroke;stroke:rgba(0,0,0,.75);stroke-width:${fs * .22}px">${text}</text></g>`;
+}
+function mouthSim(svg, seed = 21) {
+  const m = { svg, jaw: $('.jaw', svg), tongue: $('.tongue', svg), food: $('.food', svg), sal: $('.sal', svg), fx: $('.fx', svg), epi: $('.epi', svg) };
+  const R = rng(seed);
+  m.pos = [[[712, 646]]];
+  for (let L = 1; L <= 4; L++) {
+    m.pos[L] = [];
+    for (let k = 0; k < (1 << L); k++) {
+      const p = m.pos[L - 1][k >> 1], s = 10 + L * 9;
+      m.pos[L].push([clamp(p[0] + (R() - .5) * s * 2.2, 640, 805), clamp(p[1] + (R() - .5) * s * .5, 638, 662)]);
+    }
+  }
+  m.pieces = [];
+  for (let k = 0; k < 16; k++) {
+    const pts = []; for (let v = 0; v < 8; v++) { const a = v / 8 * 6.283, rr = .72 + R() * .35; pts.push([rr * Math.cos(a), rr * Math.sin(a) * .8]); }
+    const e = el('path', { d: closedPath(pts), fill: 'url(#gFood)', stroke: 'rgba(110,60,20,.55)', 'stroke-width': .08 }, m.food);
+    m.pieces.push({ e, rot: R() * 360 });
+  }
+  m.bolus = el('ellipse', { rx: 1, ry: 1, fill: 'url(#gBolus)', stroke: 'rgba(160,220,255,.65)', 'stroke-width': 2.5, opacity: 0 }, m.food);
+  /* level: 0..4 (float); jaw: px open; wet 0..1; gather 0..1 (to bolus at gx,gy) */
+  m.set = (level, jaw, wet = 0, gather = 0, gx = 700, gy = 652, enter = 1) => {
+    const L = Math.floor(clamp(level, 0, 4)), f = eout((level - L) * 2.2), cnt = 1 << L;
+    m.pieces.forEach((p, k) => {
+      if (k >= cnt || gather >= 1) { p.e.setAttribute('opacity', 0); return; }
+      const own = m.pos[L][k], par = L ? m.pos[L - 1][k >> 1] : own;
+      let x = lerp(par[0], own[0], L ? f : 1), y = lerp(par[1], own[1], L ? f : 1);
+      if (L === 0) { x = lerp(980, own[0], enter); y = lerp(632, own[1], enter); }
+      y += jaw * (x < 800 ? .55 : .3);
+      x = lerp(x, gx, ein(gather)); y = lerp(y, gy, ein(gather));
+      const r = 30 / Math.pow(1.42, L + (L < 4 ? f * 0 : 0)) * (1 - .6 * gather);
+      p.e.setAttribute('transform', `translate(${f1(x)},${f1(y)}) rotate(${f1(p.rot)}) scale(${f1(r * 10) / 10})`);
+      p.e.setAttribute('opacity', 1);
+      p.e.setAttribute('stroke', wet > .1 ? 'rgba(170,225,255,.85)' : 'rgba(110,60,20,.55)');
+    });
+    m.jaw.setAttribute('transform', `translate(0,${f1(jaw)})`);
+  };
+  m.salP = [];
+  m.ducts = [HEAD.PAROTID_DUCT, HEAD.SUBM_DUCT].map(d => { const p = el('path', { d, fill: 'none', stroke: 'none' }, m.fx); return [p, p.getTotalLength()]; });
+  for (let i = 0; i < 46; i++) m.salP.push({ e: dotEl(m.sal, 4.2, 'url(#gBlue)', { opacity: 0 }), d: i % 2, off: R(), tx: 650 + R() * 150, ty: 638 + R() * 26, sp: .35 + R() * .3 });
+  /* amt 0..1 how much saliva shown; t time */
+  m.saliva = (amt, t) => {
+    m.salP.forEach((s, i) => {
+      if (amt <= 0) { s.e.setAttribute('opacity', 0); return; }
+      const ph = (t * s.sp + s.off) % 1; const [p, L] = m.ducts[s.d];
+      let x, y;
+      if (ph < .45) { const q = p.getPointAtLength(L * ph / .45); x = q.x; y = q.y; }
+      else { const e = p.getPointAtLength(L), k = ease((ph - .45) / .55); x = lerp(e.x, s.tx, k); y = lerp(e.y, s.ty, k); }
+      s.e.setAttribute('cx', f1(x)); s.e.setAttribute('cy', f1(y));
+      s.e.setAttribute('opacity', f1(amt * (ph > .9 ? (1 - ph) * 10 : 1) * 100) / 100);
+    });
+  };
+  return m;
+}
+const MOUTH_VB = '445 430 545 580';
+
+/* ---------- 6. Mouth: chewing ---------- */
+slide({
+  act: 2, organ: 0, title: 'The mouth: chewing',
+  steps: ['Food enters the mouth', 'Show what happens when we chew', 'What did chewing do?'],
+  html: `
+  <svg class="abs head" style="left:30px;top:80px;width:940px;height:1000px" viewBox="${MOUTH_VB}">${headArt()}
+    ${svgLabel(760, 604, 800, 520, 'Teeth', 18, '#fff')}
+    ${svgLabel(640, 700, 600, 860, 'Tongue', 18, '#ffb3b8', 'end')}
+  </svg>
+  <div class="abs" style="left:1060px;top:150px;width:780px">
+    <div class="kicker">Part 1 · The mouth</div>
+    <div class="h2" style="margin:16px 0 40px">The journey begins</div>
+    <div class="r" data-s="2"><div class="key c-warm">Teeth crush and chew</div></div>
+    <div class="flow r" data-s="2" style="margin-top:46px;font-size:34px">
+      <span>Large piece</span><span class="ar">→</span><span>chewing</span><span class="ar">→</span><span class="c-nut">small pieces</span></div>
+    <div class="r" data-s="3" style="margin-top:70px"><div class="sub">Breaking food into <b style="color:#fff">fine pieces</b> is called</div>
+      <div class="key" style="margin-top:12px">mechanical digestion</div></div>
+  </div>`,
+  init(c) { c.m = mouthSim(c.q('svg.head')); },
+  tick(c) {
+    const n = c.n, st = c.stepT;
+    let level = 0, jaw = 0, enter = 0;
+    if (n === 0) { enter = 0; jaw = 0; c.m.pieces.forEach(p => p.e.setAttribute('opacity', 0)); c.m.jaw.setAttribute('transform', ''); return; }
+    if (n === 1) { enter = ease(seg(st, .4, 2)); jaw = 26 * (1 - seg(st, 1.9, 2.5)) * seg(st, 0, .4); }
+    if (n >= 2) {
+      enter = 1; const P = .9; const tt = n === 2 ? st : 60;
+      const cyc = tt / P;
+      level = Math.min(4, Math.floor(cyc) + (cyc % 1) * 0) + Math.min(.45, (cyc % 1)) ;
+      level = Math.min(4.45, Math.floor(cyc) + Math.min(.45, cyc % 1)); if (cyc >= 4) level = 4.45;
+      jaw = n === 2 ? 20 * (.5 - .5 * Math.cos(2 * Math.PI * cyc)) : 0;
+      if (n >= 3) jaw = 0;
+    }
+    c.m.set(level, jaw, 0, 0, 700, 652, enter);
+  },
+  notes: {
+    say: 'Our bite of chapati enters the mouth. Watch what the teeth do – they crush and chew the food again and again. One big piece becomes two, then four, then many tiny pieces.',
+    ask: 'What would happen if you swallowed a big piece of chapati without chewing it?',
+    explain: 'The teeth break food into smaller pieces by crushing and chewing. This first breakdown of food into fine pieces is called mechanical digestion. Nothing new is made yet – the food is only broken into smaller bits.',
+    confusion: 'Mechanical digestion does not change starch into sugar – it only makes the pieces smaller. The chemical change comes from saliva (next).',
+    transition: '“But why does breaking food into small pieces help at all? Let us try a simple idea.”'
+  }
+});
+
+/* ---------- 7. Why small pieces? (surface) ---------- */
+slide({
+  act: 2, organ: 0, title: 'Why small pieces help',
+  steps: ['Drop both into water', 'Why is one faster?', 'So, chewing helps because…'],
+  html: `
+  <div class="abs" style="left:140px;top:110px;width:1640px"><div class="kicker">A simple idea</div>
+    <div class="q" style="margin-top:14px;font-size:56px">One big lump of sugar, or the same sugar as tiny pieces —<br>which dissolves faster?</div></div>
+  <svg class="full" viewBox="0 0 1920 1080">
+    <g class="beakers"></g>
+    <g class="sq" opacity="0"></g>
+  </svg>
+  <div class="lbl center" style="left:250px;top:930px;width:420px">One big lump</div>
+  <div class="lbl center" style="left:770px;top:930px;width:420px">Many tiny pieces</div>
+  <div class="abs r" data-s="1-1" style="left:1320px;top:420px;width:520px"><div class="key2 c-water">Tiny pieces dissolve much faster!</div></div>
+  <div class="abs r" data-s="2" style="left:1320px;top:340px;width:540px">
+    <div class="key2">Same food,<br><span class="c-nut">more surface</span></div>
+    <div class="sub" style="margin-top:20px">Water (and digestive juices) can only work on the <b style="color:#fff">outside</b> of each piece.</div></div>
+  <div class="abs r" data-s="3" style="left:1320px;top:700px;width:560px">
+    <div class="flowv" style="font-size:34px"><span>Large piece</span><span class="ar">↓ chewing</span><span>Smaller pieces</span><span class="ar">↓</span><span class="c-nut">More surface for digestion</span></div></div>`,
+  init(c) {
+    const g = c.q('.beakers');
+    const beaker = (x) => `<g transform="translate(${x},0)"><path d="M0,420 L0,860 Q0,900 40,900 L380,900 Q420,900 420,860 L420,420" fill="none" stroke="rgba(207,232,255,.55)" stroke-width="5"/>
+      <rect class="water" x="4" y="520" width="412" height="376" rx="36" fill="rgba(90,170,255,.16)"/><path d="M4,520 L416,520" stroke="rgba(160,210,255,.6)" stroke-width="3"/></g>`;
+    g.innerHTML = beaker(250) + beaker(770);
+    c.lump = el('rect', { width: 120, height: 120, rx: 10, fill: '#f6f3ea', stroke: '#cfc8b8', 'stroke-width': 3 }, g);
+    c.gr = []; const R = rng(9);
+    for (let i = 0; i < 64; i++) { const x = 800 + (i % 16) * 22 + R() * 6, y = 860 - Math.floor(i / 16) * 22 - R() * 4; c.gr.push({ x, y, e: el('rect', { x: f1(x), y: f1(y), width: 16, height: 16, rx: 2, fill: '#f6f3ea', stroke: '#cfc8b8', 'stroke-width': 1.5 }, g) }); }
+    c.sw = []; for (let i = 0; i < 40; i++) c.sw.push({ e: dotEl(g, 3, 'rgba(255,255,255,.7)', { opacity: 0 }), x: 790 + R() * 380, y: 540 + R() * 340, b: i < 20 ? 270 : 790, ph: R() * 6 });
+    c.sw.forEach((s, i) => { if (i < 20) s.x = 270 + R() * 380; });
+    // surface comparison
+    const sq = c.q('.sq');
+    sq.innerHTML = `<g transform="translate(1000,450)"></g>`;
+  },
+  step(c, n) { c.q('.beakers').style.opacity = 1; },
+  tick(c) {
+    const n = c.n, st = c.stepT, t = c.t;
+    const p = n >= 1 ? (n === 1 ? st : 60) : 0;
+    const lumpK = 1 - .35 * seg(p, 0, 14), grK = 1 - seg(p, .3, 5);
+    const s = 120 * lumpK; setA(c.lump, { x: f1(460 - s / 2), y: f1(895 - s), width: f1(s), height: f1(s) });
+    c.gr.forEach(g => { const z = 16 * grK; setA(g.e, { width: f1(Math.max(0, z)), height: f1(Math.max(0, z)), opacity: grK > .02 ? 1 : 0, x: f1(g.x + (16 - z) / 2), y: f1(g.y + (16 - z)) }); });
+    c.sw.forEach((w, i) => { const on = n >= 1 && (i < 20 ? p < 20 : p > .3 && p < 7); w.e.setAttribute('opacity', on ? f1((.25 + .3 * Math.sin(t * 3 + w.ph)) * 100) / 100 : 0); w.e.setAttribute('cy', f1(w.y - ((t * 30 + w.ph * 40) % 120))); w.e.setAttribute('cx', f1(w.x)); });
+  },
+  notes: {
+    say: 'Here are two glasses of water with the same amount of sugar. In one glass it is a single big lump; in the other it is broken into tiny pieces. Watch. The tiny pieces disappear much faster!',
+    ask: 'Why did the tiny pieces dissolve faster, even though it was the same amount of sugar?',
+    explain: 'Water can only touch the outside (surface) of each piece. Breaking a lump into many small pieces gives much more surface. In the same way, chewing gives digestive juices much more surface of food to act on.',
+    confusion: 'Chewing does not make MORE food – it is the same amount of food, just with more surface exposed.',
+    transition: '“Now, while you chew, something wet joins the food. Let us look at it closely.”'
+  }
+});
+
+/* ---------- 8. Saliva & starch ---------- */
+slide({
+  act: 2, organ: 0, title: 'Saliva: why chapati tastes sweet',
+  steps: ['Saliva arrives', 'Zoom into the chewed food', 'Watch saliva act on starch', 'So that is why!'],
+  html: `
+  <div class="abs" style="left:120px;top:96px;width:1700px"><div class="kicker">The first big wow</div>
+    <div class="q" style="font-size:54px;margin-top:12px">Why does chapati start to taste <span class="c-nut">sweet</span> if you keep chewing it?</div></div>
+  <svg class="abs head" style="left:0;top:250px;width:780px;height:830px" viewBox="${MOUTH_VB}">${headArt()}
+    <g class="r" data-s="1">${svgLabel(600, 560, 560, 500, 'Saliva', 20, '#8fd3ff', 'end')}</g>
+  </svg>
+  <svg class="full lensSvg" viewBox="0 0 1920 1080">
+    <defs><clipPath id="cLens"><circle cx="1400" cy="680" r="300"/></clipPath>
+      <radialGradient id="gLens" cx="45%" cy="40%" r="70%"><stop offset="0" stop-color="#3a2a18"/><stop offset="1" stop-color="#160f08"/></radialGradient></defs>
+    <g class="lens" opacity="0">
+      <path class="cone" d="M512,705 L1210,440 M512,712 L1210,920" stroke="rgba(143,211,255,.35)" stroke-width="2" stroke-dasharray="6 8"/>
+      <circle cx="1400" cy="680" r="300" fill="url(#gLens)"/>
+      <g clip-path="url(#cLens)"><g class="starch"></g><g class="saliva"></g></g>
+      <circle cx="1400" cy="680" r="300" fill="none" stroke="rgba(207,232,255,.7)" stroke-width="6"/>
+      <circle cx="1400" cy="680" r="312" fill="none" stroke="rgba(207,232,255,.15)" stroke-width="14"/>
+    </g>
+  </svg>
+  <div class="lbl r" data-s="2-2" style="left:1230px;top:990px">Starch<small style="display:inline;margin-left:10px">(a carbohydrate)</small></div>
+  <div class="lbl r" data-s="3" style="left:1150px;top:990px"><span style="color:#f3e6c4">Starch</span> <span class="c-sal">— saliva →</span> <span class="c-nut">simpler sugars</span></div>
+  <div class="banner r" data-s="4" style="top:236px;font-size:38px">Saliva helps break down <span style="color:#f3e6c4">starch</span> into <span class="c-nut">simpler sugars</span>.</div>
+  <div class="fact r d1" data-s="4" style="left:40px;top:790px;width:640px"><div class="fk">DID YOU KNOW?</div><div class="ft">Your mouth waters when you just <i>think</i> of your favourite food — that is more saliva being released.</div></div>`,
+  init(c) {
+    c.m = mouthSim(c.q('svg.head'), 21);
+    const g = c.q('.starch'); c.ch = [];
+    [[1320, 520, .3], [1490, 600, -.4], [1320, 710, .1], [1490, 790, .5], [1390, 880, -.1], [1270, 620, -.7]].forEach(([x, y, a], i) =>
+      c.ch.push(new Chain(g, { x, y, n: 7, r: 17, gap: 38, ang: a, shape: 'hex', colors: ['#f3e6c4'], simple: '#ffd36e', seed: 30 + i, spread: 34, spreadT: 3, wave: 8, lw: 5 })));
+    c.sp = []; const R = rng(77), sg = c.q('.saliva');
+    for (let i = 0; i < 26; i++) c.sp.push({ e: dotEl(sg, 9, 'url(#gBlue)'), a: R() * 6.28, r: R(), ph: R() * 6, d: R() * 1.5 });
+  },
+  tick(c, dt) {
+    const n = c.n, st = c.stepT, t = c.t;
+    const P = .9, cyc = (c.t) / P;
+    c.m.set(4.45, n <= 1 ? 14 * (.5 - .5 * Math.cos(2 * Math.PI * cyc)) : 0, n >= 1 ? 1 : 0);
+    c.m.saliva(n >= 1 ? 1 : 0, t);
+    const lensOn = n >= 2 ? eout(n === 2 ? st / 1.2 : 1) : 0;
+    const L = c.q('.lens'); L.setAttribute('opacity', f1(lensOn * 100) / 100);
+    L.setAttribute('transform', `translate(1400,680) scale(${f1((.6 + .4 * lensOn) * 1000) / 1000}) translate(-1400,-680)`);
+    const T = n >= 3 ? { 1: n === 3 ? st - .8 : 60 } : {};
+    c.ch.forEach(ch => ch.update(dt, T, t));
+    c.sp.forEach(s => {
+      if (n < 3) { s.e.setAttribute('opacity', 0); return; }
+      const k = eout(seg(n === 3 ? st : 60, s.d * .5, s.d * .5 + 2.5));
+      const rr = lerp(420, 60 + s.r * 250, k), a = s.a + t * .15;
+      s.e.setAttribute('cx', f1(1400 + rr * Math.cos(a) + 10 * Math.sin(t + s.ph)));
+      s.e.setAttribute('cy', f1(680 + rr * Math.sin(a) + 10 * Math.cos(t * 1.2 + s.ph)));
+      s.e.setAttribute('opacity', .9);
+    });
+  },
+  notes: {
+    say: 'Try this at home: chew a small piece of chapati or a bite of boiled rice for 30 to 60 seconds without swallowing. At first it tastes normal… then it starts tasting sweet! Why? Look – while you chew, a watery juice flows into your mouth. This is saliva. Now let us zoom into the chewed food.',
+    ask: 'Has your mouth ever watered just by thinking about your favourite food? What is that liquid?',
+    explain: 'Chapati and rice contain starch, a type of carbohydrate. Starch is like a long chain. Saliva contains a digestive juice that breaks this chain into simpler sugars. Sugar tastes sweet – so the longer you chew, the sweeter it tastes. Food is partially digested in the mouth itself.',
+    confusion: 'Students may think sugar was already in the chapati. It was not sweet at first – the sugar is made from starch by saliva while you chew.',
+    transition: '“Can we PROVE that saliva breaks down starch? Let us do the experiment from your textbook.”'
+  }
+});
+
+/* ---------- 9. Iodine activity ---------- */
+slide({
+  act: 2, organ: 0, title: 'Activity 9.1: the iodine test',
+  steps: ['Add the rice', 'Add water', 'Add iodine', 'Why the difference?'],
+  html: `
+  <div class="abs" style="left:120px;top:96px;width:1700px"><div class="kicker">Activity 9.1 · Let us investigate</div>
+    <div class="h3" style="margin-top:12px">Does saliva really change starch?</div></div>
+  <svg class="full" viewBox="0 0 1920 1080">
+    <defs><filter id="fBlur10" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10"/></filter></defs>
+    <g class="tubes"></g>
+  </svg>
+  <div class="lbl center" style="left:310px;top:930px;width:300px;font-size:52px">A<small style="font-size:28px">Boiled rice</small></div>
+  <div class="lbl center" style="left:700px;top:930px;width:360px;font-size:52px">B<small style="font-size:28px">Chewed boiled rice<br>(30–60 seconds)</small></div>
+  <div class="abs" style="left:1180px;top:300px;width:660px">
+    <div class="r" data-s="2"><div class="small caps" style="letter-spacing:.2em">Before iodine</div><div class="sub" style="margin-top:6px">Both look <b style="color:#fff">whitish</b></div></div>
+    <div class="r" data-s="3" style="margin-top:44px"><div class="small caps" style="letter-spacing:.2em">After iodine</div>
+      <div class="sub" style="margin-top:6px"><b style="color:#fff">A</b> turns <b style="color:#8f9cff">blue-black</b></div>
+      <div class="sub"><b style="color:#fff">B</b> shows <b style="color:#e8d49a">no change or very light</b> colour</div></div>
+    <div class="r" data-s="4" style="margin-top:48px;padding:28px 32px;border-radius:20px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.14)">
+      <div class="key2" style="font-size:34px">Iodine + starch → <span style="color:#8f9cff">blue-black</span></div>
+      <div class="sub" style="margin-top:14px;font-size:31px"><b style="color:#fff">A:</b> starch is present.</div>
+      <div class="sub" style="font-size:31px"><b style="color:#fff">B:</b> saliva has broken the starch into <b class="c-nut">simpler sugars</b>.</div></div>
+  </div>`,
+  init(c) {
+    const g = c.q('.tubes'); c.tb = [];
+    [[460, 0], [880, 1]].forEach(([x, k]) => {
+      const inner = `M${x - 62},230 L${x - 62},800 A62,62 0 0 0 ${x + 62},800 L${x + 62},230`;
+      const id = 'cT' + k;
+      g.insertAdjacentHTML('beforeend', `<clipPath id="${id}"><path d="${inner} Z"/></clipPath>
+        <g clip-path="url(#${id})"><rect class="liq" x="${x - 70}" y="870" width="140" height="0" fill="#e9e4d6"/><rect class="front" x="${x - 70}" y="600" width="140" height="0" fill="#141a3f" filter="url(#fBlur10)" opacity="0"/><g class="rice"></g></g>
+        <path d="${inner}" fill="url(#gGlass)" stroke="rgba(207,232,255,.75)" stroke-width="5"/>
+        <path d="M${x - 78},230 L${x + 78},230" stroke="rgba(207,232,255,.75)" stroke-width="8" stroke-linecap="round"/>
+        <path d="M${x - 40},260 L${x - 40},790" stroke="rgba(255,255,255,.18)" stroke-width="8" stroke-linecap="round"/>
+        <g class="drop" opacity="0"><path d="M${x - 14},40 L${x + 14},40 L${x + 10},160 L${x + 3},190 L${x - 3},190 L${x - 10},160 Z" fill="rgba(207,232,255,.25)" stroke="rgba(207,232,255,.7)" stroke-width="3"/>
+          <rect x="${x - 9}" y="110" width="18" height="60" fill="#9a5a1a" opacity=".85"/><rect x="${x - 20}" y="-10" width="40" height="56" rx="14" fill="#2b2b33" stroke="#555" stroke-width="2"/></g>
+        <g class="dr"></g>`);
+      const G = g.lastElementChild ? g : g;
+      const all = c.qa('.liq'); const tb = { x, k, liq: all[k], front: c.qa('.front')[k], rice: c.qa('.rice')[k], drop: c.qa('.drop')[k], dr: c.qa('.dr')[k] };
+      const R = rng(5 + k * 9);
+      tb.grains = [];
+      for (let i = 0; i < (k ? 34 : 16); i++) {
+        const gx = x - 48 + R() * 96, gy = 835 - R() * (k ? 30 : 46);
+        tb.grains.push({ gy, e: k ? el('circle', { cx: f1(gx), cy: f1(gy), r: f1(3 + R() * 5), fill: '#f4f0e4', opacity: .95 }, tb.rice)
+          : el('ellipse', { cx: f1(gx), cy: f1(gy), rx: 7, ry: 15, transform: `rotate(${f1(R() * 180)} ${f1(gx)} ${f1(gy)})`, fill: '#fbf8ee', stroke: '#d8d1bf', 'stroke-width': 1.5 }, tb.rice) });
+      }
+      tb.drops = [0, 1, 2].map(() => el('ellipse', { cx: x, cy: 200, rx: 7, ry: 9, fill: '#a5611c', opacity: 0 }, tb.dr));
+      c.tb.push(tb);
+    });
+  },
+  tick(c) {
+    const n = c.n, st = c.stepT;
+    const P = k => n > k ? 60 : n === k ? st : -1;
+    c.tb.forEach(tb => {
+      const pr = P(1), pw = P(2), pi = P(3);
+      const rk = pr < 0 ? 0 : eout(pr / 1.4);
+      tb.rice.setAttribute('opacity', rk > 0 ? 1 : 0);
+      tb.rice.setAttribute('transform', `translate(0,${f1(-500 * (1 - rk))})`);
+      const wl = pw < 0 ? 0 : ease(pw / 2.2);
+      const top = 862 - 262 * wl;
+      setA(tb.liq, { y: f1(top), height: f1(870 - top) });
+      tb.drop.setAttribute('opacity', pi >= 0 && pi < 3.8 ? 1 : 0);
+      tb.drops.forEach((d, i) => {
+        const tt = pi - .4 - i * .55;
+        if (pi < 0 || tt < 0 || tt > .7) { d.setAttribute('opacity', 0); return; }
+        d.setAttribute('opacity', 1); d.setAttribute('cy', f1(200 + 400 * (tt / .7) * (tt / .7)));
+      });
+      const ck = pi < 0 ? 0 : ease(seg(pi, 1.2, 4.2));
+      const target = tb.k === 0 ? '#151a40' : '#dccb93';
+      tb.liq.setAttribute('fill', mix('#e9e4d6', target, ck));
+      const fk = pi < 0 ? 0 : seg(pi, .9, 3.4);
+      setA(tb.front, { y: f1(top - 20), height: f1(fk * (880 - top)), fill: target, opacity: fk > 0 && ck < 1 ? .85 : 0 });
+      tb.grains.forEach(g => g.e.setAttribute('fill', tb.k === 0 ? mix('#fbf8ee', '#262c5c', ck) : mix('#f4f0e4', '#e2d29e', ck)));
+    });
+  },
+  notes: {
+    say: 'Take two test tubes, A and B. In A, put a teaspoon of boiled rice. In B, put boiled rice that has been chewed for 30–60 seconds. Add 3–4 mL of water to both. Now add 3–4 drops of iodine solution to each and mix.',
+    ask: 'Before I add iodine – predict! Which tube will turn blue-black? Why?',
+    explain: 'Remember from Grade 6: iodine turns blue-black with starch. Tube A turns blue-black, so it has starch. Tube B shows no change or only a very light colour – so most of the starch is gone. Saliva has broken it down into simple sugars.',
+    confusion: 'Some think the chewed rice “lost” its food. It did not – the starch was changed into sugar, which iodine does not colour. If B still shows some colour, chew for longer and try again.',
+    transition: '“So saliva starts digestion in the mouth. Now, how does this soft, chewed food leave the mouth?”'
+  }
+});
+
+/* ---------- 10. Tongue & swallowing ---------- */
+slide({
+  act: 2, title: 'The tongue and swallowing',
+  organ: c => c.n >= 4 ? 1 : 0,
+  steps: ['Saliva moistens the food', 'Tongue mixes and gathers it', 'Tongue pushes it back', 'Down into the food pipe'],
+  html: `
+  <svg class="abs head" style="left:20px;top:70px;width:980px;height:1010px" viewBox="430 430 590 625">${headArt()}
+    <g class="r" data-s="4">${svgLabel(524, 940, 600, 960, 'Food pipe (Oesophagus)', 19, '#ffb3b8', 'start')}
+    ${svgLabel(600, 880, 700, 880, 'Windpipe', 15, 'rgba(190,215,240,.9)', 'start')}</g>
+  </svg>
+  <div class="abs" style="left:1080px;top:150px;width:760px">
+    <div class="kicker">Part 2 · Tongue &amp; swallowing</div>
+    <div class="h2" style="margin:16px 0 44px">Ready to swallow</div>
+    <div class="r" data-s="1" style="margin-bottom:30px"><div class="key2 c-sal">Saliva moistens the food</div><div class="small">soft and easy to swallow</div></div>
+    <div class="r" data-s="2" style="margin-bottom:30px"><div class="key2" style="color:#ffb3b8">Tongue mixes food with saliva</div><div class="small">and gathers it into a soft ball</div></div>
+    <div class="r" data-s="3" style="margin-bottom:30px"><div class="key2" style="color:#ffb3b8">Tongue pushes it back</div><div class="small">towards the food pipe</div></div>
+    <div class="r" data-s="4"><div class="key2 c-warm">Into the food pipe</div><div class="small">A small flap closes the windpipe, so food goes the right way.</div></div>
+  </div>`,
+  init(c) {
+    c.m = mouthSim(c.q('svg.head'), 21);
+    c.bp = el('path', { d: HEAD.BOLUS_PATH, fill: 'none', stroke: 'none' }, c.m.fx); c.bL = c.bp.getTotalLength();
+  },
+  tick(c) {
+    const n = c.n, st = c.stepT, t = c.t;
+    const S = k => n > k ? 60 : n === k ? st : -1;
+    const wet = n >= 1 ? 1 : 0;
+    c.m.saliva(n >= 1 && n <= 2 ? 1 : n === 3 ? Math.max(0, 1 - st) : 0, t);
+    const g = S(2) >= 0 ? ease(seg(S(2), .3, 2.6)) : 0;
+    const wig = n === 2 && st < 3 ? 8 * Math.sin(st * 9) : 0;
+    c.m.tongue.setAttribute('transform', `translate(0,${f1(wig * .6)})`);
+    // bolus
+    const push = S(3) >= 0 ? S(3) : -1;
+    const down = S(4) >= 0 ? S(4) : -1;
+    let u = 0;
+    if (push >= 0) u = .32 * ease(seg(push, .5, 2.2));
+    if (down >= 0) u = .32 + .68 * ease(seg(down, 0, 3.4));
+    const p = c.bp.getPointAtLength(u * c.bL);
+    const tp = push >= 0 ? (push < 2.6 ? Math.sin(seg(push, 0, 2.6) * Math.PI) : 0) : 0;
+    c.m.tongue.setAttribute('transform', `translate(${f1(-14 * tp)},${f1(-22 * tp + wig * .6)})`);
+    const showB = g >= 1;
+    c.m.set(4.45, 0, wet, g >= 1 ? 1 : g, 712, 646);
+    const sq = u > .4 ? .82 : 1;
+    setA(c.m.bolus, { cx: f1(showB ? p.x : 712), cy: f1(showB ? p.y : 646), rx: f1(30 * sq * Math.min(1, g * 1.2)), ry: f1(22 / sq * Math.min(1, g * 1.2)), opacity: g > .6 ? Math.min(1, (g - .6) * 3) : 0 });
+    // epiglottis closes while bolus passes the throat
+    const close = down >= 0 ? Math.sin(Math.PI * seg(down, .1, 2.2)) : 0;
+    c.m.epi.setAttribute('transform', `rotate(${f1(95 * clamp(close * 1.6))} 579 800)`);
+  },
+  notes: {
+    say: 'Saliva does one more job – it makes the chewed food wet, soft and slippery, so it is easy to swallow. Watch the tongue: it mixes the food with saliva and gathers it into a soft ball. Then it presses up and pushes the ball back into the throat, into the food pipe.',
+    ask: 'Try it now: swallow once and feel what your tongue does. Which way does it push?',
+    explain: 'The tongue mixes chewed food with saliva and pushes this softened food into a long, flexible tube called the food pipe or oesophagus. A small flap closes over the windpipe while we swallow, so food goes into the food pipe and not into the windpipe.',
+    confusion: 'The windpipe (for air) and the food pipe (for food) are two different tubes. When we talk while eating, food can “go down the wrong way” and make us cough.',
+    transition: '“Now the food is in the food pipe. Does it just fall down? Let us find out.”'
+  }
+});
+
+/* ---------- 11. Oesophagus: the wave ---------- */
+slide({
+  act: 2, organ: 1, title: 'The food pipe: a squeezing wave',
+  steps: ['Food enters the tube', 'Squeeze behind the food', 'Relax in front of it', 'Watch the wave', 'What do scientists call it?'],
+  html: `
+  <div class="abs" style="left:1040px;top:130px;width:800px">
+    <div class="kicker">Part 3 · The food pipe</div>
+    <div class="h2" style="margin:14px 0 6px">FOOD PIPE</div>
+    <div class="sub c-mut" style="font-style:italic;font-family:var(--serif);font-size:42px">“Oesophagus”</div>
+    <div class="sub r" data-s="0-0" style="margin-top:44px">A long, flexible tube from the mouth to the stomach.</div>
+    <div class="r" data-s="1-3" style="margin-top:44px"><div class="key2"><span class="dot" style="color:#ff6b6b;background:#ff6b6b"></span>Behind the food: walls <span style="color:#ff8a8a">squeeze</span></div></div>
+    <div class="r" data-s="2-3" style="margin-top:22px"><div class="key2"><span class="dot" style="color:#7fe0c8;background:#7fe0c8"></span>In front: walls <span style="color:#8af0d8">relax</span></div></div>
+    <div class="r" data-s="3-3" style="margin-top:40px"><div class="sub">Again and again, like a wave — the food is pushed down.</div></div>
+    <div class="r" data-s="4" style="margin-top:40px"><div class="sub">The walls gently <b style="color:#fff">contract and relax</b> in a <b style="color:#fff">wave-like motion</b> to push food to the stomach.</div>
+      <div class="term" style="margin-top:30px">Scientific term: <b>Peristalsis</b></div>
+      <div class="small" style="margin-top:20px">This movement happens all along the alimentary canal.</div></div>
+  </div>
+  <svg class="full" viewBox="0 0 1920 1080">
+    <g class="stomTop"><path d="M520,1000 C560,980 640,960 720,990 C800,1020 840,1080 840,1100 L380,1100 C400,1050 470,1015 520,1000 Z" fill="url(#gStom)" opacity=".85"/></g>
+    <g class="oesG"><path class="wallL"/><path class="wallR"/><path class="lumen"/><g class="rings"></g><g class="bol"></g></g>
+  </svg>
+  <div class="lbl" style="left:420px;top:1010px;color:#ffb3b8">Stomach ↓</div>
+  <div class="lbl sqz" style="opacity:0;color:#ff9a9a">Squeezes</div>
+  <div class="lbl rlx" style="opacity:0;color:#8af0d8">Relaxes</div>
+  <div class="fact r d1" data-s="4" style="left:1040px;top:860px;width:800px"><div class="fk">DID YOU KNOW?</div><div class="ft">Because the food pipe <i>pushes</i> food, astronauts can swallow even in space!</div></div>`,
+  init(c) {
+    c.cx = 620; c.y0 = 110; c.y1 = 1010;
+    c.wl = c.q('.wallL'); c.wr = c.q('.wallR'); c.lu = c.q('.lumen');
+    setA(c.wl, { fill: '#c95f6a', stroke: '#7a2a36', 'stroke-width': 2 }); setA(c.wr, { fill: '#c95f6a', stroke: '#7a2a36', 'stroke-width': 2 }); setA(c.lu, { fill: '#3b0d16' });
+    c.rings = []; const rg = c.q('.rings');
+    for (let y = c.y0 + 10; y < c.y1; y += 22) c.rings.push({ y, l: el('line', { stroke: 'rgba(90,20,30,.45)', 'stroke-width': 3 }, rg), r: el('line', { stroke: 'rgba(90,20,30,.45)', 'stroke-width': 3 }, rg) });
+    const bg = c.q('.bol');
+    c.bglow = el('ellipse', { rx: 70, ry: 80, fill: 'url(#gGold)', opacity: .25 }, bg);
+    c.bol = el('ellipse', { rx: 44, ry: 54, fill: 'url(#gBolus)', stroke: 'rgba(160,220,255,.7)', 'stroke-width': 3 }, bg);
+    c.sq = c.q('.sqz'); c.rl = c.q('.rlx');
+  },
+  tick(c) {
+    const n = c.n, st = c.stepT, t = c.t;
+    const Rb = 50, base = 16;
+    let yb = -200, cs = 0, rs = 0;
+    if (n >= 1 && n <= 2) {
+      yb = lerp(-80, 330, eout(seg(n === 1 ? st : 60, 0, 1.6)));
+      cs = n === 1 ? ease(seg(st, 1.6, 2.6)) : 1;
+      rs = n === 2 ? ease(seg(st, 0, 1)) : 0;
+    }
+    if (n >= 3) {
+      const per = 8.5, ph = ((n === 3 ? st : st + 3) % per) / per;
+      yb = lerp(330, 1180, ph); if (n === 3 && st < per) yb = lerp(330, 1180, ph);
+      cs = 1; rs = 1;
+    }
+    const W = y => {
+      const d = y - yb;
+      let r = base;
+      if (Math.abs(d) < Rb + 6) r = Math.max(r, (Rb + 6) * Math.sqrt(Math.max(0, 1 - (d / (Rb + 6)) ** 2)));
+      let th = 30;
+      // contraction zone behind (above)
+      const bz = -(d + Rb);
+      if (bz > 0 && bz < 150) { const k = Math.sin(Math.PI * bz / 150) * cs; r = lerp(r, 5, k); th += 16 * k; }
+      // relaxed zone ahead (below)
+      const fz = d - Rb;
+      if (fz > 0 && fz < 170) { const k = Math.sin(Math.PI * fz / 170) * rs; r = lerp(r, 34, k); th -= 6 * k; }
+      return [r, th, bz > 0 && bz < 150 ? Math.sin(Math.PI * bz / 150) * cs : 0, fz > 0 && fz < 170 ? Math.sin(Math.PI * fz / 170) * rs : 0];
+    };
+    const L = [], Ri = [], Lo = [], Ro = [];
+    for (let y = c.y0; y <= c.y1; y += 8) { const [r, th] = W(y); Ri.push([c.cx + r, y]); L.push([c.cx - r, y]); Lo.push([c.cx - r - th, y]); Ro.push([c.cx + r + th, y]); }
+    c.wl.setAttribute('d', polyD([...Lo, ...L.slice().reverse()]));
+    c.wr.setAttribute('d', polyD([...Ro, ...Ri.slice().reverse()]));
+    c.lu.setAttribute('d', polyD([...L, ...Ri.slice().reverse()]));
+    // colour the squeezing / relaxing zones
+    c.rings.forEach(rg => {
+      const [r, th, ks, kr] = W(rg.y);
+      const col = ks > .15 ? `rgba(255,90,90,${f1(.4 + .6 * ks)})` : kr > .15 ? `rgba(120,240,210,${f1(.3 + .6 * kr)})` : 'rgba(90,20,30,.45)';
+      setA(rg.l, { x1: f1(c.cx - r - th), x2: f1(c.cx - r), y1: rg.y, y2: rg.y, stroke: col, 'stroke-width': ks > .15 ? 5 : 3 });
+      setA(rg.r, { x1: f1(c.cx + r), x2: f1(c.cx + r + th), y1: rg.y, y2: rg.y, stroke: col, 'stroke-width': ks > .15 ? 5 : 3 });
+    });
+    const vis = n >= 1 && yb < c.y1 + 60;
+    setA(c.bol, { cx: c.cx, cy: f1(yb), opacity: vis ? 1 : 0 });
+    setA(c.bglow, { cx: c.cx, cy: f1(yb), opacity: vis ? .25 : 0 });
+    const lblOn = n >= 1 && n <= 3 && yb < 900;
+    c.sq.style.opacity = lblOn && cs > .3 ? 1 : 0; c.sq.style.left = (c.cx - 330) + 'px'; c.sq.style.top = (yb - Rb - 100) + 'px';
+    c.rl.style.opacity = lblOn && rs > .3 ? 1 : 0; c.rl.style.left = (c.cx - 300) + 'px'; c.rl.style.top = (yb + Rb + 70) + 'px';
+  },
+  notes: {
+    say: 'Here is the food pipe. Look carefully – the food does not simply fall down. The muscles in the wall BEHIND the food squeeze tight, and the wall IN FRONT of the food relaxes and opens up. Squeeze behind, relax in front… again and again, like a wave, pushing the food down to the stomach.',
+    ask: 'Have you ever squeezed toothpaste from the bottom of the tube? How is that similar to what the food pipe does?',
+    explain: 'The walls of the food pipe gently contract and relax in a wave-like motion to push the food down into the stomach. Scientists call this movement peristalsis. It happens throughout the alimentary canal and keeps pushing food forward.',
+    confusion: 'Food does NOT go down only because of gravity. Even if you drink water while lying down, it still reaches your stomach.',
+    transition: '“And where does this wave deliver our food? Into a stretchy, muscular bag – the stomach.”'
+  }
+});
+
+/* ===================== ACT 3 · THE TRANSFORMATION (stomach) ===================== */
+const ST = { k: 4.3, ox: 600, oy: 590, cx: 356, cy: 473 };
+const stMap = (x, y) => [ST.ox + (x - ST.cx) * ST.k, ST.oy + (y - ST.cy) * ST.k];
+
+/* ---------- 12. Stomach ---------- */
+slide({
+  act: 3, organ: 2, title: 'The stomach: churning and juices',
+  steps: ['Food arrives', 'The walls churn', 'Digestive juice', 'Acid', 'Mucus', 'The food becomes…'],
+  html: `
+  <svg class="full" viewBox="0 0 1920 1080">
+    <defs><clipPath id="cStom"><path class="clipP"/></clipPath>
+      <radialGradient id="gLumen" cx="55%" cy="40%" r="70%"><stop offset="0" stop-color="#8e3442"/><stop offset="1" stop-color="#4c121c"/></radialGradient></defs>
+    <path class="oesIn" fill="none" stroke="#d8737d" stroke-width="58" stroke-linecap="round"/>
+    <path class="duoOut" fill="none" stroke="#e79a8f" stroke-width="54" stroke-linecap="round"/>
+    <path class="edge" fill="none" stroke="#5e1b28" stroke-width="44" stroke-linejoin="round"/>
+    <path class="musc" fill="none" stroke="#d26a74" stroke-width="38" stroke-linejoin="round"/>
+    <path class="musc2" fill="none" stroke="rgba(255,190,190,.35)" stroke-width="4" stroke-dasharray="2 10" stroke-linejoin="round"/>
+    <path class="inner" fill="url(#gLumen)"/>
+    <g clip-path="url(#cStom)">
+      <g class="rugae"></g>
+      <path class="mucus" fill="none" stroke="#86b9ff" stroke-opacity=".55" stroke-width="0" stroke-linejoin="round"/>
+      <path class="chyme" fill="url(#gChyme)" opacity="0"/>
+      <g class="parts"></g><g class="bact"></g><g class="sec"></g>
+    </g>
+  </svg>
+  <div class="lbl" style="left:330px;top:96px;color:#ffb3b8">From the food pipe ↓</div>
+  <div class="lbl" style="left:40px;top:930px;color:#ffc9bd">To the small<br>intestine ←</div>
+  <div class="abs" style="left:1120px;top:120px;width:740px">
+    <div class="kicker">Part 4 · The stomach</div>
+    <div class="h2" style="margin:12px 0 30px">A churning bag</div>
+    <div class="r" data-s="2" style="margin-bottom:22px"><div class="key2" style="font-size:36px">Walls contract and relax</div><div class="small">to <b style="color:#fff">churn</b> (mix and mash) the food</div></div>
+    <div class="r" data-s="3" style="margin-bottom:20px"><div class="key2" style="font-size:34px"><span class="dot" style="color:#ffb347;background:#ffb347"></span>Digestive juice</div><div class="small" style="padding-left:40px">breaks down <b style="color:#fff">proteins</b></div></div>
+    <div class="r" data-s="4" style="margin-bottom:20px"><div class="key2" style="font-size:34px"><span class="dot" style="color:#d4f25a;background:#d4f25a"></span>Acid</div><div class="small" style="padding-left:40px">helps digestion · <b style="color:#fff">kills many harmful bacteria</b></div></div>
+    <div class="r" data-s="5" style="margin-bottom:20px"><div class="key2" style="font-size:34px"><span class="dot" style="color:#86b9ff;background:#86b9ff"></span>Mucus</div><div class="small" style="padding-left:40px"><b style="color:#fff">protects</b> the stomach lining from acid</div></div>
+    <div class="r" data-s="6" style="margin-top:28px;padding:22px 28px;border-radius:18px;background:rgba(242,220,174,.08);border:1.5px solid rgba(242,220,174,.4)">
+      <div class="key2" style="font-size:36px;color:#f2dcae">a semi-liquid mass</div><div class="small">partially digested, ready for the next stage</div></div>
+  </div>`,
+  init(c) {
+    const base = samplePath(BODY.STOM_ORG, 150).map(p => stMap(...p));
+    c.base = base;
+    // orientation for normals
+    let A = 0; for (let i = 0; i < base.length; i++) { const a = base[i], b = base[(i + 1) % base.length]; A += a[0] * b[1] - b[0] * a[1]; }
+    c.sgn = A > 0 ? 1 : -1;
+    c.nrm = base.map((p, i) => { const a = base[(i - 1 + base.length) % base.length], b = base[(i + 1) % base.length]; const tx = b[0] - a[0], ty = b[1] - a[1], L = Math.hypot(tx, ty) || 1; return [c.sgn * ty / L, -c.sgn * tx / L]; });
+    const ca = stMap(335, 420), py = stMap(272, 538);
+    c.q('.oesIn').setAttribute('d', `M${ca[0] - 70},60 C${ca[0] - 60},180 ${ca[0] - 20},280 ${ca[0] + 4},${ca[1] + 20}`);
+    c.q('.duoOut').setAttribute('d', `M${py[0] + 20},${py[1] - 4} C${py[0] - 40},${py[1] + 10} ${py[0] - 90},${py[1] + 40} ${py[0] - 140},${py[1] + 120}`);
+    const rg = c.q('.rugae'); const R = rng(14);
+    for (let i = 0; i < 9; i++) { const y = 260 + i * 80; const pts = []; for (let x = 180; x <= 1000; x += 40) pts.push([x, y + 26 * Math.sin(x * .02 + i) + R() * 8]); el('path', { d: smoothPath(pts), fill: 'none', stroke: 'rgba(255,160,170,.22)', 'stroke-width': 7, 'stroke-linecap': 'round' }, rg); }
+    // inside test polygon (inset)
+    c.inside = (x, y) => inPoly(x, y, base) && inPoly(x + 34, y, base) && inPoly(x - 34, y, base) && inPoly(x, y + 34, base) && inPoly(x, y - 34, base);
+    const cols = ['#e2b36b', '#d9a35a', '#f1dfb8', '#8fbf5a', '#e07a4a', '#f4f1e6'];
+    c.parts = []; const pg = c.q('.parts');
+    for (let i = 0; i < 46; i++) {
+      let x, y; do { x = 300 + R() * 640; y = 300 + R() * 640; } while (!c.inside(x, y));
+      const pts = []; for (let v = 0; v < 7; v++) { const a = v / 7 * 6.283, rr = .7 + R() * .4; pts.push([rr * Math.cos(a), rr * Math.sin(a)]); }
+      c.parts.push({ x, y, hx: x, hy: y, vx: 0, vy: 0, r: 10 + R() * 14, rot: R() * 360, d: R() * 1.2, e: el('path', { d: closedPath(pts), fill: cols[i % cols.length], stroke: 'rgba(60,20,10,.35)', 'stroke-width': .1 }, pg) });
+    }
+    c.bact = []; const bg = c.q('.bact');
+    for (let i = 0; i < 12; i++) { let x, y; do { x = 300 + R() * 640; y = 300 + R() * 640; } while (!c.inside(x, y)); const g = el('g', {}, bg); el('rect', { x: -15, y: -6, width: 30, height: 12, rx: 6, fill: '#b48cff', stroke: '#6a4bb8', 'stroke-width': 2 }, g); el('circle', { r: 20, fill: 'none', stroke: '#d4f25a', 'stroke-width': 3, opacity: 0, class: 'pop' }, g); c.bact.push({ x, y, g, d: .6 + R() * 2.8, ph: R() * 6 }); }
+    c.sec = []; const sg = c.q('.sec');
+    for (let i = 0; i < 70; i++) { const k = i % 2; c.sec.push({ k, e: dotEl(sg, k ? 6 : 8, k ? 'url(#gGreen)' : 'url(#gGold)', { opacity: 0 }), i: Math.floor(R() * base.length), off: R() * 3, life: 2.4 + R() * 1.5, ang: R() * 6.28 }); }
+  },
+  tick(c, dt) {
+    const n = c.n, st = c.stepT, t = c.t;
+    const S = k => n > k ? 60 : n === k ? st : -1;
+    const churn = n >= 2 ? Math.min(1, (S(2) >= 0 ? S(2) : 0) / 1.2) : 0;
+    const N = c.base.length;
+    const pts = c.base.map((p, i) => { const s = i / N; const d = churn * 11 * Math.sin(2 * Math.PI * (3 * s - .55 * t)); return [p[0] + c.nrm[i][0] * d, p[1] + c.nrm[i][1] * d]; });
+    const d = closedPath(pts);
+    ['.edge', '.musc', '.musc2', '.inner', '.clipP', '.mucus', '.chyme'].forEach(s => c.q(s).setAttribute('d', d));
+    const mu = S(5) >= 0 ? ease(S(5) / 2) : 0;
+    c.q('.mucus').setAttribute('stroke-width', f1(48 * mu));
+    // contents
+    const fall = S(1) >= 0 ? S(1) : -1;
+    const liq = S(6) >= 0 ? ease(S(6) / 3) : 0;
+    c.q('.chyme').setAttribute('opacity', f1(liq * .92 * 100) / 100);
+    const cxS = 600, cyS = 600;
+    c.parts.forEach(p => {
+      if (fall < 0) { p.e.setAttribute('opacity', 0); return; }
+      const ft = fall - p.d;
+      if (ft < 0) { p.e.setAttribute('opacity', 0); return; }
+      if (ft < 1.4 && n === 1) { const k = eout(ft / 1.4); const ca = stMap(335, 420); p.x = lerp(ca[0], p.hx, k); p.y = lerp(ca[1] - 60, p.hy, k); }
+      else if (churn > 0) {
+        const dx = p.x - cxS, dy = p.y - cyS;
+        p.vx += (-dy * .9 - dx * .15) * dt * churn * .9 + (Math.sin(t * 2 + p.hy) * 30) * dt;
+        p.vy += (dx * .9 - dy * .15) * dt * churn * .9 + (Math.cos(t * 1.7 + p.hx) * 30) * dt;
+        p.vx *= .96; p.vy *= .96;
+        const nx = p.x + p.vx * dt, ny = p.y + p.vy * dt;
+        if (c.inside(nx, ny)) { p.x = nx; p.y = ny; } else { p.vx *= -.5; p.vy *= -.5; p.x += (cxS - p.x) * .02; p.y += (cyS - p.y) * .02; }
+      }
+      p.rot += churn * dt * 30;
+      const sc = p.r * (1 - .72 * liq);
+      p.e.setAttribute('transform', `translate(${f1(p.x)},${f1(p.y)}) rotate(${f1(p.rot)}) scale(${f1(sc * 10) / 10})`);
+      p.e.setAttribute('opacity', f1((1 - .55 * liq) * 100) / 100);
+    });
+    // bacteria killed by acid
+    const ac = S(4);
+    c.bact.forEach(b => {
+      if (fall < 0) { b.g.setAttribute('opacity', 0); return; }
+      const kill = ac >= 0 ? seg(ac - b.d, 0, .5) : 0;
+      b.g.setAttribute('opacity', f1((1 - kill) * 100) / 100);
+      const pop = b.g.querySelector('.pop'); pop.setAttribute('opacity', kill > 0 && kill < 1 ? f1((1 - kill) * 100) / 100 : 0); pop.setAttribute('r', f1(14 + 30 * kill));
+      b.g.setAttribute('transform', `translate(${f1(b.x + 20 * Math.sin(t * .8 + b.ph))},${f1(b.y + 14 * Math.cos(t + b.ph))}) rotate(${f1(t * 20 + b.ph * 50)})`);
+    });
+    // secretions from the lining
+    const jOn = S(3), aOn = S(4);
+    c.sec.forEach(s => {
+      const on = s.k === 0 ? jOn : aOn;
+      if (on < 0) { s.e.setAttribute('opacity', 0); return; }
+      const ph = ((on + s.off) % s.life) / s.life;
+      const b = pts[s.i], nn = c.nrm[s.i];
+      const dd = -lerp(0, 110, eout(ph));
+      const x = b[0] + nn[0] * (dd - 6) + 18 * Math.sin(ph * 6 + s.ang), y = b[1] + nn[1] * (dd - 6) + 18 * Math.cos(ph * 5 + s.ang);
+      setA(s.e, { cx: f1(x), cy: f1(y), opacity: f1(Math.sin(Math.PI * ph) * (1 - .6 * liq) * 100) / 100 });
+      if (ph > .97) s.i = Math.floor(Math.random() * N);
+    });
+  },
+  notes: {
+    say: 'The wave in the food pipe delivers our food into the stomach – a stretchy, muscular bag. Watch its walls: they contract and relax, again and again, churning the food – mixing and mashing it. Then the inner lining of the stomach pours out a secretion. It has three parts: a digestive juice, an acid and mucus.',
+    ask: 'Your stomach can make an acid strong enough to help digest meat. So why doesn’t your stomach digest itself?',
+    explain: 'The digestive juice breaks down proteins into simpler components. The acid also helps break down proteins and kills many harmful bacteria that come with our food. The mucus forms a protective coat on the stomach lining so the acid does not damage it. After churning and mixing, the food becomes a partially digested, semi-liquid mass, ready for the next stage.',
+    confusion: 'The stomach does not digest all the food – digestion here is only partial. Also, the stomach is not where most nutrients are absorbed; that happens later, in the small intestine.',
+    transition: '“Let us zoom right up to the stomach wall to see how mucus protects it.”'
+  }
+});
+
+/* ---------- 13. Acid vs mucus ---------- */
+slide({
+  act: 3, organ: 2, title: 'Acid and the mucus shield',
+  steps: ['Show the acid', 'Show the mucus shield', 'What if there were no mucus?', 'Put the shield back'],
+  html: `
+  <div class="abs" style="left:120px;top:110px;width:1680px"><div class="kicker">Close-up of the stomach wall</div>
+    <div class="q" style="margin-top:12px;font-size:54px">If acid helps digest food… why doesn’t it damage the stomach itself?</div></div>
+  <svg class="full" viewBox="0 0 1920 1080">
+    <g class="cells"></g><path class="dmg" fill="rgba(255,40,40,0)"/>
+    <path class="mucusL" fill="rgba(134,185,255,.45)" stroke="rgba(190,220,255,.8)" stroke-width="3"/>
+    <g class="acid"></g><g class="bact2"></g>
+  </svg>
+  <div class="lbl" style="left:120px;top:960px;color:#ffb3b8">Stomach lining</div>
+  <div class="card r" data-s="1" style="left:120px;top:470px;width:620px;border-color:rgba(212,242,90,.45)"><div class="ct c-acid">ACID</div><div class="cd">a powerful digestive environment — also kills many harmful bacteria</div></div>
+  <div class="card r" data-s="2" style="left:1180px;top:470px;width:620px;border-color:rgba(134,185,255,.5)"><div class="ct c-muc">MUCUS</div><div class="cd">a protective shield over the stomach lining</div></div>
+  <div class="banner r" data-s="3-3" style="top:350px;border-color:rgba(255,90,90,.6)">Without mucus, acid would <span style="color:#ff8a8a">damage</span> the lining</div>
+  <div class="banner r" data-s="4" style="top:350px;border-color:rgba(134,185,255,.6)">Mucus keeps the stomach safe from its own acid</div>`,
+  init(c) {
+    const cg = c.q('.cells'); const R = rng(3);
+    c.cellEls = [];
+    for (let x = -20; x < 1960; x += 64) {
+      const h = 170 + R() * 16;
+      const g = el('g', {}, cg);
+      el('rect', { x: x + 3, y: 800, width: 58, height: h, rx: 18, fill: '#e07b86', stroke: '#9c3a4a', 'stroke-width': 3 }, g);
+      el('ellipse', { cx: x + 32, cy: 880 + R() * 30, rx: 13, ry: 17, fill: '#9c3a5c', opacity: .8 }, g);
+      c.cellEls.push({ x, g, r: g.firstChild });
+    }
+    c.mu = []; for (let x = 0; x <= 1920; x += 40) c.mu.push(x);
+    c.ac = []; const ag = c.q('.acid');
+    for (let i = 0; i < 70; i++) c.ac.push({ x: R() * 1920, y: 540 + R() * 220, vx: (R() - .5) * 160, vy: 60 + R() * 120, e: dotEl(ag, 9, 'url(#gGreen)', { opacity: 0 }) });
+    c.bb = []; const bg = c.q('.bact2');
+    for (let i = 0; i < 8; i++) { const g = el('g', {}, bg); el('rect', { x: -22, y: -9, width: 44, height: 18, rx: 9, fill: '#b48cff', stroke: '#6a4bb8', 'stroke-width': 2 }, g); c.bb.push({ g, x: 820 + R() * 300, y: 560 + R() * 150, d: .5 + R() * 2.5, ph: R() * 6 }); }
+  },
+  tick(c, dt) {
+    const n = c.n, st = c.stepT, t = c.t;
+    const S = k => n > k ? 60 : n === k ? st : -1;
+    // mucus thickness profile (gap in the middle at step 3)
+    const muOn = n >= 2 ? ease(seg(S(2), 0, 1.5)) : 0;
+    const gap = n === 3 ? ease(seg(st, 0, 1.2)) : n >= 4 ? 1 - ease(seg(S(4), 0, 1.5)) : 0;
+    const th = x => { const g = Math.exp(-(((x - 960) / 260) ** 2)) * gap; return 70 * muOn * (1 - g); };
+    const top = c.mu.map(x => [x, 798 - th(x) + 5 * Math.sin(x * .02 + t * 1.5) * muOn]);
+    c.q('.mucusL').setAttribute('d', smoothPath(top) + `L1920,800 L0,800 Z`);
+    c.q('.mucusL').setAttribute('opacity', muOn > .02 ? 1 : 0);
+    // damage where unprotected
+    c.dmgK = c.dmgK || 0;
+    const exposed = n === 3 ? 1 : 0;
+    c.dmgK = clamp(c.dmgK + (exposed ? dt * .5 : -dt * .8));
+    c.cellEls.forEach(ce => { const e = Math.exp(-(((ce.x + 32 - 960) / 230) ** 2)); ce.r.setAttribute('fill', mix('#e07b86', '#7a1020', c.dmgK * e)); });
+    // acid
+    c.ac.forEach(a => {
+      if (n < 1) { a.e.setAttribute('opacity', 0); return; }
+      a.x += a.vx * dt; a.y += a.vy * dt;
+      if (a.x < 0) a.x += 1920; if (a.x > 1920) a.x -= 1920;
+      const floor = 798 - th(a.x) - 8;
+      if (a.y > floor) { a.y = floor; a.vy = -Math.abs(a.vy) * (.9 + Math.random() * .2); }
+      if (a.y < 530) { a.vy = Math.abs(a.vy); }
+      setA(a.e, { cx: f1(a.x), cy: f1(a.y), opacity: .95 });
+    });
+    c.bb.forEach(b => {
+      const kill = n >= 1 ? seg(S(1) - b.d, 0, .6) : 0;
+      b.g.setAttribute('opacity', f1((1 - kill) * 100) / 100);
+      b.g.setAttribute('transform', `translate(${f1(b.x + 30 * Math.sin(t * .7 + b.ph))},${f1(b.y)}) rotate(${f1(t * 25 + b.ph * 40)}) scale(${f1((1 - .5 * kill) * 100) / 100})`);
+    });
+  },
+  notes: {
+    say: 'Here is a close-up of the stomach wall. These green sparks represent the acid – it makes the stomach a powerful place for digestion, and it kills many harmful bacteria that enter with food. Now look at this blue layer – mucus. Watch the acid bounce off it. What if the mucus were missing? (Click.) The lining gets damaged. (Click.) With mucus back, the stomach is safe.',
+    ask: 'Why is it useful that the stomach has acid? And why does it also need mucus?',
+    explain: 'The acid helps break down proteins and kills many harmful bacteria. The mucus protects the stomach lining from the acid, preventing damage.',
+    confusion: 'Mucus does not destroy the acid – it simply forms a shield between the acid and the lining.',
+    transition: '“How do we even know what happens inside a living stomach? The answer is an amazing story from history.”'
+  }
+});
+
+/* ---------- 14. Beaumont ---------- */
+slide({
+  act: 3, organ: 2, title: 'Science discovery: Beaumont',
+  steps: ['The accident', 'The doctor', 'A window into the stomach', 'The experiments'],
+  html: `
+  <div class="abs" style="left:120px;top:110px"><div class="kicker" style="color:var(--warm)">Science discovery moment</div>
+    <div class="h3" style="margin-top:12px">How did scientists learn what happens inside the stomach?</div></div>
+  <div class="abs" style="left:120px;top:300px;font:600 230px/1 var(--serif);color:rgba(255,184,107,.9);letter-spacing:-.02em">1822</div>
+  <svg class="abs" style="left:150px;top:570px;width:640px;height:460px" viewBox="0 0 640 460">
+    <path d="M60,460 C60,330 120,250 220,226 L420,226 C520,250 580,330 580,460 Z" fill="rgba(255,214,170,.07)" stroke="rgba(255,214,170,.45)" stroke-width="3"/>
+    <circle cx="320" cy="140" r="78" fill="rgba(255,214,170,.07)" stroke="rgba(255,214,170,.45)" stroke-width="3"/>
+    <g class="win" opacity="0"><circle cx="380" cy="350" r="46" fill="url(#gStom)" opacity=".9"/><circle cx="380" cy="350" r="70" fill="url(#gGold)" opacity=".35"/><circle cx="380" cy="350" r="46" fill="none" stroke="#ffd36e" stroke-width="3"/></g>
+  </svg>
+  <div class="abs" style="left:900px;top:300px;width:920px">
+    <div class="r" data-s="1" style="margin-bottom:34px"><div class="key2" style="font-size:38px">Alexis St. Martin</div><div class="sub" style="font-size:32px">is accidentally shot in the stomach.</div></div>
+    <div class="r" data-s="2" style="margin-bottom:34px"><div class="key2" style="font-size:38px">Dr. William Beaumont</div><div class="sub" style="font-size:32px">treats him — but the wound never fully heals.</div></div>
+    <div class="r" data-s="3" style="margin-bottom:34px"><div class="key2 c-warm" style="font-size:38px">A small permanent opening</div><div class="sub" style="font-size:32px">lets Dr. Beaumont <b style="color:#fff">observe digestion as it happens</b>.</div></div>
+    <div class="r" data-s="4"><div class="sub" style="font-size:32px">His experiments showed <b style="color:#fff">how different foods are broken down</b> — and even <b style="color:#fff">how emotions affect digestion</b>.</div></div>
+  </div>`,
+  tick(c) { const on = c.n >= 3 ? 1 : 0; c.q('.win').setAttribute('opacity', on ? f1((.75 + .25 * Math.sin(c.t * 2)) * 100) / 100 : 0); },
+  notes: {
+    say: 'In 1822, a young man named Alexis St. Martin was accidentally shot in the stomach. A doctor, William Beaumont, treated him. He survived, but the wound never fully healed – it left a small permanent opening into his stomach. Through this opening Dr. Beaumont could actually watch digestion happening!',
+    ask: 'If you could look inside a stomach while it is digesting, what experiment would YOU do?',
+    explain: 'Dr. Beaumont did experiments on how different foods were broken down in the stomach and even studied how emotions affect digestion. Discoveries in science sometimes begin by chance, but they need careful observation.',
+    confusion: 'Keep the focus on the observation, not the injury. The opening was small and Alexis St. Martin lived a long life.',
+    transition: '“Now our food has become a semi-liquid mass. Where does it go next? Follow it out of the stomach.”'
+  }
+});
+
+/* ===================== ACT 3 (cont.) · SMALL INTESTINE ===================== */
+
+/* ---------- 15. Into the small intestine ---------- */
+slide({
+  act: 3, title: 'Into the small intestine',
+  organ: c => c.n >= 1 ? 3 : 2,
+  steps: ['Follow the food', 'Pull the camera out', 'How long is it?'],
+  html: `
+  <svg class="full body" viewBox="0 0 10 10" preserveAspectRatio="xMidYMid meet">${bodyArt()}</svg>
+  <div class="abs" style="left:120px;top:150px;width:700px">
+    <div class="kicker">Part 5 · Leaving the stomach</div>
+    <div class="h3 r" data-s="0-1" style="margin-top:14px">Follow the semi-liquid food…</div>
+    <div class="r" data-s="2" style="margin-top:14px"><div class="h2">SMALL INTESTINE</div>
+      <div class="sub" style="margin-top:18px">A long, coiled tube packed into your belly.</div></div>
+    <div class="r" data-s="3" style="margin-top:60px"><div class="q" style="font-size:58px">How long do you think it is?</div></div>
+  </div>`,
+  init(c) { c.svg = c.q('svg.body'); c.trk = new Track(c.svg, BODY.TRACK); const fx = c.q('.fx'); c.gl = el('circle', { r: 16, fill: 'url(#gGold)', opacity: .6 }, fx); c.b = el('circle', { r: 7, fill: 'url(#gChyme)', stroke: 'rgba(255,240,200,.9)', 'stroke-width': 1.5 }, fx); },
+  step(c, n) { dimOrgans(c, n >= 2 ? ['si'] : null); },
+  tick(c) {
+    const n = c.n, st = c.stepT, t = c.t;
+    const s = n === 0 ? 2.5 + .03 * Math.sin(t) : n === 1 ? lerp(2.5, 3.42, ease(seg(st, .3, 7.5))) : 3.42;
+    const p = c.trk.pt(s);
+    [c.gl, c.b].forEach(e => setA(e, { cx: f1(p[0]), cy: f1(p[1]) }));
+    c.b.setAttribute('r', f1(7 + Math.sin(t * 4)));
+    const out = n >= 2 ? ease(seg(n === 2 ? st : 60, 0, 3)) : 0;
+    const h0 = n === 0 ? 300 : 210;
+    const cx = lerp(n === 0 ? 300 : p[0] - 30, 30, out), cy = lerp(n === 0 ? 480 : p[1], 510, out), h = Math.exp(lerp(Math.log(h0), Math.log(1100), out));
+    cam(c.svg, cx, cy, h);
+    c.gl.setAttribute('opacity', n >= 2 ? 0 : .6); c.b.setAttribute('opacity', n >= 2 ? 1 - out : 1);
+    if (n >= 2) c.qa('.org.si path').forEach((pp, i) => { if (i % 3 === 1) pp.setAttribute('stroke', mix('#e79a8f', '#ffd36e', .5 + .5 * Math.sin(t * 2.5))); });
+    else c.qa('.org.si path').forEach((pp, i) => { if (i % 3 === 1) pp.setAttribute('stroke', '#e79a8f'); });
+  },
+  notes: {
+    say: 'Our food is now a semi-liquid mass. A little at a time, it leaves the stomach and enters the next part of the canal. Let us follow it… (click) …and now pull the camera back. This coiled tube filling your belly is the small intestine.',
+    ask: 'Look at how it is folded. Guess – how long would it be if we stretched it out straight?',
+    explain: 'Let students guess (10 cm? 1 m? 20 m?). Write two or three guesses on the board before revealing.',
+    confusion: 'The small intestine is not a small organ – it is coiled up so a very long tube fits inside the body.',
+    transition: '“Let us stretch it out and measure it.”'
+  }
+});
+
+/* ---------- 16. Almost 6 metres ---------- */
+slide({
+  act: 3, organ: 3, title: 'Almost 6 metres long',
+  steps: ['Stretch it out', 'Compare with your classroom', 'So why “small”?', 'Compare the large intestine'],
+  html: () => {
+    const PX = 140, FL = 1000;
+    let ruler = `<path d="M170,${FL} L170,${FL - 6 * PX - 10}" stroke="rgba(255,255,255,.4)" stroke-width="3"/>`;
+    for (let m = 0; m <= 6; m++) ruler += `<path d="M150,${FL - m * PX} L190,${FL - m * PX}" stroke="rgba(255,255,255,.55)" stroke-width="3"/><text x="135" y="${FL - m * PX + 11}" font-size="30" font-weight="600" fill="rgba(255,255,255,.75)" text-anchor="end">${m} m</text>`;
+    return `
+  <svg class="full" viewBox="0 0 1920 1080">
+    <path d="M100,${FL} L1180,${FL}" stroke="rgba(255,255,255,.25)" stroke-width="3"/>
+    ${ruler}
+    <g transform="translate(300,${FL - 438 * .238}) scale(.238)"><circle cx="0" cy="-332" r="54" fill="url(#gSkin)" stroke="rgba(184,212,255,.7)" stroke-width="10"/><path d="${figurePath()}" fill="url(#gSkin)" stroke="rgba(184,212,255,.7)" stroke-width="10"/></g>
+    <g class="room"><rect x="420" y="${FL - 3 * PX}" width="290" height="${3 * PX}" fill="rgba(255,214,170,.06)" stroke="rgba(255,214,170,.6)" stroke-width="4"/>
+      <rect x="450" y="${FL - 205}" width="86" height="205" fill="rgba(255,214,170,.1)" stroke="rgba(255,214,170,.5)" stroke-width="3"/>
+      <rect x="580" y="${FL - 330}" width="100" height="90" fill="rgba(143,211,255,.12)" stroke="rgba(255,214,170,.5)" stroke-width="3"/></g>
+    <g class="room2" opacity="0"><rect x="420" y="${FL - 6 * PX}" width="290" height="${3 * PX}" fill="rgba(255,214,170,.03)" stroke="rgba(255,214,170,.55)" stroke-width="4" stroke-dasharray="14 10"/></g>
+    <g class="si"><path class="siP" fill="none" stroke="#7a2f38" stroke-width="30" stroke-linecap="round"/><path class="siP2" fill="none" stroke="#e79a8f" stroke-width="25" stroke-linecap="round"/><path class="siP3" fill="none" stroke="#ffd6cc" stroke-width="6" stroke-linecap="round" stroke-opacity=".5"/></g>
+    <g class="li" opacity="0"><rect x="1060" y="${FL - 1.5 * PX}" width="66" height="${1.5 * PX}" rx="30" fill="#c98a68" stroke="#5a3021" stroke-width="4"/>
+      ${[1, 2, 3, 4].map(k => `<path d="M1062,${FL - k * 42} L1124,${FL - k * 42}" stroke="#5a3021" stroke-width="3" opacity=".5"/>`).join('')}</g>
+    <g class="xs" opacity="0">
+      <circle cx="1400" cy="600" r="34" fill="#e79a8f" stroke="#7a2f38" stroke-width="10"/><circle cx="1400" cy="600" r="16" fill="#3b0d16"/>
+      <circle cx="1680" cy="600" r="84" fill="#c98a68" stroke="#5a3021" stroke-width="16"/><circle cx="1680" cy="600" r="50" fill="#2a120a"/>
+    </g>
+  </svg>
+  <div class="lbl center" style="left:200px;top:1012px;width:200px;font-size:26px">You</div>
+  <div class="lbl center" style="left:400px;top:1012px;width:330px;font-size:26px">Classroom ≈ 3 m</div>
+  <div class="lbl center" style="left:780px;top:1012px;width:240px;font-size:26px;color:#ffc9bd">Small intestine</div>
+  <div class="lbl center r" data-s="4" style="left:993px;top:1012px;width:200px;font-size:26px;color:#e7b08f">Large int.</div>
+  <div class="lbl cnt" style="left:845px;top:110px;font-size:44px;color:#ffd36e">0.0 m</div>
+  <div class="lbl r" data-s="4" style="left:1050px;top:715px;font-size:34px;color:#e7b08f">1.5 m</div>
+  <div class="abs" style="left:1260px;top:150px;width:620px"><div class="kicker">Part 5 · The small intestine</div></div>
+  <div class="abs r" data-s="1-2" style="left:1260px;top:220px;width:620px"><div class="h2">Almost <span class="c-nut">6 metres</span> long!</div>
+      <div class="sub" style="margin-top:16px">The <b style="color:#fff">longest</b> part of the alimentary canal.</div></div>
+  <div class="abs r" data-s="2-2" style="left:1260px;top:520px;width:620px"><div class="key2">≈ twice the height of your classroom</div></div>
+  <div class="abs r" data-s="3" style="left:1260px;top:220px;width:620px"><div class="h3">So why is it called <span style="color:#ffc9bd">small</span>?</div>
+      <div class="sub" style="margin-top:16px">Because it is <b style="color:#fff">narrower</b> — not because it is short.</div></div>
+  <div class="abs r" data-s="4" style="left:1260px;top:880px;width:620px"><div class="sub">Large intestine: about <b style="color:#fff">1.5 m</b> — shorter, but <b style="color:#fff">wider</b>.</div></div>
+  <div class="lbl center r" data-s="3" style="left:1300px;top:740px;width:200px;font-size:28px;color:#ffc9bd">small<small>narrower</small></div>
+  <div class="lbl center r" data-s="3" style="left:1580px;top:740px;width:200px;font-size:28px;color:#e7b08f">large<small>wider</small></div>`;
+  },
+  tick(c) {
+    const n = c.n, st = c.stepT, t = c.t;
+    const g = n >= 1 ? ease(seg(n === 1 ? st : 60, .2, 4.2)) : 0;
+    const top = 1000 - 840 * g, pts = [];
+    for (let y = 1000; y >= top - .1; y -= 10) pts.push([900 + 7 * Math.sin(y * .05 + t * 1.5), y]);
+    if (pts.length < 2) pts.push([900, 999]);
+    const d = smoothPath(pts);
+    ['.siP', '.siP2'].forEach(s => c.q(s).setAttribute('d', d));
+    c.q('.siP3').setAttribute('d', d); c.q('.siP3').setAttribute('transform', 'translate(-5,0)');
+    const cnt = c.q('.cnt'); cnt.textContent = (6 * g).toFixed(1) + ' m'; cnt.style.top = (top - 70) + 'px'; cnt.style.opacity = n >= 1 ? 1 : 0;
+    c.q('.room2').setAttribute('opacity', n >= 2 ? f1(seg(n === 2 ? st : 60, 0, 1) * 100) / 100 : 0);
+    c.q('.xs').setAttribute('opacity', n >= 3 ? 1 : 0);
+    c.q('.li').setAttribute('opacity', n >= 4 ? 1 : 0);
+  },
+  notes: {
+    say: 'Watch as we stretch it out… 1 metre, 2, 3… almost 6 metres! That is almost twice the height of your classroom. It is the longest part of the whole alimentary canal.',
+    ask: 'If it is so long, why do you think it is called the SMALL intestine?',
+    explain: 'It is called small because it is narrower than the large intestine – not because it is short. The large intestine is only about 1.5 metres long, but it is wider.',
+    confusion: '“Small” and “large” describe how wide the tubes are, not how long they are.',
+    transition: '“This long tube does not work alone. Three teammates send juices into it. Let us meet the team.”'
+  }
+});
+
+/* ---------- 17. The digestion team ---------- */
+slide({
+  act: 3, organ: 3, title: 'The digestion team',
+  steps: ['The liver', 'The pancreas', 'The small intestine wall', 'The whole team'],
+  html: `
+  <svg class="full body" viewBox="0 0 10 10" preserveAspectRatio="xMidYMid meet">${bodyArt()}</svg>
+  <div class="lbl tl1" style="color:#e79a80">Liver</div>
+  <div class="lbl tl2" style="color:#f5d06b">Pancreas</div>
+  <div class="lbl tl3" style="color:#ffc9bd">Small intestine</div>
+  <div class="lbl tl4" style="color:rgba(255,255,255,.55)">Stomach</div>
+  <div class="abs" style="left:1140px;top:130px;width:720px">
+    <div class="kicker">Part 6 · The digestion team</div>
+    <div class="h2" style="margin:12px 0 40px">Three juices join in</div>
+    <div class="card r" data-s="1" style="position:relative;margin-bottom:24px;border-color:rgba(127,195,90,.5)"><div class="ct" style="color:#8fd46a">THE LIVER → BILE</div></div>
+    <div class="card r" data-s="2" style="position:relative;margin-bottom:24px;border-color:rgba(245,208,107,.5)"><div class="ct c-panc">THE PANCREAS → PANCREATIC JUICE</div></div>
+    <div class="card r" data-s="3" style="position:relative;margin-bottom:24px;border-color:rgba(255,201,189,.5)"><div class="ct" style="color:#ffc9bd">SMALL INTESTINE WALL → INTESTINAL JUICE</div></div>
+    <div class="sub r" data-s="4">All of them pour into the <b style="color:#fff">small intestine</b>.</div>
+  </div>`,
+  init(c) {
+    c.svg = c.q('svg.body'); cam(c.svg, 440, 500, 400);
+    const P = (x, y) => projVB(c.svg, x, y);
+    const put = (s, x, y, dx, dy) => { const p = P(x, y); const e = c.q(s); e.style.left = (p[0] + dx) + 'px'; e.style.top = (p[1] + dy) + 'px'; };
+    put('.tl1', 200, 400, -60, -40); put('.tl2', 420, 556, 20, 10); put('.tl3', 240, 600, -330, 20); put('.tl4', 420, 470, 40, -20);
+    const fx = c.q('.fx');
+    const mk = (d, n, fill, r) => { const p = el('path', { d, fill: 'none', stroke: 'none' }, fx); const L = p.getTotalLength(); return { p, L, dots: Array.from({ length: n }, (_, i) => ({ o: i / n, e: dotEl(fx, r, fill, { opacity: 0 }) })) }; };
+    c.bile = mk('M232,462 C240,470 250,480 262,488 ' + BODY.BILE.replace(/^M[\d.,]+/, ''), 9, 'url(#gGreen)', 4.5);
+    c.panc = mk(BODY.PDUCT, 9, 'url(#gGold)', 4.5);
+    c.si = mk(BODY.SI_TRK, 22, 'url(#gRed)', 3.6);
+  },
+  step(c, n) {
+    const keep = [null, ['liver', 'gall'], ['panc'], ['si'], ['liver', 'gall', 'panc', 'si']][n];
+    dimOrgans(c, keep);
+    ['.tl1', '.tl2', '.tl3'].forEach((s, i) => { c.q(s).style.opacity = n === 0 || n === i + 1 || n === 4 ? 1 : .3; });
+  },
+  tick(c) {
+    const n = c.n, t = c.t;
+    const run = (f, on, sp) => f.dots.forEach(d => { if (!on) { d.e.setAttribute('opacity', 0); return; } const ph = (t * sp + d.o) % 1; const q = f.p.getPointAtLength(ph * f.L); setA(d.e, { cx: f1(q.x), cy: f1(q.y), opacity: f1(Math.sin(Math.PI * ph) * 100) / 100 }); });
+    run(c.bile, n === 1 || n === 4, .35);
+    run(c.panc, n === 2 || n === 4, .3);
+    c.si.dots.forEach((d, i) => { const on = n === 3 || n === 4; if (!on) { d.e.setAttribute('opacity', 0); return; } const q = c.si.p.getPointAtLength((d.o * .3 + .02) * c.si.L); setA(d.e, { cx: f1(q.x + 6 * Math.sin(i)), cy: f1(q.y + 6 * Math.cos(i)), opacity: f1((.5 + .5 * Math.sin(t * 4 + i * 1.7)) * 100) / 100 }); });
+  },
+  notes: {
+    say: 'The small intestine receives digestive juices from three sources. First, the liver – the biggest organ here – makes bile, which flows into the small intestine. Second, the pancreas makes pancreatic juice. And third, the inner wall of the small intestine itself makes its own digestive juice.',
+    ask: 'Does food pass through the liver or the pancreas? (No – only their juices reach the food.)',
+    explain: 'The liver and pancreas are associated with the alimentary canal, but they are not part of the food’s path. They send their juices through small tubes into the small intestine.',
+    confusion: 'Students often think food travels through the liver. It does not; only bile travels from the liver to the small intestine.',
+    transition: '“Let us see what each juice does – starting with bile.”'
+  }
+});
+
+/* ---------- 18. Bile ---------- */
+slide({
+  act: 3, organ: 3, title: 'Bile: neutralise and break up fat',
+  steps: ['Bile meets the acid', 'Now look at a fat drop', 'Bile breaks up the fat', 'Why does that help?'],
+  html: `
+  <div class="abs" style="left:120px;top:110px;width:1700px"><div class="kicker" style="color:#8fd46a">From the liver</div>
+    <div class="h2" style="margin-top:10px">BILE <span class="sub" style="font-size:36px;vertical-align:middle;margin-left:16px">is mildly <b style="color:#fff">basic</b></span></div></div>
+  <svg class="full" viewBox="0 0 1920 1080">
+    <rect x="110" y="290" width="760" height="600" rx="36" fill="rgba(231,154,143,.06)" stroke="rgba(231,154,143,.3)" stroke-width="3"/>
+    <rect x="990" y="290" width="820" height="600" rx="36" fill="rgba(231,154,143,.06)" stroke="rgba(231,154,143,.3)" stroke-width="3"/>
+    <g class="neu"></g>
+    <g class="gauge" opacity="0"><rect x="200" y="808" width="580" height="16" rx="8" fill="rgba(255,255,255,.1)"/><rect x="200" y="808" width="580" height="16" rx="8" fill="url(#gGauge)"/><circle class="gm" cx="220" cy="816" r="17" fill="#fff" stroke="#000" stroke-width="2"/></g>
+    <defs><linearGradient id="gGauge"><stop offset="0" stop-color="#d4f25a"/><stop offset="1" stop-color="#9fb4c8"/></linearGradient></defs>
+    <g class="fat"></g>
+  </svg>
+  <div class="lbl" style="left:150px;top:320px;font-size:34px">1 · Neutralises acid</div>
+  <div class="lbl" style="left:1030px;top:320px;font-size:34px">2 · Breaks fat into tiny droplets</div>
+  <div class="lbl r" data-s="1" style="left:200px;top:760px;font-size:24px;color:#d4f25a">acidic</div>
+  <div class="lbl r" data-s="1" style="left:700px;top:760px;font-size:24px;color:#bcd0e0">neutral</div>
+  <div class="lbl r" data-s="1-1" style="left:540px;top:390px;font-size:26px;color:#d4f25a">acid from stomach</div>
+  <div class="lbl r" data-s="1-1" style="left:150px;top:390px;font-size:26px;color:#5fd38a">bile</div>
+  <div class="lbl r" data-s="2-2" style="left:1230px;top:810px;font-size:30px;color:#ffd95e">One large fat drop</div>
+  <div class="lbl r" data-s="3-3" style="left:1220px;top:810px;font-size:30px;color:#ffd95e">Many tiny droplets</div>
+  <div class="lbl r" data-s="4" style="left:1060px;top:810px;font-size:30px;color:#ffb347">Juices reach all of them → easier to digest</div>
+  <div class="banner r" data-s="4" style="top:930px">Bile does <span style="color:#ff8a7a">not</span> digest fat. It breaks fat into <span class="c-nut">tiny droplets</span>, making digestion easier.</div>`,
+  init(c) {
+    const R = rng(19), ng = c.q('.neu');
+    c.acid = []; c.bl = [];
+    for (let i = 0; i < 28; i++) c.acid.push({ x: 520 + R() * 320, y: 430 + R() * 300, ph: R() * 6, e: dotEl(ng, 9, 'url(#gGreen)', { opacity: 0 }), done: 0, d: .4 + R() * 3.4 });
+    c.acid.forEach((a, i) => c.bl.push({ e: el('circle', { r: 12, fill: '#3fbf72', stroke: '#b9f5cf', 'stroke-width': 2, opacity: 0 }, ng), a, sx: 140 + R() * 60, sy: 420 + R() * 320 }));
+    c.neu = c.acid.map(() => dotEl(ng, 10, '#9fb4c8', { opacity: 0 }));
+    const fg = c.q('.fat');
+    c.big = el('circle', { cx: 1400, cy: 570, r: 0, fill: 'url(#gFat)' }, fg);
+    c.drops = [];
+    for (let i = 0; i < 38; i++) { const a = i * 2.39996, d = 24 * Math.sqrt(i + .5) * 1.6; c.drops.push({ tx: 1400 + d * Math.cos(a), ty: 570 + d * Math.sin(a) * .82, r: 20 + R() * 9, e: el('circle', { r: 0, fill: 'url(#gFat)' }, fg), b: [0, 1, 2].map(() => dotEl(fg, 4, '#3fbf72', { opacity: 0 })), j: [0, 1].map(() => dotEl(fg, 5.5, 'url(#gGold)', { opacity: 0 })), ph: R() * 6 }); }
+    c.bAround = Array.from({ length: 30 }, (_, i) => ({ a: i / 30 * 6.283, e: el('circle', { r: 9, fill: '#3fbf72', stroke: '#b9f5cf', 'stroke-width': 2, opacity: 0 }, fg) }));
+  },
+  tick(c) {
+    const n = c.n, st = c.stepT, t = c.t;
+    const S = k => n > k ? 60 : n === k ? st : -1;
+    // panel 1 – neutralisation
+    const p1 = S(1); let doneN = 0;
+    c.acid.forEach((a, i) => {
+      const b = c.bl[i], nu = c.neu[i];
+      if (p1 < 0) { [a.e, b.e, nu].forEach(e => e.setAttribute('opacity', 0)); a.e.setAttribute('opacity', n >= 0 ? .9 : 0); setA(a.e, { cx: f1(a.x + 12 * Math.sin(t + a.ph)), cy: f1(a.y + 12 * Math.cos(t * 1.3 + a.ph)) }); return; }
+      const k = ease(seg(p1, a.d, a.d + 1.3)), m = seg(p1, a.d + 1.2, a.d + 1.6);
+      const ax = a.x + 12 * Math.sin(t + a.ph), ay = a.y + 12 * Math.cos(t * 1.3 + a.ph);
+      setA(b.e, { cx: f1(lerp(b.sx, ax - 10, k)), cy: f1(lerp(b.sy, ay, k)), opacity: m >= 1 ? 0 : 1 });
+      setA(a.e, { cx: f1(ax), cy: f1(ay), opacity: m >= 1 ? 0 : .95 });
+      setA(nu, { cx: f1(ax - 5), cy: f1(ay), opacity: m >= 1 ? .85 : 0 });
+      if (m >= 1) doneN++;
+    });
+    c.q('.gauge').setAttribute('opacity', n >= 1 ? 1 : 0);
+    c.q('.gm').setAttribute('cx', f1(220 + 540 * (doneN / c.acid.length)));
+    // panel 2 – fat
+    const p2 = S(2), p3 = S(3), p4 = S(4);
+    const grow = p2 >= 0 ? eout(p2 / 1) : 0, split = p3 >= 0 ? ease(seg(p3, 1.2, 3.4)) : 0;
+    c.big.setAttribute('r', f1(165 * grow * (1 - split)));
+    c.bAround.forEach((b, i) => {
+      if (p3 < 0) { b.e.setAttribute('opacity', 0); return; }
+      const come = eout(seg(p3, 0, 1.2)), rr = lerp(330, 175, come) * (1 - split) + split * 300;
+      setA(b.e, { cx: f1(1400 + rr * Math.cos(b.a + t * .3)), cy: f1(570 + rr * .75 * Math.sin(b.a + t * .3)), opacity: f1(lerp(1, 0, split) * 100) / 100 });
+    });
+    c.drops.forEach((d, i) => {
+      const x = lerp(1400, d.tx, split) + 4 * Math.sin(t * 1.5 + d.ph), y = lerp(570, d.ty, split) + 4 * Math.cos(t * 1.2 + d.ph);
+      setA(d.e, { cx: f1(x), cy: f1(y), r: f1(d.r * split) });
+      d.b.forEach((b, k) => { const a = k * 2.1 + t * .8 + d.ph; setA(b, { cx: f1(x + (d.r + 3) * Math.cos(a)), cy: f1(y + (d.r + 3) * Math.sin(a)), opacity: split > .9 ? .9 : 0 }); });
+      d.j.forEach((j, k) => { const a = k * 3.1 - t * 1.1 + d.ph, come = p4 >= 0 ? eout(seg(p4, i * .03, i * .03 + 1)) : 0; setA(j, { cx: f1(x + (d.r + 6 + 40 * (1 - come)) * Math.cos(a)), cy: f1(y + (d.r + 6 + 40 * (1 - come)) * Math.sin(a)), opacity: f1(come * 100) / 100 }); });
+    });
+  },
+  notes: {
+    say: 'The liver makes bile. Bile is mildly basic – remember neutralisation from the chapter on acids and bases? The food coming from the stomach is acidic. Watch the bile meet the acid and neutralise it. Now look at a big drop of fat, like the ghee on your chapati. Bile surrounds it and breaks it into many tiny droplets.',
+    ask: 'When you wash an oily plate with soap, what happens to the oil? How is bile similar?',
+    explain: 'Bile neutralises the acid in food coming from the stomach, and breaks fats into tiny droplets. Many tiny droplets have far more surface than one big drop, so the digestive juices can work on the fat much more easily. That makes fat digestion easier.',
+    confusion: 'IMPORTANT: Bile does NOT digest fat itself. It only breaks big fat drops into tiny droplets. The actual digestion of fat is done by digestive juices from the pancreas and the intestine.',
+    transition: '“So who actually digests the fat? Meet the pancreas.”'
+  }
+});
+
+/* ---------- 19. Pancreatic juice + intestinal juice ---------- */
+slide({
+  act: 3, organ: 3, title: 'Pancreatic and intestinal juices',
+  steps: ['Pancreatic juice arrives', 'It breaks down food', 'Juice from the intestine wall', 'Digestion complete!'],
+  html: `
+  <div class="abs" style="left:520px;top:110px;width:520px"><div class="kicker c-panc" style="color:var(--panc);line-height:1.4">Pancreas · intestine wall</div>
+    <div class="h3" style="margin-top:12px">Finishing the job</div></div>
+  <svg class="full" viewBox="0 0 1920 1080">
+    <g transform="translate(130,140) scale(1.5)"><path d="M10,60 C10,30 50,20 100,30 C160,40 220,20 270,10 C300,5 310,35 285,48 C230,80 160,96 100,96 C50,98 10,90 10,60 Z" fill="url(#gPanc)" stroke="#a8703f" stroke-width="2"/></g>
+    <path class="pd" d="M330,250 C380,270 440,300 470,350" fill="none" stroke="#e6b45c" stroke-width="10" stroke-linecap="round"/>
+    <rect x="380" y="350" width="1440" height="560" rx="60" fill="rgba(231,154,143,.07)" stroke="#e79a8f" stroke-width="5"/>
+    <path class="wall" fill="#e79a8f" opacity=".75"/>
+    <g class="mol"></g><g class="juice"></g>
+  </svg>
+  <div class="lbl" style="left:110px;top:316px;color:#f5d06b">Pancreas</div>
+  <div class="lbl" style="left:60px;top:440px;font-size:30px">Carbohydrates</div>
+  <div class="lbl" style="left:60px;top:610px;font-size:30px">Proteins</div>
+  <div class="lbl" style="left:60px;top:780px;font-size:30px">Fats</div>
+  <div class="lbl" style="left:520px;top:930px;font-size:26px;color:#ffc9bd">wall of the small intestine</div>
+  <div class="abs r" data-s="1" style="left:1080px;top:110px;width:780px"><div class="sub" style="font-size:30px"><b class="c-panc">Pancreatic juice</b> is also basic — it helps neutralise acid…</div></div>
+  <div class="abs r" data-s="2" style="left:1080px;top:220px;width:780px"><div class="sub" style="font-size:30px">…and breaks down <b style="color:#fff">carbohydrates, proteins and fats</b>.</div></div>
+  <div class="banner r" data-s="3-3" style="top:960px;font-size:32px"><span style="color:#ffc9bd">Intestinal juice</span> breaks them down further into <span class="c-nut">simpler forms</span></div>
+  <div class="banner r" data-s="4" style="top:960px;font-size:32px">Food is now in its <span class="c-nut">simplest forms</span> — ready to be absorbed</div>`,
+  init(c) {
+    const g = c.q('.mol'); c.ch = [];
+    [600, 900, 1200, 1500].forEach((x, i) => c.ch.push(new Chain(g, { x, y: 460, n: 4, r: 15, gap: 34, ang: (i % 2 ? .3 : -.3), shape: 'hex', colors: ['#f3e6c4'], simple: '#ffd36e', levels: [2, 1, 2], seed: 50 + i, spread: 30, spreadT: 1.8, wave: 6 })));
+    [620, 960, 1300, 1620].forEach((x, i) => c.ch.push(new Chain(g, { x, y: 630, n: 6, r: 13, gap: 30, ang: (i % 2 ? -.25 : .25), shape: 'circle', colors: ['#ff8fa3', '#c99bff', '#7fd1ff', '#ffb36b', '#9be38f'], simple: '#ffd36e', levels: [2, 1, 2, 2, 1], seed: 60 + i, spread: 32, spreadT: 1.8, wave: 8 })));
+    const R = rng(33); c.fat = [];
+    for (let i = 0; i < 14; i++) { const x = 560 + i * 88 + R() * 30, y = 800 + (R() - .5) * 40; c.fat.push({ x, y, ph: R() * 6, e: [0, 1, 2, 3].map(() => el('circle', { r: 0, fill: 'url(#gFat)' }, g)), gl: [0, 1, 2, 3].map(() => el('circle', { r: 14, fill: 'url(#gGold)', opacity: 0 }, g)) }); }
+    const wp = []; for (let x = 420; x <= 1780; x += 20) wp.push([x, 905 - 10 * Math.abs(Math.sin(x * .05))]);
+    c.q('.wall').setAttribute('d', smoothPath(wp) + 'L1780,910 L420,910 Z');
+    c.pj = []; const jg = c.q('.juice');
+    for (let i = 0; i < 40; i++) c.pj.push({ e: dotEl(jg, 6, 'url(#gGold)', { opacity: 0 }), o: R(), tx: 480 + R() * 1300, ty: 400 + R() * 480 });
+    c.ij = []; for (let i = 0; i < 40; i++) c.ij.push({ e: dotEl(jg, 5, 'url(#gRed)', { opacity: 0 }), o: R(), x: 440 + R() * 1340 });
+    c.ac = []; for (let i = 0; i < 18; i++) c.ac.push({ e: dotEl(jg, 7, 'url(#gGreen)', { opacity: .8 }), x: 480 + R() * 1300, y: 400 + R() * 460, ph: R() * 6 });
+  },
+  tick(c, dt) {
+    const n = c.n, st = c.stepT, t = c.t;
+    const S = k => n > k ? 60 : n === k ? st : -1;
+    const T = {}; if (n >= 2) T[1] = S(2); if (n >= 3) T[2] = S(3);
+    c.ch.forEach(ch => ch.update(dt, T, t));
+    c.fat.forEach(f => {
+      const L1 = n >= 2 ? eout(seg(S(2), .5, 2)) : 0, L2 = n >= 3 ? eout(seg(S(3), .5, 2)) : 0;
+      f.e.forEach((e, k) => {
+        const half = k < 2 ? 0 : 1, sub = k % 2;
+        const ox = (sub ? 1 : -1) * 14 * L1 + (half ? 1 : -1) * 10 * L2, oy = (half ? 1 : -1) * 14 * L2;
+        const r = L2 > 0 ? lerp(11, 6, L2) : L1 > 0 ? lerp(18, 11, L1) : 18;
+        const vis = k === 0 || (k === 1 && L1 > 0) || (k >= 2 && L2 > 0);
+        const x = f.x + ox + 3 * Math.sin(t + f.ph), y = f.y + oy + 3 * Math.cos(t + f.ph);
+        setA(e, { cx: f1(x), cy: f1(y), r: vis ? f1(r) : 0 });
+        setA(f.gl[k], { cx: f1(x), cy: f1(y), opacity: vis && n >= 4 ? .8 : 0 });
+      });
+    });
+    const pd = c.q('.pd'); c.pdL = c.pdL || pd.getTotalLength();
+    c.pj.forEach(p => {
+      if (n < 1) { p.e.setAttribute('opacity', 0); return; }
+      const ph = (S(1) * .25 + p.o) % 1;
+      let x, y; if (ph < .3) { const q = pd.getPointAtLength(ph / .3 * c.pdL); x = q.x; y = q.y; } else { const k = eout((ph - .3) / .7); x = lerp(470, p.tx, k); y = lerp(350, p.ty, k); }
+      setA(p.e, { cx: f1(x), cy: f1(y), opacity: f1(Math.min(1, (1 - ph) * 3) * 100) / 100 });
+    });
+    c.ij.forEach(p => {
+      if (n < 3) { p.e.setAttribute('opacity', 0); return; }
+      const ph = (S(3) * .3 + p.o) % 1;
+      setA(p.e, { cx: f1(p.x + 10 * Math.sin(ph * 6)), cy: f1(900 - 420 * eout(ph)), opacity: f1(Math.sin(Math.PI * ph) * 100) / 100 });
+    });
+    const neut = n >= 1 ? seg(S(1), .5, 2.5) : 0;
+    c.ac.forEach(a => setA(a.e, { cx: f1(a.x + 14 * Math.sin(t + a.ph)), cy: f1(a.y + 14 * Math.cos(t * 1.2 + a.ph)), opacity: f1((1 - neut) * .8 * 100) / 100 }));
+  },
+  notes: {
+    say: 'The pancreas sends pancreatic juice into the small intestine. Like bile, it is basic, so it also helps neutralise the acid. But it does much more: it breaks down carbohydrates, proteins and fats. Watch the long chains break into smaller pieces. Then the wall of the small intestine adds its own juice, which breaks fats, proteins and partially digested carbohydrates into their simplest forms.',
+    ask: 'Which juice actually breaks down fats – bile or pancreatic juice? (Pancreatic juice and intestinal juice; bile only breaks fat into droplets.)',
+    explain: 'By the end of the small intestine’s work, carbohydrates, proteins and fats have all been broken into simpler forms that the body can absorb.',
+    confusion: 'Digestion of carbohydrates started in the mouth (saliva) and of proteins in the stomach – here in the small intestine, digestion of all three is completed.',
+    transition: '“The food has been digested. But it is still inside the tube. How does your body actually USE it?”'
+  }
+});
+
+/* ===================== ACT 4 · THE ABSORPTION ===================== */
+
+/* ---------- 20. The question ---------- */
+slide({
+  act: 4, organ: 3, title: 'How does the body USE it?',
+  steps: ['Ask the big question'],
+  html: `
+  <svg class="full" viewBox="0 0 1920 1080"><g class="tun"></g><g class="nut"></g>
+    <circle cx="960" cy="560" r="900" fill="url(#gVig)"/></svg>
+  <div class="abs center" style="left:0;right:0;top:330px">
+    <div class="h2 r" data-s="0">The food has been digested.</div>
+    <div class="q r" data-s="1" style="margin-top:50px;font-size:72px">But how does your body actually <span class="c-nut" style="font-style:normal;font-weight:700">USE</span> it?</div>
+  </div>`,
+  init(c) {
+    const g = c.q('.tun'); c.rings = [];
+    for (let i = 0; i < 16; i++) {
+      const p = el('path', { fill: 'none', stroke: '#e79a8f', 'stroke-width': 3 }, g);
+      c.rings.push({ p, o: i / 16 });
+    }
+    const R = rng(8), ng = c.q('.nut'); c.nu = [];
+    const fills = ['url(#gGold)', 'url(#gRed)', 'url(#gGold)', 'url(#gTeal)'];
+    for (let i = 0; i < 60; i++) c.nu.push({ a: R() * 6.28, o: R(), rr: .2 + R() * .7, e: dotEl(ng, 8, fills[i % 4], { opacity: 0 }) });
+  },
+  tick(c) {
+    const t = c.t, cx = 960, cy = 560;
+    c.rings.forEach(r => {
+      const z = (r.o + t * .06) % 1, R0 = 30 * Math.pow(45, z);
+      const pts = []; for (let k = 0; k <= 72; k++) { const a = k / 72 * 6.283, b = 1 + .05 * Math.sin(a * 18 + z * 20); pts.push([cx + R0 * b * Math.cos(a), cy + R0 * b * .78 * Math.sin(a)]); }
+      setA(r.p, { d: smoothPath(pts), 'stroke-opacity': f1(Math.min(1, z * 1.6) * (1 - Math.pow(z, 6)) * .7 * 100) / 100, 'stroke-width': f1(1 + z * 14) });
+    });
+    c.nu.forEach(n => { const z = (n.o + t * .07) % 1, R0 = 30 * Math.pow(40, z) * n.rr; setA(n.e, { cx: f1(cx + R0 * Math.cos(n.a)), cy: f1(cy + R0 * .78 * Math.sin(n.a)), r: f1(3 + z * 16), opacity: f1(Math.min(1, z * 3) * (1 - z) * 100) / 100 }); });
+  },
+  notes: {
+    say: 'We are now travelling inside the small intestine. All around us is digested food – simple sugars and other simple forms of nutrients. (Click.) But here is the big question: the food is still inside this tube. How does it actually get to your brain, your muscles, your bones?',
+    ask: 'Your legs need energy from your lunch. How do you think the food gets from your intestine to your legs?',
+    explain: 'Collect ideas. Many students will say “blood” – good! Now we will see exactly how it enters the blood.',
+    confusion: 'Some think food simply disappears or stays in the stomach. Nothing disappears – useful nutrients are moved into the blood.',
+    transition: '“Let us zoom into the wall of the small intestine.”'
+  }
+});
+
+/* ---------- 21. Finger-like projections & absorption ---------- */
+const VX = [230, 480, 730, 980, 1230], VB = 975, VT = 430, VW = 92;
+const villusPath = x => `M${x - VW},${VB} L${x - VW},${VT + 90} C${x - VW},${VT - 10} ${x + VW},${VT - 10} ${x + VW},${VT + 90} L${x + VW},${VB}`;
+const capPath = x => `M${x - 46},${VB + 20} L${x - 46},${VT + 110} C${x - 46},${VT + 40} ${x + 46},${VT + 40} ${x + 46},${VT + 110} L${x + 46},${VB + 20}`;
+slide({
+  act: 4, organ: 3, title: 'Finger-like projections: absorption',
+  steps: ['Look closer', 'Why so many?', 'Nutrients pass into the blood', 'What do scientists call them?'],
+  html: `
+  <svg class="full" viewBox="0 0 1920 1080">
+    <defs><linearGradient id="gVil" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#c9606c"/><stop offset=".45" stop-color="#f0a29b"/><stop offset="1" stop-color="#c9606c"/></linearGradient></defs>
+    <g class="lvA"></g>
+    <g class="lvB" opacity="0">
+      <path d="M60,${VB + 20} L1400,${VB + 20}" stroke="#7a1020" stroke-width="40" stroke-linecap="round"/>
+      <path class="vessel" d="M60,${VB + 20} L1400,${VB + 20}" stroke="#ff4f5e" stroke-width="30" stroke-linecap="round"/>
+      ${VX.map(x => `<path d="${villusPath(x)} Z" fill="url(#gVil)"/><path d="${capPath(x)}" fill="none" stroke="#ff4f5e" stroke-width="12" stroke-linecap="round" opacity=".9"/>
+        ${[0, 1, 2, 3, 4, 5].map(k => `<path d="M${x - 46},${VT + 160 + k * 70} C${x - 15},${VT + 140 + k * 70} ${x + 15},${VT + 195 + k * 70} ${x + 46},${VT + 175 + k * 70}" fill="none" stroke="#ff7a84" stroke-width="5" opacity=".7"/>`).join('')}
+        <path d="${villusPath(x)}" fill="none" stroke="#ffd3cc" stroke-width="16" stroke-opacity=".7"/><path d="${villusPath(x)}" fill="none" stroke="#a0404e" stroke-width="16" stroke-dasharray="2 20" stroke-opacity=".55"/>`).join('')}
+      <g class="nuts"></g>
+      <g class="scale"><path d="M1290,${VT - 20} L1290,${VT + 240}" stroke="#fff" stroke-width="4"/><path d="M1275,${VT - 20} L1305,${VT - 20} M1275,${VT + 240} L1305,${VT + 240}" stroke="#fff" stroke-width="4"/>
+        <text x="1316" y="${VT + 120}" font-size="30" font-weight="600" fill="#fff">0.5 mm</text></g>
+    </g>
+  </svg>
+  <div class="lbl lA" style="left:120px;top:760px;font-size:30px;color:#ffc9bd">inner lining of the small intestine</div>
+  <div class="lbl r" data-s="3" style="left:1180px;top:1010px;font-size:28px;color:#ff8a92">blood → to the whole body</div>
+  <div class="abs" style="left:1440px;top:120px;width:440px">
+    <div class="kicker">The inner lining</div>
+    <div class="h3" style="margin:12px 0 20px;font-size:50px">Thousands of <span class="c-warm">finger-like projections</span></div>
+    <div class="r" data-s="1"><div class="sub" style="font-size:31px">The lining is <b style="color:#fff">thin</b>, with blood vessels just inside.</div></div>
+    <div class="r" data-s="2" style="margin-top:22px"><div class="sub" style="font-size:31px">They give a <b style="color:#fff">huge surface</b> for absorption.</div>
+      <svg viewBox="0 0 440 210" style="width:440px;height:210px;margin-top:10px;overflow:visible">
+        <path class="fl" d="M10,40 L430,40" stroke="#ffd36e" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <text x="10" y="20" font-size="22" fill="#93a1ae">flat</text>
+        <path class="fo" d="M10,190 ${[0, 1, 2, 3, 4, 5].map(k => `L${10 + k * 70},90 C${10 + k * 70},60 ${45 + k * 70},60 ${45 + k * 70},90 L${45 + k * 70},190 L${80 + k * 70},190`).join(' ')}" stroke="#ffd36e" stroke-width="6" fill="none" stroke-linejoin="round"/>
+        <text x="10" y="80" font-size="22" fill="#93a1ae">with projections</text></svg></div>
+    <div class="r" data-s="3" style="margin-top:14px"><div class="sub" style="font-size:31px">Digested nutrients pass into the <b class="c-blood">blood</b>.</div></div>
+    <div class="r" data-s="4" style="margin-top:24px"><div class="term">Scientific term: <b>Villi</b></div>
+      <div class="small" style="margin-top:12px">This is called <b style="color:#fff">absorption</b>.</div></div>
+  </div>`,
+  init(c) {
+    const A = c.q('.lvA'), R = rng(12);
+    let d = '';
+    for (let i = 0; i < 64; i++) {
+      const x = 60 + i * 21.5, base = 900 + 18 * Math.sin(i * .35), h = 110 + R() * 50;
+      d += `<path d="M${f1(x - 9)},${f1(base)} L${f1(x - 9)},${f1(base - h + 9)} Q${f1(x)},${f1(base - h - 6)} ${f1(x + 9)},${f1(base - h + 9)} L${f1(x + 9)},${f1(base)} Z" fill="url(#gVil)" stroke="#a0404e" stroke-width="1.5"/>`;
+    }
+    A.innerHTML = `<path d="M40,${930} C500,890 1000,950 1460,910 L1460,1080 L40,1080 Z" fill="#c9606c"/>` + d;
+    c.fl = c.q('.fl'); c.fo = c.q('.fo'); c.flL = c.fl.getTotalLength(); c.foL = c.fo.getTotalLength();
+    // nutrient particles
+    const g = c.q('.nuts'); c.np = [];
+    const fills = ['url(#gGold)', 'url(#gRed)', 'url(#gTeal)'];
+    for (let i = 0; i < 54; i++) {
+      const k = i % 5, x = VX[k], side = R() < .5 ? -1 : 1, ty = VT + 120 + R() * 420;
+      const cap = el('path', { d: capPath(x), fill: 'none', stroke: 'none' }, g);
+      c.np.push({ e: dotEl(g, 9, fills[i % 3], { opacity: 0 }), sx: 100 + R() * 1300, sy: 130 + R() * 230, tx: x + side * (VW + 10), ty, cx: x + side * 46, side, cap, capL: cap.getTotalLength(), off: R() * 7, per: 7 });
+    }
+  },
+  tick(c) {
+    const n = c.n, st = c.stepT, t = c.t;
+    const z = n >= 1 ? ease(seg(n === 1 ? st : 60, 0, 1.8)) : 0;
+    c.q('.lvA').setAttribute('transform', `translate(760,880) scale(${f1((1 + 3 * z) * 100) / 100}) translate(-760,-880)`);
+    c.q('.lvA').setAttribute('opacity', f1((1 - z) * 100) / 100);
+    c.q('.lA').style.opacity = 1 - z;
+    c.q('.lvB').setAttribute('opacity', f1(z * 100) / 100);
+    c.q('.lvB').setAttribute('transform', `translate(760,880) scale(${f1((.55 + .45 * z) * 1000) / 1000}) translate(-760,-880)`);
+    // surface comparison drawing
+    const dr = n >= 2 ? (n === 2 ? st : 60) : 0, sp = 240;
+    c.fl.setAttribute('stroke-dasharray', `${f1(Math.min(c.flL, dr * sp))} 9999`);
+    c.fo.setAttribute('stroke-dasharray', `${f1(Math.min(c.foL, dr * sp))} 9999`);
+    // absorption
+    c.np.forEach(p => {
+      if (n < 3) { p.e.setAttribute('opacity', 0); return; }
+      const tt = ((n === 3 ? st : st + 8) + p.off) % p.per;
+      let x, y, o = 1;
+      if (tt < 2.6) { const k = ease(tt / 2.6); x = lerp(p.sx, p.tx, k) + 20 * Math.sin(tt * 2 + p.off); y = lerp(p.sy, p.ty, k); o = Math.min(1, tt * 2); }
+      else if (tt < 3.2) { const k = ease((tt - 2.6) / .6); x = lerp(p.tx, p.cx, k); y = p.ty; }
+      else if (tt < 5.2) { const k = ein((tt - 3.2) / 2); x = p.cx; y = lerp(p.ty, VB + 20, k); }
+      else { const k = (tt - 5.2) / 1.8; x = lerp(p.cx, 1440, k); y = VB + 20; o = 1 - Math.max(0, k - .7) * 3; }
+      setA(p.e, { cx: f1(x), cy: f1(y), opacity: f1(clamp(o) * 100) / 100 });
+    });
+    c.q('.vessel').setAttribute('stroke', mix('#ff4f5e', '#ff7a84', .5 + .5 * Math.sin(t * 3)));
+  },
+  notes: {
+    say: 'Here is the inner lining of the small intestine. It is not smooth! It is covered with thousands of tiny finger-like projections. (Click) Let us zoom into a few of them. The lining is very thin, and just inside each projection are tiny blood vessels. (Click) Why so many projections? Look – the flat line and the folded line cover the same width, but the folded one is much longer. More surface means more nutrients can be absorbed. (Click) Now watch the digested nutrients: they pass through the thin lining into the blood vessels, and the blood carries them away.',
+    ask: 'Why do you think a towel has so many tiny loops instead of being smooth like plastic? (More surface to soak up water.) How is the intestine similar?',
+    explain: 'The digested nutrients pass from the small intestine into the blood present in blood vessels in its walls. This is called absorption of nutrients. The finger-like projections (villi) increase the surface area for efficient absorption.',
+    confusion: 'Absorption mainly happens in the SMALL intestine, not the stomach and not the large intestine. Also, the projections are tiny – each is about half a millimetre to a millimetre long.',
+    transition: '“Once the nutrients are in the blood… where do they go?”'
+  }
+});
+
+/* ---------- 22. Blood carries nutrients ---------- */
+const TRUNK = 'M0,-20 C0,-80 -6,-140 -8,-180';
+const BRANCH = [' C-4,-240 0,-270 0,-320', ' C-60,-222 -102,-232 -126,-196 C-136,-120 -146,-40 -150,40', ' C60,-222 102,-232 126,-196 C136,-120 146,-40 150,40',
+  ' C-22,-100 -40,40 -60,120 C-72,240 -76,360 -76,410', ' C8,-100 40,40 60,120 C72,240 76,360 76,410'];
+slide({
+  act: 4, organ: 3, title: 'Blood carries nutrients everywhere',
+  steps: ['Follow the nutrients', 'What do they do?', 'The big idea'],
+  html: `
+  <svg class="abs" style="left:520px;top:110px;width:820px;height:950px" viewBox="-330 -420 660 880">
+    <circle cx="0" cy="-332" r="54" fill="url(#gSkin)" stroke="rgba(184,212,255,.5)" stroke-width="3"/>
+    <path d="${figurePath()}" fill="url(#gSkin)" stroke="rgba(184,212,255,.5)" stroke-width="3"/>
+    <ellipse cx="0" cy="-10" rx="60" ry="55" fill="url(#gGold)" opacity=".5" class="belly"/>
+    <g class="vtree">${BRANCH.map(b => `<path d="${TRUNK + b}" fill="none" stroke="#ff4f5e" stroke-width="7" stroke-linecap="round" opacity=".55"/>`).join('')}</g>
+    <g class="flow"></g>
+  </svg>
+  <div class="abs" style="left:120px;top:150px;width:520px">
+    <div class="kicker">Absorbed nutrients</div>
+    <div class="h3" style="margin-top:12px">The <span class="c-blood">blood</span> carries them to every part of the body</div>
+  </div>
+  <div class="abs" style="left:1360px;top:300px;width:500px">
+    <div class="card r" data-s="2" style="position:relative;margin-bottom:22px"><div class="ct c-nut">ENERGY</div><div class="cd">to move, think and play</div></div>
+    <div class="card r" data-s="2" style="position:relative;margin-bottom:22px;transition-delay:.4s"><div class="ct c-teal">GROWTH &amp; REPAIR</div><div class="cd">to build and fix the body</div></div>
+    <div class="card r" data-s="2" style="position:relative;transition-delay:.8s"><div class="ct" style="color:#ffb3b8">WORKING PROPERLY</div><div class="cd">to keep the body healthy</div></div>
+  </div>
+  <div class="banner r" data-s="3" style="top:900px;font-size:34px;white-space:normal;width:1500px">Food does not simply disappear.<br><span class="c-nut">Its useful nutrients enter the blood and travel all around the body.</span></div>`,
+  init(c) {
+    const g = c.q('.flow'), R = rng(41); c.paths = BRANCH.map(b => { const p = el('path', { d: TRUNK + b, fill: 'none', stroke: 'none' }, g); return [p, p.getTotalLength()]; });
+    c.fp = []; const fills = ['url(#gGold)', 'url(#gTeal)', 'url(#gGold)'];
+    for (let i = 0; i < 70; i++) c.fp.push({ b: i % 5, o: R(), e: dotEl(g, 9, fills[i % 3], { opacity: 0 }) });
+    c.ends = BRANCH.map((b, i) => el('circle', { r: 24, fill: 'url(#gGold)', opacity: 0 }, g));
+  },
+  tick(c) {
+    const n = c.n, t = c.t;
+    c.fp.forEach(p => {
+      if (n < 1) { p.e.setAttribute('opacity', 0); return; }
+      const ph = (c.stepT * (n === 1 ? .22 : .22) + t * 0 + p.o) % 1;
+      const [path, L] = c.paths[p.b]; const q = path.getPointAtLength(ph * L);
+      setA(p.e, { cx: f1(q.x), cy: f1(q.y), opacity: f1(Math.min(1, ph * 8, (1 - ph) * 6) * 100) / 100 });
+    });
+    c.ends.forEach((e, i) => { const [path, L] = c.paths[i]; const q = path.getPointAtLength(L); setA(e, { cx: f1(q.x), cy: f1(q.y), opacity: n >= 1 ? f1((.35 + .3 * Math.sin(t * 3 + i)) * 100) / 100 : 0 }); });
+    c.q('.belly').setAttribute('opacity', f1((.4 + .2 * Math.sin(t * 2)) * 100) / 100);
+  },
+  notes: {
+    say: 'Once nutrients enter the blood, the blood carries them to every part of the body – to the brain, the arms, the legs, every single cell. (Click) There, the nutrients provide energy, support growth and repair, and help the body function properly.',
+    ask: 'The chapati you ate at lunch – where in your body could it be right now?',
+    explain: 'This is the key idea of digestion: food is broken down so that its useful nutrients can enter the blood and be transported all around the body.',
+    confusion: 'The food we eat does not just vanish, and it does not all become waste. The useful part is absorbed and used; only the undigested part is removed.',
+    transition: '“But some of what we ate could not be digested or absorbed. What happens to that? Let us follow the leftovers.”'
+  }
+});
+
+/* ===================== ACT 5 · THE CLEAN-UP ===================== */
+const LIY = 610, LIH = 145;
+const liHalf = x => LIH + 24 * Math.pow(Math.abs(Math.sin(Math.PI * (x - 160) / 210)), .6);
+slide({
+  act: 5, organ: 4, title: 'The large intestine',
+  steps: ['Into the large intestine', 'Water is absorbed', 'Waste becomes semi-solid', 'Did you know?'],
+  html: `
+  <div class="abs" style="left:120px;top:110px;width:1700px"><div class="kicker">Part 8 · The large intestine</div>
+    <div class="q" style="margin-top:12px;font-size:54px">Not everything we ate could be digested or absorbed…</div></div>
+  <svg class="full" viewBox="0 0 1920 1080">
+    <defs><linearGradient id="gLIc" x1="0" x2="1"><stop offset="0" stop-color="#7d6a4c"/><stop offset=".5" stop-color="#6e4f2e"/><stop offset="1" stop-color="#4f3218"/></linearGradient></defs>
+    <path class="capT" fill="none" stroke="#ff4f5e" stroke-width="6" opacity=".6"/><path class="capB" fill="none" stroke="#ff4f5e" stroke-width="6" opacity=".6"/>
+    <path class="liW" fill="#c98a68" stroke="#5a3021" stroke-width="4"/>
+    <path class="liL" fill="url(#gLIc)"/>
+    <g class="folds"></g>
+    <g class="cont"></g>
+  </svg>
+  <div class="lbl" style="left:120px;top:870px;font-size:28px;color:#ffc9bd">from the small intestine →</div>
+  <div class="lbl r" data-s="1" style="left:1240px;top:250px;font-size:30px;color:#e7b08f">about 1.5 m long · wider tube</div>
+  <div class="abs r" data-s="2" style="left:120px;top:900px;width:900px"><div class="key2" style="font-size:38px"><span class="c-water">Water</span> and some <span style="color:#fff">salts</span> are absorbed</div></div>
+  <div class="abs r" data-s="3" style="left:1180px;top:900px;width:700px"><div class="key2" style="font-size:38px">Waste becomes <span style="color:#d9a26b">semi-solid</span>: <span style="color:#d9a26b">stool</span></div></div>
+  <div class="abs r" data-s="3" style="left:120px;top:980px;width:1700px"><div class="small">Nutrients were absorbed in the <b style="color:#fff">small</b> intestine · Here, mainly <b class="c-water">water</b> and some <b style="color:#fff">salts</b> are absorbed</div></div>
+  <div class="fact r" data-s="4" style="left:1180px;top:110px;width:680px"><div class="fk">DID YOU KNOW?</div><div class="ft">Tiny friendly bacteria living here break down undigested food — especially <b>fibre</b> — and keep our gut healthy.</div></div>`,
+  init(c) {
+    const top = [], bot = [], wt = [], wb = [];
+    for (let x = 140; x <= 1780; x += 10) { const h = liHalf(x); top.push([x, LIY - h]); bot.push([x, LIY + h]); wt.push([x, LIY - h - 30]); wb.push([x, LIY + h + 30]); }
+    c.q('.liW').setAttribute('d', polyD([...wt, ...wb.slice().reverse()]));
+    c.q('.liL').setAttribute('d', polyD([...top, ...bot.slice().reverse()]));
+    c.q('.capT').setAttribute('d', smoothPath(wt.filter((p, i) => i % 3 === 0).map(p => [p[0], p[1] - 26 + 8 * Math.sin(p[0] * .03)])));
+    c.q('.capB').setAttribute('d', smoothPath(wb.filter((p, i) => i % 3 === 0).map(p => [p[0], p[1] + 26 + 8 * Math.sin(p[0] * .03)])));
+    let f = ''; for (let x = 160; x < 1780; x += 210) f += `<path d="M${x},${LIY - LIH - 30} L${x},${LIY - LIH + 6} M${x},${LIY + LIH + 30} L${x},${LIY + LIH - 6}" stroke="#5a3021" stroke-width="6" opacity=".6"/>`;
+    c.q('.folds').innerHTML = f;
+    const g = c.q('.cont'), R = rng(23);
+    c.water = []; for (let i = 0; i < 80; i++) c.water.push({ o: R(), y: (R() - .5) * 2 * (LIH - 20), ex: .35 + R() * .5, up: R() < .5, e: dotEl(g, 8, 'url(#gBlue)', { opacity: 0 }) });
+    c.salt = []; for (let i = 0; i < 18; i++) c.salt.push({ o: R(), y: (R() - .5) * 2 * (LIH - 30), ex: .3 + R() * .5, up: R() < .5, e: el('rect', { width: 9, height: 9, fill: '#f4f4f4', opacity: 0 }, g) });
+    c.fib = []; for (let i = 0; i < 16; i++) c.fib.push({ o: R(), y: (R() - .5) * 2 * (LIH - 40), e: el('path', { d: 'M-24,0 C-12,-10 -4,10 8,0 C16,-8 22,6 28,0', fill: 'none', stroke: '#7fb84f', 'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0 }, g) });
+    c.lump = []; for (let i = 0; i < 12; i++) c.lump.push({ o: i / 12, y: (R() - .5) * 2 * (LIH - 60), r: 34 + R() * 26, e: el('ellipse', { rx: 40, ry: 30, fill: 'url(#gStool)', opacity: 0 }, g) });
+    c.bac = []; for (let i = 0; i < 16; i++) { const b = el('g', { opacity: 0 }, g); el('rect', { x: -14, y: -6, width: 28, height: 12, rx: 6, fill: '#5fd3b0', stroke: '#2b8a70', 'stroke-width': 2 }, b); c.bac.push({ b, x: 300 + R() * 1300, y: LIY + (R() - .5) * 2 * (LIH - 30), ph: R() * 6 }); }
+  },
+  tick(c) {
+    const n = c.n, st = c.stepT, t = c.t;
+    const X0 = 150, X1 = 1790, W = X1 - X0;
+    const wAbs = n >= 2, solid = n >= 3 ? ease(seg(n === 3 ? st : 60, 0, 2.5)) : 0;
+    c.q('.liL').setAttribute('opacity', 1);
+    c.water.forEach(w => {
+      const ph = (t * .05 + w.o) % 1; let x = X0 + ph * W, y = LIY + w.y, o = .9;
+      if (wAbs && ph > w.ex) { const k = clamp((ph - w.ex) / .07); const edge = (w.up ? -1 : 1) * (liHalf(x) + 50); y = lerp(LIY + w.y, LIY + edge, ease(k)); o = k >= 1 ? 0 : .9; }
+      setA(w.e, { cx: f1(x), cy: f1(y), opacity: o });
+    });
+    c.salt.forEach(w => {
+      const ph = (t * .05 + w.o) % 1; let x = X0 + ph * W, y = LIY + w.y, o = .85;
+      if (wAbs && ph > w.ex) { const k = clamp((ph - w.ex) / .07); y = lerp(LIY + w.y, LIY + (w.up ? -1 : 1) * (liHalf(x) + 50), ease(k)); o = k >= 1 ? 0 : .85; }
+      setA(w.e, { x: f1(x), y: f1(y), opacity: o, transform: `rotate(45 ${f1(x + 4)} ${f1(y + 4)})` });
+    });
+    c.fib.forEach(f => { const ph = (t * .04 + f.o) % 1; f.e.setAttribute('transform', `translate(${f1(X0 + ph * W)},${f1(LIY + f.y)}) rotate(${f1(20 * Math.sin(t + f.o * 9))})`); f.e.setAttribute('opacity', f1((1 - solid * Math.max(0, ph - .55) * 2.2) * .9 * 100) / 100); });
+    c.lump.forEach(l => {
+      const ph = (t * .035 + l.o) % 1, x = X0 + ph * W, k = solid * seg(ph, .45, .75);
+      setA(l.e, { cx: f1(x), cy: f1(LIY + l.y * .7), rx: f1(l.r * k * 1.3), ry: f1(l.r * k), opacity: k > 0 ? .95 : 0 });
+    });
+    c.bac.forEach(b => { b.b.setAttribute('opacity', n >= 4 ? 1 : 0); b.b.setAttribute('transform', `translate(${f1(b.x + 30 * Math.sin(t * .6 + b.ph))},${f1(b.y + 10 * Math.cos(t * .8 + b.ph))}) rotate(${f1(40 * Math.sin(t + b.ph))})`); });
+    // contents darken left -> right as it dries
+    c.q('.liL').style.filter = '';
+  },
+  notes: {
+    say: 'After most of the nutrients have been digested and absorbed in the small intestine, what is left? Undigested food – like fibre from vegetables – and a lot of water. These leftovers move into the large intestine. (Click) Watch the water: the large intestine absorbs water and some salts from the undigested food. (Click) As water is removed, the waste becomes semi-solid. This semi-solid waste is called stool.',
+    ask: 'Why do you think eating fruits, vegetables and whole grains (fibre) helps the large intestine work properly?',
+    explain: 'The large intestine is about 1.5 metres long – shorter but wider than the small intestine. It absorbs water and some salts, making the waste semi-solid. Fibre-rich food makes the stool easier to pass. Friendly bacteria living here break down undigested food, especially fibre, and keep the digestive system healthy.',
+    confusion: 'The large intestine is NOT the main place where nutrients are absorbed – that is the small intestine. The large intestine mainly absorbs water and some salts.',
+    transition: '“Where does the stool go now? To the last two stops of the journey.”'
+  }
+});
+
+/* ---------- 24. Rectum, anus, egestion ---------- */
+slide({
+  act: 5, title: 'Rectum, anus and egestion',
+  organ: c => c.n === 0 ? 4 : c.n === 1 ? 5 : 6,
+  steps: ['The rectum', 'The anus', 'Name the process'],
+  html: `
+  <svg class="full body" viewBox="0 0 10 10" preserveAspectRatio="xMidYMid meet">${bodyArt()}</svg>
+  <div class="lbl rl1" style="color:#e7b08f">Rectum</div>
+  <div class="lbl rl2" style="color:#e7b08f">Anus</div>
+  <div class="abs" style="left:1180px;top:140px;width:680px">
+    <div class="kicker">Part 9 · The last stops</div>
+    <div class="h2" style="margin:12px 0 44px">The exit</div>
+    <div class="r" data-s="1" style="margin-bottom:30px"><div class="key2" style="color:#e7b08f">RECTUM</div><div class="sub" style="font-size:32px">stores the stool for a while</div><div class="small">(the lower part of the large intestine)</div></div>
+    <div class="r" data-s="2" style="margin-bottom:40px"><div class="key2" style="color:#e7b08f">ANUS</div><div class="sub" style="font-size:32px">the exit — the stool leaves the body</div></div>
+    <div class="r" data-s="3" style="padding:28px 32px;border-radius:20px;background:rgba(111,227,214,.07);border:1.5px solid rgba(111,227,214,.45)">
+      <div class="kicker">This is called</div><div class="h3" style="margin:10px 0">Egestion</div>
+      <div class="sub" style="font-size:31px">Removing undigested waste from the body.</div></div>
+  </div>`,
+  init(c) {
+    c.svg = c.q('svg.body'); cam(c.svg, 395, 810, 380);
+    const put = (s, x, y, dx, dy) => { const p = projVB(c.svg, x, y); const e = c.q(s); e.style.left = (p[0] + dx) + 'px'; e.style.top = (p[1] + dy) + 'px'; };
+    put('.rl1', 312, 895, -210, -30); put('.rl2', 300, 945, -150, 10);
+    c.trk = new Track(c.svg, BODY.TRACK);
+    const fx = c.q('.fx'); c.st = [0, 1, 2, 3, 4].map(i => el('ellipse', { rx: 7, ry: 6, fill: 'url(#gStool)', opacity: 0 }, fx));
+  },
+  step(c, n) { dimOrgans(c, n === 0 ? ['li', 'rec', 'anus'] : n === 1 ? ['rec'] : ['rec', 'anus']); },
+  tick(c) {
+    const n = c.n, st = c.stepT, t = c.t;
+    c.st.forEach((e, i) => {
+      let s;
+      if (n === 0) s = 4.6 + ((t * .08 + i * .08) % .4);
+      else if (n === 1) s = lerp(4.65 + i * .05, 5.45 + i * .07, ease(seg(st, i * .3, 2.5 + i * .3)));
+      else if (n === 2) s = st < 1.5 ? 5.45 + i * .07 : lerp(5.45 + i * .07, 6.98, ease(seg(st, 1.5 + i * .35, 4 + i * .35)));
+      else s = 6.99;
+      const p = c.trk.pt(Math.min(s, 6.99));
+      const out = n >= 2 && s >= 6.95;
+      setA(e, { cx: f1(p[0] + (i % 2 ? 2 : -2)), cy: f1(p[1] + (out && n === 2 ? (st - 4 - i * .35) * 20 : 0)), opacity: n >= 3 || (out && st > 5 + i * .35) ? 0 : 1 });
+    });
+  },
+  notes: {
+    say: 'The stool moves into the last part of the large intestine, called the rectum. The rectum stores it for some time, until the body is ready to get rid of it. (Click) Finally, it leaves the body through the anus. (Click) Removing undigested waste from the body in this way is called egestion.',
+    ask: 'What is the difference between the food that was absorbed and the waste that is egested?',
+    explain: 'Egestion is the removal of undigested waste (stool) from the body through the anus. This keeps us healthy by removing what the body does not need.',
+    confusion: 'Egestion (removing undigested food) is different from excretion (removing waste made inside the body’s cells, like urine). Mention this only briefly.',
+    transition: '“Now let us put the whole journey together – one bite, from start to finish.”'
+  }
+});
+
+/* ===================== ACT 6 · THE BIG PICTURE ===================== */
+function keyInterp(keys, t, idx) {
+  if (t <= keys[0][0]) return keys[0][idx];
+  for (let i = 0; i < keys.length - 1; i++) { const a = keys[i], b = keys[i + 1]; if (t <= b[0]) return lerp(a[idx], b[idx], ease((t - a[0]) / (b[0] - a[0]))); }
+  return keys[keys.length - 1][idx];
+}
+function keyLinear(keys, t) {
+  if (t <= keys[0][0]) return keys[0][1];
+  for (let i = 0; i < keys.length - 1; i++) { const a = keys[i], b = keys[i + 1]; if (t <= b[0]) return lerp(a[1], b[1], (t - a[0]) / (b[0] - a[0])); }
+  return keys[keys.length - 1][1];
+}
+const RECAP_CAP = [
+  [0, 'One bite of food'], [2.5, 'Mouth'], [4, 'Chewing'], [7, 'Saliva'], [10, 'Tongue'], [12.5, 'Oesophagus'], [14.5, 'Wave-like movement'],
+  [18.5, 'Stomach'], [20.5, 'Churning'], [23, 'Digestive juice + acid + mucus'], [27, 'Small intestine'], [29, 'Bile'], [31, 'Pancreatic juice'],
+  [33, 'Intestinal juices'], [35.5, 'Digested nutrients'], [38, 'Absorption'], [40.5, 'Blood'], [43, 'Body'], [46.5, 'Large intestine'],
+  [49.5, 'Water absorption'], [54, 'Rectum'], [57.5, 'Anus'], [59.5, 'Egestion'], [63, 'One bite. One incredible journey.']];
+const RECAP_S = [[0, .3], [11.5, .6], [12.5, 1], [18.5, 2], [20, 2.15], [25.5, 2.6], [27, 3], [35, 3.1], [46, 3.995], [47, 4], [54, 4.98], [57.5, 5.9], [60, 6.99], [70, 6.99]];
+const RECAP_CAM = [[0, 170, 1], [11, 170, 1], [13.5, 320, 1], [18.5, 300, 1], [26, 330, 1], [28, 280, 1], [35, 330, 1], [39, 700, .5], [40.5, 1100, 0], [45, 1100, 0], [47.5, 420, 1], [54, 360, 1], [60, 360, 1], [63.5, 1100, 0], [70, 1100, 0]];
+const RECAP_END = 66;
+
+slide({
+  act: 6, title: 'The complete journey (recap)',
+  html: `
+  <svg class="full body" viewBox="0 0 10 10" preserveAspectRatio="xMidYMid meet">${bodyArt({ vessels: true })}</svg>
+  <div class="abs" style="left:1300px;top:150px;width:580px">
+    <div class="kicker">The complete journey</div>
+    <div class="abs" style="left:0;top:60px;width:4px;height:640px;background:rgba(255,255,255,.1);border-radius:2px"><i class="rbar" style="display:block;width:4px;background:var(--teal);border-radius:2px;height:0"></i></div>
+    <div class="abs cp0" style="left:36px;top:150px;width:560px;font:500 32px/1.25 var(--sans);color:rgba(230,240,250,.32)"></div>
+    <div class="abs cp1" style="left:36px;top:250px;width:560px;font:700 64px/1.1 var(--serif);color:#fff"></div>
+    <div class="abs cp2" style="left:36px;top:470px;width:560px;font:500 32px/1.25 var(--sans);color:rgba(230,240,250,.32)"></div>
+  </div>
+  <div class="abs" style="left:1336px;top:930px;font:500 22px/1 var(--sans);letter-spacing:.12em;color:rgba(230,240,250,.4)">R · REPLAY &nbsp;&nbsp; P · PAUSE</div>`,
+  init(c) {
+    c.svg = c.q('svg.body'); c.trk = new Track(c.svg, BODY.TRACK);
+    const fx = c.q('.fx'), R = rng(91);
+    c.glow = el('circle', { r: 22, fill: 'url(#gGold)', opacity: .7 }, fx);
+    c.bol = el('circle', { r: 8, fill: 'url(#gBolus)', stroke: 'rgba(255,240,210,.9)', 'stroke-width': 1.5 }, fx);
+    c.crumbs = Array.from({ length: 7 }, (_, i) => ({ a: i / 7 * 6.28, e: el('circle', { r: 3, fill: 'url(#gFood)', opacity: 0 }, fx) }));
+    c.sal = Array.from({ length: 10 }, (_, i) => ({ a: i / 10 * 6.28, e: dotEl(fx, 4, 'url(#gBlue)', { opacity: 0 }) }));
+    c.squeeze = [0, 1].map(() => el('path', { fill: 'none', stroke: '#ff6b6b', 'stroke-width': 4, 'stroke-linecap': 'round', opacity: 0 }, fx));
+    const stomPoly = samplePath(BODY.STOM_ORG, 60);
+    c.sj = Array.from({ length: 30 }, (_, i) => { let x, y; do { x = 290 + R() * 150; y = 390 + R() * 170; } while (!inPoly(x, y, stomPoly)); return { x, y, k: i % 3, ph: R() * 6, e: dotEl(fx, 4.5, ['url(#gGold)', 'url(#gGreen)', 'url(#gBlue)'][i % 3], { opacity: 0 }) }; });
+    const mkFlow = (d, n, fill) => { const p = el('path', { d, fill: 'none', stroke: 'none' }, fx); const L = p.getTotalLength(); return { p, L, dots: Array.from({ length: n }, (_, i) => ({ o: i / n, e: dotEl(fx, 4, fill, { opacity: 0 }) })) }; };
+    c.fB = mkFlow(BODY.BILE, 6, 'url(#gGreen)'); c.fP = mkFlow(BODY.PDUCT, 6, 'url(#gGold)');
+    c.fI = Array.from({ length: 14 }, (_, i) => ({ o: R() * .25, e: dotEl(fx, 3.5, 'url(#gRed)', { opacity: 0 }) }));
+    c.siP = c.trk.ps[3]; c.siL = c.trk.L[3];
+    c.vp = BODY.VESS.map(d => { const p = el('path', { d, fill: 'none', stroke: 'none' }, fx); return [p, p.getTotalLength()]; });
+    c.nut = Array.from({ length: 46 }, (_, i) => ({ v: i % c.vp.length, o: R(), d: R() * 3, e: dotEl(fx, 5, i % 2 ? 'url(#gGold)' : 'url(#gTeal)', { opacity: 0 }) }));
+    c.wat = Array.from({ length: 16 }, (_, i) => ({ o: R(), a: R() * 6.28, e: dotEl(fx, 4.5, 'url(#gBlue)', { opacity: 0 }) }));
+    c.capI = -1; c.orgEls = c.qa('.org');
+  },
+  enter(c) { c.T0 = 0; },
+  replay(c) { c.t = 0; },
+  step(c) { c.t = 0; },
+  tick(c) {
+    const T = Math.min(c.t, 70), t = c.t;
+    const s = keyLinear(RECAP_S, T);
+    const p = c.trk.pt(s);
+    const h = keyInterp(RECAP_CAM, T, 1), fw = keyInterp(RECAP_CAM, T, 2);
+    const fx_ = lerp(300, p[0], fw), fy_ = lerp(510, p[1], fw);
+    cam(c.svg, fx_ + 300 * (h / 1080), fy_, h);
+    // captions
+    let ci = 0; RECAP_CAP.forEach((k, i) => { if (T >= k[0]) ci = i; });
+    if (ci !== c.capI) {
+      c.capI = ci;
+      c.q('.cp0').textContent = ci > 0 ? RECAP_CAP[ci - 1][1] : '';
+      c.q('.cp1').textContent = RECAP_CAP[ci][1];
+      c.q('.cp2').textContent = ci < RECAP_CAP.length - 1 ? RECAP_CAP[ci + 1][1] : '';
+      const cp1 = c.q('.cp1'); cp1.style.transition = 'none'; cp1.style.opacity = 0; cp1.style.transform = 'translateY(16px)';
+      requestAnimationFrame(() => { cp1.style.transition = 'opacity .6s, transform .6s'; cp1.style.opacity = 1; cp1.style.transform = 'none'; });
+      const org = s < 1 ? 0 : s < 2 ? 1 : s < 3 ? 2 : s < 4 ? 3 : s < 5 ? 4 : s < 6 ? 5 : 6;
+      setOrgan(T >= 63 ? 'all' : org);
+      const key = ['mouthm', 'oes', 'stom', 'si', 'li', 'rec', 'anus'][org];
+      c.orgEls.forEach(g => { g.style.transition = 'opacity .8s'; g.style.opacity = T >= 63 || T < 2 || g.classList.contains(key) || (org === 3 && (g.classList.contains('liver') || g.classList.contains('panc') || g.classList.contains('gall'))) ? 1 : .45; });
+    }
+    c.q('.rbar').style.height = (clamp(T / RECAP_END) * 640) + 'px';
+    // food appearance
+    const inStool = s >= 4;
+    const bcol = s < 3.1 ? 'url(#gBolus)' : s < 4 ? 'url(#gChyme)' : 'url(#gStool)';
+    const chew = T >= 4 && T < 7 ? 1 : 0;
+    setA(c.bol, { cx: f1(p[0]), cy: f1(p[1]), r: f1((s < 1 ? 8 : s < 4 ? 6.5 : 7) * (1 + .15 * chew * Math.sin(t * 14))), fill: bcol, opacity: T > RECAP_S[RECAP_S.length - 3][0] + .5 ? 0 : 1 });
+    const goldGlow = T >= 35.5 && T < 46.5;
+    setA(c.glow, { cx: f1(p[0]), cy: f1(p[1]), r: goldGlow ? 30 : 20, opacity: T > 60.5 ? 0 : goldGlow ? .95 : .55 });
+    c.crumbs.forEach((k, i) => setA(k.e, { cx: f1(p[0] + 12 * Math.cos(k.a + t * 3)), cy: f1(p[1] + 7 * Math.sin(k.a + t * 3)), opacity: chew ? .9 : 0 }));
+    c.sal.forEach((k, i) => setA(k.e, { cx: f1(p[0] + 16 * Math.cos(k.a - t * 2)), cy: f1(p[1] + 11 * Math.sin(k.a - t * 2)), opacity: T >= 7 && T < 12 ? .9 : 0 }));
+    // squeeze behind bolus in the food pipe
+    const sq = T >= 12.5 && T < 18.5;
+    c.squeeze.forEach((e, k) => { const q = c.trk.pt(Math.max(1, s - .09)); e.setAttribute('d', `M${f1(q[0] + (k ? 8 : -8))},${f1(q[1] - 10)} L${f1(q[0] + (k ? 5 : -5))},${f1(q[1] + 4)}`); e.setAttribute('opacity', sq ? .9 : 0); });
+    // stomach churning + juices
+    const stomOn = T >= 18.5 && T < 27;
+    const sc = stomOn && T >= 20.5 ? 1 + .025 * Math.sin(t * 6) : 1;
+    c.q('.org.stom').setAttribute('transform', `translate(356,473) scale(${f1(sc * 1000) / 1000}) translate(-356,-473)`);
+    c.sj.forEach(j => setA(j.e, { cx: f1(j.x + 6 * Math.sin(t * 2 + j.ph)), cy: f1(j.y + 6 * Math.cos(t * 1.6 + j.ph)), opacity: T >= 23 && T < 27 ? f1((.5 + .4 * Math.sin(t * 3 + j.ph)) * 100) / 100 : 0 }));
+    const flow = (f, on, sp) => f.dots.forEach(d => { if (!on) { d.e.setAttribute('opacity', 0); return; } const ph = (t * sp + d.o) % 1; const q = f.p.getPointAtLength(ph * f.L); setA(d.e, { cx: f1(q.x), cy: f1(q.y), opacity: .95 }); });
+    flow(c.fB, T >= 29 && T < 35.5, .5); flow(c.fP, T >= 31 && T < 35.5, .45);
+    c.fI.forEach((d, i) => { const on = T >= 33 && T < 35.5; const q = c.siP.getPointAtLength((d.o + .02) * c.siL); setA(d.e, { cx: f1(q.x), cy: f1(q.y), opacity: on ? f1((.5 + .5 * Math.sin(t * 5 + i)) * 100) / 100 : 0 }); });
+    // absorption -> blood -> body
+    const vOn = T >= 38 && T < 47;
+    c.q('.vess').setAttribute('opacity', vOn ? f1(Math.min(1, (T - 38) / 1.5, (47 - T) / 1) * 100) / 100 : 0);
+    c.nut.forEach(nu => {
+      if (!vOn || T < 38 + nu.d * .6) { nu.e.setAttribute('opacity', 0); return; }
+      const ph = ((T - 38 - nu.d * .6) * .28 + nu.o * .2) % 1; const [pp, L] = c.vp[nu.v];
+      const q = nu.v === 0 ? pp.getPointAtLength(ph * L) : (ph < .35 ? c.vp[0][0].getPointAtLength(ph / .35 * c.vp[0][1]) : pp.getPointAtLength((ph - .35) / .65 * L));
+      setA(nu.e, { cx: f1(q.x), cy: f1(q.y), opacity: .95 });
+    });
+    // water leaving the large intestine
+    c.wat.forEach(w => { const on = T >= 49.5 && T < 54.5; const ph = (t * .7 + w.o) % 1; setA(w.e, { cx: f1(p[0] + 30 * ph * Math.cos(w.a)), cy: f1(p[1] + 30 * ph * Math.sin(w.a)), opacity: on ? f1((1 - ph) * 100) / 100 : 0 }); });
+  },
+  notes: {
+    say: 'Let us watch the whole journey of one bite without stopping. Narrate along with the captions, or – better – pause (P) at each stage and ask a student to say what happens next.',
+    ask: 'Before the animation reaches each stage, ask: “What happens next? Which juice joins here?”',
+    explain: 'Mouth (chewing + saliva) → food pipe (wave-like movement) → stomach (churning, digestive juice, acid, mucus) → small intestine (bile, pancreatic juice, intestinal juice; absorption into blood) → large intestine (water absorbed) → rectum (storage) → anus (egestion).',
+    confusion: 'Watch for students who still think nutrients are absorbed in the stomach or large intestine – stop and correct during the recap.',
+    transition: '“One bite… one incredible journey.”'
+  }
+});
+
+/* ---------- 26. Finale ---------- */
+slide({
+  act: 6, organ: 'all', title: 'One bite. One incredible journey.',
+  html: `
+  <svg class="full body" viewBox="0 0 10 10" preserveAspectRatio="xMidYMid meet">${bodyArt({ track: true })}</svg>
+  <div class="abs fin" style="left:1120px;top:330px;width:760px">
+    <div class="h1 f1" style="font-size:96px;opacity:0;transition:opacity 1.2s">ONE BITE.</div>
+    <div class="h1 f2" style="font-size:96px;opacity:0;transition:opacity 1.2s;margin-top:10px">ONE INCREDIBLE<br><span class="c-nut">JOURNEY.</span></div>
+    <div class="q f3" style="font-size:52px;opacity:0;transition:opacity 1.4s;margin-top:50px;color:var(--soft)">That is digestion.</div>
+  </div>`,
+  init(c) { c.svg = c.q('svg.body'); cam(c.svg, 300 + 330 * (1120 / 1080), 495, 1120); c.trk = new Track(c.svg, BODY.TRACK); const fx = c.q('.fx'); c.g = el('circle', { r: 18, fill: 'url(#gGold)' }, fx); c.d = el('circle', { r: 6, fill: '#fff6d8' }, fx); c.orgEls = c.qa('.org'); },
+  replay(c) { c.t = 0; },
+  step(c) { c.t = 0; },
+  tick(c) {
+    const T = c.t, s = 7 * ease(seg(T, .8, 10.5));
+    setTrackReveal(c, s);
+    const p = c.trk.pt(Math.min(s, 6.99)), on = T > .8 && s < 6.98;
+    [c.g, c.d].forEach(e => setA(e, { cx: f1(p[0]), cy: f1(p[1]), opacity: on ? 1 : 0 }));
+    const keys = ['oes', 'stom', 'si', 'li', 'rec', 'anus'];
+    c.orgEls.forEach(g => { const k = keys.findIndex(x => g.classList.contains(x)); const lit = T > 11.5 || k < 0 ? 1 : (s >= k + 1 ? 1 : .35); g.style.opacity = lit; });
+    c.q('.f1').style.opacity = T > 11 ? 1 : 0; c.q('.f2').style.opacity = T > 12.4 ? 1 : 0; c.q('.f3').style.opacity = T > 14.2 ? 1 : 0;
+    c.q('.trk').setAttribute('opacity', T > 11.5 ? f1((.7 + .3 * Math.sin(T * 1.5)) * 100) / 100 : 1);
+  },
+  notes: {
+    say: 'One bite… one incredible journey. That is digestion.',
+    ask: 'Close the screen and ask: “Take me on the journey of one bite of food through your body.” Let two or three students narrate it from start to finish.',
+    explain: 'Listen for: chewing & saliva (mouth) → wave-like movement (food pipe) → churning, juice, acid, mucus (stomach) → bile, pancreatic & intestinal juices, absorption into blood (small intestine) → water absorbed (large intestine) → storage (rectum) → egestion (anus).',
+    confusion: 'Correct any mix-ups between absorption (useful nutrients into blood) and egestion (undigested waste out of the body).',
+    transition: 'End of lesson. Press R to replay the journey.'
+  }
+});
+
+boot();
+</script>
+</body>
+</html>
