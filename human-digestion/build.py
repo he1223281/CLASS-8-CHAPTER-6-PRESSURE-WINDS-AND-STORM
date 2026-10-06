@@ -10,7 +10,14 @@ fonts = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="
 html = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
         '<title>Digestion in Human Beings</title>\n' + fonts + '\n<style>\n' + S('style.css') + '\n</style>\n</head>\n<body>\n'
-        + S('shell.html') + '\n<script>\n' + '\n'.join(S(f) for f in JS) + '\nsetTimeout(() => { boot(); const l = document.getElementById("loading"); if (l) l.remove(); }, 30);\n</script>\n</body>\n</html>\n')
+        + S('shell.html') + '\n<script>\n' + 'const ORGANS = ' + S('organs.json') + ';\n' + '\n'.join(S(f) for f in JS) + '\nsetTimeout(() => { boot(); const l = document.getElementById("loading"); if (l) l.remove(); }, 30);\n</script>\n</body>\n</html>\n')
 out = os.path.join(ROOT, 'digestion.html')
-open(out, 'w', encoding='utf-8').write(html)
+def write(h): open(out, 'w', encoding='utf-8').write(h)
+import sys, subprocess
+tex = os.path.join(ROOT, 'src', 'textures.json')
+if '--bake' in sys.argv or not os.path.exists(tex):
+    write(html.replace('<script>\n', '<script>\nconst PREBAKED = null;\n', 1))
+    subprocess.run(['node', os.path.join(ROOT, 'bake.js')], check=True, env=dict(os.environ, NODE_PATH=subprocess.run(['npm', 'root', '-g'], capture_output=True, text=True).stdout.strip()))
+html = html.replace('<script>\n', '<script>\nconst PREBAKED = ' + open(tex, encoding='utf-8').read() + ';\n', 1)
+write(html)
 print('built', out, len(html) // 1024, 'KB')

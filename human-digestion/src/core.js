@@ -17,7 +17,7 @@ function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); i
 function setA(e, attrs) { for (const k in attrs) e.setAttribute(k, attrs[k]); }
 
 /* ================= registry ================= */
-const ORGANS = ['Mouth', 'Oesophagus', 'Stomach', 'Small intestine', 'Large intestine', 'Rectum', 'Anus'];
+const ORGAN_NAMES = ['Mouth', 'Oesophagus', 'Stomach', 'Small intestine', 'Large intestine', 'Rectum', 'Anus'];
 const ACTS = {
   1: ['ACT 1', 'The Mystery', 'What happens to the food we eat?'],
   2: ['ACT 2', 'The Journey', 'Let’s follow one bite.'],
@@ -95,7 +95,7 @@ function replay() { const c = E.ctx[E.cur]; if (SLIDES[E.cur].replay) SLIDES[E.c
 /* ================= journey map ================= */
 function buildJourney() {
   const j = $('#journey');
-  j.innerHTML = ORGANS.map((o, k) => (k ? `<span class="jl" data-j="${k}"></span>` : '') + `<span class="jn" data-j="${k}"><i></i>${o}</span>`).join('');
+  j.innerHTML = ORGAN_NAMES.map((o, k) => (k ? `<span class="jl" data-j="${k}"></span>` : '') + `<span class="jn" data-j="${k}"><i></i>${o}</span>`).join('');
 }
 function setOrgan(o) {
   if (E.organ === o) return; E.organ = o;
@@ -214,7 +214,8 @@ function frame(ts) {
 
 function boot() {
   const t0 = performance.now();
-  try { bakeAll(); } catch (err) { console.error('bake', err); }
+  if (typeof PREBAKED !== 'undefined' && PREBAKED && !/[?&]rebake/.test(location.search)) Object.assign(TEXI, PREBAKED);
+  else { try { bakeAll(); } catch (err) { console.error('bake', err); } }
   console.log('baked in', Math.round(performance.now() - t0), 'ms');
   cinematicLayers();
   buildJourney(); buildOverview(); fit();

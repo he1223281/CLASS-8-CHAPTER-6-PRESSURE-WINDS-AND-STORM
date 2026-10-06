@@ -23,6 +23,9 @@ The Next button shows what the next click will do (e.g. “Show what happens whe
 5. **The Clean-up** — large intestine (water & salts, stool, friendly bacteria), rectum, anus, egestion
 6. **The Big Picture** — continuous recap of the whole journey, finale
 
+## Image source
+Organ outlines were traced from the public-domain *Digestive system without labels* diagram by Mariana Ruiz Villarreal (LadyofHats), Wikimedia Commons, and re-rendered with lit, textured tissue (see `src/tex.js`).
+
 ## Editing
-Source is in `src/`. After editing run `python3 build.py` to rebuild `digestion.html`.
+Source is in `src/`. After editing run `python3 build.py` to rebuild `digestion.html` (add `--bake` to regenerate the organ textures in `src/textures.json`; needs Node + Playwright).
 Fonts load from Google Fonts when online; offline, system fonts are used and everything still works.

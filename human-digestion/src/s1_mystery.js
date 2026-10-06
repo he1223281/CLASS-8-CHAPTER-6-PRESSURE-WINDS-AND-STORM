@@ -61,31 +61,60 @@ function figurePath() {
   return closedPath(pts);
 }
 const FIG_D = figurePath() + ' M-54,-332 a54,54 0 1,0 108,0 a54,54 0 1,0 -108,0 Z';
+const LUNG_L = 'M-10,-240 C-48,-250 -90,-214 -94,-160 C-97,-118 -86,-98 -56,-102 C-28,-106 -14,-130 -10,-172 Z';
 slide({
   act: 1, organ: -1, title: 'Life processes',
   steps: ['Show the life processes', 'Which one begins with food?'],
-  html: `
-  <div class="abs" style="left:140px;top:120px"><div class="kicker">Before we begin</div><div class="h2" style="margin-top:14px">Every living being must…</div></div>
-  <svg class="abs" style="left:660px;top:250px;width:600px;height:760px" viewBox="-300 -400 600 860">
-    <circle cx="0" cy="-60" r="300" fill="url(#gTeal)" opacity=".08"/>
-    <circle cx="0" cy="-332" r="54" fill="url(#gSkin)" stroke="rgba(184,212,255,.55)" stroke-width="3"/>
-    <path d="${figurePath()}" fill="url(#gSkin)" stroke="rgba(184,212,255,.55)" stroke-width="3"/>
-    <g class="belly" opacity="0"><ellipse cx="0" cy="-20" rx="70" ry="95" fill="url(#gGold)"/></g>
+  html: () => `
+  <div class="abs" style="left:120px;top:110px"><div class="kicker">Before we begin</div><div class="h2" style="margin-top:14px">Every living being must…</div></div>
+  <svg class="abs fig" style="left:650px;top:140px;width:620px;height:930px" viewBox="-300 -420 600 880">
+    <defs><radialGradient id="gLung" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="#ffb0b4"/><stop offset=".6" stop-color="#e06878"/><stop offset="1" stop-color="#8a2a40"/></radialGradient>
+      <radialGradient id="gKid" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="#d77a6a"/><stop offset="1" stop-color="#6e2420"/></radialGradient></defs>
+    <circle class="aura" cx="0" cy="-80" r="320" fill="url(#gTeal)" opacity=".07"/>
+    ${txImg('fig')}
+    <g class="sys sKid"><path d="M0,40 m-14,0 a14,12 0 1,0 28,0 a14,12 0 1,0 -28,0" fill="#e8c46a"/>
+      <path d="M-44,-70 C-40,-30 -20,10 -6,34 M44,-70 C40,-30 20,10 6,34" stroke="#e8c46a" stroke-width="3" fill="none"/>
+      <ellipse cx="-48" cy="-88" rx="17" ry="27" transform="rotate(12 -48 -88)" fill="url(#gKid)"/><ellipse cx="48" cy="-88" rx="17" ry="27" transform="rotate(-12 48 -88)" fill="url(#gKid)"/></g>
+    <g class="sys sLung"><path d="${LUNG_L}" fill="url(#gLung)"/><path d="${LUNG_L}" transform="scale(-1,1)" fill="url(#gLung)"/>
+      <path d="M0,-300 L0,-250 M0,-250 C-6,-238 -14,-226 -24,-214 M0,-250 C6,-238 14,-226 24,-214" stroke="#f3c9c9" stroke-width="7" fill="none" stroke-linecap="round"/></g>
+    <g class="sys sCirc">${BRANCH.map(b => `<path d="${TRUNK + b}" fill="none" stroke="#ff4f5e" stroke-width="5" stroke-linecap="round" opacity=".8"/>`).join('')}
+      <path class="heart" d="M12,-130 C-14,-150 -20,-176 -4,-186 C6,-192 14,-184 16,-178 C20,-188 34,-190 40,-178 C48,-160 32,-142 12,-130 Z" fill="#d23446"/><g class="cdots"></g></g>
+    <g class="sys sDig"><g transform="translate(0,-280) scale(.6,.53) translate(-300,-182)">${['oes', 'liver', 'stom', 'duo', 'panc', 'gall', 'liB', 'rec', 'si', 'liA'].map(k => txImg(k)).join('')}</g></g>
   </svg>
   <div class="card r lp1" data-s="1" style="left:120px;top:330px;width:560px;transition-delay:.1s"><div class="ct c-warm">NUTRITION</div><div class="cd">getting and using food</div></div>
-  <div class="card r lp2" data-s="1" style="left:1240px;top:330px;width:560px;transition-delay:.5s"><div class="ct c-teal">RESPIRATION</div><div class="cd">releasing energy from food</div></div>
-  <div class="card r lp3" data-s="1" style="left:120px;top:540px;width:560px;transition-delay:.9s"><div class="ct c-blood">CIRCULATION</div><div class="cd">carrying materials around the body</div></div>
-  <div class="card r lp4" data-s="1" style="left:1240px;top:540px;width:560px;transition-delay:1.3s"><div class="ct c-sal">EXCRETION</div><div class="cd">removing wastes from the body</div></div>
-  <div class="card r lp5" data-s="1" style="left:120px;top:750px;width:560px;transition-delay:1.7s"><div class="ct" style="color:#d9a6ff">REPRODUCTION</div><div class="cd">producing young ones</div></div>
-  <div class="abs r" data-s="1" style="left:1240px;top:770px;width:600px;transition-delay:2.2s"><div class="sub">These <b style="color:#fff">life processes</b> help living beings <b style="color:#fff">survive</b>.</div></div>
+  <div class="card r lp2" data-s="1" style="left:1240px;top:330px;width:560px;transition-delay:1.8s"><div class="ct" style="color:#ff9aa8">RESPIRATION</div><div class="cd">releasing energy from food</div></div>
+  <div class="card r lp3" data-s="1" style="left:120px;top:540px;width:560px;transition-delay:3.5s"><div class="ct c-blood">CIRCULATION</div><div class="cd">carrying materials around the body</div></div>
+  <div class="card r lp4" data-s="1" style="left:1240px;top:540px;width:560px;transition-delay:5.2s"><div class="ct" style="color:#e8c46a">EXCRETION</div><div class="cd">removing wastes from the body</div></div>
+  <div class="card r lp5" data-s="1" style="left:120px;top:750px;width:560px;transition-delay:6.9s"><div class="ct" style="color:#d9a6ff">REPRODUCTION</div><div class="cd">producing young ones</div></div>
+  <div class="abs r" data-s="1" style="left:1240px;top:770px;width:600px;transition-delay:8.4s"><div class="sub">These <b style="color:#fff">life processes</b> help living beings <b style="color:#fff">survive</b>.</div></div>
   <div class="banner r" data-s="2" style="top:960px">Today: <span class="c-warm">NUTRITION</span> — what happens to the food we eat</div>`,
+  init(c) {
+    c.sys = ['.sDig', '.sLung', '.sCirc', '.sKid'].map(k => c.q(k));
+    c.paths = BRANCH.map(b => { const p = el('path', { d: TRUNK + b, fill: 'none', stroke: 'none' }, c.q('.cdots')); return [p, p.getTotalLength()]; });
+    c.dots = Array.from({ length: 30 }, (_, i) => ({ b: i % 5, o: i / 30, e: dotEl(c.q('.cdots'), 6, 'url(#gRed)') }));
+  },
   step(c, n) {
     ['.lp2', '.lp3', '.lp4', '.lp5'].forEach(s => { c.q(s).style.opacity = n >= 2 ? .3 : ''; });
     const l1 = c.q('.lp1'); l1.style.borderColor = n >= 2 ? 'rgba(255,184,107,.8)' : ''; l1.style.boxShadow = n >= 2 ? '0 0 50px rgba(255,184,107,.35)' : '';
   },
-  tick(c) { c.q('.belly').setAttribute('opacity', c.n >= 2 ? f1((.55 + .25 * Math.sin(c.t * 2)) * 100) / 100 : 0); },
+  tick(c) {
+    const n = c.n, st = c.stepT, t = c.t;
+    const act = n === 1 ? (st < 8.5 ? Math.floor((st - .1) / 1.7) : 9) : n >= 2 ? 0 : -1;
+    c.sys.forEach((g, i) => {
+      const on = act === i || (act === 9) ? 1 : 0;
+      const op = n === 0 ? .22 : act === 9 ? .75 : on ? 1 : .12;
+      g.style.transition = 'opacity .7s, filter .7s'; g.style.opacity = op;
+      g.style.filter = on && act !== 9 ? 'drop-shadow(0 0 12px rgba(255,220,180,.55))' : 'none';
+    });
+    c.q('.aura').setAttribute('opacity', act === 4 ? .22 : .07);
+    const br = 1 + .045 * Math.sin(t * 1.6);
+    c.q('.sLung').setAttribute('transform', `translate(0,-170) scale(${f1(br * 1000) / 1000}) translate(0,170)`);
+    const hb = 1 + .08 * Math.max(0, Math.sin(t * 7)) * (Math.sin(t * 3.5) > 0 ? 1 : 0);
+    c.q('.heart').setAttribute('transform', `translate(14,-160) scale(${f1(hb * 1000) / 1000}) translate(-14,160)`);
+    c.dots.forEach(d => { const [p, L] = c.paths[d.b], ph = (t * .18 + d.o) % 1, q = p.getPointAtLength(ph * L); setA(d.e, { cx: f1(q.x), cy: f1(q.y) }); });
+  },
   notes: {
-    say: 'You learnt in Grade 6 that all living beings carry out some basic processes to stay alive. Let us name them together: nutrition, respiration, circulation, excretion and reproduction. Together we call them life processes.',
+    say: 'You learnt in Grade 6 that all living beings carry out some basic processes to stay alive. Watch the body as I name each one: nutrition (the digestive system), respiration (the lungs), circulation (the heart and blood vessels), excretion (the kidneys) and reproduction. Together we call them life processes.',
     ask: 'Which of these life processes do you think starts the moment you take a bite of food?',
     explain: 'Nutrition is how living beings get food and use it. Our body needs energy and materials from food to carry out all the other life processes too.',
     confusion: 'Students sometimes think respiration means only breathing. Respiration is about releasing energy from food – breathing helps it happen. (Keep this brief; it is a later topic.)',
@@ -130,85 +159,98 @@ slide({
 });
 
 /* ---------- 4. Why break food down? ---------- */
+const W4 = { wall: 1120, ww: 96, vx: 1300, vw: 190, lanes: [420, 610, 800] };
 slide({
   act: 1, organ: -1, title: 'Why break food down?',
-  steps: ['What is in our food?', 'Can the body use it like this?', 'Break it down', 'Name it'],
-  html: `
-  <div class="abs" style="left:140px;top:120px"><div class="kicker">The big question</div><div class="h2" style="margin-top:14px">Why can’t the body use food as it is?</div></div>
+  steps: ['What is in our food?', 'Can it get into the body?', 'Break it down', 'Name it'],
+  html: () => {
+    let cells = '';
+    for (let y = 250, k = 0; y < 1000; y += 70, k++) cells += `<g transform="translate(${W4.wall},${y})"><rect x="2" y="2" width="${W4.ww - 4}" height="64" rx="18" fill="url(#gCell)" stroke="#a8485a" stroke-width="2.5"/><ellipse cx="${W4.ww / 2 + (k % 2 ? 8 : -6)}" cy="34" rx="13" ry="10" fill="#8a3456" opacity=".75"/></g>`;
+    return `
+  <div class="abs" style="left:120px;top:96px;width:1150px"><div class="kicker">The big question</div><div class="h2" style="margin-top:12px;font-size:56px">Why can’t the body use food as it is?</div></div>
   <svg class="full" viewBox="0 0 1920 1080">
-    <defs><linearGradient id="gBloodSide" x1="0" x2="1"><stop offset="0" stop-color="#ff5a64" stop-opacity=".0"/><stop offset=".25" stop-color="#ff5a64" stop-opacity=".13"/><stop offset="1" stop-color="#ff5a64" stop-opacity=".06"/></linearGradient></defs>
-    <rect x="1240" y="290" width="680" height="640" fill="url(#gBloodSide)"/>
-    <g class="wall"></g>
-    <g class="mol"></g>
-    <g class="fat"></g>
+    <defs><linearGradient id="gCell" x1="0" x2="1"><stop offset="0" stop-color="#e6838f"/><stop offset=".5" stop-color="#f7b3b3"/><stop offset="1" stop-color="#d9707f"/></linearGradient>
+      <linearGradient id="gVes" x1="0" x2="1"><stop offset="0" stop-color="#5a0d18"/><stop offset=".5" stop-color="#9c1f30"/><stop offset="1" stop-color="#5a0d18"/></linearGradient></defs>
+    <rect x="${W4.vx}" y="230" width="${W4.vw}" height="850" fill="url(#gVes)"/>
+    <path d="M${W4.vx},230 L${W4.vx},1080 M${W4.vx + W4.vw},230 L${W4.vx + W4.vw},1080" stroke="#ff8a96" stroke-width="10" opacity=".55"/>
+    <g class="rbc"></g>
+    <g class="cells">${cells}</g>
+    <g class="mol"></g><g class="fat"></g><g class="bumps"></g>
   </svg>
-  <div class="lbl r" data-s="1" style="left:180px;top:330px">Carbohydrate<small>(like starch)</small></div>
-  <div class="lbl r" data-s="1" style="left:180px;top:560px">Protein</div>
-  <div class="lbl r" data-s="1" style="left:180px;top:760px">Fat</div>
-  <div class="lbl r" data-s="1" style="left:1290px;top:310px;color:#ffb3b8">Inside the body<small>(blood)</small></div>
-  <div class="banner r" data-s="2-2" style="top:950px">Too big and complex to pass into the body</div>
-  <div class="banner r" data-s="3-3" style="top:950px">Broken into <span class="c-nut">simpler forms</span> — now they can pass in and be used</div>
-  <div class="abs r" data-s="4" style="left:1300px;top:420px;width:560px;padding:34px 38px;border-radius:24px;background:rgba(6,10,16,.85);border:1.5px solid rgba(111,227,214,.4)">
-    <div class="kicker">This is called</div><div class="h2" style="margin:12px 0 14px">Digestion</div>
-    <div class="sub">Breaking down complex food into <b class="c-nut">simpler forms</b> in the body.</div></div>`,
+  <div class="lbl" style="left:${W4.wall - 60}px;top:206px;font-size:26px;color:#ffc9bd">intestine wall</div>
+  <div class="lbl" style="left:${W4.vx + 40}px;top:206px;font-size:26px;color:#ff8a96">blood</div>
+  <div class="lbl r" data-s="1" style="left:120px;top:395px;font-size:32px">Carbohydrate<small>(like starch)</small></div>
+  <div class="lbl r" data-s="1" style="left:120px;top:590px;font-size:32px">Protein</div>
+  <div class="lbl r" data-s="1" style="left:120px;top:780px;font-size:32px">Fat</div>
+  <div class="abs" style="left:1530px;top:330px;width:350px">
+    <div class="r" data-s="2-2"><div class="key2" style="font-size:36px">Too big!</div><div class="sub" style="font-size:30px">Big, complex food cannot pass into the blood.</div></div>
+    <div class="r" data-s="3-3"><div class="key2 c-nut" style="font-size:36px">Broken down</div><div class="sub" style="font-size:30px">Small, simple pieces pass through the wall into the blood.</div></div>
+    <div class="r" data-s="4" style="padding:26px 26px;border-radius:22px;background:rgba(6,10,16,.85);border:1.5px solid rgba(111,227,214,.45)">
+      <div class="kicker">This is called</div><div class="h3" style="margin:10px 0">Digestion</div>
+      <div class="sub" style="font-size:29px">Breaking down complex food into <b class="c-nut">simpler forms</b> in the body.</div></div>
+  </div>`;
+  },
   init(c) {
-    const W = c.q('.wall');
-    c.pores = [];
-    for (let y = 300; y < 930; y += 60) { el('line', { x1: 1240, y1: y + 14, x2: 1240, y2: y + 60, stroke: 'rgba(255,190,170,.55)', 'stroke-width': 10, 'stroke-linecap': 'round' }, W); c.pores.push(y + 7); }
     const g = c.q('.mol');
-    c.carb = new Chain(g, { x: 640, y: 420, n: 12, r: 20, gap: 46, shape: 'hex', colors: ['#f3e6c4'], simple: '#ffd36e', seed: 3, spread: 70, spreadT: 1.6, wave: 22 });
-    c.prot = new Chain(g, { x: 640, y: 620, n: 11, r: 19, gap: 44, shape: 'circle', colors: ['#ff8fa3', '#c99bff', '#7fd1ff', '#ffb36b'], simple: null, seed: 8, spread: 70, spreadT: 1.6, wave: 26 });
-    c.prot.o.simple = null;
-    const fg = c.q('.fat');
-    c.big = el('circle', { cx: 640, cy: 820, r: 78, fill: 'url(#gFat)' }, fg);
-    const R = rng(11);
-    c.fd = []; for (let i = 0; i < 14; i++) { const a = R() * 6.28, d = R() * 70; c.fd.push({ hx: 640 + d * Math.cos(a), hy: 820 + d * Math.sin(a), x: 640, y: 820, e: el('circle', { r: 10, fill: 'url(#gFat)', opacity: 0 }, fg) }); }
-    c.all = () => [...c.carb.u, ...c.prot.u];
-    c.mig = []; // migration assignments
+    c.carb = new Chain(g, { x: 640, y: W4.lanes[0], n: 11, r: 20, gap: 44, shape: 'hex', colors: ['#f3e6c4'], simple: '#ffd36e', seed: 3, spread: 70, spreadT: 1.4, wave: 18, jit: 2 });
+    c.prot = new Chain(g, { x: 640, y: W4.lanes[1], n: 11, r: 18, gap: 42, shape: 'circle', colors: ['#ff8fa3', '#c99bff', '#7fd1ff', '#ffb36b', '#9be38f'], seed: 8, spread: 70, spreadT: 1.4, wave: 24, jit: 2 });
+    c.cg = [c.carb.g, c.prot.g];
+    const fg = c.q('.fat'), R = rng(11);
+    c.big = el('circle', { cx: 640, cy: W4.lanes[2], r: 80, fill: 'url(#gFat)' }, fg);
+    c.fd = Array.from({ length: 14 }, () => { const a = R() * 6.28, d = 20 + R() * 70; return { hx: 640 + d * Math.cos(a), hy: W4.lanes[2] + d * Math.sin(a) * .7, x: 640, y: W4.lanes[2], e: el('circle', { r: 11, fill: 'url(#gFat)', opacity: 0 }, fg), glow: el('circle', { r: 0, opacity: 0 }, fg) }; });
+    c.rbc = Array.from({ length: 24 }, (_, i) => { const gg = el('g', {}, c.q('.rbc')); el('ellipse', { rx: 26, ry: 16, fill: '#d42a3c' }, gg); el('ellipse', { rx: 13, ry: 7, fill: '#9c1426' }, gg); return { g: gg, x: W4.vx + 30 + R() * (W4.vw - 60), o: R(), rot: R() * 40 - 20 }; });
+    c.bumps = [0, 1, 2].map(i => el('circle', { cx: W4.wall, cy: W4.lanes[i], r: 10, fill: 'none', stroke: '#ffd36e', 'stroke-width': 4, opacity: 0 }, c.q('.bumps')));
+    const all = [...c.carb.u, ...c.prot.u, ...c.fd];
+    c.mig = all.map((u, i) => ({ u, d: (i * .37) % 4.2, vx: W4.vx + 30 + R() * (W4.vw - 60), lane: i < c.carb.u.length ? 0 : i < c.carb.u.length + c.prot.u.length ? 1 : 2, jy: (R() - .5) * 60 }));
   },
   step(c, n) {
-    c.q('.mol').style.opacity = n >= 1 ? 1 : 0; c.q('.fat').style.opacity = n >= 1 ? 1 : 0;
-    c.q('.mol').style.transition = c.q('.fat').style.transition = 'opacity .8s';
-    if (n < 3) { // reset to whole molecules
-      [c.carb, c.prot].forEach(ch => { ch.l.forEach(l => l.broken = false); ch.regroup(); ch.u.forEach(u => { u.x = u.tx; u.y = u.ty; }); });
-      c.fd.forEach(d => { d.x = 640; d.y = 820; }); c.mig = [];
+    const show = n >= 1;
+    [c.q('.mol'), c.q('.fat')].forEach(e => { e.style.transition = 'opacity .8s'; e.style.opacity = show ? 1 : 0; });
+    if (n < 3) {
+      [c.carb, c.prot].forEach(ch => { ch.l.forEach(l => l.broken = false); ch.regroup(); ch.u.forEach(u => { u.x = u.tx; u.y = u.ty; u.e.setAttribute('opacity', 1); u.glow.setAttribute('opacity', 0); }); });
+      c.fd.forEach(d => { d.x = 640; d.y = W4.lanes[2]; d.e.setAttribute('opacity', 0); });
+      c.big.setAttribute('r', 80);
     }
   },
   tick(c, dt) {
-    const n = c.n, st = c.stepT;
-    const bump = n === 2 ? Math.max(0, Math.sin(Math.min(st, 6) * 1.6)) * 330 * (st < 6 ? 1 : 0) : 0;
-    const bx = n === 2 ? Math.min(330, 330 * Math.abs(Math.sin(st * 1.3))) : 0;
-    const off = n === 2 ? bx : 0;
-    c.q('.mol').setAttribute('transform', `translate(${f1(off)},0)`);
-    c.q('.fat').setAttribute('transform', `translate(${f1(off)},0)`);
-    const T = n >= 3 ? { 1: st } : {};
-    c.carb.update(dt, T, c.t); c.prot.update(dt, T, c.t);
-    // fat splits
-    const fs = n >= 3 ? eout(seg(st, .3, 1.8)) : 0;
-    c.big.setAttribute('r', f1(78 * (1 - fs)));
-    c.fd.forEach(d => { if (n < 3) { d.e.setAttribute('opacity', 0); return; } d.e.setAttribute('opacity', 1); });
-    // migration through pores after breaking
-    if (n >= 3 && st > 2.6) {
-      if (!c.mig.length) {
-        const R = rng(5); const units = [...c.carb.u, ...c.prot.u];
-        units.forEach((u, i) => c.mig.push({ o: u, pore: c.pores[i % c.pores.length], d: R() * 2.2, fx: 1330 + R() * 520, fy: 320 + R() * 580, ph: 0 }));
-        c.fd.forEach((u, i) => c.mig.push({ o: u, pore: c.pores[(i * 3 + 1) % c.pores.length], d: R() * 2.2, fx: 1330 + R() * 520, fy: 320 + R() * 580, fat: 1 }));
-      }
-      c.mig.forEach(m => {
-        const tt = st - 2.6 - m.d; if (tt < 0) return;
-        const u = m.o;
-        if (tt < 1.4) { u.tx = 1240; u.ty = m.pore; } else { u.tx = m.fx; u.ty = m.fy; }
-        if (m.fat) { const k = 1 - Math.exp(-dt * 1.6); u.x += (u.tx - u.x) * k; u.y += (u.ty - u.y) * k; }
-      });
+    const n = c.n, st = c.stepT, t = c.t;
+    // blood flows down continuously
+    c.rbc.forEach(r => { const y = 200 + ((t * .09 + r.o) % 1) * 920; r.g.setAttribute('transform', `translate(${f1(r.x)},${f1(y)}) rotate(${f1(r.rot + 20 * Math.sin(t + r.o * 9))})`); });
+    // bump against the wall
+    const amps = [W4.wall - (640 + 5 * 44 + 22), W4.wall - (640 + 5 * 42 + 20), W4.wall - (640 + 82)];
+    const bump = n === 2 ? Math.abs(Math.sin(st * 1.5)) : 0;
+    c.cg.forEach((g, i) => g.setAttribute('transform', `translate(${f1(amps[i] * bump)},0)`));
+    c.q('.fat').setAttribute('transform', `translate(${f1(n === 2 ? amps[2] * bump : 0)},0)`);
+    c.bumps.forEach(b => { const k = n === 2 && bump > .97 ? 1 : 0; b.setAttribute('opacity', k ? .9 : 0); b.setAttribute('r', k ? 18 + 10 * Math.random() : 10); });
+    if (n < 3) { c.carb.update(dt, {}, t); c.prot.update(dt, {}, t); c.fd.forEach(d => d.e.setAttribute('opacity', 0)); return; }
+    // break apart
+    const T = { 1: st };
+    const fs = eout(seg(st, .2, 1.6));
+    c.big.setAttribute('r', f1(80 * (1 - fs)));
+    if (st < 2.2) {
+      c.carb.update(dt, T, t); c.prot.update(dt, T, t);
+      c.fd.forEach(d => { d.x = lerp(640, d.hx, fs); d.y = lerp(W4.lanes[2], d.hy, fs); setA(d.e, { cx: f1(d.x), cy: f1(d.y), opacity: fs > 0 ? 1 : 0 }); });
+      return;
     }
-    c.fd.forEach(d => {
-      if (n >= 3 && !(c.mig.length && st > 2.6)) { d.x = lerp(640, d.hx, fs); d.y = lerp(820, d.hy, fs); }
-      d.e.setAttribute('cx', f1(d.x)); d.e.setAttribute('cy', f1(d.y));
+    if (!c.homes) c.homes = c.mig.map(m => [m.u.x, m.u.y]);
+    [c.carb, c.prot].forEach(ch => { ch.l.forEach(l => l.broken = true); });
+    // loop: home -> wall -> through -> blood -> respawn
+    c.mig.forEach((m, i) => {
+      const per = 6.5, tt = ((st - 2.2 - m.d) % per + per) % per, [hx, hy] = c.homes[i], ly = W4.lanes[m.lane] + m.jy;
+      let x = hx, y = hy, o = 1;
+      if (st - 2.2 < m.d) { x = hx; y = hy; }
+      else if (tt < 1.5) { const k = ease(tt / 1.5); x = lerp(hx, W4.wall - 6, k); y = lerp(hy, ly, k); }
+      else if (tt < 2.3) { const k = (tt - 1.5) / .8; x = lerp(W4.wall - 6, m.vx, ease(k)); y = ly; }
+      else if (tt < 5.2) { const k = (tt - 2.3) / 2.9; x = m.vx + 8 * Math.sin(tt * 3); y = ly + k * (1060 - ly); o = 1 - Math.max(0, k - .8) * 5; }
+      else { const k = (tt - 5.2) / 1.3; x = hx; y = hy; o = ease(k); }
+      m.u.x = x; m.u.y = y;
+      if (m.lane === 2) setA(m.u.e, { cx: f1(x), cy: f1(y), opacity: f1(clamp(o) * 100) / 100 });
+      else { m.u.e.setAttribute('opacity', f1(clamp(o) * 100) / 100); m.u.glow.setAttribute('opacity', f1(clamp(o) * .8 * 100) / 100); }
     });
-    if (n >= 3) c.prot.u.forEach(u => { if (u.free) u.e.setAttribute('stroke', 'rgba(255,255,255,.7)'); });
+    c.carb.draw(t); c.prot.draw(t);
   },
   notes: {
-    say: 'Our food contains complex components – carbohydrates like starch, proteins and fats. These are big, complicated substances. Imagine trying to push a whole chapati through the wall of a blood vessel! It cannot pass. The body must first break them down into simpler, smaller forms.',
+    say: 'Our food contains complex components – carbohydrates like starch, proteins and fats. These are big, complicated substances. Watch them try to get through the wall of the intestine into the blood – they simply cannot pass! (Click) But when they are broken into small, simple pieces, those pieces can pass through the wall and the blood carries them away.',
     ask: 'Why do you think the body needs to break food into tiny pieces before using it?',
     explain: 'Breaking down complex food components into simpler forms in the body is called DIGESTION. Only these simpler forms can pass into the blood and be used by the body.',
     confusion: 'Students think “digestion” only means food getting crushed. Crushing helps, but true digestion means changing complex substances into simpler ones.',
@@ -218,8 +260,8 @@ slide({
 
 /* ---------- 5. Alimentary canal ---------- */
 const CANAL_LABELS = [
-  ['Mouth', 300, 150, 1], ['Oesophagus (food pipe)', 304, 282, 1], ['Stomach', 425, 470, 1], ['Small intestine', 250, 750, -1],
-  ['Large intestine', 424, 720, 1], ['Rectum', 312, 892, -1], ['Anus', 302, 948, 1]];
+  ['Mouth', 300, 150, 1], ['Oesophagus (food pipe)', 300, 290, 1], ['Stomach', 405, 455, 1], ['Small intestine', 250, 690, -1],
+  ['Large intestine', 432, 640, 1], ['Rectum', 297, 805, -1], ['Anus', 297, 846, 1]];
 slide({
   act: 1, title: 'The alimentary canal',
   steps: ['Trace the path of food', 'Meet the two helpers'],
@@ -240,8 +282,8 @@ slide({
       <text x="${s > 0 ? lx + 10 : lx - 10}" y="${y + 11}" font-size="32" font-weight="600" fill="#fff" text-anchor="${s > 0 ? 'start' : 'end'}">${t}</text></g>`;
     }).join('')}
     <g class="hl" opacity="0">
-      <path d="M215,420 L-10,420" stroke="#d9826b" stroke-width="1.6"/><circle cx="215" cy="420" r="4" fill="#d9826b"/><text x="-20" y="431" font-size="32" font-weight="700" fill="#e79a80" text-anchor="end">Liver</text>
-      <path d="M380,568 L610,568" stroke="#f5d06b" stroke-width="1.6"/><circle cx="380" cy="568" r="4" fill="#f5d06b"/><text x="620" y="579" font-size="32" font-weight="700" fill="#f5d06b">Pancreas</text>
+      <path d="M215,450 L-10,450" stroke="#d9826b" stroke-width="1.6"/><circle cx="215" cy="450" r="4" fill="#d9826b"/><text x="-20" y="461" font-size="32" font-weight="700" fill="#e79a80" text-anchor="end">Liver</text>
+      <path d="M380,512 L610,512" stroke="#f5d06b" stroke-width="1.6"/><circle cx="380" cy="512" r="4" fill="#f5d06b"/><text x="620" y="523" font-size="32" font-weight="700" fill="#f5d06b">Pancreas</text>
     </g></g>
   </svg>`,
   init(c) { c.svg = c.q('svg.body'); cam(c.svg, 117, 487, 1120); c.trk = new Track(c.svg, BODY.TRACK); c.bol = el('circle', { r: 9, fill: 'url(#gGold)' }, c.q('.fx')); c.bol2 = el('circle', { r: 4, fill: '#fff4cf' }, c.q('.fx')); },

@@ -40,7 +40,7 @@ slide({
     c.sal = Array.from({ length: 10 }, (_, i) => ({ a: i / 10 * 6.28, e: dotEl(fx, 4, 'url(#gBlue)', { opacity: 0 }) }));
     c.squeeze = [0, 1].map(() => el('path', { fill: 'none', stroke: '#ff6b6b', 'stroke-width': 4, 'stroke-linecap': 'round', opacity: 0 }, fx));
     const stomPoly = samplePath(BODY.STOM_ORG, 60);
-    c.sj = Array.from({ length: 30 }, (_, i) => { let x, y; do { x = 290 + R() * 150; y = 390 + R() * 170; } while (!inPoly(x, y, stomPoly)); return { x, y, k: i % 3, ph: R() * 6, e: dotEl(fx, 4.5, ['url(#gGold)', 'url(#gGreen)', 'url(#gBlue)'][i % 3], { opacity: 0 }) }; });
+    c.sj = Array.from({ length: 30 }, (_, i) => { let x, y; do { x = 300 + R() * 120; y = 410 + R() * 130; } while (!inPoly(x, y, stomPoly)); return { x, y, k: i % 3, ph: R() * 6, e: dotEl(fx, 4.5, ['url(#gGold)', 'url(#gGreen)', 'url(#gBlue)'][i % 3], { opacity: 0 }) }; });
     const mkFlow = (d, n, fill) => { const p = el('path', { d, fill: 'none', stroke: 'none' }, fx); const L = p.getTotalLength(); return { p, L, dots: Array.from({ length: n }, (_, i) => ({ o: i / n, e: dotEl(fx, 4, fill, { opacity: 0 }) })) }; };
     c.fB = mkFlow(BODY.BILE, 6, 'url(#gGreen)'); c.fP = mkFlow(BODY.PDUCT, 6, 'url(#gGold)');
     c.fI = Array.from({ length: 14 }, (_, i) => ({ o: R() * .25, e: dotEl(fx, 3.5, 'url(#gRed)', { opacity: 0 }) }));
@@ -90,7 +90,7 @@ slide({
     // stomach churning + juices
     const stomOn = T >= 18.5 && T < 27;
     const sc = stomOn && T >= 20.5 ? 1 + .025 * Math.sin(t * 6) : 1;
-    c.q('.org.stom').setAttribute('transform', `translate(356,473) scale(${f1(sc * 1000) / 1000}) translate(-356,-473)`);
+    c.q('.org.stom').setAttribute('transform', `translate(370,470) scale(${f1(sc * 1000) / 1000}) translate(-370,-470)`);
     c.sj.forEach(j => setA(j.e, { cx: f1(j.x + 6 * Math.sin(t * 2 + j.ph)), cy: f1(j.y + 6 * Math.cos(t * 1.6 + j.ph)), opacity: T >= 23 && T < 27 ? f1((.5 + .4 * Math.sin(t * 3 + j.ph)) * 100) / 100 : 0 }));
     const flow = (f, on, sp) => f.dots.forEach(d => { if (!on) { d.e.setAttribute('opacity', 0); return; } const ph = (t * sp + d.o) % 1; const q = f.p.getPointAtLength(ph * f.L); setA(d.e, { cx: f1(q.x), cy: f1(q.y), opacity: .95 }); });
     flow(c.fB, T >= 29 && T < 35.5, .5); flow(c.fP, T >= 31 && T < 35.5, .45);
@@ -125,7 +125,8 @@ slide({
     <div class="h1 f1" style="font-size:96px;opacity:0;transition:opacity 1.2s">ONE BITE.</div>
     <div class="h1 f2" style="font-size:96px;opacity:0;transition:opacity 1.2s;margin-top:10px">ONE INCREDIBLE<br><span class="c-nut">JOURNEY.</span></div>
     <div class="q f3" style="font-size:52px;opacity:0;transition:opacity 1.4s;margin-top:50px;color:var(--soft)">That is digestion.</div>
-  </div>`,
+  </div>
+  <div class="abs" style="left:1120px;bottom:40px;font:500 18px/1.4 var(--sans);color:rgba(230,240,250,.38)">Organ shapes traced from the public-domain digestive system diagram by Mariana Ruiz Villarreal (Wikimedia Commons).</div>`,
   init(c) { c.svg = c.q('svg.body'); cam(c.svg, 300 + 330 * (1120 / 1080), 495, 1120); c.trk = new Track(c.svg, BODY.TRACK); const fx = c.q('.fx'); c.g = el('circle', { r: 18, fill: 'url(#gGold)' }, fx); c.d = el('circle', { r: 6, fill: '#fff6d8' }, fx); c.orgEls = c.qa('.org'); },
   replay(c) { c.t = 0; },
   step(c) { c.t = 0; },

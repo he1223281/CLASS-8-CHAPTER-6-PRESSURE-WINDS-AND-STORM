@@ -53,7 +53,7 @@ slide({
     <g class="lvB" opacity="0">
       <path d="M60,${VB + 20} L1400,${VB + 20}" stroke="#7a1020" stroke-width="40" stroke-linecap="round"/>
       <path class="vessel" d="M60,${VB + 20} L1400,${VB + 20}" stroke="#ff4f5e" stroke-width="30" stroke-linecap="round"/>
-      ${VX.map(x => `<path d="${villusPath(x)} Z" fill="url(#gVil)"/><path d="${capPath(x)}" fill="none" stroke="#ff4f5e" stroke-width="12" stroke-linecap="round" opacity=".9"/>
+      ${VX.map(x => `<g transform="translate(${x},0)">${txImg('villus')}</g><path d="${capPath(x)}" fill="none" stroke="#ff4f5e" stroke-width="12" stroke-linecap="round" opacity=".9"/>
         ${[0, 1, 2, 3, 4, 5].map(k => `<path d="M${x - 46},${VT + 160 + k * 70} C${x - 15},${VT + 140 + k * 70} ${x + 15},${VT + 195 + k * 70} ${x + 46},${VT + 175 + k * 70}" fill="none" stroke="#ff7a84" stroke-width="5" opacity=".7"/>`).join('')}
         <path d="${villusPath(x)}" fill="none" stroke="#ffd3cc" stroke-width="16" stroke-opacity=".7"/><path d="${villusPath(x)}" fill="none" stroke="#a0404e" stroke-width="16" stroke-dasharray="2 20" stroke-opacity=".55"/>`).join('')}
       <g class="nuts"></g>
@@ -195,7 +195,7 @@ slide({
   <svg class="full" viewBox="0 0 1920 1080">
     <defs><linearGradient id="gLIc" x1="0" x2="1"><stop offset="0" stop-color="#7d6a4c"/><stop offset=".5" stop-color="#6e4f2e"/><stop offset="1" stop-color="#4f3218"/></linearGradient></defs>
     <path class="capT" fill="none" stroke="#ff4f5e" stroke-width="6" opacity=".6"/><path class="capB" fill="none" stroke="#ff4f5e" stroke-width="6" opacity=".6"/>
-    <path class="liW" fill="#c98a68" stroke="#5a3021" stroke-width="4"/>
+    <path class="liW" fill="#c98a68" stroke="#5a3021" stroke-width="4"/>${txImg('liwall')}
     <path class="liL" fill="url(#gLIc)"/>
     <g class="folds"></g>
     <g class="cont"></g>
@@ -274,9 +274,9 @@ slide({
       <div class="sub" style="font-size:31px">Removing undigested waste from the body.</div></div>
   </div>`,
   init(c) {
-    c.svg = c.q('svg.body'); cam(c.svg, 395, 810, 380);
+    c.svg = c.q('svg.body'); cam(c.svg, 380, 790, 330);
     const put = (s, x, y, dx, dy) => { const p = projVB(c.svg, x, y); const e = c.q(s); e.style.left = (p[0] + dx) + 'px'; e.style.top = (p[1] + dy) + 'px'; };
-    put('.rl1', 312, 895, -210, -30); put('.rl2', 300, 945, -150, 10);
+    put('.rl1', 296, 806, -210, -30); put('.rl2', 297, 846, -150, 10);
     c.trk = new Track(c.svg, BODY.TRACK);
     const fx = c.q('.fx'); c.st = [0, 1, 2, 3, 4].map(i => el('ellipse', { rx: 7, ry: 6, fill: 'url(#gStool)', opacity: 0 }, fx));
   },

@@ -24,7 +24,7 @@ slide({
     c.b.setAttribute('r', f1(7 + Math.sin(t * 4)));
     const out = n >= 2 ? ease(seg(n === 2 ? st : 60, 0, 3)) : 0;
     const h0 = n === 0 ? 300 : 210;
-    const cx = lerp(n === 0 ? 300 : p[0] - 30, 30, out), cy = lerp(n === 0 ? 480 : p[1], 510, out), h = Math.exp(lerp(Math.log(h0), Math.log(1100), out));
+    const cx = lerp(n === 0 ? 360 : p[0] - 30, 30, out), cy = lerp(n === 0 ? 470 : p[1], 500, out), h = Math.exp(lerp(Math.log(h0), Math.log(1100), out));
     cam(c.svg, cx, cy, h);
     c.gl.setAttribute('opacity', n >= 2 ? 0 : .6); c.b.setAttribute('opacity', n >= 2 ? 1 - out : 1);
     if (n >= 2) c.qa('.org.si path').forEach((pp, i) => { if (i % 3 === 1) pp.setAttribute('stroke', mix('#e79a8f', '#ffd36e', .5 + .5 * Math.sin(t * 2.5))); });
@@ -122,13 +122,13 @@ slide({
     <div class="sub r" data-s="4">All of them pour into the <b style="color:#fff">small intestine</b>.</div>
   </div>`,
   init(c) {
-    c.svg = c.q('svg.body'); cam(c.svg, 440, 500, 400);
+    c.svg = c.q('svg.body'); cam(c.svg, 420, 500, 380);
     const P = (x, y) => projVB(c.svg, x, y);
     const put = (s, x, y, dx, dy) => { const p = P(x, y); const e = c.q(s); e.style.left = (p[0] + dx) + 'px'; e.style.top = (p[1] + dy) + 'px'; };
-    put('.tl1', 200, 400, -60, -40); put('.tl2', 420, 556, 20, 10); put('.tl3', 240, 600, -330, 20); put('.tl4', 420, 470, 40, -20);
+    put('.tl1', 215, 440, -60, -40); put('.tl2', 400, 505, 20, 10); put('.tl3', 228, 560, -330, 20); put('.tl4', 412, 455, 40, -20);
     const fx = c.q('.fx');
     const mk = (d, n, fill, r) => { const p = el('path', { d, fill: 'none', stroke: 'none' }, fx); const L = p.getTotalLength(); return { p, L, dots: Array.from({ length: n }, (_, i) => ({ o: i / n, e: dotEl(fx, r, fill, { opacity: 0 }) })) }; };
-    c.bile = mk('M232,462 C240,470 250,480 262,488 ' + BODY.BILE.replace(/^M[\d.,]+/, ''), 9, 'url(#gGreen)', 4.5);
+    c.bile = mk('M230,482 C240,484 250,486 258,486 ' + BODY.BILE.replace(/^M[\d.,]+/, ''), 9, 'url(#gGreen)', 4.5);
     c.panc = mk(BODY.PDUCT, 9, 'url(#gGold)', 4.5);
     c.si = mk(BODY.SI_TRK, 22, 'url(#gRed)', 3.6);
   },

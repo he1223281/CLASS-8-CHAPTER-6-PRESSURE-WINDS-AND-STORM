@@ -41,6 +41,8 @@ function bake(o) {
   const P2 = new Path2D(o.d);
   const paint = (ctx, style) => { ctx.setTransform(...tr); if (o.sw) { ctx.lineWidth = o.sw; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = style; ctx.stroke(P2); } else { ctx.fillStyle = style; ctx.fill(P2); } ctx.setTransform(1, 0, 0, 1, 0, 0); };
   const m = mk(), mc = m.getContext('2d', { willReadFrequently: true }); paint(mc, '#fff');
+  if (o.minus) { mc.setTransform(...tr); mc.globalCompositeOperation = 'destination-out'; mc.fill(new Path2D(o.minus)); mc.globalCompositeOperation = 'source-over'; mc.setTransform(1, 0, 0, 1, 0, 0); }
+  if (o.clipY) { mc.setTransform(...tr); mc.clearRect(bx - pad - 10, by - pad - 10, bw + 2 * pad + 20, o.clipY[0] - (by - pad - 10)); mc.clearRect(bx - pad - 10, o.clipY[1], bw + 2 * pad + 20, 2000); mc.setTransform(1, 0, 0, 1, 0, 0); }
   const h = mk(), hc = h.getContext('2d', { willReadFrequently: true });
   const br = o.blur || (o.sw ? o.sw * s * .34 : Math.min(bw, bh) * s * .17);
   hc.filter = `blur(${f1(br)}px)`; hc.drawImage(m, 0, 0); hc.filter = 'none';
@@ -80,7 +82,7 @@ function bake(o) {
     OD[i * 4 + 3] = (o.glass ? A * clamp(o.glass[0] + o.glass[1] * Math.pow(1 - hv, 2) + spc * .5) : A) * fd;
   }
   mc.putImageData(out, 0, 0);
-  return { url: m.toDataURL('image/png'), x: bx - pad, y: by - pad, w: bw + 2 * pad, h: bh + 2 * pad };
+  return { url: m.toDataURL('image/webp', .9), x: bx - pad, y: by - pad, w: bw + 2 * pad, h: bh + 2 * pad };
 }
 function veins(n, seed, wid, col = 'rgba(80,10,30,1)') {
   return ctx => {
@@ -123,20 +125,22 @@ function fixTex(root) {
 function bakeAll() {
   const B = BODY;
   const add = (k, o, vn) => { TEXI[k] = vn ? bakeWithVeins(o, ...vn) : bake(o); };
-  add('liver', { d: B.LIVER, s: 5, c1: [196, 92, 72], c2: [104, 34, 28], gloss: 30, spec: .5, bump: 1.2 }, [26, 3, .9, 'rgba(70,10,20,1)']);
-  add('gall', { d: B.GALL, s: 6, c1: [150, 208, 104], c2: [56, 112, 40], gloss: 40, spec: .7 });
-  add('stom', { d: B.STOM_ORG, s: 5, c1: [238, 136, 138], c2: [150, 46, 62], gloss: 30, spec: .6, bump: 1 }, [30, 7, .9, 'rgba(120,20,50,1)']);
-  add('panc', { d: B.PANC, s: 6, c1: [250, 214, 158], c2: [200, 136, 80], gloss: 24, spec: .35, bump: 2, ns: 3 });
-  add('oes', { d: B.OES, sw: 11, s: 5, c1: [236, 132, 138], c2: [150, 56, 70], gloss: 34, spec: .55 }, [6, 9, .6, 'rgba(110,20,40,1)']);
-  add('duo', { d: B.DUO, sw: 15, s: 5, c1: [246, 172, 156], c2: [172, 82, 82], gloss: 30, spec: .55 });
-  B.SI_CHUNKS.forEach((d, i) => add('si' + i, { d, sw: 17, s: 4.5, c1: [246, 176, 160], c2: [168, 80, 82], gloss: 30, spec: .6, kf: 1 }, [3, 40 + i, .55, 'rgba(150,30,50,1)']));
-  add('li', { d: B.LI_ORG, sw: 28, s: 4, c1: [222, 160, 120], c2: [128, 70, 50], gloss: 26, spec: .45, creases: ringCreases(B.LI_ORG, 12, 15, 1.8), blur: 28 * 4 * .3 }, [10, 21, .8, 'rgba(120,30,40,1)']);
-  add('app', { d: B.APP, sw: 6, s: 5, c1: [222, 160, 120], c2: [128, 70, 50] });
-  add('rec', { d: B.REC, sw: 24, s: 5, c1: [214, 140, 116], c2: [124, 62, 52], gloss: 28, spec: .5, creases: ringCreases(B.REC, 16, 11, 1.4) });
+  const O = B.ORG, fillCr = (d, a) => ctx => { ctx.fillStyle = `rgba(0,0,0,${a})`; ctx.fill(new Path2D(d)); }, strokeCr = (d, w, a) => ctx => { ctx.lineWidth = w; ctx.strokeStyle = `rgba(0,0,0,${a})`; ctx.lineCap = 'round'; ctx.stroke(new Path2D(d)); };
+  add('liver', { d: O.liver, s: 5, c1: [204, 100, 78], c2: [110, 36, 28], gloss: 30, spec: .55, bump: .6 }, [12, 3, .7, 'rgba(90,20,24,1)']);
+  add('gall', { d: O.gall, s: 6, c1: [140, 205, 100], c2: [50, 110, 40], gloss: 40, spec: .7 });
+  add('stom', { d: O.stom, minus: O.duo, s: 5, c1: [240, 140, 140], c2: [150, 46, 62], gloss: 30, spec: .6, bump: 1 }, [34, 7, .8, 'rgba(120,20,50,1)']);
+  add('duo', { d: O.duo, s: 5, c1: [248, 178, 160], c2: [172, 82, 82], gloss: 30, spec: .55, blur: 24 });
+  add('panc', { d: O.panc, s: 6, c1: [252, 218, 164], c2: [214, 156, 96], gloss: 24, spec: .35, bump: .8, ns: 2, blur: 14 });
+  add('oes', { d: O.oes, clipY: [182, 999], s: 5, c1: [236, 132, 138], c2: [150, 56, 70], gloss: 34, spec: .55, blur: 20 }, [6, 9, .6, 'rgba(110,20,40,1)']);
+  add('si', { d: O.si, s: 4.5, c1: [248, 176, 160], c2: [168, 74, 80], gloss: 30, spec: .65, bump: .8, blur: 34, kf: .7, creases: strokeCr(O.si, 1.5, .5) }, [16, 41, .5, 'rgba(150,30,50,1)']);
+  add('liA', { d: O.liA, s: 4, c1: [224, 160, 122], c2: [124, 66, 48], gloss: 26, spec: .45, blur: 40, creases: fillCr(O.liCr, .45) }, [14, 21, .7, 'rgba(120,30,40,1)']);
+  add('liB', { d: O.liB, clipY: [0, 786], s: 4, c1: [224, 160, 122], c2: [124, 66, 48], gloss: 26, spec: .45, blur: 40, creases: fillCr(O.liCr, .45) }, [10, 22, .7, 'rgba(120,30,40,1)']);
+  add('rec', { d: O.liB, clipY: [784, 999], s: 5, c1: [216, 142, 118], c2: [124, 62, 52], gloss: 28, spec: .5, blur: 30 });
+  add('anus', { d: O.anus, s: 6, c1: [236, 170, 170], c2: [150, 80, 90] });
   add('torso', { fade: [860, 975], d: B.TORSO, s: 2, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .25, glass: [.035, .42], rim: .7, bump: 0, blur: 60 });
   add('arms', { fade: [430, 560], d: B.ARMS, s: 2, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .25, glass: [.035, .42], rim: .7, bump: 0, blur: 30 });
   add('head', { d: B.HEAD, s: 2.5, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .3, glass: [.035, .42], rim: .7, bump: 0, blur: 40 });
-  add('fig', { d: FIG_D, s: 1.4, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .3, glass: [.04, .45], rim: .7, bump: 0, blur: 44 });
+  add('fig', { d: FIG_D, s: 1.4, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .3, glass: [.09, .55], rim: .8, bump: 0, blur: 44 });
   // head (sagittal)
   add('tongue', { d: HEAD.TONGUE, s: 3, c1: [240, 140, 150], c2: [160, 56, 78], gloss: 22, spec: .55, bump: 2.5, ns: 3 });
   add('soft', { d: HEAD.SOFT, s: 3, c1: [236, 140, 150], c2: [170, 70, 86], spec: .5 });
@@ -144,7 +148,7 @@ function bakeAll() {
   add('rugae', { d: 'M150,150 L1020,150 L1020,1030 L150,1030 Z', s: 1, pad: 0, c1: [176, 66, 82], c2: [92, 22, 38], gloss: 40, spec: .7, bump: 1.6, blur: 2, kf: 14,
     creases: ctx => { const R = rng(5); ctx.strokeStyle = 'rgba(0,0,0,.6)'; ctx.lineCap = 'round'; for (let i = 0; i < 22; i++) { const y = 170 + i * 40; ctx.lineWidth = 10 + R() * 8; ctx.beginPath(); for (let x = 150; x <= 1020; x += 20) { const yy = y + 26 * Math.sin(x * .012 + i * 1.3) + 10 * Math.sin(x * .05 + i); x === 150 ? ctx.moveTo(x, yy) : ctx.lineTo(x, yy); } ctx.stroke(); } } });
   // villus (local coords, centred at x=0)
-  add('villus', { d: villusPath(0) + ' Z', s: 1.5, c1: [246, 168, 160], c2: [176, 78, 92], gloss: 30, spec: .55, bump: 2.2, ns: 2.5, glass: [.82, .18] });
+  add('villus', { d: villusPath(0) + ' Z', s: 1.5, c1: [248, 176, 168], c2: [196, 96, 108], gloss: 30, spec: .6, bump: .5, ns: 1.2, glass: [.78, .2] });
   // large intestine wall (screen units)
   add('liwall', { d: LI_WALL_D, s: 1, pad: 2, c1: [222, 158, 118], c2: [128, 70, 48], gloss: 26, spec: .5, bump: 1.4, blur: 24,
     creases: ctx => { ctx.strokeStyle = 'rgba(0,0,0,.8)'; ctx.lineWidth = 9; for (let x = 160; x < 1780; x += 210) { ctx.beginPath(); ctx.moveTo(x, 300); ctx.lineTo(x + 6, 920); ctx.stroke(); } } }, [24, 77, 2.2, 'rgba(120,30,40,1)']);

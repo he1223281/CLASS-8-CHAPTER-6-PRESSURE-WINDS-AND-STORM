@@ -51,7 +51,7 @@ class Track {
    stomach and descending colon on the viewer's RIGHT. */
 const BODY = (() => {
   const B = {};
-  B.TORSO = 'M276,168 C276,198 270,212 250,222 C222,234 196,240 178,248 C166,266 162,292 162,320 C160,380 154,440 156,500 C158,560 164,600 160,640 C152,700 142,760 144,830 C146,890 152,940 158,975 L442,975 C448,940 454,890 456,830 C458,760 448,700 440,640 C436,600 442,560 444,500 C446,440 440,380 438,320 C438,292 434,266 422,248 C404,240 378,234 350,222 C330,212 324,198 324,168 Z';
+  B.TORSO = 'M276,168 C276,198 270,212 250,222 C222,234 196,240 178,248 C166,266 162,292 162,320 C160,380 154,440 156,500 C158,560 164,592.8 160,625.6 C152,674.8 142,724 144,781.4 C146,830.6 152,871.6 158,900.3 L442,900.3 C448,871.6 454,830.6 456,781.4 C458,724 448,674.8 440,625.6 C436,592.8 442,560 444,500 C446,440 440,380 438,320 C438,292 434,266 422,248 C404,240 378,234 350,222 C330,212 324,198 324,168 Z';
   B.ARMS = 'M180,246 C140,254 116,284 110,340 C104,400 100,470 96,560 L142,560 C146,480 150,420 154,370 C156,346 158,330 162,318 Z M420,246 C460,254 484,284 490,340 C496,400 500,470 504,560 L458,560 C454,480 450,420 446,370 C444,346 442,330 438,318 Z';
   B.HEAD = 'M300,24 C340,24 362,58 362,100 C362,128 356,150 344,164 C332,178 316,188 300,188 C284,188 268,178 256,164 C244,150 238,128 238,100 C238,58 260,24 300,24 Z';
   B.APP = 'M210,836 C206,850 214,862 226,864';
@@ -65,27 +65,25 @@ const BODY = (() => {
   B.PANC = 'M262,580 C262,565 285,560 310,566 C350,572 385,560 415,548 C428,544 434,556 422,564 C392,580 350,592 310,592 C285,594 262,592 262,580 Z';
   B.BILE = 'M262,488 C266,515 262,548 250,572';
   B.PDUCT = 'M412,556 C362,574 300,582 252,575';
-  B.LI_ORG = 'M212,838 C199,826 197,790 198,720 C199,670 200,640 214,628 C240,612 270,650 305,648 C340,646 380,612 405,620 C422,626 420,660 419,700 C418,760 420,800 410,830 C398,862 350,846 326,862';
-  B.LI_TRK = 'M222,800 C205,798 197,770 198,720 C199,670 200,640 214,628 C240,612 270,650 305,648 C340,646 380,612 405,620 C422,626 420,660 419,700 C418,760 420,800 410,830 C398,862 350,846 326,862';
-  B.REC = 'M326,862 C310,872 302,900 301,930';
-  B.ANUS = 'M301,930 L300,952';
-  // small intestine coils (generated, continuous)
-  const P = [[320, 606], [334, 618]];
-  { const R = rng(11); let x = 334, y = 618, th = 1.25; const cx = 310, cy = 744, rx = 100, ry = 82, N = 560;
-    for (let i = 0; i < N; i++) {
-      const ex = (x - cx) / rx, ey = (y - cy) / ry, d = ex * ex + ey * ey;
-      const late = i > N - 90, tx = late ? 240 : cx, ty = late ? 795 : cy;
-      let diff = Math.atan2(ty - y, tx - x) - th; while (diff > Math.PI) diff -= 6.2832; while (diff < -Math.PI) diff += 6.2832;
-      th += .3 * Math.sin(i * .19) + .2 * Math.sin(i * .053 + 2) + (R() - .5) * .35 + (late ? diff * .12 : d > .62 ? diff * Math.min(1, (d - .62) * 1.8) : 0);
-      x += Math.cos(th) * 3.8; y += Math.sin(th) * 3.8; P.push([x, y]);
-      if (late && Math.hypot(x - 240, y - 795) < 8) break;
-    }
-    const e = P[P.length - 1]; for (let k = 1; k <= 3; k++) { const t = k / 3; P.push([lerp(e[0], 236, t), lerp(e[1], 801, t)]); }
-    P.push([222, 800]); }
+
+  // ---- organ outlines traced from the public-domain diagram by Mariana Ruiz Villarreal (Wikimedia Commons) ----
+  B.ORG = ORGANS;
+  B.STOM_J = B.STOM_ORG;                 // simplified J-shape kept for the big stomach close-up
+  B.STOM_ORG = ORGANS.stom;
+  B.OES = 'M300,158 C298,200 298,260 300,310 C302,350 304,380 307,404';
+  B.STOM_TRK = 'M307,404 C330,412 365,428 390,452 C408,476 402,510 380,526 C356,540 320,528 300,516 C292,511 288,508 285,505';
+  B.DUO = 'M285,505 C266,503 244,512 232,530 C222,548 228,572 246,584 C266,594 298,590 318,584 C334,586 340,600 340,622';
+  const P = [[340, 622], [362, 638], [392, 656], [390, 684], [356, 676], [320, 660], [282, 650], [244, 648], [216, 664], [222, 690], [258, 700], [298, 706], [340, 700], [380, 708], [404, 728], [392, 750], [356, 748], [318, 740], [282, 738], [252, 744], [240, 730], [232, 722]];
   B.COIL = P;
-  B.SI_COIL = smoothPath(P);
-  B.SI_TRK = B.DUO + catmull(P);
-  B.SI_CHUNKS = []; for (let i = 0; i < P.length - 1; i += 26) B.SI_CHUNKS.push(smoothPath(P.slice(Math.max(0, i - 1), i + 28)));
+  B.LI_TRK = 'M232,722 C214,734 196,734 186,712 C178,680 180,620 186,584 C190,566 196,558 206,556 C230,570 262,582 300,580 C340,578 370,566 392,552 C408,540 420,528 428,524 C434,550 432,600 432,650 C432,690 428,712 416,726 C398,750 378,766 350,772 C326,776 306,774 296,780';
+  B.REC = 'M296,780 C296,796 297,814 298,832';
+  B.ANUS = 'M298,832 L297,848';
+  B.BILE = 'M258,486 C268,490 276,494 276,506 C274,524 266,546 252,566';
+  B.PDUCT = 'M396,500 C370,512 346,526 324,532 C306,537 292,540 262,560';
+  B.LI_ORG = 'M212,838 C199,826 197,790 198,720 C199,670 200,640 214,628 C240,612 270,650 305,648 C340,646 380,612 405,620 C422,626 420,660 419,700 C418,760 420,800 410,830 C398,862 350,846 326,862';
+  // small intestine coils (generated, continuous)
+  B.SI_COIL = smoothPath(B.COIL);
+  B.SI_TRK = B.DUO + catmull(B.COIL);
   B.TRACK = [B.MOUTH, B.OES, B.STOM_TRK, B.SI_TRK, B.LI_TRK, B.REC, B.ANUS];
   B.VESS = [
     'M300,735 C302,620 312,480 314,335',
@@ -115,8 +113,8 @@ function skeletonArt() {
     <path d="M296,236 C262,226 224,232 184,246 M304,236 C338,226 376,232 416,246" stroke-width="7"/>
     <path d="M300,248 L300,400" stroke-width="12"/>
     <path d="M214,452 C250,486 286,470 300,446 C314,470 350,486 386,452" stroke-width="4"/>
-    <path d="M204,800 C176,780 170,840 196,872 C220,900 262,904 286,912 M396,800 C424,780 430,840 404,872 C380,900 338,904 314,912" stroke-width="7"/>
-    <path d="M282,908 C290,930 310,930 318,908" stroke-width="6"/></g>`;
+    <path d="M196,736 C166,716 160,770 186,798 C210,822 252,828 278,836 M404,736 C434,716 440,770 414,798 C390,822 348,828 322,836" stroke-width="7"/>
+    <path d="M276,834 C286,852 314,852 324,834" stroke-width="6"/></g>`;
 }
 function bodyArt(o = {}) {
   const B = BODY;
@@ -129,16 +127,17 @@ function bodyArt(o = {}) {
   </g>
   ${o.vessels ? `<g class="vess" opacity="0">${B.VESS.map(d => `<path d="${d}" fill="none" stroke="#ff4f5e" stroke-width="3.2" stroke-linecap="round" stroke-opacity=".8"/>`).join('')}</g>` : ''}
   <g class="org oes">${txImg('oes')}</g>
-  <g class="org panc">${txImg('panc')}</g>
+  <g class="org liver">${txImg('liver')}</g>
   <g class="org stom">${txImg('stom')}</g>
-  <g class="org liver">${txImg('liver')}<path d="M300,368 C298,392 296,420 292,446" fill="none" stroke="rgba(60,10,10,.35)" stroke-width="1.6"/></g>
+  <g class="org si duoG">${txImg('duo')}</g>
+  <g class="org panc">${txImg('panc')}</g>
   <g class="org gall">${txImg('gall')}</g>
-  <g class="duct"><path class="bileduct" d="${B.BILE}" fill="none" stroke="#6fb84e" stroke-width="3" stroke-linecap="round"/>
-     <path class="pancduct" d="${B.PDUCT}" fill="none" stroke="#e0ad58" stroke-width="2.6" stroke-linecap="round" opacity=".85"/></g>
-  <g class="org si">${txImg('duo')}${B.SI_CHUNKS.map((d, i) => txImg('si' + i)).join('')}</g>
-  <g class="org li">${txImg('app')}${txImg('li')}</g>
+  <g class="duct"><path class="bileduct" d="${B.BILE}" fill="none" stroke="#5fae4e" stroke-width="3" stroke-linecap="round"/><path class="pancduct" d="${B.PDUCT}" fill="none" stroke="#d9a453" stroke-width="2.4" stroke-linecap="round" opacity=".8"/></g>
+  <g class="org li">${txImg('liB')}</g>
   <g class="org rec">${txImg('rec')}</g>
-  <g class="org anus"><ellipse cx="300.5" cy="944" rx="11" ry="6" fill="#3a1414" stroke="#c9787a" stroke-width="3"/></g>
+  <g class="org si">${txImg('si')}</g>
+  <g class="org li">${txImg('liA')}</g>
+  <g class="org anus">${txImg('anus')}</g>
   ${o.track ? `<g class="trk" filter="url(#fGlow2)">${B.TRACK.map(d => `<path d="${d}" fill="none" stroke="#ffd36e" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="0 99999"/>`).join('')}</g>` : ''}
   <g class="fx"></g>`;
 }
@@ -182,7 +181,7 @@ function headArt() {
   <g class="trachea" opacity=".75"><path d="M576,800 L576,1000 M624,790 L624,1000" stroke="rgba(170,200,230,.6)" stroke-width="4"/>
     ${[0, 1, 2, 3, 4, 5].map(k => `<path d="M576,${830 + k * 30} L624,${826 + k * 30}" stroke="rgba(170,200,230,.38)" stroke-width="6" stroke-linecap="round"/>`).join('')}</g>
   <path class="hard" d="${H.HARD}" fill="#ead9c7"/>
-  <path class="soft" d="${H.SOFT}" fill="#d97a84"/>
+  ${txImg('soft')}
   <g class="glands" opacity=".5">
     <path d="M590,520 C620,515 646,540 640,575 C634,605 600,612 584,592 C566,570 568,526 590,520 Z" fill="#f3c9a8" stroke="#c99a76" stroke-width="2" opacity=".9"/>
     <path d="M676,740 C700,730 728,746 724,772 C720,794 690,800 676,786 C662,772 660,748 676,740 Z" fill="#f3c9a8" stroke="#c99a76" stroke-width="2" opacity=".9"/>
@@ -191,7 +190,7 @@ function headArt() {
   </g>
   <g class="upper">${upper.map(t => tooth(...t, true)).join('')}</g>
   <g class="jaw">
-    <path class="tongue" d="${H.TONGUE}" fill="url(#gTongue)" stroke="#8a2c3e" stroke-width="2"/>
+    <g class="tongue">${txImg('tongue')}</g>
     <path d="M820,664 C760,676 700,682 650,690" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="4" stroke-linecap="round"/>
     <g class="lower">${lower.map(t => tooth(...t, false)).join('')}</g>
     <path d="${H.JAWBONE}" fill="none" stroke="rgba(232,214,196,.35)" stroke-width="10" stroke-linecap="round"/>

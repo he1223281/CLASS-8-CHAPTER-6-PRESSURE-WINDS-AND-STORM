@@ -17,7 +17,7 @@ slide({
     <path class="musc2" fill="none" stroke="rgba(255,190,190,.35)" stroke-width="4" stroke-dasharray="2 10" stroke-linejoin="round"/>
     <path class="inner" fill="url(#gLumen)"/>
     <g clip-path="url(#cStom)">
-      <g class="rugae"></g>
+      ${txImg('rugae')}<g class="rugae" opacity=".35"></g>
       <path class="mucus" fill="none" stroke="#86b9ff" stroke-opacity=".55" stroke-width="0" stroke-linejoin="round"/>
       <path class="chyme" fill="url(#gChyme)" opacity="0"/>
       <g class="parts"></g><g class="bact"></g><g class="sec"></g>
@@ -36,7 +36,7 @@ slide({
       <div class="key2" style="font-size:36px;color:#f2dcae">a semi-liquid mass</div><div class="small">partially digested, ready for the next stage</div></div>
   </div>`,
   init(c) {
-    const base = samplePath(BODY.STOM_ORG, 150).map(p => stMap(...p));
+    const base = samplePath(BODY.STOM_J, 150).map(p => stMap(...p));
     c.base = base;
     // orientation for normals
     let A = 0; for (let i = 0; i < base.length; i++) { const a = base[i], b = base[(i + 1) % base.length]; A += a[0] * b[1] - b[0] * a[1]; }
