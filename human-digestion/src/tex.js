@@ -131,18 +131,16 @@ function bakeAll() {
   add('stom', { d: O.stom, minus: O.duo, s: 5, c1: [240, 140, 140], c2: [150, 46, 62], gloss: 30, spec: .6, bump: 1 }, [34, 7, .8, 'rgba(120,20,50,1)']);
   add('duo', { d: O.duo, s: 5, c1: [248, 178, 160], c2: [172, 82, 82], gloss: 30, spec: .55, blur: 24 });
   add('panc', { d: O.panc, s: 6, c1: [252, 218, 164], c2: [214, 156, 96], gloss: 24, spec: .35, bump: .8, ns: 2, blur: 14 });
-  add('oes', { d: O.oes, clipY: [182, 999], s: 5, c1: [236, 132, 138], c2: [150, 56, 70], gloss: 34, spec: .55, blur: 20 }, [6, 9, .6, 'rgba(110,20,40,1)']);
+  add('oes', { d: O.oes, clipY: [150, 999], s: 5, c1: [236, 132, 138], c2: [150, 56, 70], gloss: 34, spec: .55, blur: 20 }, [6, 9, .6, 'rgba(110,20,40,1)']);
   add('si', { d: O.si, s: 4.5, c1: [248, 176, 160], c2: [168, 74, 80], gloss: 30, spec: .65, bump: .8, blur: 34, kf: .7, creases: strokeCr(O.si, 1.5, .5) }, [16, 41, .5, 'rgba(150,30,50,1)']);
   add('liA', { d: O.liA, s: 4, c1: [224, 160, 122], c2: [124, 66, 48], gloss: 26, spec: .45, blur: 40, creases: fillCr(O.liCr, .45) }, [14, 21, .7, 'rgba(120,30,40,1)']);
   add('liB', { d: O.liB, clipY: [0, 786], s: 4, c1: [224, 160, 122], c2: [124, 66, 48], gloss: 26, spec: .45, blur: 40, creases: fillCr(O.liCr, .45) }, [10, 22, .7, 'rgba(120,30,40,1)']);
   add('rec', { d: O.liB, clipY: [784, 999], s: 5, c1: [216, 142, 118], c2: [124, 62, 52], gloss: 28, spec: .5, blur: 30 });
   add('anus', { d: O.anus, s: 6, c1: [236, 170, 170], c2: [150, 80, 90] });
-  add('torso', { fade: [860, 975], d: B.TORSO, s: 2, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .25, glass: [.035, .42], rim: .7, bump: 0, blur: 60 });
-  add('arms', { fade: [430, 560], d: B.ARMS, s: 2, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .25, glass: [.035, .42], rim: .7, bump: 0, blur: 30 });
-  add('head', { d: B.HEAD, s: 2.5, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .3, glass: [.035, .42], rim: .7, bump: 0, blur: 40 });
+  add('torso', { fade: [820, 900], d: B.TORSO, s: 2, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .25, glass: [.035, .42], rim: .7, bump: 0, blur: 60 });
   add('fig', { d: FIG_D, s: 1.4, c1: [190, 220, 255], c2: [120, 160, 220], gloss: 18, spec: .3, glass: [.09, .55], rim: .8, bump: 0, blur: 44 });
   // head (sagittal)
-  add('tongue', { d: HEAD.TONGUE, s: 3, c1: [240, 140, 150], c2: [160, 56, 78], gloss: 22, spec: .55, bump: 2.5, ns: 3 });
+  add('tongue', { d: HEAD.TONGUE, s: 3, c1: [240, 140, 150], c2: [170, 64, 84], gloss: 26, spec: .6, bump: .7, ns: 2 });
   add('soft', { d: HEAD.SOFT, s: 3, c1: [236, 140, 150], c2: [170, 70, 86], spec: .5 });
   // stomach lining for the big stomach scene (screen units)
   add('rugae', { d: 'M150,150 L1020,150 L1020,1030 L150,1030 Z', s: 1, pad: 0, c1: [176, 66, 82], c2: [92, 22, 38], gloss: 40, spec: .7, bump: 1.6, blur: 2, kf: 14,
@@ -181,4 +179,42 @@ function cinematicLayers() {
   const gr = document.createElement('div'); gr.id = 'grain';
   gr.style.cssText = `position:absolute;inset:-100px;pointer-events:none;z-index:6;opacity:.045;mix-blend-mode:overlay;background:url(${gc.toDataURL()});animation:grain .5s steps(4) infinite`;
   st.appendChild(gr);
+}
+
+/* side-view head from the diagram: rasterise, then add light, gloss and depth */
+function bakeHeadAsync() {
+  return new Promise(res => {
+    const k = 1.0666, S = 1.1, X0 = -178 * S + 288, Y0 = -417 * S + 370, sc = 3;
+    const box = [150, -100, 300, 290]; // body units region to keep
+    const img = new Image();
+    img.onload = () => {
+      const W = box[2] * sc, H = box[3] * sc, c = document.createElement('canvas'); c.width = W; c.height = H;
+      const x = c.getContext('2d', { willReadFrequently: true });
+      // user unit u -> body: X = X0 + u*k*S
+      x.setTransform(sc * k * S, 0, 0, sc * k * S, (X0 - box[0]) * sc, (Y0 - box[1]) * sc);
+      x.drawImage(img, 0, 0, 351, 821);
+      x.setTransform(1, 0, 0, 1, 0, 0);
+      const src = x.getImageData(0, 0, W, H).data;
+      const h = document.createElement('canvas'); h.width = W; h.height = H; const hc = h.getContext('2d', { willReadFrequently: true });
+      hc.filter = 'blur(10px)'; hc.drawImage(c, 0, 0); hc.filter = 'none';
+      const HD = hc.getImageData(0, 0, W, H).data, N = W * H, hs = new Float32Array(N);
+      for (let i = 0; i < N; i++) { const l = (src[i * 4] + src[i * 4 + 1] + src[i * 4 + 2]) / 765; hs[i] = HD[i * 4 + 3] / 255 * .8 + l * .25 + (TEXN.t2[((i / W | 0) & 511) * 512 + ((i % W) & 511)] - .5) * .02; }
+      const L = [-.46, -.62, .64], Hv = [-.27, -.36, .89];
+      const out = x.createImageData(W, H), OD = out.data;
+      for (let y = 1; y < H - 1; y++) for (let xx = 1; xx < W - 1; xx++) {
+        const i = y * W + xx, A = src[i * 4 + 3]; if (!A) continue;
+        let nx = -(hs[i + 1] - hs[i - 1]) * 14, ny = -(hs[i + W] - hs[i - W]) * 14, nz = 1; const nn = Math.hypot(nx, ny, nz); nx /= nn; ny /= nn; nz /= nn;
+        const dif = Math.max(0, nx * L[0] + ny * L[1] + nz * L[2]), sp = Math.pow(Math.max(0, nx * Hv[0] + ny * Hv[1] + nz * Hv[2]), 30) * .45;
+        const sh = .45 + .7 * dif;
+        // warm the pastel diagram colours towards living tissue
+        let r = src[i * 4], g = src[i * 4 + 1], b = src[i * 4 + 2];
+        r = r * .92 + 12; g = g * .86; b = b * .86;
+        OD[i * 4] = Math.min(255, r * sh + 255 * sp); OD[i * 4 + 1] = Math.min(255, g * sh + 255 * sp); OD[i * 4 + 2] = Math.min(255, b * sh + 255 * sp); OD[i * 4 + 3] = A;
+      }
+      x.putImageData(out, 0, 0);
+      TEXI.headDiag = { url: c.toDataURL('image/webp', .92), x: box[0], y: box[1], w: box[2], h: box[3] };
+      res();
+    };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(HEAD_SVG);
+  });
 }

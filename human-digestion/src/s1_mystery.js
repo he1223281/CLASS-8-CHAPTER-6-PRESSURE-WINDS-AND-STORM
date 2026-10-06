@@ -4,51 +4,57 @@
 slide({
   act: 1, organ: -1, title: 'One bite…',
   steps: ['Where does it go?', 'Does it fall into the stomach?', 'Is it used as it is?', 'So what really happens?'],
-  html: `
-  <svg class="abs" style="left:120px;top:190px;width:720px;height:720px" viewBox="-360 -360 720 720">
-    <defs><mask id="mBite"><rect x="-400" y="-400" width="800" height="800" fill="#fff"/>
-      <circle cx="168" cy="-170" r="70" fill="#000"/><circle cx="215" cy="-95" r="58" fill="#000"/><circle cx="105" cy="-222" r="56" fill="#000"/></mask>
-      <radialGradient id="gChap" cx="42%" cy="38%" r="70%"><stop offset="0" stop-color="#f4d9a2"/><stop offset=".7" stop-color="#e0b26a"/><stop offset="1" stop-color="#b98443"/></radialGradient></defs>
-    <circle r="330" fill="url(#gGold)" opacity=".12" class="halo"/>
-    <g class="chap"><g mask="url(#mBite)">
-      <circle r="250" fill="url(#gChap)"/>
-      <g class="spots" filter="url(#fSoft)"></g>
-      <circle r="248" fill="none" stroke="rgba(120,70,20,.45)" stroke-width="6"/>
-      <circle r="225" fill="none" stroke="rgba(255,240,210,.18)" stroke-width="10"/>
-    </g></g>
-    <g class="piece"><path d="M120,-196 C150,-238 196,-226 214,-176 C238,-150 258,-110 236,-70 C200,-80 160,-120 120,-196 Z" fill="url(#gChap)" stroke="rgba(120,70,20,.4)" stroke-width="3"/></g>
-    <g class="crumbs"></g>
+  html: () => `
+  <svg class="full body" viewBox="0 0 10 10" preserveAspectRatio="xMidYMid meet">${bodyArt({ vessels: true })}
+    <g class="q1"><text class="qm" x="300" y="640" font-size="330" font-weight="700" fill="rgba(255,211,110,.0)" text-anchor="middle" font-family="Fraunces,Georgia,serif">?</text>
+      <path class="drop" d="M186,84 L300,84 L300,470" fill="none" stroke="rgba(255,211,110,.0)" stroke-width="3" stroke-dasharray="6 8"/>
+      <g class="cross" opacity="0"><circle r="34" fill="none" stroke="#ff7a6e" stroke-width="5"/><path d="M-16,-16 L16,16 M16,-16 L-16,16" stroke="#ff7a6e" stroke-width="6" stroke-linecap="round"/></g>
+      <g class="orb"><circle r="34" fill="url(#gGold)" opacity=".55"/><circle r="12" fill="url(#gBolus)" stroke="rgba(255,240,200,.95)" stroke-width="1.5"/><g class="sp"></g></g></g>
   </svg>
-  <div class="abs" style="left:900px;top:330px;width:900px">
+  <div class="abs" style="left:120px;top:330px;width:820px">
     <div class="q r abs" data-s="0-0" style="top:0">Imagine you take <span class="c-warm">ONE bite</span> of your favourite food…</div>
     <div class="q r abs" data-s="1-1" style="top:40px;font-size:84px">Where does that bite go?</div>
     <div class="q r abs" data-s="2-2" style="top:0">Does it simply fall into your stomach?</div>
-    <div class="no r d1 abs" data-s="2-2" style="top:200px">No.</div>
+    <div class="no r d2 abs" data-s="2-2" style="top:200px">No.</div>
     <div class="q r abs" data-s="3-3" style="top:0">Does your body use the food exactly as you swallowed it?</div>
-    <div class="no r d1 abs" data-s="3-3" style="top:200px">No.</div>
-    <div class="r abs" data-s="4" style="top:10px"><div class="h1">So what <span class="c-warm">really</span> happens?</div></div>
+    <div class="no r d2 abs" data-s="3-3" style="top:200px">No.</div>
+    <div class="r abs" data-s="4" style="top:10px"><div class="h1" style="font-size:96px">So what <span class="c-warm">really</span> happens?</div></div>
   </div>`,
   init(c) {
-    const R = rng(4), sp = c.q('.spots');
-    for (let i = 0; i < 46; i++) { const a = R() * 6.28, d = Math.sqrt(R()) * 220; el('ellipse', { cx: f1(d * Math.cos(a)), cy: f1(d * Math.sin(a)), rx: f1(6 + R() * 16), ry: f1(4 + R() * 10), fill: R() < .5 ? '#8a5522' : '#a8692c', opacity: f1(.25 + R() * .45) }, sp); }
-    c.crumbs = []; const cg = c.q('.crumbs');
-    for (let i = 0; i < 26; i++) c.crumbs.push({ e: dotEl(cg, 2 + R() * 4, '#e7c27f', { opacity: .5 }), x: (R() - .5) * 640, y: (R() - .5) * 640, v: 6 + R() * 14, ph: R() * 6 });
+    c.svg = c.q('svg.body');
+    c.orgs = c.qa('.org, .duct');
+    c.orgs.forEach(g => { g.style.transition = 'opacity 1.2s'; g.style.opacity = 0; });
+    const sp = c.q('.sp'); c.spk = Array.from({ length: 10 }, (_, i) => ({ a: i / 10 * 6.28, r: 18 + (i % 3) * 6, e: dotEl(sp, 2.2, '#ffe9b0') }));
+  },
+  step(c, n) {
+    const order = ['oes', 'stom', 'liver', 'gall', 'panc', 'duoG', 'si', 'li', 'rec', 'anus'];
+    c.orgs.forEach(g => { const k = order.findIndex(x => g.classList.contains(x)); g.style.transitionDelay = n >= 4 ? (Math.max(0, k) * .25 + .3) + 's' : '0s'; g.style.opacity = n >= 4 ? 1 : 0; });
   },
   tick(c) {
-    const t = c.t, n = c.n, st = c.stepT;
-    c.q('.chap').setAttribute('transform', `translate(0,${f1(8 * Math.sin(t * .6))}) rotate(${f1(t * 2)})`);
-    // the bite piece drifts away once we ask "where does it go?"
-    const p = n >= 1 ? eout(n === 1 ? st / 3.2 : 1) : 0;
-    const px = lerp(0, 260, p), py = lerp(0, 160, p), sc = lerp(1, .35, p);
-    c.q('.piece').setAttribute('transform', `translate(${f1(px)},${f1(py + 8 * Math.sin(t * .6))}) scale(${f1(sc * 100) / 100})`);
-    c.q('.piece').setAttribute('opacity', n >= 4 ? .95 : 1);
-    c.q('.halo').setAttribute('opacity', f1((.1 + .05 * Math.sin(t * 1.4)) * 100) / 100);
-    c.crumbs.forEach(k => { k.y -= k.v * .016; if (k.y < -340) k.y = 340; k.e.setAttribute('cx', f1(k.x + 10 * Math.sin(t * .5 + k.ph))); k.e.setAttribute('cy', f1(k.y)); });
+    const n = c.n, st = c.stepT, t = c.t;
+    // camera: close on the face, then the whole body
+    const far = n >= 1 ? ease(seg(n === 1 ? st : 60, 0, 2.6)) : 0;
+    const h = lerp(430, 1000, far), fx = lerp(215, 300, far), fy = lerp(130, 420, far);
+    cam(c.svg, fx - lerp(400, 330, far) * (h / 1080), fy, h);
+    // the bite
+    let x = 150 + 6 * Math.sin(t * 1.3), y = 84 + 5 * Math.sin(t * 1.7), o = 1;
+    if (n === 1) { const k = ease(seg(st, .3, 1.6)); x = lerp(150, 186, k); }
+    if (n === 2) { const fall = ein(seg(st, .4, 1.6)); x = lerp(186, 300, ease(seg(st, 0, .4))); y = lerp(84, 470, fall); if (st > 1.6) { y = 470 - 40 * Math.abs(Math.sin((st - 1.6) * 5)) * Math.exp(-(st - 1.6) * 2.5); } }
+    if (n === 3) { x = lerp(300, 300, 1); const k = ease(seg(st, .2, 1.4)); y = lerp(470, 600, k); if (st > 1.4) y = 600 - 22 * Math.abs(Math.sin((st - 1.4) * 6)) * Math.exp(-(st - 1.4) * 2.2); }
+    if (n >= 4) { x = 186; y = 84; o = .9; }
+    c.q('.orb').setAttribute('transform', `translate(${f1(x)},${f1(y)}) scale(${n === 3 ? 1.6 : 1})`);
+    c.q('.orb').setAttribute('opacity', o);
+    c.spk.forEach((s, i) => setA(s.e, { cx: f1(s.r * Math.cos(s.a + t * (1 + i * .1))), cy: f1(s.r * Math.sin(s.a + t * (1 + i * .1))), opacity: f1((.4 + .4 * Math.sin(t * 3 + i)) * 100) / 100 }));
+    c.q('.qm').setAttribute('fill', `rgba(255,211,110,${n === 1 ? f1(.12 * seg(st, 1.5, 3) * 100) / 100 : 0})`);
+    c.q('.drop').setAttribute('stroke', `rgba(255,211,110,${n === 2 ? .5 : 0})`);
+    const cr = c.q('.cross'); cr.setAttribute('transform', n === 3 ? 'translate(300,600)' : 'translate(300,470)');
+    cr.setAttribute('opacity', (n === 2 && st > 1.9) || (n === 3 && st > 1.7) ? 1 : 0);
+    c.q('.vess').setAttribute('opacity', n === 3 ? f1(seg(st, 0, 1) * 100) / 100 : 0);
   },
   notes: {
     say: 'Close your eyes for a second. Imagine your favourite food in front of you – hot chapati, rice, dosa, anything. Now imagine taking just ONE bite. (Pause.) Where does that bite go?',
     ask: 'Hands up – where do you think the bite goes first? And where does it finally end up?',
-    explain: 'Let students give answers freely (stomach, intestine, “it turns into energy”). Do not correct yet. The two “No.” answers create the mystery: food does not simply drop into the stomach, and the body cannot use food in the form we swallow it.',
+    explain: 'Let students answer freely. The two “No.” answers create the mystery: food does not simply drop into the stomach, and the body cannot use food in the form we swallow it – it is too big to enter the blood.',
     confusion: 'Many students imagine the stomach as a bag directly below the mouth into which food falls. Today’s journey will show that food is pushed through a long tube and changed at every stage.',
     transition: '“To understand this, let us first remember why living beings need food at all.”'
   }
@@ -137,11 +143,11 @@ slide({
     <div class="h3 c-mut" style="font-weight:400;margin-top:10px">in Human Beings</div>
   </div>
   <div class="abs flash" style="inset:0;background:radial-gradient(circle at 50% 50%,rgba(70,22,30,.9),rgba(14,3,6,.98) 65%);opacity:0;pointer-events:none"></div>`,
-  init(c) { c.svg = c.q('svg.body'); cam(c.svg, -15, 500, 1040); },
+  init(c) { c.svg = c.q('svg.body'); cam(c.svg, -15, 480, 1120); },
   tick(c) {
     const p = c.n >= 1 ? c.stepT : 0;
     const z = ease(seg(p, 0, 3.2));
-    const cx = lerp(-15, 300, z), cy = lerp(500, 150, z), h = Math.exp(lerp(Math.log(1040), Math.log(70), z));
+    const cx = lerp(-15, 214, z), cy = lerp(480, 90, z), h = Math.exp(lerp(Math.log(1120), Math.log(240), z));
     cam(c.svg, cx, cy, h);
     c.q('.intro').style.opacity = c.n >= 1 ? 0 : 1;
     c.q('.flash').style.opacity = f1(seg(p, 2.4, 3.3) * 100) / 100;
@@ -286,7 +292,7 @@ slide({
       <path d="M380,512 L610,512" stroke="#f5d06b" stroke-width="1.6"/><circle cx="380" cy="512" r="4" fill="#f5d06b"/><text x="620" y="523" font-size="32" font-weight="700" fill="#f5d06b">Pancreas</text>
     </g></g>
   </svg>`,
-  init(c) { c.svg = c.q('svg.body'); cam(c.svg, 117, 487, 1120); c.trk = new Track(c.svg, BODY.TRACK); c.bol = el('circle', { r: 9, fill: 'url(#gGold)' }, c.q('.fx')); c.bol2 = el('circle', { r: 4, fill: '#fff4cf' }, c.q('.fx')); },
+  init(c) { c.svg = c.q('svg.body'); cam(c.svg, 117, 470, 1140); c.trk = new Track(c.svg, BODY.TRACK); c.bol = el('circle', { r: 9, fill: 'url(#gGold)' }, c.q('.fx')); c.bol2 = el('circle', { r: 4, fill: '#fff4cf' }, c.q('.fx')); },
   step(c, n) {
     dimOrgans(c, n >= 2 ? ['liver', 'panc', 'gall'] : null);
     c.q('.duct').style.opacity = n >= 2 ? 1 : .5;

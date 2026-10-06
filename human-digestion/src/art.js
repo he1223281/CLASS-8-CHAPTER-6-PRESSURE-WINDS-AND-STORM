@@ -51,11 +51,11 @@ class Track {
    stomach and descending colon on the viewer's RIGHT. */
 const BODY = (() => {
   const B = {};
-  B.TORSO = 'M276,168 C276,198 270,212 250,222 C222,234 196,240 178,248 C166,266 162,292 162,320 C160,380 154,440 156,500 C158,560 164,592.8 160,625.6 C152,674.8 142,724 144,781.4 C146,830.6 152,871.6 158,900.3 L442,900.3 C448,871.6 454,830.6 456,781.4 C458,724 448,674.8 440,625.6 C436,592.8 442,560 444,500 C446,440 440,380 438,320 C438,292 434,266 422,248 C404,240 378,234 350,222 C330,212 324,198 324,168 Z';
+  B.TORSO = 'M258,166 C220,186 150,200 94,214 C102,260 110,300 110,340 C106,420 104,520 107,600 C110,680 118,760 126,830 C130,860 134,880 138,900 L466,900 C472,860 480,800 486,740 C492,680 496,620 496,560 C496,480 490,420 488,360 C486,300 492,250 502,212 C460,196 418,170 398,142 C380,118 376,96 384,60 C396,20 428,-10 420,-40 C414,-62 408,-80 404,-100 L232,-100 C220,-80 210,-60 208,-25 C200,0 186,14 175,24 C170,30 172,34 180,38 C188,42 192,50 192,62 C190,70 188,76 190,80 C196,86 198,90 196,96 C190,104 188,110 190,118 C194,130 198,136 206,140 C222,142 236,140 242,148 C248,156 252,162 258,166 Z';
   B.ARMS = 'M180,246 C140,254 116,284 110,340 C104,400 100,470 96,560 L142,560 C146,480 150,420 154,370 C156,346 158,330 162,318 Z M420,246 C460,254 484,284 490,340 C496,400 500,470 504,560 L458,560 C454,480 450,420 446,370 C444,346 442,330 438,318 Z';
   B.HEAD = 'M300,24 C340,24 362,58 362,100 C362,128 356,150 344,164 C332,178 316,188 300,188 C284,188 268,178 256,164 C244,150 238,128 238,100 C238,58 260,24 300,24 Z';
   B.APP = 'M210,836 C206,850 214,862 226,864';
-  B.MOUTH = 'M300,140 L300,158';
+  B.MOUTH = 'M186,84 C205,84 230,80 255,84 C275,90 286,108 292,130 C296,145 298,160 300,175';
   B.OES = 'M300,158 C300,230 302,320 312,385 C316,405 326,415 335,422';
   B.STOM_ORG = 'M335,420 C338,396 362,380 392,386 C428,394 444,430 438,470 C432,520 398,556 350,563 C318,567 292,560 276,546 L268,530 C288,532 312,528 330,516 C346,504 350,482 348,460 C346,442 340,430 335,420 Z';
   B.STOM_TRK = 'M335,422 C362,416 402,428 408,466 C414,510 386,540 342,546 C312,549 290,542 272,538';
@@ -70,7 +70,7 @@ const BODY = (() => {
   B.ORG = ORGANS;
   B.STOM_J = B.STOM_ORG;                 // simplified J-shape kept for the big stomach close-up
   B.STOM_ORG = ORGANS.stom;
-  B.OES = 'M300,158 C298,200 298,260 300,310 C302,350 304,380 307,404';
+  B.OES = 'M300,175 C300,240 300,300 302,340 C304,370 306,390 307,404';
   B.STOM_TRK = 'M307,404 C330,412 365,428 390,452 C408,476 402,510 380,526 C356,540 320,528 300,516 C292,511 288,508 285,505';
   B.DUO = 'M285,505 C266,503 244,512 232,530 C222,548 228,572 246,584 C266,594 298,590 318,584 C334,586 340,600 340,622';
   const P = [[340, 622], [362, 638], [392, 656], [390, 684], [356, 676], [320, 660], [282, 650], [244, 648], [216, 664], [222, 690], [258, 700], [298, 706], [340, 700], [380, 708], [404, 728], [392, 750], [356, 748], [318, 740], [282, 738], [252, 744], [240, 730], [232, 722]];
@@ -121,9 +121,10 @@ function bodyArt(o = {}) {
   return `
   <g class="sil">
     <path d="${B.TORSO}" fill="none" stroke="rgba(150,200,255,.07)" stroke-width="16"/>
-    ${txImg('arms')}${txImg('torso')}${txImg('head')}
+    ${txImg('torso')}
     ${skeletonArt()}
-    <path class="mouthm" d="M285,150 Q300,157 315,150" fill="none" stroke="rgba(255,170,170,.75)" stroke-width="3" stroke-linecap="round"/>
+    ${txImg('headDiag')}
+    <path class="mouthm" d="M186,84 L188,84" fill="none" stroke="none"/>
   </g>
   ${o.vessels ? `<g class="vess" opacity="0">${B.VESS.map(d => `<path d="${d}" fill="none" stroke="#ff4f5e" stroke-width="3.2" stroke-linecap="round" stroke-opacity=".8"/>`).join('')}</g>` : ''}
   <g class="org oes">${txImg('oes')}</g>
@@ -162,22 +163,39 @@ const HEAD = {
   SUBM_DUCT: 'M706,758 C742,730 786,706 812,690',
   BOLUS_PATH: 'M712,640 C690,646 660,652 630,660 C600,668 584,690 574,720 C566,748 548,770 528,800 C522,840 524,900 524,1060'
 };
-function tooth(x, y, w, h, up) {
-  const r = Math.min(8, w / 3);
-  return up ? `<path d="M${x},${y} L${x + w},${y} L${x + w},${y + h - r} Q${x + w},${y + h} ${x + w - r},${y + h} L${x + r},${y + h} Q${x},${y + h} ${x},${y + h - r} Z" fill="url(#gTooth)" stroke="#9c927f" stroke-width="1.5"/>`
-    : `<path d="M${x},${y + h} L${x + w},${y + h} L${x + w},${y + r} Q${x + w},${y} ${x + w - r},${y} L${x + r},${y} Q${x},${y} ${x},${y + r} Z" fill="url(#gTooth)" stroke="#9c927f" stroke-width="1.5"/>`;
+function tooth(x, w, kind, up) {
+  // upper teeth hang from the gum line (y≈606), lower teeth stand on it (y≈684)
+  const g = up ? 604 : 686, edge = up ? (kind === 'inc' ? 652 : kind === 'can' ? 650 : 642) : (kind === 'inc' ? 642 : kind === 'can' ? 640 : 647);
+  const s = up ? 1 : -1, r = Math.min(7, w * .3);
+  let tip;
+  if (kind === 'mol') tip = `L${x + w},${edge - s * 6} Q${x + w * .82},${edge + s * 3} ${x + w * .64},${edge - s * 2} Q${x + w * .5},${edge - s * 5} ${x + w * .36},${edge - s * 2} Q${x + w * .18},${edge + s * 3} ${x},${edge - s * 6}`;
+  else if (kind === 'pre') tip = `L${x + w},${edge - s * 6} Q${x + w * .75},${edge + s * 3} ${x + w * .5},${edge - s * 1} Q${x + w * .25},${edge + s * 3} ${x},${edge - s * 6}`;
+  else if (kind === 'can') tip = `L${x + w},${edge - s * 9} Q${x + w * .6},${edge + s * 2} ${x + w * .45},${edge + s * 2} Q${x + w * .3},${edge} ${x},${edge - s * 9}`;
+  else tip = `L${x + w},${edge - s * 3} Q${x + w * .5},${edge + s * 1.5} ${x},${edge - s * 3}`;
+  const d = `M${x + w * .08},${g} C${x + w * .02},${g + s * 10} ${x + w * .98},${g + s * 10} ${x + w * .92},${g} ` +
+    `C${x + w * 1.02},${g + s * 16} ${x + w},${edge - s * 14} ${x + w},${edge - s * 8} ${tip} C${x},${edge - s * 14} ${x - w * .02},${g + s * 16} ${x + w * .08},${g} Z`;
+  return `<path d="${d}" fill="url(#gEnamel${up ? 'U' : 'L'})" stroke="#a89880" stroke-width="1.1"/>` +
+    `<path d="M${x + w * .3},${g + s * 12} C${x + w * .26},${(g + edge) / 2} ${x + w * .3},${edge - s * 10} ${x + w * .36},${edge - s * 7}" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="${f1(Math.max(1.4, w * .09))}" stroke-linecap="round"/>`;
 }
+function gum(up) {
+  const xs = [632, 668, 704, 740, 765, 789, 809, 822, 838]; let d = '';
+  if (up) { d = `M626,588 L842,600 L842,612 `; for (let i = xs.length - 1; i > 0; i--) { const a = xs[i], b = xs[i - 1]; d += `Q${(a + b) / 2},${598} ${b},${616} `; } d += 'L626,612 Z'; }
+  else { d = `M626,704 L842,690 L842,680 `; for (let i = xs.length - 1; i > 0; i--) { const a = xs[i], b = xs[i - 1]; d += `Q${(a + b) / 2},${692} ${b},${676} `; } d += 'L626,680 Z'; }
+  return `<path d="${d}" fill="url(#gGum)" stroke="#a8485a" stroke-width="1.2"/>`;
+}
+const TEETH = [[634, 32, 'mol'], [668, 34, 'mol'], [704, 34, 'mol'], [740, 23, 'pre'], [765, 22, 'pre'], [789, 19, 'can'], [809, 12, 'inc'], [822, 15, 'inc']];
 function headArt() {
   const H = HEAD;
-  const upper = [[818, 606, 14, 44], [796, 602, 18, 44], [768, 598, 24, 42], [740, 596, 24, 42], [704, 594, 32, 44], [668, 594, 32, 44], [634, 596, 30, 42]];
-  const lower = [[818, 652, 13, 40], [796, 650, 18, 40], [768, 648, 24, 40], [740, 648, 24, 40], [704, 648, 32, 40], [668, 648, 32, 40], [634, 650, 30, 38]];
-  return `
+  const defs = `<defs><linearGradient id="gEnamelU" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9c9a6"/><stop offset=".35" stop-color="#f4ecdc"/><stop offset="1" stop-color="#fffdf8"/></linearGradient>
+    <linearGradient id="gEnamelL" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#d9c9a6"/><stop offset=".35" stop-color="#f4ecdc"/><stop offset="1" stop-color="#fffdf8"/></linearGradient>
+    <linearGradient id="gGum" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e88a98"/><stop offset="1" stop-color="#c85a6e"/></linearGradient></defs>`;
+  return `${defs}
   <path d="${H.OUT}" fill="url(#gSkinW)" stroke="rgba(255,220,200,.42)" stroke-width="3"/>
   <path d="M560,470 C620,452 720,460 800,500" fill="none" stroke="rgba(255,220,200,.12)" stroke-width="3"/>
   <path d="${H.CAV}" fill="#2b0c13"/>
   <path d="${H.PHAR}" fill="#2b0c13"/>
-  <rect x="488" y="560" width="14" height="440" fill="#c9606c" opacity=".85"/>
-  <path d="M548,830 L560,830 L560,1000 L548,1000 Z" fill="#c9606c" opacity=".85"/>
+  <path d="M486,560 C480,700 482,860 486,1000 L504,1000 C500,860 498,700 504,560 Z" fill="url(#gGum)" opacity=".9"/>
+  <path d="M546,836 C550,890 550,950 548,1000 L564,1000 C566,950 566,890 560,832 Z" fill="url(#gGum)" opacity=".9"/>
   <g class="trachea" opacity=".75"><path d="M576,800 L576,1000 M624,790 L624,1000" stroke="rgba(170,200,230,.6)" stroke-width="4"/>
     ${[0, 1, 2, 3, 4, 5].map(k => `<path d="M576,${830 + k * 30} L624,${826 + k * 30}" stroke="rgba(170,200,230,.38)" stroke-width="6" stroke-linecap="round"/>`).join('')}</g>
   <path class="hard" d="${H.HARD}" fill="#ead9c7"/>
@@ -188,11 +206,11 @@ function headArt() {
     <path d="${H.PAROTID_DUCT}" fill="none" stroke="#c99a76" stroke-width="4" stroke-linecap="round"/>
     <path d="${H.SUBM_DUCT}" fill="none" stroke="#c99a76" stroke-width="4" stroke-linecap="round"/>
   </g>
-  <g class="upper">${upper.map(t => tooth(...t, true)).join('')}</g>
+  <g class="upper">${TEETH.map(t => tooth(t[0], t[1], t[2], true)).join('')}${gum(true)}</g>
   <g class="jaw">
     <g class="tongue">${txImg('tongue')}</g>
     <path d="M820,664 C760,676 700,682 650,690" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="4" stroke-linecap="round"/>
-    <g class="lower">${lower.map(t => tooth(...t, false)).join('')}</g>
+    <g class="lower">${TEETH.map(t => tooth(t[0], t[1], t[2], false)).join('')}${gum(false)}</g>
     <path d="${H.JAWBONE}" fill="none" stroke="rgba(232,214,196,.35)" stroke-width="10" stroke-linecap="round"/>
   </g>
   <path class="epi" d="${H.EPI}" fill="#e7a3a8" stroke="#a65a64" stroke-width="1.5"/>

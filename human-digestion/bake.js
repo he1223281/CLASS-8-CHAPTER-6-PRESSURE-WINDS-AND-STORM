@@ -5,6 +5,7 @@ const { chromium } = require('playwright');
   const p = await b.newPage();
   await p.goto('file://' + __dirname + '/digestion.html?rebake');
   await p.waitForFunction(() => !document.getElementById('loading'), null, { timeout: 120000 });
+  await p.evaluate(() => bakeHeadAsync());
   const t = await p.evaluate(() => JSON.stringify(TEXI));
   require('fs').writeFileSync(__dirname + '/src/textures.json', t);
   console.log('textures', Math.round(t.length / 1024), 'KB');
