@@ -1,5 +1,7 @@
 # Pressure, Winds, Storms and Cyclones: interactive lesson
 
+> Also in this repo: **[Light: Mirrors and Lenses (Chapter 10)](chapter-10-light/README.md)** — an interactive optics lab in `chapter-10-light/index.html`.
+
 An interactive classroom presentation for **Grade 8 Science (Curiosity), Chapter 6**, built for a large classroom TV or projector.
 
 ## How to use

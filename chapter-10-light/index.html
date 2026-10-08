@@ -1,0 +1,2641 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mirrors and Lenses Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Optical lab theme: a dark room so light rays read clearly on a classroom TV.
+   Fixed 1920x1080 stage scaled to fit any screen. */
+:root{
+  color-scheme: dark;
+  --bg:#04060b;
+  --bg2:#0a0e17;
+  --panel:rgba(18,24,38,.78);
+  --panel2:rgba(28,36,56,.9);
+  --line:rgba(160,180,220,.16);
+  --line2:rgba(160,180,220,.3);
+  --ink:#eef2f8;
+  --mute:#9fabbf;
+  --dim:#6b778c;
+  --ray:#ffcf6b;      /* light */
+  --inc:#ffb547;      /* incident ray */
+  --ref:#56dcff;      /* reflected ray */
+  --r3:#ff7ad9;
+  --obj:#ff8a5c;      /* object */
+  --real:#7ef0a8;     /* real image */
+  --virt:#b9a6ff;     /* virtual image */
+  --warn:#ff5d5d;
+  --acc:#8fb0ff;
+  --f-ui:"Inter","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  --f-mono:"JetBrains Mono","IBM Plex Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="light"]){ color-scheme: dark; } }
+:root[data-theme="dark"]{ color-scheme: dark; }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--ink)}
+body{font-family:var(--f-ui);font-size:26px;line-height:1.35;-webkit-font-smoothing:antialiased}
+button,input,select{font-family:inherit;color:inherit}
+#viewport{position:fixed;inset:0;background:#000}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;overflow:hidden;overflow:clip;
+  background:radial-gradient(1200px 700px at 60% 40%,#0d1424 0%,#070a12 55%,#04060b 100%)}
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:50;
+  background:radial-gradient(ellipse at center,transparent 62%,rgba(0,0,0,.45) 100%)}
+
+/* ---------- frames ---------- */
+#frames{position:absolute;inset:0 0 84px 0}
+.frame{position:absolute;inset:0;opacity:0;visibility:hidden;
+  transition:opacity .75s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1),filter .75s,visibility 0s .9s;
+  transform:translateX(60px) scale(.985);filter:blur(6px)}
+.frame.prev{transform:translateX(-60px) scale(.985)}
+.frame.on{opacity:1;visibility:visible;transform:none;filter:none;transition-delay:.12s,.12s,.12s,0s}
+.fh{position:absolute;left:64px;top:34px;right:64px;z-index:3;pointer-events:none}
+.kick{font:600 20px/1 var(--f-mono);letter-spacing:.18em;color:var(--ray);text-transform:uppercase;display:flex;gap:14px;align-items:center}
+.kick b{display:inline-block;padding:7px 12px;border:1px solid rgba(255,207,107,.45);border-radius:999px;color:#ffe2a0;font-weight:600}
+.fh h1{margin:14px 0 0;font-size:62px;line-height:1.02;font-weight:800;letter-spacing:-.025em}
+.fh p{margin:10px 0 0;font-size:26px;color:var(--mute)}
+.body{position:absolute;left:64px;right:64px;top:196px;bottom:22px}
+
+/* ---------- canvases ---------- */
+canvas.cv{display:block;touch-action:none;border-radius:22px}
+.glass{background:linear-gradient(180deg,rgba(14,19,31,.85),rgba(8,11,19,.85));border:1px solid var(--line);border-radius:24px;
+  box-shadow:0 30px 80px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05)}
+.abs{position:absolute}
+.row{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.col{display:flex;flex-direction:column;gap:16px}
+
+/* ---------- side panel ---------- */
+.side{position:absolute;right:0;top:0;bottom:0;width:440px;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:16px 20px;backdrop-filter:blur(10px)}
+.card h3{margin:0 0 10px;font:600 18px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.card p{margin:0;font-size:23px;color:#d5dceb}
+.card p+p{margin-top:10px}
+.big{font-size:30px;font-weight:700}
+.hl{color:var(--ray)} .hc{color:var(--ref)} .hr{color:var(--real)} .hv{color:var(--virt)} .ho{color:var(--obj)} .hw{color:var(--warn)} .hp{color:var(--r3)}
+
+/* readouts */
+.ro{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;align-items:baseline}
+.ro .k{font-size:21px;color:var(--mute);white-space:nowrap}
+.ro .v{font:600 24px/1.15 var(--f-mono);text-align:right;transition:color .3s;white-space:nowrap}
+.ro .v.pop{animation:pop .45s}
+@keyframes pop{0%{transform:scale(1.12)}100%{transform:none}}
+
+/* controls */
+.ctl{display:flex;flex-direction:column;gap:8px}
+.ctl .lab{display:flex;justify-content:space-between;font-size:21px;color:var(--mute)}
+.ctl .lab b{font:600 22px var(--f-mono);color:var(--ink)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:transparent;margin:0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:10px;border-radius:6px;background:linear-gradient(90deg,var(--ray) var(--p,50%),rgba(255,255,255,.14) var(--p,50%))}
+input[type=range]::-moz-range-track{height:10px;border-radius:6px;background:rgba(255,255,255,.14)}
+input[type=range]::-moz-range-progress{height:10px;border-radius:6px;background:var(--ray)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:38px;height:38px;border-radius:50%;margin-top:-14px;background:#fff;border:0;box-shadow:0 0 0 6px rgba(255,207,107,.25),0 4px 14px rgba(0,0,0,.5)}
+input[type=range]::-moz-range-thumb{width:38px;height:38px;border-radius:50%;background:#fff;border:0;box-shadow:0 0 0 6px rgba(255,207,107,.25)}
+input[type=range]:focus-visible{outline:3px solid var(--acc);outline-offset:4px;border-radius:8px}
+.seg{display:flex;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:16px;padding:5px;gap:4px}
+.seg button{flex:1;border:0;background:transparent;border-radius:12px;padding:12px 10px;font-size:21px;font-weight:600;color:var(--mute);cursor:pointer;transition:background .25s,color .25s;white-space:nowrap}
+.seg button.on{background:#fff;color:#0a0e17}
+.seg button:hover:not(.on){color:var(--ink);background:rgba(255,255,255,.07)}
+.btn{border:1px solid var(--line2);background:rgba(255,255,255,.06);border-radius:16px;padding:14px 22px;font-size:22px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn:hover{background:rgba(255,255,255,.13)}
+.btn.pri{background:var(--ray);color:#1a1205;border-color:transparent}
+.btn.pri:hover{filter:brightness(1.1)}
+.btn.on{background:#fff;color:#0a0e17}
+.btn:focus-visible,.seg button:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+.tog{display:flex;align-items:center;gap:14px;cursor:pointer;font-size:22px;color:#d5dceb;user-select:none}
+.tog i{width:58px;height:32px;border-radius:20px;background:rgba(255,255,255,.16);position:relative;transition:background .25s;flex:none}
+.tog i::after{content:"";position:absolute;left:4px;top:4px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .25s}
+.tog.on i{background:var(--ray)} .tog.on i::after{transform:translateX(26px)}
+
+/* discovery */
+.disc{background:linear-gradient(160deg,rgba(143,176,255,.16),rgba(18,24,38,.86));border:1px solid rgba(143,176,255,.4)}
+.disc .dtag{font:600 17px/1 var(--f-mono);letter-spacing:.2em;color:var(--acc);margin-bottom:10px}
+.disc .dp{font-size:22px;font-weight:800;letter-spacing:.02em;margin-bottom:8px}
+.disc .dq{font-size:22px;color:#e6ebf6;min-height:30px;transition:opacity .3s}
+.disc .dans{display:none;margin-top:10px;font-size:21px;color:#dfe6f3;border-top:1px solid var(--line);padding-top:12px}
+.disc.rev .dans{display:block;animation:fadeup .5s}
+.disc .row{margin-top:12px}
+.disc .btn{padding:8px 14px;font-size:19px}
+.disc .row{margin-top:10px}
+@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* warning */
+.warn{display:flex;gap:14px;align-items:flex-start;background:rgba(255,70,70,.12);border:1px solid rgba(255,93,93,.55);border-radius:18px;padding:12px 16px;font-size:21px;color:#ffd9d9}
+.warn .wi{flex:none;width:40px;height:40px;border-radius:50%;background:var(--warn);color:#fff;display:grid;place-items:center;font-weight:900;font-size:26px}
+.warn b{color:#fff}
+
+/* bottom bar */
+#bar{position:absolute;left:0;right:0;bottom:0;height:84px;display:flex;align-items:center;gap:16px;padding:0 28px;
+  border-top:1px solid var(--line);background:rgba(4,6,11,.88);z-index:20;transition:opacity .4s}
+#bar .chap{font:600 18px var(--f-mono);letter-spacing:.14em;color:var(--mute);white-space:nowrap}
+#bar .chap b{color:var(--ray)}
+#dots{flex:1;display:flex;gap:4px;align-items:center;justify-content:center}
+#dots button{width:32px;height:32px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--dim);font:600 14px var(--f-mono);cursor:pointer;padding:0;transition:all .25s}
+#dots button.seen{color:var(--mute);border-color:var(--line2)}
+#dots button.cur{background:var(--ray);color:#140e02;border-color:transparent;transform:scale(1.12)}
+.nb{white-space:nowrap;border:1px solid var(--line2);background:rgba(255,255,255,.05);border-radius:14px;height:56px;padding:0 18px;font-size:21px;font-weight:600;cursor:pointer}
+.nb:hover{background:rgba(255,255,255,.12)}
+.nb.pri{background:#fff;color:#0a0e17;border-color:#fff}
+#count{font:500 18px var(--f-mono);color:var(--mute);min-width:76px;text-align:center}
+body.pres #bar{opacity:0} body.pres #bar:hover{opacity:1}
+
+/* chapter map overlay */
+#map{position:absolute;inset:0;z-index:40;background:rgba(3,5,9,.94);backdrop-filter:blur(14px);display:none;padding:60px 70px}
+#map.on{display:block;animation:fadeup .4s}
+#map h2{margin:0 0 30px;font-size:46px;font-weight:800;letter-spacing:-.02em}
+#map .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+#map .it{text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:16px;padding:14px 18px;cursor:pointer;font-size:21px;display:flex;gap:14px;align-items:center}
+#map .it:hover{background:rgba(255,207,107,.12);border-color:rgba(255,207,107,.5)}
+#map .it span{font:600 17px var(--f-mono);color:var(--ray);flex:none;width:46px}
+#map .it.cur{background:rgba(255,207,107,.16);border-color:var(--ray)}
+#map .close{position:absolute;right:60px;top:56px}
+#map .keys{margin-top:26px;color:var(--mute);font-size:20px}
+
+/* tiles (applications) */
+.tiles{display:grid;gap:14px}
+.tile{border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:20px;padding:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:all .25s;font-size:20px;font-weight:600;color:#d8dfec}
+.tile canvas{border-radius:14px}
+.tile:hover{border-color:var(--line2);background:rgba(255,255,255,.07)}
+.tile.on{border-color:var(--ray);background:rgba(255,207,107,.1);color:#fff}
+.zoomin{animation:zoomin .8s cubic-bezier(.2,.7,.2,1)}
+@keyframes zoomin{from{opacity:0;transform:scale(.86);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+
+table.t101{width:100%;border-collapse:collapse;font-size:22px}
+table.t101 th{font:600 16px var(--f-mono);letter-spacing:.1em;color:var(--mute);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line2)}
+table.t101 td{padding:7px 8px;border-bottom:1px solid var(--line);font-family:var(--f-mono)}
+table.t101 tr.new td{animation:fadeup .5s}
+
+/* buttons floating on a canvas */
+.onc{position:absolute;left:20px;bottom:20px;display:flex;gap:10px;align-items:center;z-index:2}
+.onc .btn{background:rgba(10,14,23,.85);backdrop-filter:blur(6px)}
+.onc .tog{background:rgba(10,14,23,.85);padding:10px 16px;border-radius:16px;border:1px solid var(--line2)}
+.topc{position:absolute;left:20px;top:18px;z-index:2}
+.topc .seg{background:rgba(10,14,23,.88);backdrop-filter:blur(6px)}
+
+</style>
+</head>
+<body>
+<div id="viewport">
+<div id="stage">
+  <div id="frames"></div>
+  <div id="bar">
+    <div class="chap">CH 10 · <b>MIRRORS &amp; LENSES</b></div>
+    <button class="nb" id="mapbtn" title="Chapter map (M)">☰ Map</button>
+    <div id="dots" aria-label="Modules"></div>
+    <div id="count"></div>
+    <button class="nb" id="prev" aria-label="Previous">◀ Back</button>
+    <button class="nb pri" id="next" aria-label="Next">Next ▶</button>
+  </div>
+  <div id="map" role="dialog" aria-label="Chapter map">
+    <button class="nb close" id="mapclose">Close ✕</button>
+    <h2>Light: Mirrors and Lenses — chapter map</h2>
+    <div class="grid" id="mapgrid"></div>
+    <div class="keys"><b>→ / PgDn</b> next · <b>← / PgUp</b> back · <b>M</b> map · <b>L</b> labels on/off · <b>F</b> fullscreen · <b>P</b> presentation mode (hides this bar)</div>
+  </div>
+</div>
+</div>
+
+<script>
+'use strict';
+/* ================= Frame engine =================
+   Every screen is a "frame": {mod, title, sub, build(root,f), enter(f), leave(f), tick(f,dt,t)}.
+   Frames build lazily, transition with a cinematic cross-fade, and only the visible
+   frame is animated. */
+const W = 1920, H = 1080, TAU = Math.PI * 2, DEG = Math.PI / 180;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const $ = (s, r = document) => r.querySelector(s);
+
+function h(tag, props, ...kids) {
+  const e = document.createElement(tag);
+  if (props) for (const k in props) {
+    const v = props[k];
+    if (v == null || v === false) continue;
+    if (k === 'class') e.className = v;
+    else if (k === 'style') e.style.cssText = v;
+    else if (k === 'html') e.innerHTML = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  }
+  for (const c of kids.flat()) { if (c == null || c === false) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+
+const App = { scale: 1, ratio: 1, frames: [], cur: -1, canvases: new Set(), speed: 1, labels: true, t: 0, busy: [] };
+
+/* ---------- canvases ---------- */
+function canvas(parent, w, hh, style) {
+  const cv = h('canvas', { class: 'cv', style: `width:${w}px;height:${hh}px;${style || ''}` });
+  cv._w = w; cv._h = hh;
+  parent && parent.append(cv);
+  App.canvases.add(cv); sizeCanvas(cv);
+  return { cv, ctx: cv.getContext('2d'), w, h: hh };
+}
+function sizeCanvas(cv) { cv.width = Math.round(cv._w * App.ratio); cv.height = Math.round(cv._h * App.ratio); }
+function begin(c, bg) {
+  const x = c.ctx; x.setTransform(c.cv.width / c.w, 0, 0, c.cv.height / c.h, 0, 0);
+  x.globalAlpha = 1; x.globalCompositeOperation = 'source-over'; x.setLineDash([]); x.filter = 'none';
+  if (bg) { x.fillStyle = bg; x.fillRect(0, 0, c.w, c.h); } else x.clearRect(0, 0, c.w, c.h);
+  return x;
+}
+/* pointer helper: down(p) returns true to start a drag; move(p) while dragging; hover(p) returns true to show grab cursor */
+function pointer(c, o) {
+  const pos = e => { const r = c.cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * c.w / r.width, y: (e.clientY - r.top) * c.h / r.height }; };
+  let drag = false;
+  c.cv.addEventListener('pointerdown', e => {
+    const p = pos(e);
+    if (o.down && o.down(p, e)) { drag = true; c.cv.setPointerCapture(e.pointerId); c.cv.style.cursor = 'grabbing'; e.preventDefault(); }
+  });
+  c.cv.addEventListener('pointermove', e => {
+    const p = pos(e);
+    if (drag) { o.move && o.move(p, e); return; }
+    if (o.hover) c.cv.style.cursor = o.hover(p) ? 'grab' : 'default';
+  });
+  const end = e => { if (drag) { drag = false; c.cv.style.cursor = 'grab'; o.up && o.up(pos(e)); } };
+  c.cv.addEventListener('pointerup', end); c.cv.addEventListener('pointercancel', end);
+}
+
+/* ---------- frames ---------- */
+function frame(def) { App.frames.push(def); }
+
+function buildFrame(f) {
+  const root = h('section', { class: 'frame' });
+  if (f.title) root.append(h('header', { class: 'fh' },
+    h('div', { class: 'kick' }, f.mod != null ? h('b', null, f.mod === 'intro' ? 'CHAPTER 10' : 'MODULE ' + String(f.mod).padStart(2, '0')) : null, f.kick || ''),
+    h('h1', { html: f.title }), f.sub ? h('p', { html: f.sub }) : null));
+  const body = h('div', { class: 'body' }); root.append(body);
+  $('#frames').append(root);
+  f.root = root; f.body = body; f.t = 0;
+  f.build && f.build(body, f);
+  f.built = true;
+}
+
+function go(i) {
+  i = clamp(i, 0, App.frames.length - 1);
+  if (i === App.cur) return;
+  const dir = i > App.cur ? 1 : -1;
+  const old = App.frames[App.cur], nf = App.frames[i];
+  if (!nf.built) buildFrame(nf);
+  if (old) {
+    old.root.classList.remove('on'); old.root.classList.toggle('prev', dir > 0);
+    old.leave && old.leave(old);
+    App.busy.push({ f: old, until: performance.now() + 900 });
+  }
+  nf.root.classList.toggle('prev', dir < 0);
+  void nf.root.offsetWidth;
+  nf.root.classList.add('on'); nf.root.classList.remove('prev');
+  App.cur = i; nf.seen = true; nf.t = 0;
+  nf.enter && nf.enter(nf);
+  updateBar();
+  try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) { }
+}
+
+function updateBar() {
+  const f = App.frames[App.cur];
+  $('#count').textContent = (App.cur + 1) + ' / ' + App.frames.length;
+  document.querySelectorAll('#dots button').forEach(b => {
+    const m = b.dataset.m;
+    b.classList.toggle('cur', String(f.mod) === m);
+    b.classList.toggle('seen', App.frames.some(x => x.seen && String(x.mod) === m));
+  });
+  document.querySelectorAll('#mapgrid .it').forEach((b, k) => b.classList.toggle('cur', k === App.cur));
+  $('#prev').disabled = App.cur === 0; $('#next').disabled = App.cur === App.frames.length - 1;
+}
+
+function fit() {
+  const s = Math.min(innerWidth / W, innerHeight / H);
+  App.scale = s;
+  $('#stage').style.transform = `translate(-50%,-50%) scale(${s})`;
+  const r = clamp(s * (devicePixelRatio || 1), 1, 2);
+  if (Math.abs(r - App.ratio) > .01) { App.ratio = r; App.canvases.forEach(sizeCanvas); }
+}
+
+function loop(now) {
+  const dt = Math.min(.05, (now - (App.last || now)) / 1000); App.last = now; App.t += dt;
+  const f = App.frames[App.cur];
+  App.busy = App.busy.filter(b => b.until > now && b.f !== f);
+  for (const b of App.busy) b.f.tick && b.f.tick(b.f, dt, b.f.t);
+  if (f) { f.t += dt; f.tick && f.tick(f, dt, f.t); }
+  requestAnimationFrame(loop);
+}
+
+function boot() {
+  // modules may be defined in any file order; present them in module order (stable sort)
+  const key = f => f.mod === 'intro' ? 0 : +f.mod;
+  App.frames.sort((a, b) => key(a) - key(b));
+  // module chips in the bar and map
+  const mods = []; App.frames.forEach(f => { if (f.mod != null && !mods.includes(String(f.mod))) mods.push(String(f.mod)); });
+  const dots = $('#dots');
+  mods.forEach(m => dots.append(h('button', {
+    'data-m': m, title: m === 'intro' ? 'Introduction' : 'Module ' + m,
+    onclick: () => go(App.frames.findIndex(f => String(f.mod) === m))
+  }, m === 'intro' ? '◎' : String(m).padStart(2, '0'))));
+  const grid = $('#mapgrid');
+  App.frames.forEach((f, k) => grid.append(h('button', { class: 'it', onclick: () => { closeMap(); go(k); } },
+    h('span', null, f.mod === 'intro' ? '—' : String(f.mod).padStart(2, '0')), (f.mapTitle || f.title || '').replace(/<[^>]+>/g, ''))));
+  $('#prev').onclick = () => go(App.cur - 1);
+  $('#next').onclick = () => go(App.cur + 1);
+  $('#mapbtn').onclick = openMap; $('#mapclose').onclick = closeMap;
+  addEventListener('resize', fit); fit();
+  // focusing a control must never scroll the fixed stage
+  for (const el of [$('#stage'), $('#frames'), $('#viewport')]) el.addEventListener('scroll', () => { el.scrollTop = 0; el.scrollLeft = 0; });
+  addEventListener('keydown', e => {
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { go(App.cur + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { go(App.cur - 1); e.preventDefault(); }
+    else if (e.key === 'm' || e.key === 'M') $('#map').classList.contains('on') ? closeMap() : openMap();
+    else if (e.key === 'Escape') closeMap();
+    else if (e.key === 'f' || e.key === 'F') { if (!document.fullscreenElement) document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+    else if (e.key === 'l' || e.key === 'L') App.labels = !App.labels;
+    else if (e.key === 'p' || e.key === 'P') document.body.classList.toggle('pres');
+  });
+  const start = parseInt((location.hash || '').slice(1)) - 1;
+  go(start >= 0 && start < App.frames.length ? start : 0);
+  requestAnimationFrame(loop);
+}
+function openMap() { $('#map').classList.add('on'); }
+function closeMap() { $('#map').classList.remove('on'); }
+
+/* ================= UI controls ================= */
+const ui = {
+  slider(o) {
+    const inp = h('input', { type: 'range', min: o.min, max: o.max, step: o.step || 1, value: o.value, 'aria-label': o.label });
+    const val = h('b');
+    const paint = () => {
+      const v = +inp.value; val.textContent = o.fmt ? o.fmt(v) : v;
+      inp.style.setProperty('--p', ((v - o.min) / (o.max - o.min) * 100) + '%');
+    };
+    inp.addEventListener('input', () => { paint(); o.onInput && o.onInput(+inp.value); });
+    paint();
+    const el = h('div', { class: 'ctl' }, h('div', { class: 'lab' }, h('span', null, o.label), val), inp);
+    el.set = v => { inp.value = v; paint(); };
+    el.get = () => +inp.value;
+    return el;
+  },
+  seg(o) {
+    const el = h('div', { class: 'seg', role: 'group', 'aria-label': o.label || '' });
+    const bs = o.options.map(op => {
+      const b = h('button', { onclick: () => { el.set(op.v); o.onChange && o.onChange(op.v); } }, op.t);
+      b._v = op.v; el.append(b); return b;
+    });
+    el.set = v => bs.forEach(b => b.classList.toggle('on', b._v === v));
+    el.set(o.value);
+    if (o.label) return Object.assign(h('div', { class: 'ctl' }, h('div', { class: 'lab' }, h('span', null, o.label)), el), { set: el.set });
+    return el;
+  },
+  toggle(o) {
+    const el = h('div', { class: 'tog' + (o.value ? ' on' : ''), role: 'switch', tabindex: 0, 'aria-checked': !!o.value }, h('i'), h('span', null, o.label));
+    const flip = () => { el.set(!el.classList.contains('on')); o.onChange && o.onChange(el.classList.contains('on')); };
+    el.onclick = flip; el.onkeydown = e => { if (e.key === ' ' || e.key === 'Enter') { flip(); e.preventDefault(); } };
+    el.set = v => { el.classList.toggle('on', !!v); el.setAttribute('aria-checked', !!v); };
+    return el;
+  },
+  btn(t, fn, cls) { return h('button', { class: 'btn ' + (cls || ''), onclick: fn }, t); },
+  card(title, ...kids) { return h('div', { class: 'card' }, title ? h('h3', null, title) : null, ...kids); },
+  readout(rows) {
+    const el = h('div', { class: 'ro' }); const vs = {};
+    rows.forEach(([k, lab]) => { el.append(h('div', { class: 'k' }, lab)); vs[k] = h('div', { class: 'v' }, '—'); el.append(vs[k]); });
+    el.set = (k, v, col) => {
+      const n = vs[k]; if (!n) return;
+      if (n.textContent !== String(v)) { n.textContent = v; if (n._last && n._last !== col) { n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop'); } }
+      n._last = col; n.style.color = col || '';
+    };
+    return el;
+  },
+  warn(html) { return h('div', { class: 'warn' }, h('div', { class: 'wi' }, '!'), h('div', { html })); },
+  /* Discovery card: a prompt, a sequence of questions, then the science */
+  discover(o) {
+    let k = 0;
+    const q = h('div', { class: 'dq' }, o.qs[0]);
+    const ans = h('div', { class: 'dans', html: o.reveal });
+    const nextB = ui.btn('Next question ▸', () => { k = (k + 1) % o.qs.length; q.style.opacity = 0; setTimeout(() => { q.textContent = o.qs[k]; q.style.opacity = 1; }, 200); });
+    const revB = ui.btn('Reveal the science', () => { el.classList.toggle('rev'); revB.textContent = el.classList.contains('rev') ? 'Hide' : 'Reveal the science'; o.onReveal && o.onReveal(el.classList.contains('rev')); }, 'pri');
+    const el = h('div', { class: 'card disc' }, h('div', { class: 'dtag' }, 'DISCOVERY'), h('div', { class: 'dp' }, o.prompt || 'MOVE THE OBJECT AND OBSERVE.'), q, h('div', { class: 'row' }, nextB, revB), ans);
+    return el;
+  }
+};
+
+/* ================= Optics library =================
+   Two models are used, each where it is the honest choice:
+   1. bench(): ideal thin mirror / thin lens (1/f = 1/u + 1/v, m = -v/u, real-is-positive),
+      used for image formation diagrams. Every drawn ray really passes through (or appears
+      to come from) the computed image point.
+   2. trace(): exact 2-D ray tracer (law of reflection + Snell's law, n = 1.5 glass),
+      used for parallel beams, so convergence, divergence and the focal "region" are real. */
+const COL = {
+  ray: '#ffcf6b', inc: '#ffb547', ref: '#56dcff', r1: '#ffcf6b', r2: '#56dcff', r3: '#ff7ad9',
+  normal: 'rgba(232,238,252,.85)', axis: 'rgba(170,186,214,.5)', obj: '#ff8a5c',
+  real: '#7ef0a8', virt: '#b9a6ff', ink: '#eef2f8', mute: '#9fabbf', warn: '#ff5d5d'
+};
+const FONT = 'Inter, "Segoe UI", system-ui, sans-serif';
+const PX_CM = 12;                       // 12 stage pixels = 1 cm on every optical bench
+const isLens = t => t === 'convexLens' || t === 'concaveLens';
+const norm = v => { const L = Math.hypot(v[0], v[1]) || 1; return [v[0] / L, v[1] / L]; };
+
+function path(x, pts) { x.beginPath(); x.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) x.lineTo(pts[i][0], pts[i][1]); }
+function rrect(x, a, b, w, hh, r) { x.beginPath(); if (x.roundRect) x.roundRect(a, b, w, hh, r); else x.rect(a, b, w, hh); }
+
+function arrowHead(x, px, py, dx, dy, col, s = 12) {
+  const L = Math.hypot(dx, dy) || 1; dx /= L; dy /= L;
+  x.save(); x.fillStyle = col; x.beginPath();
+  x.moveTo(px + dx * s, py + dy * s);
+  x.lineTo(px - dx * s * .6 - dy * s * .62, py - dy * s * .6 + dx * s * .62);
+  x.lineTo(px - dx * s * .6 + dy * s * .62, py - dy * s * .6 - dx * s * .62);
+  x.closePath(); x.fill(); x.restore();
+}
+/* A glowing light ray along a polyline. o: {w, a, dash, flow, arrows} */
+function beam(x, pts, col, o = {}) {
+  const w = o.w || 2.4, a = o.a == null ? 1 : o.a;
+  x.save(); x.lineCap = 'round'; x.lineJoin = 'round'; x.globalCompositeOperation = 'lighter';
+  path(x, pts); x.strokeStyle = col;
+  if (o.dash) { x.setLineDash(o.dash); x.globalAlpha = a; x.lineWidth = w * .8; x.stroke(); }
+  else {
+    x.globalAlpha = .06 * a; x.lineWidth = w * 8; x.stroke();
+    x.globalAlpha = .2 * a; x.lineWidth = w * 3; x.stroke();
+    x.globalAlpha = a; x.lineWidth = w; x.stroke();
+    if (o.flow != null) { x.setLineDash([2, 34]); x.lineDashOffset = -o.flow; x.globalAlpha = .9 * a; x.lineWidth = w * 2.1; x.strokeStyle = '#fff'; x.stroke(); }
+  }
+  x.restore();
+  if (o.arrows !== false && !o.dash) for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i][0] - pts[i - 1][0], dy = pts[i][1] - pts[i - 1][1], L = Math.hypot(dx, dy);
+    if (L < 70) continue;
+    const d = Math.min(L * .5, o.arrowAt || 170);
+    arrowHead(x, pts[i - 1][0] + dx / L * d, pts[i - 1][1] + dy / L * d, dx, dy, col, o.as || 12);
+  }
+}
+/* label with dark pill behind it for legibility over rays */
+function tag(x, text, px, py, o = {}) {
+  if (o.need !== true && o.labels === false) return;
+  const s = o.size || 22;
+  x.save(); x.font = `${o.weight || 600} ${s}px ${o.mono ? '"JetBrains Mono",monospace' : FONT}`;
+  x.textAlign = o.align || 'center'; x.textBaseline = 'middle';
+  if (o.bg !== false) {
+    const w = x.measureText(text).width;
+    const ax = o.align === 'left' ? px : o.align === 'right' ? px - w : px - w / 2;
+    x.fillStyle = o.bg || 'rgba(5,8,14,.74)'; rrect(x, ax - 9, py - s * .72, w + 18, s * 1.44, 8); x.fill();
+  }
+  x.fillStyle = o.col || COL.ink; x.fillText(text, px, py); x.restore();
+}
+function dashLine(x, x1, y1, x2, y2, col, w = 2, dash = [10, 8]) {
+  x.save(); x.strokeStyle = col; x.lineWidth = w; x.setLineDash(dash); x.beginPath(); x.moveTo(x1, y1); x.lineTo(x2, y2); x.stroke(); x.restore();
+}
+function dot(x, px, py, r, col) { x.save(); x.fillStyle = col; x.beginPath(); x.arc(px, py, r, 0, TAU); x.fill(); x.restore(); }
+function glow(x, px, py, r, col, a = 1) {
+  x.save(); x.globalCompositeOperation = 'lighter'; x.globalAlpha = a;
+  const g = x.createRadialGradient(px, py, 0, px, py, r); g.addColorStop(0, col); g.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = g; x.beginPath(); x.arc(px, py, r, 0, TAU); x.fill(); x.restore();
+}
+/* angle arc between directions a0 -> a1 (radians, canvas angles) */
+function angleArc(x, cx, cy, r, a0, a1, col, txt, o = {}) {
+  let d = a1 - a0; while (d > Math.PI) d -= TAU; while (d < -Math.PI) d += TAU;
+  x.save();
+  x.fillStyle = col; x.globalAlpha = .16; x.beginPath(); x.moveTo(cx, cy); x.arc(cx, cy, r, a0, a0 + d, d < 0); x.closePath(); x.fill();
+  x.globalAlpha = 1; x.strokeStyle = col; x.lineWidth = 3.5; x.beginPath(); x.arc(cx, cy, r, a0, a0 + d, d < 0); x.stroke();
+  x.restore();
+  if (txt) { const am = a0 + d / 2, rr = r + (o.off || 34); tag(x, txt, cx + Math.cos(am) * rr, cy + Math.sin(am) * rr, { col, size: o.size || 26, weight: 800, bg: 'rgba(5,8,14,.6)' }); }
+}
+
+/* ---------- mirrors (generic orientation) ----------
+   V = pole, ax = unit vector pointing out of the reflecting face (towards incoming light),
+   R = radius of curvature, A = aperture. */
+function mirrorGeom(type, V, ax, R, A, n = 64) {
+  const perp = [-ax[1], ax[0]], pts = [], back = [];
+  for (let i = 0; i <= n; i++) {
+    const s = -A / 2 + A * i / n; let p, b;
+    if (type === 'plane') { p = [V[0] + perp[0] * s, V[1] + perp[1] * s]; b = [-ax[0], -ax[1]]; }
+    else if (type === 'concave') {
+      const c = [V[0] + ax[0] * R, V[1] + ax[1] * R], k = Math.sqrt(R * R - s * s);
+      p = [c[0] - ax[0] * k + perp[0] * s, c[1] - ax[1] * k + perp[1] * s]; b = [(p[0] - c[0]) / R, (p[1] - c[1]) / R];
+    } else {
+      const c = [V[0] - ax[0] * R, V[1] - ax[1] * R], k = Math.sqrt(R * R - s * s);
+      p = [c[0] + ax[0] * k + perp[0] * s, c[1] + ax[1] * k + perp[1] * s]; b = [(c[0] - p[0]) / R, (c[1] - p[1]) / R];
+    }
+    pts.push(p); back.push(b);
+  }
+  return { pts, back };
+}
+function mirrorSurf(type, V, ax, R, A) {
+  const perp = [-ax[1], ax[0]];
+  if (type === 'plane') return { kind: 'mirror', geom: 'seg', a: [V[0] - perp[0] * A / 2, V[1] - perp[1] * A / 2], b: [V[0] + perp[0] * A / 2, V[1] + perp[1] * A / 2] };
+  const sg = type === 'concave' ? 1 : -1, c = [V[0] + ax[0] * R * sg, V[1] + ax[1] * R * sg];
+  return {
+    kind: 'mirror', geom: 'arc', c, r: R,
+    test: (qx, qy) => { const dx = qx - c[0], dy = qy - c[1]; return Math.abs(dx * perp[0] + dy * perp[1]) <= A / 2 && (dx * ax[0] + dy * ax[1]) * sg < 0; }
+  };
+}
+/* draw a silvered mirror with hatching on its non-reflecting back */
+function drawMirror(x, g, o = {}) {
+  const { pts, back } = g;
+  x.save(); x.lineCap = 'round';
+  // hatch
+  x.strokeStyle = o.hatch || 'rgba(150,166,194,.6)'; x.lineWidth = 2;
+  let acc = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const p = pts[i], q = pts[i - 1], seg = Math.hypot(p[0] - q[0], p[1] - q[1]); acc += seg;
+    if (acc < 13) continue; acc = 0;
+    const t = norm([p[0] - q[0], p[1] - q[1]]), n = back[i];
+    const dx = n[0] * .77 + t[0] * .64, dy = n[1] * .77 + t[1] * .64;
+    x.beginPath(); x.moveTo(p[0] + n[0] * 4, p[1] + n[1] * 4); x.lineTo(p[0] + n[0] * 4 + dx * 15, p[1] + n[1] * 4 + dy * 15); x.stroke();
+  }
+  // body + silver face
+  path(x, pts); x.strokeStyle = '#5d6b82'; x.lineWidth = 9; x.stroke();
+  x.globalCompositeOperation = 'lighter';
+  path(x, pts); x.strokeStyle = 'rgba(190,230,255,.18)'; x.lineWidth = 18; x.stroke();
+  x.globalCompositeOperation = 'source-over';
+  path(x, pts); x.strokeStyle = '#e9f2ff'; x.lineWidth = 3.5; x.stroke();
+  x.restore();
+}
+
+/* ---------- lenses ---------- */
+/* Schematic thin lens (used on ideal-lens benches) */
+function drawLens(x, x0, cy, A, type, o = {}) {
+  const hh = A / 2; x.save(); x.beginPath();
+  if (type === 'convexLens') {
+    const b = o.bulge || 22;
+    x.moveTo(x0, cy - hh); x.quadraticCurveTo(x0 + 2 * b, cy, x0, cy + hh); x.quadraticCurveTo(x0 - 2 * b, cy, x0, cy - hh);
+  } else {
+    const e = o.edge || 24, c = 5;
+    x.moveTo(x0 - e, cy - hh); x.lineTo(x0 + e, cy - hh); x.quadraticCurveTo(x0 + 2 * c - e, cy, x0 + e, cy + hh);
+    x.lineTo(x0 - e, cy + hh); x.quadraticCurveTo(x0 - 2 * c + e, cy, x0 - e, cy - hh);
+  }
+  x.closePath();
+  const g = x.createLinearGradient(x0 - 40, 0, x0 + 40, 0);
+  g.addColorStop(0, 'rgba(120,200,255,.10)'); g.addColorStop(.5, 'rgba(175,228,255,.32)'); g.addColorStop(1, 'rgba(120,200,255,.10)');
+  x.fillStyle = g; x.fill();
+  x.strokeStyle = 'rgba(200,238,255,.9)'; x.lineWidth = 2.2; x.stroke();
+  x.globalCompositeOperation = 'lighter'; x.strokeStyle = 'rgba(160,220,255,.18)'; x.lineWidth = 9; x.stroke();
+  x.restore();
+}
+/* Real thick lens for the tracer: two spherical surfaces.
+   c1, c2 = curvatures (1/R); positive => centre of that surface lies to the right. */
+function sagOf(c, y) { return c * y * y / (1 + Math.sqrt(Math.max(0, 1 - c * c * y * y))); }
+function lensModel(x0, cy, A, c1, c2, tc) {
+  const v1 = x0 - tc / 2, v2 = x0 + tc / 2, n = 1.5;
+  const surf = (xv, c) => {
+    if (Math.abs(c) < 1e-7) return { kind: 'glass', n, geom: 'seg', a: [xv, cy - A / 2], b: [xv, cy + A / 2] };
+    const R = 1 / c, cx = xv + R;
+    return { kind: 'glass', n, geom: 'arc', c: [cx, cy], r: Math.abs(R), test: (qx, qy) => Math.abs(qy - cy) <= A / 2 + 1e-6 && (qx - cx) * Math.sign(R) < 0 };
+  };
+  const e1 = v1 + sagOf(c1, A / 2), e2 = v2 + sagOf(c2, A / 2);
+  const surfs = [surf(v1, c1), surf(v2, c2),
+  { kind: 'glass', n, geom: 'seg', a: [e1, cy - A / 2], b: [e2, cy - A / 2] },
+  { kind: 'glass', n, geom: 'seg', a: [e1, cy + A / 2], b: [e2, cy + A / 2] }];
+  const outline = [];
+  for (let i = 0; i <= 40; i++) { const y = -A / 2 + A * i / 40; outline.push([v1 + sagOf(c1, y), cy + y]); }
+  for (let i = 40; i >= 0; i--) { const y = -A / 2 + A * i / 40; outline.push([v2 + sagOf(c2, y), cy + y]); }
+  return { surfs, outline };
+}
+/* lens of a given type and focal length (thin-lens estimate 1/f = (n-1)(c1-c2)) */
+function makeLens(type, x0, cy, A, f) {
+  if (type === 'plate') return lensModel(x0, cy, A, 0, 0, 14);
+  const c = 1 / f;
+  if (type === 'convexLens') { const tc = 6 + 2 * sagOf(c, A / 2); return lensModel(x0, cy, A, c, -c, tc); }
+  return lensModel(x0, cy, A, -c, c, 10);
+}
+function drawGlass(x, outline, o = {}) {
+  x.save(); path(x, outline); x.closePath();
+  let mn = 1e9, mx = -1e9; outline.forEach(p => { mn = Math.min(mn, p[0]); mx = Math.max(mx, p[0]); });
+  const g = x.createLinearGradient(mn - 10, 0, mx + 10, 0);
+  g.addColorStop(0, o.c0 || 'rgba(110,190,255,.14)'); g.addColorStop(.5, o.c1 || 'rgba(175,228,255,.34)'); g.addColorStop(1, o.c0 || 'rgba(110,190,255,.14)');
+  x.fillStyle = g; x.fill();
+  x.strokeStyle = 'rgba(205,240,255,.92)'; x.lineWidth = 2.2; x.stroke();
+  x.globalCompositeOperation = 'lighter'; x.strokeStyle = 'rgba(160,220,255,.16)'; x.lineWidth = 10; x.stroke();
+  x.restore();
+}
+
+/* ---------- exact ray tracer ---------- */
+function hitSurf(p, d, s) {
+  if (s.geom === 'seg') {
+    const ex = s.b[0] - s.a[0], ey = s.b[1] - s.a[1], den = d[0] * ey - d[1] * ex;
+    if (Math.abs(den) < 1e-12) return null;
+    const wx = s.a[0] - p[0], wy = s.a[1] - p[1];
+    const t = (wx * ey - wy * ex) / den, u = (wx * d[1] - wy * d[0]) / den;
+    if (t > 1e-6 && u >= 0 && u <= 1) { const L = Math.hypot(ex, ey); return { t, n: [-ey / L, ex / L] }; }
+    return null;
+  }
+  const ox = p[0] - s.c[0], oy = p[1] - s.c[1], b = ox * d[0] + oy * d[1], cc = ox * ox + oy * oy - s.r * s.r, disc = b * b - cc;
+  if (disc < 0) return null;
+  const sq = Math.sqrt(disc);
+  for (const t of [-b - sq, -b + sq]) if (t > 1e-6) {
+    const qx = p[0] + t * d[0], qy = p[1] + t * d[1];
+    if (s.test(qx, qy)) return { t, n: [(qx - s.c[0]) / s.r, (qy - s.c[1]) / s.r] };
+  }
+  return null;
+}
+function trace(p0, d0, surfs, o = {}) {
+  let p = [p0[0], p0[1]], d = norm(d0), inside = false; const pts = [p]; let hit = null;
+  for (let k = 0; k < (o.max || 16); k++) {
+    let best = null, bs = null;
+    for (const s of surfs) { const r = hitSurf(p, d, s); if (r && (!best || r.t < best.t)) { best = r; bs = s; } }
+    if (!best) { const L = o.len || 3200; pts.push([p[0] + d[0] * L, p[1] + d[1] * L]); break; }
+    const q = [p[0] + d[0] * best.t, p[1] + d[1] * best.t]; pts.push(q);
+    if (bs.kind === 'absorb') { hit = { s: bs, q }; break; }
+    let n = best.n; if (n[0] * d[0] + n[1] * d[1] > 0) n = [-n[0], -n[1]];
+    const ci = -(n[0] * d[0] + n[1] * d[1]);
+    if (bs.kind === 'mirror') d = [d[0] + 2 * ci * n[0], d[1] + 2 * ci * n[1]];
+    else {
+      const ng = bs.n || 1.5, eta = inside ? ng : 1 / ng, k2 = 1 - eta * eta * (1 - ci * ci);
+      if (k2 < 0) d = [d[0] + 2 * ci * n[0], d[1] + 2 * ci * n[1]];
+      else { const c2 = Math.sqrt(k2); d = [eta * d[0] + (eta * ci - c2) * n[0], eta * d[1] + (eta * ci - c2) * n[1]]; inside = !inside; }
+    }
+    d = norm(d); p = q;
+  }
+  return { pts, hit, dir: d };
+}
+/* where a traced polyline crosses the vertical line x = X (after the last bounce) */
+function crossX(pts, X) {
+  for (let i = pts.length - 1; i > 0; i--) {
+    const a = pts[i - 1], b = pts[i];
+    if ((a[0] - X) * (b[0] - X) <= 0 && a[0] !== b[0]) { const t = (X - a[0]) / (b[0] - a[0]); return a[1] + (b[1] - a[1]) * t; }
+  }
+  return null;
+}
+
+/* ---------- objects ---------- */
+/* drawn in local coordinates: base at (0,0), tip at (0,-hh). Images are drawn by scaling (|m|, m). */
+function drawObj(x, kind, hh, o = {}) {
+  x.save();
+  if (o.alpha != null) x.globalAlpha = o.alpha;
+  if (kind === 'candle') {
+    const bw = Math.max(10, hh * .2), bh = hh * .7;
+    const g = x.createLinearGradient(-bw / 2, 0, bw / 2, 0);
+    g.addColorStop(0, o.virtual ? '#6d5fb8' : '#c9573a'); g.addColorStop(.45, o.virtual ? '#b7a8ff' : '#ff9a72'); g.addColorStop(1, o.virtual ? '#5a4e99' : '#a8452c');
+    x.fillStyle = g; x.fillRect(-bw / 2, -bh, bw, bh);
+    x.fillStyle = o.virtual ? '#cfc4ff' : '#ffc2a6'; x.beginPath(); x.ellipse(0, -bh, bw / 2, bw * .16, 0, 0, TAU); x.fill();
+    x.strokeStyle = '#2b1a10'; x.lineWidth = Math.max(1.5, hh * .02); x.beginPath(); x.moveTo(0, -bh); x.lineTo(0, -bh - hh * .07); x.stroke();
+    // flame, tip at -hh
+    const fb = -bh - hh * .03, fw = hh * .085;
+    x.beginPath(); x.moveTo(0, -hh); x.bezierCurveTo(fw * 1.2, -hh * .86, fw * 1.25, fb + hh * .02, 0, fb + hh * .02);
+    x.bezierCurveTo(-fw * 1.25, fb + hh * .02, -fw * 1.2, -hh * .86, 0, -hh); x.closePath();
+    const fg = x.createLinearGradient(0, -hh, 0, fb);
+    fg.addColorStop(0, '#fff7cf'); fg.addColorStop(.55, '#ffcf55'); fg.addColorStop(1, '#ff7a1a');
+    x.fillStyle = fg; x.fill();
+    if (!o.virtual) { x.globalCompositeOperation = 'lighter'; const r = hh * .3, cy = -hh * .86; const gg = x.createRadialGradient(0, cy, 0, 0, cy, r); gg.addColorStop(0, 'rgba(255,200,90,.45)'); gg.addColorStop(1, 'rgba(255,200,90,0)'); x.fillStyle = gg; x.beginPath(); x.arc(0, cy, r, 0, TAU); x.fill(); }
+  } else if (kind === 'tooth') {
+    x.fillStyle = o.virtual ? '#cfc4ff' : '#f4efe4';
+    x.beginPath(); x.moveTo(-hh * .25, -hh); x.quadraticCurveTo(0, -hh * 1.05, hh * .25, -hh);
+    x.quadraticCurveTo(hh * .32, -hh * .6, hh * .16, -hh * .45); x.lineTo(hh * .1, 0); x.lineTo(hh * .02, -hh * .3); x.lineTo(-hh * .04, 0); x.lineTo(-hh * .14, -hh * .45);
+    x.quadraticCurveTo(-hh * .32, -hh * .6, -hh * .25, -hh); x.fill();
+  } else if (kind === 'tree') {
+    x.fillStyle = '#7a5532'; x.fillRect(-hh * .05, -hh * .4, hh * .1, hh * .4);
+    x.fillStyle = o.virtual ? '#b9a6ff' : '#3fbf6a'; x.beginPath(); x.moveTo(0, -hh); x.lineTo(hh * .26, -hh * .35); x.lineTo(-hh * .26, -hh * .35); x.closePath(); x.fill();
+  } else {
+    const col = o.col || (o.virtual ? COL.virt : COL.obj);
+    x.strokeStyle = col; x.fillStyle = col; x.lineWidth = Math.max(3, hh * .05); x.lineCap = 'round';
+    x.beginPath(); x.moveTo(0, 0); x.lineTo(0, -hh + hh * .18); x.stroke();
+    x.beginPath(); x.moveTo(0, -hh); x.lineTo(hh * .13, -hh + hh * .24); x.lineTo(-hh * .13, -hh + hh * .24); x.closePath(); x.fill();
+  }
+  x.restore();
+}
+function drawImage(x, kind, oh, xi, y0, m, virtual) {
+  x.save(); x.translate(xi, y0); x.scale(Math.abs(m), m);
+  drawObj(x, kind, oh, { virtual, alpha: virtual ? .62 : 1 });
+  x.restore();
+}
+
+/* ---------- ideal bench ---------- */
+function solve(type, f, u) {
+  if (type === 'plane') return { v: -u, m: 1 };
+  const F = (type === 'concave' || type === 'convexLens') ? f : -f;
+  let d = 1 / F - 1 / u; if (Math.abs(d) < 2e-6) d = 2e-6 * (d < 0 ? -1 : 1);
+  const v = 1 / d; return { v, m: -v / u };
+}
+function extendTo(p, d, w, hh) {
+  let t = 1e6;
+  if (d[0] > 0) t = Math.min(t, (w + 50 - p[0]) / d[0]); else if (d[0] < 0) t = Math.min(t, (-50 - p[0]) / d[0]);
+  if (d[1] > 0) t = Math.min(t, (hh + 50 - p[1]) / d[1]); else if (d[1] < 0) t = Math.min(t, (-50 - p[1]) / d[1]);
+  return [p[0] + d[0] * t, p[1] + d[1] * t];
+}
+/* B: {type, x0, y0, f, u, h, A, w, h2 (canvas h), rays:'principal'|n, showRays, labels, flow, obj, small} */
+function bench(x, B) {
+  const { type, x0, y0, f } = B, u = B.u, oh = B.h, A = B.A || 380, lens = isLens(type), R = 2 * f;
+  const lab = B.labels !== false && App.labels, fs = B.small ? 18 : 22;
+  const s = solve(type, f, u), xo = x0 - u, ty = y0 - oh;
+  const xi = lens ? x0 + s.v : x0 - s.v, yi = y0 - s.m * oh;
+  const inf = Math.abs(s.v) > 9000, real = s.v > 0 && type !== 'plane';
+  // principal axis
+  x.save(); x.strokeStyle = COL.axis; x.lineWidth = 1.5; x.setLineDash([14, 10]); x.beginPath(); x.moveTo(0, y0); x.lineTo(B.w, y0); x.stroke(); x.restore();
+  if (lab && B.axisLabel !== false) tag(x, 'Principal axis', B.w - 110, y0 - 22, { size: fs - 2, col: COL.mute, bg: false });
+  // focal marks
+  const mk = (px, t, behind) => {
+    if (px < -20 || px > B.w + 20 || B.marks === false) return;
+    dot(x, px, y0, 6, behind ? 'rgba(255,255,255,.55)' : '#fff');
+    if (lab) tag(x, t, px, y0 + 30, { size: fs, col: behind ? COL.mute : '#fff', weight: 700, bg: 'rgba(5,8,14,.6)' });
+  };
+  if (type === 'concave') { mk(x0 - f, 'F'); mk(x0 - R, 'C'); }
+  if (type === 'convex') { mk(x0 + f, 'F', 1); mk(x0 + R, 'C', 1); }
+  if (lens) { mk(x0 - f, 'F'); mk(x0 + f, "F'"); if (B.twoF !== false && type === 'convexLens') { mk(x0 - 2 * f, '2F'); mk(x0 + 2 * f, "2F'"); } }
+  // element
+  let surfX = () => x0;
+  if (lens) drawLens(x, x0, y0, A, type, { bulge: B.small ? 14 : 22, edge: B.small ? 16 : 24 });
+  else {
+    const g = mirrorGeom(type, [x0, y0], [-1, 0], R, A); drawMirror(x, g);
+    if (type !== 'plane') surfX = yy => { const s2 = yy - y0, k = Math.sqrt(R * R - s2 * s2); return type === 'concave' ? x0 - R + k : x0 + R - k; };
+  }
+  if (lab && B.marks !== false) tag(x, lens ? 'O' : 'P', x0 + (lens ? 0 : 18), y0 - 22, { size: fs - 2, col: COL.mute, bg: false });
+  // rays
+  if (B.showRays !== false) {
+    const aims = [];
+    if (!B.rays || B.rays === 'principal') {
+      aims.push({ y: ty, col: COL.r1 });
+      aims.push({ y: y0, col: COL.r2 });
+      const fx = (type === 'convexLens' || type === 'concave') ? x0 - f : (type === 'concaveLens' || type === 'convex') ? x0 + f : null;
+      if (fx != null && Math.abs(fx - xo) > 1) aims.push({ y: ty + (y0 - ty) * (x0 - xo) / (fx - xo), col: COL.r3 });
+      if (type === 'plane') aims.push({ y: y0 + A * .3, col: COL.r3 });
+    } else {
+      const n = B.rays;
+      for (let k = 0; k < n; k++) aims.push({ y: n === 1 ? ty : y0 - A * .46 + A * .92 * k / (n - 1), col: COL.ray });
+    }
+    const flow = B.flow;
+    for (const a of aims) {
+      if (Math.abs(a.y - y0) > A / 2) continue;
+      const H = [surfX(a.y), a.y];
+      let d = real || inf ? [xi - H[0], yi - H[1]] : [H[0] - xi, H[1] - yi];
+      if (inf && !real) d = [H[0] - xi, H[1] - yi];
+      d = norm(d);
+      const end = extendTo(H, d, B.w, B.h2);
+      const w = B.rays > 10 ? 1.6 : 2.4;
+      beam(x, [[xo, ty], H, end], a.col, { flow, w, a: B.rays > 10 ? .8 : 1, as: B.small ? 9 : 12 });
+      if (!real && !inf) beam(x, [H, [xi, yi]], a.col, { dash: [9, 9], a: .6 });
+    }
+  }
+  // object
+  x.save(); x.translate(xo, y0); drawObj(x, B.obj || 'candle', oh); x.restore();
+  if (lab && B.objLabel !== false) tag(x, 'Object', xo, y0 + (B.small ? 50 : 62), { col: COL.obj, size: fs - 2, weight: 700 });
+  // image
+  const show = !inf && Math.abs(s.m) < 9 && xi > -300 && xi < B.w + 300;
+  if (show) {
+    drawImage(x, B.obj || 'candle', oh, xi, y0, s.m, !real);
+    if (real && B.showRays !== false) glow(x, xi, yi, 26, 'rgba(255,240,200,.9)', .7);
+    if (lab) {
+      const ly = s.m > 0 ? y0 + 34 : y0 - 24;
+      tag(x, real ? 'Real image' : 'Virtual image', xi, ly, { col: real ? COL.real : COL.virt, size: fs - 2, weight: 700 });
+    }
+  } else if (lab && inf) tag(x, 'Image very far away (at infinity)', B.w / 2, 40, { col: COL.real, size: fs });
+  return { s, xi, yi, real, inf, xo, ty, show };
+}
+/* plain-language description of the image */
+function describe(type, info, u, f) {
+  const m = info.s.m, am = Math.abs(m), lens = isLens(type);
+  const sw = info.inf ? 'Very large' : am > 1.05 ? 'Enlarged' : am < .95 ? 'Diminished' : 'Same size';
+  const size = info.inf ? 'Very large' : am > 1.05 ? `Enlarged ×${am.toFixed(1)}` : am < .95 ? `Diminished ×${am.toFixed(2)}` : 'Same size ×1.0';
+  const ori = info.inf ? '—' : m > 0 ? 'Erect' : 'Inverted';
+  const kind = info.inf ? 'Very far away' : info.real ? 'Real' : 'Virtual';
+  const v = info.s.v, vcm = Math.abs(v) / PX_CM;
+  let where;
+  if (info.inf) where = 'at infinity';
+  else if (lens) where = `${vcm.toFixed(1)} cm ${v > 0 ? 'beyond lens' : 'object side'}`;
+  else where = `${vcm.toFixed(1)} cm ${v > 0 ? 'in front' : 'behind'}`;
+  let zone = '';
+  if (type === 'concave' || type === 'convexLens') {
+    const r = u / f, F = lens ? 'F' : 'F', C = lens ? '2F' : 'C';
+    zone = Math.abs(r - 1) < .02 ? 'at ' + F : r < 1 ? `between ${lens ? 'O' : 'P'} and ${F}` : Math.abs(r - 2) < .02 ? 'at ' + C : r < 2 ? `between ${F} and ${C}` : `beyond ${C}`;
+  }
+  return {
+    obj: `${(u / PX_CM).toFixed(1)} cm`, where, size, sw, ori, kind, zone,
+    col: info.inf ? COL.mute : info.real ? COL.real : COL.virt, ocol: m > 0 ? COL.real : '#ffb0a0'
+  };
+}
+
+/* ---------- scenery ---------- */
+function drawSun(x, cx, cy, r, t) {
+  glow(x, cx, cy, r * 4, 'rgba(255,200,90,.35)');
+  glow(x, cx, cy, r * 2, 'rgba(255,230,160,.6)');
+  x.save(); x.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 16; i++) {
+    const a = i / 16 * TAU + t * .08, L = r * (1.6 + .25 * Math.sin(t * 2 + i * 1.7));
+    x.strokeStyle = 'rgba(255,220,120,.35)'; x.lineWidth = 3; x.beginPath();
+    x.moveTo(cx + Math.cos(a) * r * 1.15, cy + Math.sin(a) * r * 1.15); x.lineTo(cx + Math.cos(a) * L, cy + Math.sin(a) * L); x.stroke();
+  }
+  x.restore();
+  const g = x.createRadialGradient(cx - r * .3, cy - r * .3, 0, cx, cy, r);
+  g.addColorStop(0, '#fffbe8'); g.addColorStop(.7, '#ffe08a'); g.addColorStop(1, '#ffb43d');
+  x.fillStyle = g; x.beginPath(); x.arc(cx, cy, r, 0, TAU); x.fill();
+}
+function bgGrid(x, w, hh, step = 60, a = .045) {
+  x.save(); x.strokeStyle = `rgba(160,180,220,${a})`; x.lineWidth = 1;
+  for (let i = step; i < w; i += step) { x.beginPath(); x.moveTo(i, 0); x.lineTo(i, hh); x.stroke(); }
+  for (let j = step; j < hh; j += step) { x.beginPath(); x.moveTo(0, j); x.lineTo(w, j); x.stroke(); }
+  x.restore();
+}
+/* simple torch (flashlight) pointing along angle a, nose at (px,py) */
+function drawTorch(x, px, py, a, s = 1) {
+  x.save(); x.translate(px, py); x.rotate(a); x.scale(s, s);
+  const g = x.createLinearGradient(0, -20, 0, 20); g.addColorStop(0, '#5b6578'); g.addColorStop(.5, '#2a303c'); g.addColorStop(1, '#151a22');
+  x.fillStyle = g; rrect(x, -150, -17, 112, 34, 8); x.fill();
+  x.fillStyle = '#3b4352'; x.beginPath(); x.moveTo(-40, -17); x.lineTo(0, -26); x.lineTo(0, 26); x.lineTo(-40, 17); x.closePath(); x.fill();
+  x.fillStyle = '#fff6d8'; rrect(x, -3, -24, 6, 48, 3); x.fill();
+  x.fillStyle = '#c9cfda'; rrect(x, -110, -6, 22, 12, 4); x.fill();
+  x.restore();
+}
+
+/* ================= Intro + Modules 1–5: mirrors ================= */
+
+/* a simple standing person, base at (0,0), height hh */
+function drawPerson(x, hh, shirt = '#f2c230', o = {}) {
+  const u = hh / 100; x.save(); if (o.alpha != null) x.globalAlpha = o.alpha;
+  x.fillStyle = '#3b4a6b'; rrect(x, -12 * u, -46 * u, 10 * u, 46 * u, 3 * u); x.fill(); rrect(x, 2 * u, -46 * u, 10 * u, 46 * u, 3 * u); x.fill();
+  x.fillStyle = shirt; rrect(x, -16 * u, -78 * u, 32 * u, 36 * u, 8 * u); x.fill();
+  x.fillStyle = '#c98d63'; rrect(x, -22 * u, -76 * u, 7 * u, 30 * u, 3 * u); x.fill(); rrect(x, 15 * u, -76 * u, 7 * u, 30 * u, 3 * u); x.fill();
+  x.fillStyle = '#d9a077'; x.beginPath(); x.arc(0, -88 * u, 11 * u, 0, TAU); x.fill();
+  x.fillStyle = '#20160f'; x.beginPath(); x.arc(0, -91 * u, 11.5 * u, Math.PI * 1.02, Math.PI * 1.98); x.fill();
+  x.restore();
+}
+/* field of view seen by an eye in a mirror: returns reflected-ray polygon + edge rays */
+function fovFan(eye, type, V, ax, R, A, L = 2400, n = 24) {
+  const g = mirrorGeom(type, V, ax, R, A * .999, n), s = mirrorSurf(type, V, ax, R, A), rays = [];
+  for (const p of g.pts) {
+    const r = trace(eye, [p[0] - eye[0], p[1] - eye[1]], [s], { len: L, max: 2 });
+    if (r.pts.length >= 3) rays.push(r.pts);
+  }
+  return rays;
+}
+function drawFan(x, rays, col, a = .16) {
+  if (rays.length < 2) return;
+  x.save(); x.globalCompositeOperation = 'lighter'; x.fillStyle = col; x.globalAlpha = a;
+  for (let i = 1; i < rays.length; i++) {
+    const p = rays[i - 1], q = rays[i];
+    x.beginPath(); x.moveTo(p[1][0], p[1][1]); x.lineTo(p[2][0], p[2][1]); x.lineTo(q[2][0], q[2][1]); x.lineTo(q[1][0], q[1][1]); x.closePath(); x.fill();
+  }
+  x.restore();
+  for (const r of [rays[0], rays[rays.length - 1]]) beam(x, [r[0], r[1], r[2]], col, { w: 2, arrows: false, a: .9 });
+}
+function inFan(rays, P) {
+  for (let i = 1; i < rays.length; i++) {
+    const a = rays[i - 1], b = rays[i];
+    if (pointInPoly(P, [a[1], a[2], b[2], b[1]])) return i / rays.length;
+  }
+  return -1;
+}
+function pointInPoly(p, poly) {
+  let c = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const a = poly[i], b = poly[j];
+    if (((a[1] > p[1]) !== (b[1] > p[1])) && (p[0] < (b[0] - a[0]) * (p[1] - a[1]) / (b[1] - a[1]) + a[0])) c = !c;
+  }
+  return c;
+}
+
+/* ---------- INTRO ---------- */
+frame({
+  mod: 'intro', full: true, mapTitle: 'Introduction — Meena at the science centre',
+  build(b, f) {
+    b.style.cssText = 'left:0;right:0;top:0;bottom:0';
+    f.c = canvas(b, 1920, 996, 'position:absolute;left:0;top:0;border-radius:0');
+    const t = h('div', { class: 'abs', style: 'left:90px;top:84px;width:760px' },
+      h('div', { class: 'kick' }, h('b', null, 'GRADE 8 · CURIOSITY · CHAPTER 10')),
+      h('h1', { style: 'font-size:104px;line-height:.95;margin:26px 0 0;font-weight:800;letter-spacing:-.04em' }, 'Light:', h('br'), h('span', { style: 'color:var(--ray)' }, 'Mirrors'), ' and', h('br'), 'Lenses'),
+      h('p', { style: 'font-size:30px;color:var(--mute);margin:26px 0 0;max-width:640px' }, 'An interactive optics laboratory. Move objects, bend light and watch images form.'));
+    const q = h('div', { class: 'abs', style: 'left:90px;bottom:60px;width:760px' },
+      h('div', { class: 'kick', style: 'margin-bottom:16px' }, 'PROBE AND PONDER'),
+      ...['Can mirrors give enlarged or diminished images?', 'Why do side-view mirrors say “Objects in mirror are closer than they appear”?', 'Why is there a curved line on some reading glasses?']
+        .map((s, i) => h('div', { class: 'card', style: `margin-top:12px;font-size:25px;opacity:0;transition:opacity .8s ${0.6 + i * .5}s,transform .8s ${0.6 + i * .5}s;transform:translateY(16px)`, 'data-q': 1 }, s)));
+    b.append(t, q);
+    f.qs = q.querySelectorAll('[data-q]');
+    b.append(h('div', { class: 'abs', style: 'right:70px;top:46px;text-align:right;color:var(--mute);font-size:22px' }, 'Press ', h('b', { style: 'color:#fff' }, 'F'), ' for fullscreen · ', h('b', { style: 'color:#fff' }, '→'), ' to begin'));
+  },
+  enter(f) { setTimeout(() => f.qs.forEach(e => { e.style.opacity = 1; e.style.transform = 'none'; }), 50); },
+  leave(f) { f.qs.forEach(e => { e.style.opacity = 0; e.style.transform = 'translateY(16px)'; }); },
+  tick(f, dt, t) {
+    const x = begin(f.c);
+    // gallery wall
+    const g = x.createLinearGradient(0, 0, 0, 996); g.addColorStop(0, '#120d10'); g.addColorStop(.75, '#1d1416'); g.addColorStop(1, '#0a0809');
+    x.fillStyle = g; x.fillRect(900, 0, 1020, 996);
+    const fade = x.createLinearGradient(820, 0, 1100, 0); fade.addColorStop(0, '#04060b'); fade.addColorStop(1, 'rgba(4,6,11,0)');
+    x.fillStyle = fade; x.fillRect(820, 0, 280, 996);
+    // walking distance: person walks towards the mirrors and back (metres)
+    const d = 2.6 - 2.3 * (.5 - .5 * Math.cos(t * .32));
+    const mirrors = [
+      { cx: 1095, cy: 330, r: 128, type: 'plane', name: 'PLANE' },
+      { cx: 1440, cy: 350, r: 190, type: 'concave', name: 'CONCAVE' },
+      { cx: 1772, cy: 330, r: 100, type: 'convex', name: 'CONVEX' }];
+    for (const M of mirrors) {
+      const fM = .5, m = M.type === 'plane' ? 1 : solve(M.type, fM, d).m;
+      // spotlight
+      glow(x, M.cx, M.cy - M.r * 1.4, M.r * 2.2, 'rgba(255,220,180,.10)');
+      // rim
+      x.save(); x.shadowColor = 'rgba(0,0,0,.7)'; x.shadowBlur = 40; x.shadowOffsetY = 20;
+      x.fillStyle = '#2a2c33'; x.beginPath(); x.arc(M.cx, M.cy, M.r + 16, 0, TAU); x.fill(); x.restore();
+      const rg = x.createLinearGradient(M.cx - M.r, M.cy - M.r, M.cx + M.r, M.cy + M.r);
+      rg.addColorStop(0, '#d6dbe4'); rg.addColorStop(.5, '#6a707c'); rg.addColorStop(1, '#c2c8d2');
+      x.strokeStyle = rg; x.lineWidth = 12; x.beginPath(); x.arc(M.cx, M.cy, M.r + 8, 0, TAU); x.stroke();
+      // mirror face
+      x.save(); x.beginPath(); x.arc(M.cx, M.cy, M.r, 0, TAU); x.clip();
+      const fg = x.createRadialGradient(M.cx - M.r * .3, M.cy - M.r * .4, 0, M.cx, M.cy, M.r * 1.1);
+      fg.addColorStop(0, '#5a4448'); fg.addColorStop(1, '#2a1d20'); x.fillStyle = fg; x.fillRect(M.cx - M.r, M.cy - M.r, 2 * M.r, 2 * M.r);
+      // reflection of the person: apparent size proportional to |m|
+      const am = Math.abs(m), base = M.r * .9, blur = am > 4 ? Math.min(14, (am - 4) * 3) : 0;
+      if (am < 30) {
+        x.filter = blur ? `blur(${blur}px)` : 'none';
+        x.translate(M.cx, M.cy + (m > 0 ? base * .5 * Math.min(am, 3) : -base * .5 * Math.min(am, 3)));
+        x.scale(Math.min(am, 6) * base / 100, (m > 0 ? 1 : -1) * Math.min(am, 6) * base / 100);
+        drawPerson(x, 100, '#f2c230');
+      }
+      x.restore();
+      // sheen
+      x.save(); x.globalCompositeOperation = 'lighter';
+      const sh = x.createLinearGradient(M.cx - M.r, M.cy - M.r, M.cx + M.r * .2, M.cy + M.r * .3);
+      sh.addColorStop(0, 'rgba(255,255,255,.22)'); sh.addColorStop(.5, 'rgba(255,255,255,.03)'); sh.addColorStop(1, 'rgba(255,255,255,0)');
+      x.fillStyle = sh; x.beginPath(); x.arc(M.cx, M.cy, M.r, 0, TAU); x.fill(); x.restore();
+      tag(x, M.name, M.cx, M.cy + M.r + 52, { size: 20, mono: true, col: '#d6c9b0', bg: false, need: true });
+      const txt = am > 6 ? 'very large, blurred' : (m > 0 ? 'erect' : 'inverted') + (am > 1.05 ? ', enlarged' : am < .95 ? ', diminished' : ', same size');
+      tag(x, txt, M.cx, M.cy + M.r + 84, { size: 20, col: m > 0 ? COL.real : '#ffb0a0', bg: false, need: true });
+    }
+    // floor and distance gauge
+    x.fillStyle = '#140f10'; x.fillRect(900, 760, 1020, 236);
+    const gx0 = 1050, gx1 = 1850, gy = 860, sc = (gx1 - gx0) / 3;
+    x.strokeStyle = 'rgba(255,255,255,.2)'; x.lineWidth = 2; x.beginPath(); x.moveTo(gx0, gy); x.lineTo(gx1, gy); x.stroke();
+    for (let k = 0; k <= 3; k++) { x.beginPath(); x.moveTo(gx1 - k * sc, gy - 8); x.lineTo(gx1 - k * sc, gy + 8); x.stroke(); tag(x, k + ' m', gx1 - k * sc, gy + 30, { size: 18, col: COL.mute, bg: false, need: true }); }
+    x.fillStyle = '#9aa3b5'; x.fillRect(gx1 + 6, gy - 60, 8, 60);
+    tag(x, 'mirrors', gx1 + 10, gy - 76, { size: 16, col: COL.mute, bg: false, need: true });
+    x.save(); x.translate(gx1 - d * sc, gy); drawPerson(x, 70, '#f2c230'); x.restore();
+    tag(x, `Meena is ${d.toFixed(1)} m from the mirrors`, 1450, 940, { size: 24, col: '#fff', bg: false, need: true });
+  }
+});
+
+/* ---------- shared reflection scene (Modules 1 and 6) ---------- */
+function reflectionScene(c, st, t) {
+  const x = begin(c); bgGrid(x, c.w, c.h);
+  const O = st.O, L = st.L, tilt = st.tilt * DEG;
+  const n = [Math.sin(tilt), -Math.cos(tilt)], mt = [Math.cos(tilt), Math.sin(tilt)];
+  const th = st.th * DEG;
+  const sDir = [n[0] * Math.cos(th) - n[1] * Math.sin(th), n[0] * Math.sin(th) + n[1] * Math.cos(th)];
+  const rDir = [n[0] * Math.cos(-th) - n[1] * Math.sin(-th), n[0] * Math.sin(-th) + n[1] * Math.cos(-th)];
+  const S = [O[0] + sDir[0] * L, O[1] + sDir[1] * L], E = [O[0] + rDir[0] * L, O[1] + rDir[1] * L];
+  const lab = App.labels;
+  // plane of incidence (sheet of paper)
+  if (st.plane) {
+    x.save(); x.fillStyle = 'rgba(143,176,255,.07)'; x.strokeStyle = 'rgba(143,176,255,.35)'; x.lineWidth = 2;
+    rrect(x, O[0] - L - 40, O[1] - L - 40, 2 * L + 80, L + 40, 18); x.fill(); x.stroke(); x.restore();
+    tag(x, 'One plane: incident ray, normal and reflected ray all lie on this sheet', O[0], O[1] - L - 66, { size: 21, col: '#b9c9ff', bg: false });
+  }
+  // protractor
+  if (st.prot) {
+    x.save(); x.translate(O[0], O[1]); x.rotate(tilt);
+    x.fillStyle = 'rgba(255,255,255,.05)'; x.strokeStyle = 'rgba(255,255,255,.35)'; x.lineWidth = 1.5;
+    x.beginPath(); x.arc(0, 0, 250, Math.PI, TAU); x.closePath(); x.fill(); x.stroke();
+    for (let a = 0; a <= 180; a += 5) {
+      const ang = Math.PI + a * DEG, r0 = a % 10 ? 236 : 224;
+      x.beginPath(); x.moveTo(Math.cos(ang) * r0, Math.sin(ang) * r0); x.lineTo(Math.cos(ang) * 250, Math.sin(ang) * 250); x.stroke();
+      if (a % 30 === 0 && a > 0 && a < 180) { x.fillStyle = 'rgba(255,255,255,.55)'; x.font = `16px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(Math.abs(90 - a) + '°', Math.cos(ang) * 205, Math.sin(ang) * 205); }
+    }
+    x.restore();
+  }
+  // mirror
+  const g = mirrorGeom('plane', O, n, 0, st.mw || 900); drawMirror(x, g);
+  if (lab) tag(x, 'Plane mirror', O[0] + mt[0] * 360 - n[0] * 40, O[1] + mt[1] * 360 - n[1] * 40, { col: COL.mute, size: 22 });
+  // normal
+  dashLine(x, O[0], O[1], O[0] + n[0] * (L + 40), O[1] + n[1] * (L + 40), COL.normal, 2.5, [12, 9]);
+  dashLine(x, O[0] - n[0] * 70, O[1] - n[1] * 70, O[0], O[1], 'rgba(232,238,252,.3)', 2, [6, 8]);
+  // right-angle box
+  x.save(); x.strokeStyle = 'rgba(232,238,252,.6)'; x.lineWidth = 2; x.beginPath();
+  const q = 22; x.moveTo(O[0] + mt[0] * q, O[1] + mt[1] * q); x.lineTo(O[0] + mt[0] * q + n[0] * q, O[1] + mt[1] * q + n[1] * q); x.lineTo(O[0] + n[0] * q, O[1] + n[1] * q); x.stroke(); x.restore();
+  if (lab) tag(x, 'Normal (90° to mirror)', O[0] + n[0] * (L + 70), O[1] + n[1] * (L + 70), { col: '#fff', size: 22 });
+  // rays
+  const fl = t * 120 * App.speed;
+  const along = Math.abs(st.th) < .5;
+  const off = along ? [mt[0] * 7, mt[1] * 7] : [0, 0];
+  beam(x, [[S[0] - off[0], S[1] - off[1]], [O[0] - off[0], O[1] - off[1]]], COL.inc, { flow: fl, w: 3.2 });
+  beam(x, [[O[0] + off[0], O[1] + off[1]], [E[0] + off[0], E[1] + off[1]]], COL.ref, { flow: fl - L, w: 3.2 });
+  drawTorch(x, S[0] - sDir[0] * 6, S[1] - sDir[1] * 6, Math.atan2(-sDir[1], -sDir[0]), 1);
+  // angles
+  const aN = Math.atan2(n[1], n[0]), aS = Math.atan2(sDir[1], sDir[0]), aE = Math.atan2(rDir[1], rDir[0]);
+  const deg = Math.abs(st.th).toFixed(0);
+  if (!along) {
+    const off = clamp(64 / Math.sin(Math.abs(th) / 2) - 120, 34, 230);
+    angleArc(x, O[0], O[1], 120, aN, aS, COL.inc, 'i = ' + deg + '°', { off });
+    angleArc(x, O[0], O[1], 120, aN, aE, COL.ref, 'r = ' + deg + '°', { off });
+  } else tag(x, 'Along the normal:  i = 0°,  r = 0°  — light goes straight back', O[0] + n[0] * 230 + 20, O[1] + n[1] * 230, { size: 24, col: '#fff', align: 'left', need: true });
+  if (lab) {
+    const pi = [O[0] + sDir[0] * L * .62, O[1] + sDir[1] * L * .62], pr2 = [O[0] + rDir[0] * L * .62, O[1] + rDir[1] * L * .62];
+    const sgn = st.th >= 0 ? 1 : -1, px = [-sDir[1] * sgn, sDir[0] * sgn], qx = [rDir[1] * sgn, -rDir[0] * sgn];
+    if (!along) {
+      tag(x, 'Incident ray', pi[0] + px[0] * 92, pi[1] + px[1] * 92, { col: COL.inc, size: 24, weight: 700 });
+      tag(x, 'Reflected ray', pr2[0] + qx[0] * 96, pr2[1] + qx[1] * 96, { col: COL.ref, size: 24, weight: 700 });
+    }
+    tag(x, 'O  (point of incidence)', O[0] - n[0] * 48, O[1] - n[1] * 48, { col: '#fff', size: 20 });
+  }
+  dot(x, O[0], O[1], 7, '#fff'); glow(x, O[0], O[1], 40, 'rgba(255,240,200,.8)', .7);
+  return { S, E };
+}
+function reflectionDrag(c, st, onChange) {
+  pointer(c, {
+    hover: p => p.y < st.O[1] - 20,
+    down: p => { if (p.y > st.O[1] - 10) return false; set(p); return true; },
+    move: set
+  });
+  function set(p) {
+    const tilt = st.tilt * DEG, n = [Math.sin(tilt), -Math.cos(tilt)];
+    const v = [p.x - st.O[0], p.y - st.O[1]];
+    let a = Math.atan2(n[0] * v[1] - n[1] * v[0], n[0] * v[0] + n[1] * v[1]) / DEG;
+    a = clamp(a, -85, 85); if (Math.abs(a) < 2.5) a = 0;
+    st.th = Math.round(a); st.anim = null; onChange && onChange();
+  }
+}
+
+/* ---------- MODULE 1: plane mirror ---------- */
+frame({
+  mod: 1, kick: 'Plane mirror · Reflection', title: 'Reflection of light', mapTitle: 'Plane mirror: reflection of light',
+  sub: 'Drag anywhere above the mirror to swing the torch. Watch the reflected ray respond.',
+  build(b, f) {
+    f.st = { O: [664, 650], L: 470, tilt: 0, th: 40, plane: false, prot: false };
+    f.c = canvas(b, 1328, 778, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+    reflectionDrag(f.c, f.st);
+    const side = h('div', { class: 'side' }); b.append(side);
+    f.ro = ui.readout([['i', 'Angle of incidence  i'], ['r', 'Angle of reflection  r']]);
+    f.bars = h('div', { style: 'display:grid;gap:10px;margin-top:16px' });
+    f.bi = h('div', { style: 'height:16px;border-radius:8px;background:var(--inc);transition:width .2s' });
+    f.br = h('div', { style: 'height:16px;border-radius:8px;background:var(--ref);transition:width .2s' });
+    f.bars.append(f.bi, f.br);
+    f.eq = h('div', { class: 'big', style: 'margin-top:14px;text-align:center;font-size:44px;letter-spacing:.02em' }, 'i = r');
+    side.append(ui.card('Live measurement', f.ro, f.bars, f.eq));
+    side.append(ui.card('Try this',
+      h('div', { class: 'col', style: 'gap:12px' },
+        ui.btn('Send the ray along the normal', () => { f.st.anim = { from: f.st.th, to: 0, t: 0 }; }),
+        ui.btn('Sweep through all angles', () => { f.st.sweep = !f.st.sweep; }),
+        ui.toggle({ label: 'Show the plane (sheet of paper)', value: false, onChange: v => f.st.plane = v }))));
+    side.append(ui.card('Words to know', h('p', { html: '<b style="color:var(--inc)">Incident ray</b> falls on the mirror; <b class="hc">reflected ray</b> comes back. The <b>normal</b> is at 90° to the mirror at <b>O</b>. Angles are measured from the normal.' })));
+  },
+  tick(f, dt, t) {
+    const st = f.st;
+    if (st.anim) { st.anim.t = Math.min(1, st.anim.t + dt * 1.3); st.th = Math.round(lerp(st.anim.from, st.anim.to, ease(st.anim.t))); if (st.anim.t >= 1) st.anim = null; }
+    if (st.sweep) st.th = Math.round(Math.sin(t * .6) * 75);
+    reflectionScene(f.c, st, t);
+    const a = Math.abs(st.th);
+    f.ro.set('i', a + '°', COL.inc); f.ro.set('r', a + '°', COL.ref);
+    f.bi.style.width = (a / 90 * 100) + '%'; f.br.style.width = (a / 90 * 100) + '%';
+  }
+});
+
+/* ---------- MODULE 2: spherical mirrors in 3-D ---------- */
+function capMesh(type) {
+  const Rs = 300, tm = 36 * DEG, NT = 12, NP = 40, quads = [];
+  const sg = type === 'concave' ? -1 : 1;       // concave: cap around -z so its inside faces the viewer at +z
+  const zc = sg * Rs * (1 + Math.cos(tm)) / 2;  // shift so the cap sits at the origin
+  const P = (i, j) => { const th = tm * i / NT, ph = TAU * j / NP; return [Rs * Math.sin(th) * Math.cos(ph), Rs * Math.sin(th) * Math.sin(ph), sg * Rs * Math.cos(th)]; };
+  for (let i = 0; i < NT; i++) for (let j = 0; j < NP; j++) {
+    const ps = [P(i, j), P(i + 1, j), P(i + 1, j + 1), P(i, j + 1)];
+    const cpt = ps.reduce((a, p) => [a[0] + p[0] / 4, a[1] + p[1] / 4, a[2] + p[2] / 4], [0, 0, 0]);
+    const L = Math.hypot(...cpt);
+    quads.push({ ps: ps.map(p => [p[0], p[1], p[2] - zc]), n: cpt.map(v => v / L) });
+  }
+  const rim = []; for (let j = 0; j <= NP; j++) { const p = P(NT, j); rim.push([p[0], p[1], p[2] - zc]); }
+  return { quads, rim, Rs, zc, type };
+}
+function rot3(p, yaw, pitch) {
+  const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+  const x1 = p[0] * cy + p[2] * sy, z1 = -p[0] * sy + p[2] * cy;
+  return [x1, p[1] * cp - z1 * sp, p[1] * sp + z1 * cp];
+}
+function drawCap(c, mesh, cam, o) {
+  const x = begin(c), cx = c.w / 2, cy = c.h / 2 + 10, D = 1600;
+  const pr = p => { const s = D / (D - p[2]); return [cx + p[0] * s, cy + p[1] * s, p[2]]; };
+  bgGrid(x, c.w, c.h, 40, .035);
+  // floor glow
+  glow(x, cx, cy + 40, 300, 'rgba(120,150,220,.12)');
+  // imaginary sphere
+  if (o.sphere) {
+    const ctr = rot3([0, 0, -mesh.zc], cam.yaw, cam.pitch), pc = pr(ctr), s = D / (D - ctr[2]);
+    x.save(); x.strokeStyle = 'rgba(143,176,255,.45)'; x.setLineDash([8, 8]); x.lineWidth = 2;
+    x.beginPath(); x.arc(pc[0], pc[1], mesh.Rs * s, 0, TAU); x.stroke();
+    x.setLineDash([]); x.strokeStyle = 'rgba(143,176,255,.14)';
+    for (let k = 0; k < 3; k++) {
+      x.beginPath();
+      for (let j = 0; j <= 72; j++) {
+        const a = TAU * j / 72; let p = k === 0 ? [Math.cos(a), Math.sin(a), 0] : k === 1 ? [Math.cos(a), 0, Math.sin(a)] : [0, Math.cos(a), Math.sin(a)];
+        p = rot3([p[0] * mesh.Rs, p[1] * mesh.Rs, p[2] * mesh.Rs - mesh.zc], cam.yaw, cam.pitch); const q = pr(p);
+        j ? x.lineTo(q[0], q[1]) : x.moveTo(q[0], q[1]);
+      }
+      x.stroke();
+    }
+    x.restore();
+    dot(x, pc[0], pc[1], 6, '#b9c9ff'); tag(x, 'C (centre of the hollow sphere)', pc[0], pc[1] + 26, { size: 18, col: '#b9c9ff' });
+  }
+  const L = norm([.3, -.7]); const L3 = [L[0] * .6, L[1] * .6, .55];
+  const qs = mesh.quads.map(q => {
+    const ps = q.ps.map(p => rot3(p, cam.yaw, cam.pitch)), n = rot3(q.n, cam.yaw, cam.pitch);
+    return { ps, n, z: (ps[0][2] + ps[1][2] + ps[2][2] + ps[3][2]) / 4 };
+  }).sort((a, b) => a.z - b.z);
+  for (const q of qs) {
+    const outer = q.n[2] > 0, vn = outer ? q.n : q.n.map(v => -v);
+    const refl = (mesh.type === 'convex') === outer;
+    let col;
+    if (refl) {
+      // fake environment reflection: bright ceiling, dark floor, warm horizon band
+      const ry = 2 * vn[2] * vn[1], rx = 2 * vn[2] * vn[0];
+      const sky = clamp(.55 - ry * 1.4, 0, 1), band = Math.exp(-Math.pow(ry * 4, 2));
+      const spec = Math.pow(Math.max(0, vn[0] * L3[0] + vn[1] * L3[1] + vn[2] * L3[2]), 30);
+      const r = 40 + 170 * sky + 60 * band + 255 * spec, gg = 50 + 180 * sky + 40 * band + 255 * spec, bb = 70 + 200 * sky + 20 * band + 255 * spec;
+      col = `rgb(${clamp(r + rx * 20, 0, 255) | 0},${clamp(gg, 0, 255) | 0},${clamp(bb, 0, 255) | 0})`;
+    } else {
+      const lam = clamp(.35 + .65 * (vn[0] * L3[0] + vn[1] * L3[1] + vn[2] * L3[2]), .15, 1);
+      col = `rgb(${(70 * lam) | 0},${(52 * lam) | 0},${(48 * lam) | 0})`;
+    }
+    const p = q.ps.map(pr);
+    x.fillStyle = col; x.strokeStyle = col; x.lineWidth = 1;
+    x.beginPath(); x.moveTo(p[0][0], p[0][1]); for (let k = 1; k < 4; k++) x.lineTo(p[k][0], p[k][1]); x.closePath(); x.fill(); x.stroke();
+  }
+  // rim
+  const rp = mesh.rim.map(p => pr(rot3(p, cam.yaw, cam.pitch)));
+  x.save(); x.strokeStyle = '#8b95a8'; x.lineWidth = 7; x.beginPath(); rp.forEach((p, k) => k ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1])); x.stroke();
+  x.strokeStyle = 'rgba(255,255,255,.5)'; x.lineWidth = 1.5; x.stroke(); x.restore();
+  // which side faces the viewer?
+  const axis = rot3([0, 0, mesh.type === 'concave' ? 1 : 1], cam.yaw, cam.pitch);
+  return axis[2];
+}
+frame({
+  mod: 2, kick: 'Spherical mirrors', title: 'Mirrors that curve', mapTitle: 'Spherical mirrors: concave and convex (3-D)',
+  sub: 'Drag to rotate. A spherical mirror is a piece of an imaginary hollow sphere.',
+  build(b, f) {
+    f.cam = { yaw: .5, pitch: -.32 }; f.auto = true; f.sphere = false;
+    f.meshes = [capMesh('concave'), capMesh('convex')];
+    f.cs = [0, 1].map(i => {
+      const wrap = h('div', { class: 'abs glass', style: `left:${i * 700}px;top:0;width:680px;height:680px;overflow:hidden` });
+      b.append(wrap);
+      const c = canvas(wrap, 680, 600);
+      const name = h('div', { style: 'text-align:center;font-size:30px;font-weight:800;margin-top:-6px' }, i ? 'CONVEX MIRROR' : 'CONCAVE MIRROR');
+      const note = h('div', { style: 'text-align:center;font-size:21px;color:var(--mute);margin-top:4px' });
+      wrap.append(name, note); c.note = note;
+      let last = null;
+      pointer(c, {
+        hover: () => true,
+        down: p => { last = p; f.auto = false; f.autoT.set(false); return true; },
+        move: p => { f.cam.yaw += (p.x - last.x) * .008; f.cam.pitch = clamp(f.cam.pitch + (p.y - last.y) * .008, -1.4, 1.4); last = p; }
+      });
+      return c;
+    });
+    const side = h('div', { class: 'abs', style: 'left:1400px;top:0;width:392px;display:flex;flex-direction:column;gap:14px' }); b.append(side);
+    const view = (yaw, pitch) => { f.auto = false; f.autoT.set(false); f.anim = { y0: f.cam.yaw, p0: f.cam.pitch, y1: yaw, p1: pitch, t: 0 }; };
+    f.autoT = ui.toggle({ label: 'Slow turntable', value: true, onChange: v => f.auto = v });
+    side.append(ui.card('Viewpoint', h('div', { class: 'col', style: 'gap:10px' },
+      ui.btn('Face on', () => view(0, 0)),
+      ui.btn('Side view — eye at table level', () => view(Math.PI / 2, 0)),
+      ui.btn('From behind', () => view(Math.PI, -.2)),
+      f.autoT,
+      ui.toggle({ label: 'Show imaginary hollow sphere', value: false, onChange: v => f.sphere = v }))));
+    b.append(h('div', { class: 'abs', style: 'left:0;top:700px;width:1380px;font-size:24px;color:#d5dceb', html: '<b class="hl">Concave</b>: reflecting surface curves <b>inwards</b> &nbsp;·&nbsp; <b class="hc">Convex</b>: curves <b>outwards</b> &nbsp;·&nbsp; In diagrams the non-reflecting back is drawn <b>shaded</b>.' }));
+    // construction diagram
+    const cc = canvas(null, 352, 210); side.append(ui.card('How they are made', cc.cv));
+    f.cc = cc;
+  },
+  tick(f, dt, t) {
+    if (f.anim) { const a = f.anim; a.t = Math.min(1, a.t + dt * 1.2); const e = ease(a.t); f.cam.yaw = lerp(a.y0, a.y1, e); f.cam.pitch = lerp(a.p0, a.p1, e); if (a.t >= 1) f.anim = null; }
+    if (f.auto) f.cam.yaw += dt * .35;
+    f.cs.forEach((c, i) => {
+      const facing = drawCap(c, f.meshes[i], f.cam, { sphere: f.sphere });
+      const conc = i === 0;
+      const reflVisible = facing > .05, back = facing < -.05;
+      c.note.textContent = reflVisible ? `You see the reflecting surface — it curves ${conc ? 'INWARD' : 'OUTWARD'}` : back ? 'You see the coated, non-reflecting back' : 'Edge-on: compare the curve of the two mirrors';
+      c.note.style.color = reflVisible ? (conc ? 'var(--ray)' : 'var(--ref)') : 'var(--mute)';
+    });
+    // construction: glass piece + coating
+    const x = begin(f.cc);
+    const piece = (cx, coatOuter, label, col) => {
+      x.save(); x.translate(cx, 92);
+      x.beginPath(); x.arc(-150, 0, 170, -.42, .42); x.arc(-150 + 20, 0, 170, .42, -.42, true); x.closePath();
+      x.fillStyle = 'rgba(160,215,255,.25)'; x.fill(); x.strokeStyle = 'rgba(210,240,255,.7)'; x.lineWidth = 1.5; x.stroke();
+      x.strokeStyle = '#4ad19a'; x.lineWidth = 5; x.beginPath();
+      if (coatOuter) x.arc(-150 + 20, 0, 170, -.4, .4); else x.arc(-150, 0, 170, -.4, .4); x.stroke();
+      x.restore();
+      beam(x, coatOuter ? [[cx - 70, 92], [cx - 6, 92]] : [[cx + 90, 92], [cx + 26, 92]], col, { w: 2, as: 10 });
+      tag(x, label, cx + 8, 186, { size: 17, col, bg: false });
+    };
+    piece(90, true, 'Coat outside → concave', COL.ray);
+    piece(262, false, 'Coat inside → convex', COL.ref);
+    tag(x, 'green = silver/aluminium coating', 176, 16, { size: 15, col: '#4ad19a', bg: false });
+  }
+});
+
+/* ---------- MODULE 2b: the spoon (Activity 10.1) ---------- */
+function drawFace(x, s) {
+  x.save(); x.scale(s / 100, s / 100);
+  x.fillStyle = '#2b6cb0'; x.beginPath(); x.ellipse(0, 95, 70, 40, 0, Math.PI, TAU); x.fill();
+  x.fillStyle = '#d9a077'; x.fillRect(-14, 30, 28, 30);
+  x.beginPath(); x.ellipse(0, 0, 44, 54, 0, 0, TAU); x.fill();
+  x.fillStyle = '#20160f'; x.beginPath(); x.ellipse(0, -22, 48, 40, 0, Math.PI * .98, TAU * 1.01); x.fill();
+  x.fillRect(-48, -24, 12, 40); x.fillRect(36, -24, 12, 40);
+  x.fillStyle = '#fff'; x.beginPath(); x.ellipse(-16, 2, 8, 5, 0, 0, TAU); x.ellipse(16, 2, 8, 5, 0, 0, TAU); x.fill();
+  x.fillStyle = '#1b1b1b'; x.beginPath(); x.arc(-16, 2, 3.5, 0, TAU); x.arc(16, 2, 3.5, 0, TAU); x.fill();
+  x.strokeStyle = '#8a3b2e'; x.lineWidth = 4; x.lineCap = 'round'; x.beginPath(); x.arc(0, 22, 14, .2, Math.PI - .2); x.stroke();
+  x.restore();
+}
+frame({
+  mod: 2, kick: 'Activity 10.1 · Let us explore', title: 'A shiny spoon is a curved mirror', mapTitle: 'Activity 10.1: image in a shiny spoon',
+  sub: 'Flip the spoon and move it away from your face. What happens to your image?',
+  build(b, f) {
+    f.side = 'inner'; f.d = 20;
+    f.c = canvas(b, 760, 778, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+    f.c2 = canvas(b, 1010, 470, 'position:absolute;left:782px;top:0'); f.c2.cv.classList.add('glass');
+    const ctl = h('div', { class: 'abs', style: 'left:782px;top:494px;width:1010px;display:grid;grid-template-columns:1fr 1fr;gap:16px' }); b.append(ctl);
+    f.ro = ui.readout([['img', 'Your image'], ['why', 'Acts like']]);
+    ctl.append(ui.card('Spoon', h('div', { class: 'col' },
+      ui.seg({ options: [{ v: 'inner', t: 'Inner side (curves in)' }, { v: 'outer', t: 'Outer side (bulges out)' }], value: 'inner', onChange: v => f.side = v }),
+      ui.slider({ label: 'Distance from your face', min: 1, max: 40, step: .5, value: 20, fmt: v => v + ' cm', onInput: v => f.d = v }))),
+      ui.card('What you see', f.ro));
+  },
+  tick(f, dt, t) {
+    const conc = f.side === 'inner', fS = 3; // spoon: radius of curvature ~6 cm => f ~ 3 cm
+    const s = solve(conc ? 'concave' : 'convex', fS, f.d), m = s.m, am = Math.abs(m);
+    const x = begin(f.c, '#0b0f18');
+    // spoon
+    const cx = 380, cy = 330, rx = 190, ry = 270;
+    x.save(); x.translate(cx, cy);
+    const hg = x.createLinearGradient(-30, 0, 30, 0); hg.addColorStop(0, '#6f7787'); hg.addColorStop(.5, '#e6ebf3'); hg.addColorStop(1, '#6f7787');
+    x.fillStyle = hg; rrect(x, -26, ry - 30, 52, 420, 26); x.fill();
+    x.beginPath(); x.ellipse(0, 0, rx + 10, ry + 10, 0, 0, TAU);
+    const rg = x.createLinearGradient(-rx, -ry, rx, ry); rg.addColorStop(0, '#f2f5fa'); rg.addColorStop(.5, '#7f8797'); rg.addColorStop(1, '#d9dee8');
+    x.fillStyle = rg; x.fill();
+    x.beginPath(); x.ellipse(0, 0, rx, ry, 0, 0, TAU); x.clip();
+    const bg = x.createRadialGradient(conc ? 40 : -40, conc ? 60 : -60, 10, 0, 0, ry * 1.1);
+    bg.addColorStop(0, conc ? '#2c3442' : '#c8cfdb'); bg.addColorStop(1, conc ? '#aab3c2' : '#4a5262'); x.fillStyle = bg; x.fillRect(-rx, -ry, 2 * rx, 2 * ry);
+    const blur = am > 3.5 ? Math.min(16, (am - 3.5) * 4) : 0;
+    if (am < 40) { x.filter = blur ? `blur(${blur}px)` : 'none'; x.save(); x.scale(1, m > 0 ? 1 : -1); drawFace(x, Math.min(am, 6) * 140); x.restore(); x.filter = 'none'; }
+    x.globalCompositeOperation = 'lighter';
+    const sh = x.createRadialGradient(conc ? 60 : -70, conc ? 140 : -150, 0, conc ? 60 : -70, conc ? 140 : -150, 120);
+    sh.addColorStop(0, 'rgba(255,255,255,.4)'); sh.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = sh; x.fillRect(-rx, -ry, 2 * rx, 2 * ry);
+    x.restore();
+    tag(x, conc ? 'INNER SIDE · curved inwards' : 'OUTER SIDE · bulging outwards', cx, 38, { size: 22, col: conc ? COL.ray : COL.ref, need: true });
+    // side ray diagram, same ratio u/f
+    const x2 = begin(f.c2); bgGrid(x2, f.c2.w, f.c2.h);
+    const fp = 80, u = f.d / fS * fp;
+    const info = bench(x2, { type: conc ? 'concave' : 'convex', x0: 900, y0: 250, f: fp, u: Math.min(u, 860), h: 60, A: 280, w: f.c2.w, h2: f.c2.h, rays: 'principal', flow: t * 100 * App.speed, obj: 'arrow', small: true });
+    tag(x2, 'Side view as a ray diagram (face = arrow)', 20, 28, { align: 'left', size: 20, col: COL.mute, bg: false, need: true });
+    const d = describe(conc ? 'concave' : 'convex', info, u, fp);
+    f.ro.set('img', am > 6 ? 'very large, blurred' : `${d.ori}, ${d.sw.toLowerCase()}`, d.ocol);
+    f.ro.set('why', conc ? 'Concave mirror' : 'Convex mirror', conc ? COL.ray : COL.ref);
+  }
+});
+
+/* ---------- generic lab frame (Modules 3, 4, 10, 11) ---------- */
+function labFrame(def) {
+  frame({
+    mod: def.mod, kick: def.kick, title: def.title, sub: def.sub, mapTitle: def.mapTitle,
+    build(b, f) {
+      f.u = def.u0; f.rays = 'principal'; f.glide = null;
+      f.c = canvas(b, 1328, 778, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+      const near = p => Math.abs(p.x - f.info.xo) < 50 && p.y > f.info.ty - 30 && p.y < def.y0 + 30;
+      pointer(f.c, {
+        hover: near,
+        down: p => { if (!near(p) && !(Math.abs(p.y - def.y0) < 60 && p.x < def.x0 - 10)) return false; f.glide = null; f.u = clamp(def.x0 - p.x, def.umin, def.umax); return true; },
+        move: p => { f.u = clamp(def.x0 - p.x, def.umin, def.umax); }
+      });
+      const side = h('div', { class: 'side' }); b.append(side);
+      f.ro = ui.readout([['obj', 'Object distance'], ['zone', 'Object position'], ['img', 'Image at'], ['size', 'Image size'], ['ori', 'Orientation'], ['kind', 'Image type']]);
+      side.append(ui.card('Live measurements', f.ro));
+      side.append(ui.card('Rays', ui.seg({ options: [{ v: 'principal', t: 'Key 3' }, { v: 5, t: '5' }, { v: 10, t: '10' }, { v: 20, t: '20' }], value: 'principal', onChange: v => f.rays = v })));
+      f.onc = h('div', { class: 'onc' },
+        ui.btn(def.glideTxt || 'Glide object ⟶', () => { f.glide = { t: 0 }; }),
+        ui.btn('Reset', () => { f.glide = null; f.u = def.u0; }));
+      b.append(f.onc);
+      side.append(ui.discover(def.disc));
+      if (def.extra) def.extra(b, f, side);
+    },
+    tick(f, dt, t) {
+      if (f.glide) { f.glide.t += dt * .07 * App.speed; const k = f.glide.t; f.u = lerp(def.umax, def.umin, ease(clamp(k, 0, 1))); if (k >= 1) f.glide = null; }
+      const x = begin(f.c); bgGrid(x, f.c.w, f.c.h);
+      const B = { type: def.type, x0: def.x0, y0: def.y0, f: def.f, u: f.u, h: def.oh || 90, A: def.A || 440, w: f.c.w, h2: f.c.h, rays: f.rays, flow: t * 110 * App.speed };
+      f.info = bench(x, B);
+      offscreenHint(x, f.info, f.c.w, def.y0);
+      if (def.overlay) def.overlay(x, f, t);
+      tag(x, '⟵ drag ⟶', f.info.xo, def.y0 + 96, { size: 18, col: 'rgba(255,255,255,.55)', bg: false });
+      const d = describe(def.type, f.info, f.u, def.f);
+      f.ro.set('obj', d.obj); f.ro.set('zone', d.zone || 'anywhere');
+      f.ro.set('img', d.where, d.col); f.ro.set('size', d.size); f.ro.set('ori', d.ori, d.ocol); f.ro.set('kind', d.kind, d.col);
+    }
+  });
+}
+function offscreenHint(x, info, w, y0) {
+  if (info.show || info.inf) return;
+  if (info.xi < 0) tag(x, '◀ image far to the left (off screen)', 20, y0 - 40, { align: 'left', size: 20, col: COL.real, need: true });
+  else if (info.xi > w) tag(x, 'image far behind ▶', w - 20, y0 - 40, { align: 'right', size: 20, col: COL.virt, need: true });
+}
+
+/* ---------- MODULE 3: concave mirror ---------- */
+labFrame({
+  mod: 3, kick: 'Concave mirror lab', title: 'Concave mirror: move the object', mapTitle: 'Concave mirror: image formation lab',
+  sub: 'Drag the candle towards and away from the mirror. Follow the rays to the image.',
+  type: 'concave', x0: 900, y0: 400, f: 180, u0: 560, umin: 30, umax: 880,
+  glideTxt: 'Walk object in ⟶',
+  disc: {
+    qs: ['Start far away. Is the image erect or inverted?', 'Move closer. Does the image get larger or smaller?', 'Keep going until the image flips. Where is the object then?', 'Very close to the mirror: is the image erect or inverted? Bigger or smaller?'],
+    reveal: 'Object <b>far</b>: image is <b>inverted</b> and real. As the object comes closer the inverted image grows. Inside <b>F</b> it becomes <b>erect and enlarged</b> (virtual, behind the mirror). So a concave mirror can give enlarged or diminished, erect or inverted images.'
+  },
+  overlay(x, f) {
+    // "what you see" inset
+    const cx = 120, cy = 120, r = 92, m = f.info.s.m, am = Math.abs(m);
+    x.save(); x.beginPath(); x.arc(cx, cy, r, 0, TAU); x.fillStyle = '#121826'; x.fill(); x.clip();
+    if (!f.info.inf && am < 30) { x.filter = am > 5 ? `blur(${Math.min(10, (am - 5) * 2)}px)` : 'none'; x.translate(cx, cy + (m > 0 ? 40 : -40) * Math.min(am, 2.2)); x.scale(Math.min(am, 5) * .9, (m > 0 ? 1 : -1) * Math.min(am, 5) * .9); drawObj(x, 'candle', 90, {}); }
+    x.restore(); x.strokeStyle = '#c9d3e2'; x.lineWidth = 6; x.beginPath(); x.arc(cx, cy, r, 0, TAU); x.stroke();
+    tag(x, 'What you see in the mirror', cx + r + 12, cy - r + 14, { align: 'left', size: 18, col: COL.mute, bg: false });
+  }
+});
+
+/* ---------- MODULE 4: convex mirror ---------- */
+labFrame({
+  mod: 4, kick: 'Convex mirror lab', title: 'Convex mirror: move the object', mapTitle: 'Convex mirror: image formation lab',
+  sub: 'Move the candle anywhere. Watch the image behind the mirror.',
+  type: 'convex', x0: 840, y0: 400, f: 180, u0: 360, umin: 30, umax: 820,
+  disc: {
+    qs: ['Move the object anywhere. Does the image ever turn upside down?', 'Is the image ever bigger than the object?', 'Move the object away. What happens to the image size?', 'Where does the image appear: in front of or behind the mirror?'],
+    reveal: 'A convex mirror always forms an <b>erect, diminished</b>, virtual image behind the mirror. It gets slightly smaller as the object moves away. The mirror also shows a much <b>wider area</b> — tap <b>Field of view</b>.'
+  },
+  extra(b, f, side) {
+    f.fov = false;
+    f.onc.append(ui.toggle({ label: 'Field of view vs plane mirror', value: false, onChange: v => f.fov = v }));
+  },
+  overlay(x, f) {
+    if (!f.fov) return;
+    const eye = [520, 140];
+    const pl = fovFan(eye, 'plane', [840, 400], [-1, 0], 1, 300, 2400, 2);
+    const cv = fovFan(eye, 'convex', [840, 400], [-1, 0], 360, 300, 2400, 30);
+    drawFan(x, cv, COL.ref, .14); drawFan(x, pl, '#ffffff', .1);
+    x.save(); x.fillStyle = '#fff'; x.beginPath(); x.ellipse(eye[0], eye[1], 22, 13, 0, 0, TAU); x.fill(); x.fillStyle = '#1d2a44'; x.beginPath(); x.arc(eye[0] + 3, eye[1], 8, 0, TAU); x.fill(); x.restore();
+    tag(x, 'Eye', eye[0], eye[1] - 30, { size: 18 });
+    tag(x, 'Convex mirror shows this wide region', 330, 700, { col: COL.ref, size: 21, need: true });
+    tag(x, 'Plane mirror: only this narrow strip', 360, 300, { col: '#fff', size: 19, need: true });
+  }
+});
+
+/* ---------- MODULE 4b: convex mirrors at work ---------- */
+const SCENES = {
+  side: {
+    name: 'Vehicle side-view mirror', note: 'The convex side mirror shows the next lane — including the car in the blind spot. Cars look smaller, so they seem farther: “Objects in mirror are closer than they appear”.',
+    draw(x, t, type) {
+      x.fillStyle = '#1b1f27'; x.fillRect(260, 0, 820, 778);
+      x.strokeStyle = 'rgba(255,255,255,.6)'; x.lineWidth = 4; x.setLineDash([40, 40]); x.lineDashOffset = -t * 260;
+      [533, 806].forEach(X => { x.beginPath(); x.moveTo(X, 0); x.lineTo(X, 778); x.stroke(); }); x.setLineDash([]);
+      x.fillStyle = '#e8e2d0'; x.fillRect(254, 0, 6, 778); x.fillRect(1080, 0, 6, 778);
+      const car = (cx, cy, col) => { x.save(); x.fillStyle = 'rgba(0,0,0,.35)'; rrect(x, cx - 50, cy - 86, 104, 180, 22); x.fill(); x.fillStyle = col; rrect(x, cx - 46, cy - 90, 92, 176, 20); x.fill(); x.fillStyle = 'rgba(20,30,45,.85)'; rrect(x, cx - 36, cy - 50, 72, 40, 8); x.fill(); rrect(x, cx - 34, cy + 36, 68, 26, 8); x.fill(); x.restore(); };
+      const me = [670, 260]; car(me[0], me[1], '#e9ecf2');
+      const others = [[400, 470 + Math.sin(t * .5) * 30, '#ff7a5c'], [400, 720 + Math.sin(t * .4 + 1) * 40, '#ffcf6b'], [940, 640 + Math.sin(t * .45 + 2) * 40, '#56dcff']];
+      others.forEach(o => car(o[0], o[1], o[2]));
+      const V = [606, 214], ax = norm([.44, .9]), eye = [690, 250];
+      x.fillStyle = '#2b2f38'; x.fillRect(600, 206, 26, 10);
+      return { V, ax, eye, R: type === 'convex' ? 60 : 1, A: 30, targets: others.map(o => [o[0], o[1]]), cols: others.map(o => o[2]) };
+    }
+  },
+  road: {
+    name: 'Road safety mirror at a sharp bend', note: 'The hill hides each car from the other. A large convex mirror at the bend shows both roads, so drivers can see what is coming and avoid a collision.',
+    draw(x, t, type) {
+      x.fillStyle = '#16231a'; x.fillRect(0, 0, 1328, 778);
+      x.strokeStyle = '#2b2f37'; x.lineWidth = 130; x.lineCap = 'butt';
+      x.beginPath(); x.moveTo(0, 560); x.lineTo(620, 560); x.arcTo(860, 560, 860, 320, 240); x.lineTo(860, -10); x.stroke();
+      x.strokeStyle = 'rgba(255,220,120,.7)'; x.lineWidth = 4; x.setLineDash([30, 26]);
+      x.beginPath(); x.moveTo(0, 560); x.lineTo(620, 560); x.arcTo(860, 560, 860, 320, 240); x.lineTo(860, -10); x.stroke(); x.setLineDash([]);
+      // hill blocking direct view
+      const hg = x.createRadialGradient(560, 270, 30, 560, 270, 330); hg.addColorStop(0, '#5b4a35'); hg.addColorStop(1, '#2c2a1e');
+      x.fillStyle = hg; x.beginPath(); x.moveTo(0, 470); x.lineTo(560, 470); x.quadraticCurveTo(780, 470, 770, 250); x.lineTo(770, 0); x.lineTo(0, 0); x.closePath(); x.fill();
+      tag(x, 'HILL — blocks the view', 340, 230, { size: 24, col: '#d8c39a', bg: false, need: true });
+      const a = (t * .09) % 1, b2 = (t * .07 + .5) % 1;
+      const carA = [80 + a * 480, 590], carB = [830, 40 + b2 * 330];
+      const car = (p, col, rot) => { x.save(); x.translate(p[0], p[1]); x.rotate(rot); x.fillStyle = col; rrect(x, -44, -22, 88, 44, 12); x.fill(); x.fillStyle = 'rgba(20,30,45,.85)'; rrect(x, 10, -16, 20, 32, 5); x.fill(); x.restore(); };
+      car(carA, '#ffcf6b', 0); car(carB, '#ff7a5c', Math.PI / 2);
+      const V = [1010, 640], ax = norm([-1, -1]);
+      return { V, ax, eye: [carA[0] + 30, carA[1]], R: type === 'convex' ? 160 : 1, A: 90, targets: [carB], cols: ['#ff7a5c'], post: true };
+    }
+  },
+  store: {
+    name: 'Store surveillance mirror', note: 'From the counter, a convex mirror in the corner lets the shopkeeper watch almost the whole shop at once.',
+    draw(x, t) {
+      x.fillStyle = '#1d1a17'; x.fillRect(120, 40, 1088, 700);
+      x.strokeStyle = '#4a4239'; x.lineWidth = 8; x.strokeRect(120, 40, 1088, 700);
+      x.fillStyle = '#3d4a63'; [[300, 150], [300, 330], [300, 510], [640, 150], [640, 330], [640, 510]].forEach(p => { rrect(x, p[0], p[1], 240, 56, 6); x.fill(); });
+      x.fillStyle = '#6b4d2f'; rrect(x, 940, 600, 220, 90, 8); x.fill(); tag(x, 'Counter', 1050, 645, { size: 20, bg: false, need: true });
+      const ppl = [[240 + 60 * Math.sin(t * .4), 260], [560, 450 + 60 * Math.sin(t * .5 + 1)], [900, 250 + 80 * Math.sin(t * .3 + 2)], [460 + 120 * Math.sin(t * .25), 620]];
+      ppl.forEach(p => { dot(x, p[0], p[1], 18, '#ffb38a'); dot(x, p[0], p[1], 9, '#3a2a1e'); });
+      return { V: [1180, 80], ax: norm([-1, 1]), eye: [1060, 580], R: 70, A: 70, targets: ppl, cols: ppl.map(() => '#ffb38a'), alwaysConvex: true };
+    }
+  }
+};
+frame({
+  mod: 4, kick: 'From the lab to the road', title: 'Convex mirrors at work', mapTitle: 'Convex mirrors in real life (side-view, road, store)',
+  sub: 'A convex mirror shows a much wider area than a plane mirror of the same size.',
+  build(b, f) {
+    f.k = 'side'; f.type = 'convex'; f.intro = 0;
+    f.c = canvas(b, 1328, 778, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+    const side = h('div', { class: 'side' }); b.append(side);
+    f.seg = ui.seg({ options: [{ v: 'side', t: 'Side mirror' }, { v: 'road', t: 'Road bend' }, { v: 'store', t: 'Store' }], value: 'side', onChange: v => { f.k = v; f.intro = 0; f.note.innerHTML = SCENES[v].note; f.name.textContent = SCENES[v].name; } });
+    f.mt = ui.seg({ options: [{ v: 'plane', t: 'Plane mirror' }, { v: 'convex', t: 'Convex mirror' }], value: 'convex', onChange: v => f.type = v });
+    f.name = h('div', { class: 'big', style: 'margin-bottom:10px' }, SCENES.side.name);
+    f.note = h('p', { html: SCENES.side.note });
+    f.vis = h('div', { style: 'margin-top:12px;font:600 24px var(--f-mono)' });
+    side.append(ui.card('Scene', f.seg), ui.card('Mirror used', f.mt), ui.card(null, f.name, f.note, f.vis));
+  },
+  enter(f) { f.intro = 0; },
+  tick(f, dt, t) {
+    f.intro = Math.min(1, f.intro + dt * .8);
+    const x = begin(f.c, '#0b0f16'), S = SCENES[f.k];
+    const type = S.alwaysConvex ? 'convex' : f.type;
+    const r = S.draw(x, t, type);
+    const R = type === 'convex' ? r.R : 1, rays = fovFan(r.eye, type === 'convex' ? 'convex' : 'plane', r.V, r.ax, R, r.A, 2600, 30);
+    drawFan(x, rays, type === 'convex' ? COL.ref : '#ffffff', .15);
+    drawMirror(x, mirrorGeom(type === 'convex' ? 'convex' : 'plane', r.V, r.ax, R, r.A));
+    if (r.post) { x.fillStyle = '#888'; x.fillRect(r.V[0] + 20, r.V[1] + 20, 8, 60); }
+    x.save(); x.fillStyle = '#fff'; x.beginPath(); x.arc(r.eye[0], r.eye[1], 9, 0, TAU); x.fill(); x.restore();
+    tag(x, 'driver / viewer', r.eye[0], r.eye[1] + 30, { size: 17 });
+    let seen = 0;
+    r.targets.forEach((p, i) => { if (inFan(rays, p) >= 0) { seen++; x.save(); x.strokeStyle = '#7ef0a8'; x.lineWidth = 4; x.beginPath(); x.arc(p[0], p[1], 62, 0, TAU); x.stroke(); x.restore(); } });
+    f.vis.innerHTML = `Seen in mirror: <span style="color:${seen ? 'var(--real)' : 'var(--warn)'}">${seen} of ${r.targets.length}</span>`;
+    // cinematic intro: iris opening from the mirror
+    if (f.intro < 1) {
+      const e = ease(f.intro), rr = 40 + e * 1500;
+      x.save(); x.fillStyle = '#04060b'; x.beginPath(); x.rect(0, 0, f.c.w, f.c.h); x.arc(r.V[0], r.V[1], rr, 0, TAU, true); x.fill('evenodd'); x.restore();
+      x.save(); x.strokeStyle = `rgba(200,230,255,${1 - e})`; x.lineWidth = 6; x.beginPath(); x.arc(r.V[0], r.V[1], rr, 0, TAU); x.stroke(); x.restore();
+    }
+  }
+});
+
+/* ---------- MODULE 5: three-way comparison ---------- */
+frame({
+  mod: 5, kick: 'Mirror comparison lab', title: 'Same object, three mirrors', mapTitle: 'Plane vs concave vs convex: comparison lab',
+  sub: 'One slider moves the object in front of all three mirrors at the same distance.',
+  build(b, f) {
+    f.u = 150;
+    f.P = [{ type: 'plane', x0: 290, name: 'PLANE MIRROR', col: '#fff' }, { type: 'concave', x0: 470, name: 'CONCAVE MIRROR', col: COL.ray }, { type: 'convex', x0: 380, name: 'CONVEX MIRROR', col: COL.ref }];
+    f.P.forEach((p, i) => {
+      const wrap = h('div', { class: 'abs', style: `left:${i * 606}px;top:0;width:580px` }); b.append(wrap);
+      p.c = canvas(wrap, 580, 440); p.c.cv.classList.add('glass');
+      p.lab = h('div', { style: 'display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap' });
+      wrap.append(p.lab);
+      pointer(p.c, { hover: q => Math.abs(q.x - (p.x0 - f.u)) < 40, down: q => Math.abs(q.x - (p.x0 - f.u)) < 50 && (f.u = clamp(p.x0 - q.x, 30, 270), true), move: q => { f.u = clamp(p.x0 - q.x, 30, 270); f.sl.set(f.u); } });
+    });
+    f.sl = ui.slider({ label: 'Object distance (same for all three)', min: 30, max: 270, value: 150, fmt: v => (v / PX_CM).toFixed(1) + ' cm', onInput: v => f.u = v });
+    const row = h('div', { class: 'abs', style: 'left:0;top:520px;width:1792px;display:grid;grid-template-columns:1fr 600px;gap:20px' });
+    row.append(h('div', { class: 'col' }, ui.card('Move the object', f.sl), ui.card(null, h('p', { html: '<b>Lateral inversion</b> (left and right swapped) happens in all three mirrors. You can identify a mirror from the image it forms.' }))),
+      ui.discover({ qs: ['Which mirror always gives a same-size image?', 'Which mirror can turn the image upside down?', 'Which mirror always makes the image smaller?'], reveal: '<b>Plane</b>: erect, same size, always. <b>Concave</b>: depends on distance — enlarged or diminished, erect or inverted. <b>Convex</b>: always erect and diminished.' }));
+    b.append(row);
+  },
+  tick(f, dt, t) {
+    f.P.forEach(p => {
+      const x = begin(p.c); bgGrid(x, p.c.w, p.c.h, 40);
+      const info = bench(x, { type: p.type, x0: p.x0, y0: 250, f: 110, u: f.u, h: 60, A: 300, w: p.c.w, h2: p.c.h, rays: 'principal', flow: t * 100 * App.speed, small: true, axisLabel: false, twoF: false });
+      offscreenHint(x, info, p.c.w, 250);
+      tag(x, p.name, p.c.w / 2, 30, { size: 22, col: p.col, weight: 800, need: true, bg: false });
+      const d = describe(p.type, info, f.u, 110);
+      const chip = (s, c) => `<span style="padding:6px 14px;border-radius:999px;border:1px solid ${c};color:${c};font-size:21px;font-weight:700">${s}</span>`;
+      const html = info.inf ? chip('image very far away', COL.mute) : chip(d.ori, d.ocol) + chip(d.sw, '#fff') + chip(d.kind, d.col);
+      if (p.lab._h !== html) { p.lab.innerHTML = html; p.lab._h = html; }
+    });
+  }
+});
+
+/* ================= Modules 6–8: laws of reflection, parallel rays, concentration ================= */
+
+/* ---------- MODULE 6: laws of reflection ---------- */
+frame({
+  mod: 6, kick: 'Activity 10.4 · Let us experiment', title: 'Laws of reflection', mapTitle: 'Laws of reflection: measure i and r',
+  sub: 'Change the angle of the torch, measure i and r, and record each reading in Table 10.1.',
+  build(b, f) {
+    f.st = { O: [664, 660], L: 440, tilt: 0, th: 30, plane: false, prot: true, mw: 860 };
+    f.c = canvas(b, 1328, 778, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+    reflectionDrag(f.c, f.st);
+    const side = h('div', { class: 'side', style: 'gap:12px' }); b.append(side);
+    f.ro = ui.readout([['i', 'Angle of incidence  i'], ['r', 'Angle of reflection  r']]);
+    f.tb = h('tbody');
+    const tbl = h('table', { class: 't101' }, h('thead', null, h('tr', null, h('th', null, 'S.NO.'), h('th', null, 'i'), h('th', null, 'r'))), f.tb);
+    f.rows = 0;
+    side.append(ui.card('Protractor reading', f.ro,
+      h('div', { class: 'row', style: 'margin:10px 0 8px;gap:10px' },
+        ui.btn('Record reading', () => {
+          if (f.rows >= 4) { f.tb.firstChild.remove(); f.rows--; }
+          f.rows++; const a = Math.abs(f.st.th);
+          const n = f.tb.children.length + 1;
+          f.tb.append(h('tr', { class: 'new' }, h('td', null, '#' + ((f.count = (f.count || 0) + 1))), h('td', { style: 'color:var(--inc)' }, a + '°'), h('td', { style: 'color:var(--ref)' }, a + '°')));
+        }, 'pri'),
+        ui.btn('Clear', () => { f.tb.innerHTML = ''; f.rows = 0; f.count = 0; })), tbl));
+    f.tilt = ui.slider({ label: 'Tilt the mirror', min: -30, max: 30, value: 0, fmt: v => v + '°', onInput: v => f.st.tilt = v });
+    side.append(ui.card(null, h('div', { class: 'col', style: 'gap:8px' }, f.tilt,
+      h('div', { class: 'row', style: 'gap:8px' }, h('span', { style: 'font-size:20px;color:var(--mute)' }, 'Fig. 10.22'),
+        ui.btn('(a)', () => { f.st.tilt = 0; f.tilt.set(0); f.st.th = 0; }),
+        ui.btn('(b)', () => { f.st.tilt = 25; f.tilt.set(25); f.st.th = 0; }),
+        ui.btn('(c)', () => { f.st.tilt = 25; f.tilt.set(25); f.st.th = 20; })))));
+    b.append(h('div', { class: 'onc' }, ui.toggle({ label: 'Protractor', value: true, onChange: v => f.st.prot = v })));
+    side.append(ui.discover({ prompt: 'RECORD FOUR READINGS.', qs: ['Compare the two columns. What do you notice?', 'Tilt the mirror. Is the rule still true?', 'Shine the ray along the normal. What are i and r?'], reveal: '<b>Law 1:</b> the angle of incidence equals the angle of reflection, <b>i = r</b>. It holds for any tilt. Along the normal, i = r = 0°.' }));
+  },
+  tick(f, dt, t) {
+    reflectionScene(f.c, f.st, t);
+    const a = Math.abs(f.st.th); f.ro.set('i', a + '°', COL.inc); f.ro.set('r', a + '°', COL.ref);
+  }
+});
+
+/* ---------- MODULE 6b: the bent-paper experiment (Activity 10.5) ---------- */
+frame({
+  mod: 6, kick: 'Activity 10.5 · Let us experiment', title: 'All in one plane', mapTitle: 'Activity 10.5: bend the paper — one plane',
+  sub: 'The reflected beam is seen on the paper only while the paper lies in the same plane as the incident beam and the normal.',
+  build(b, f) {
+    f.beta = 0; f.target = 0; f.truth = false;
+    f.c = canvas(b, 1328, 778, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+    const side = h('div', { class: 'side' }); b.append(side);
+    f.sl = ui.slider({ label: 'Bend the extended paper', min: 0, max: 80, value: 0, fmt: v => v + '°', onInput: v => { f.target = v; f.beta = v; } });
+    f.state = h('div', { class: 'big', style: 'margin-top:8px' });
+    side.append(ui.card('Step through it', h('div', { class: 'col', style: 'gap:12px' },
+      h('div', { class: 'row', style: 'gap:8px' },
+        ui.btn('1 · Flat', () => { f.target = 0; }), ui.btn('2 · Bend', () => { f.target = 55; }), ui.btn('3 · Flatten', () => { f.target = 0; })),
+      f.sl, f.state)));
+    side.append(ui.card('Look closer', ui.toggle({ label: 'Show where the reflected beam really goes', value: false, onChange: v => f.truth = v })));
+    side.append(ui.card('Law 2', h('p', { html: 'The <b style="color:var(--inc)">incident ray</b>, the <b>normal</b> at the point of incidence and the <b class="hc">reflected ray</b> all lie in the <b>same plane</b>.' })));
+  },
+  tick(f, dt, t) {
+    if (Math.abs(f.beta - f.target) > .2) { f.beta += (f.target - f.beta) * Math.min(1, dt * 3); f.sl.set(Math.round(f.beta)); }
+    const B = f.beta * DEG, x = begin(f.c, '#090c13');
+    const psi = -.38, phi = .92, D = 2200, cx = 760, cy = 470;
+    const P = (X, Y, Z) => {
+      const x1 = X * Math.cos(psi) - Y * Math.sin(psi), y1 = X * Math.sin(psi) + Y * Math.cos(psi);
+      const up = y1 * Math.cos(phi) + Z * Math.sin(phi), dep = y1 * Math.sin(phi) - Z * Math.cos(phi), s = D / (D + dep);
+      return [cx + x1 * s, cy - up * s];
+    };
+    const flap = (X, Y) => P(X * Math.cos(B), Y, -X * Math.sin(B));
+    const poly = (pts, fill, stroke) => { x.beginPath(); pts.forEach((p, i) => i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1])); x.closePath(); if (fill) { x.fillStyle = fill; x.fill(); } if (stroke) { x.strokeStyle = stroke; x.lineWidth = 1.5; x.stroke(); } };
+    // table
+    poly([P(-760, -330, 0), P(0, -330, 0), P(0, 340, 0), P(-760, 340, 0)], '#5a3d26');
+    poly([P(-760, -330, 0), P(0, -330, 0), P(0, -330, -70), P(-760, -330, -70)], '#3e2a1a');
+    poly([P(0, -330, 0), P(0, 340, 0), P(0, 340, -70), P(0, -330, -70)], '#2f2014');
+    // paper on table + flap
+    poly([P(-620, -270, 1), P(0, -270, 1), P(0, 270, 1), P(-620, 270, 1)], '#e9e6de', 'rgba(0,0,0,.2)');
+    const fl = [flap(0, -270), flap(320, -270), flap(320, 270), flap(0, 270)];
+    poly(fl, B > .02 ? '#d6d2c8' : '#e9e6de', 'rgba(0,0,0,.25)');
+    if (f.truth && B > .02) { poly([P(0, -270, 0), P(320, -270, 0), P(320, 270, 0), P(0, 270, 0)], 'rgba(143,176,255,.08)', 'rgba(143,176,255,.5)'); }
+    // mirror (vertical, at the back)
+    const mz = 150;
+    poly([P(-560, 226, 0), P(-90, 226, 0), P(-90, 226, mz), P(-560, 226, mz)], null);
+    const mg = x.createLinearGradient(P(-560, 226, 0)[0], 0, P(-90, 226, 0)[0], 0); mg.addColorStop(0, '#9fb3cc'); mg.addColorStop(.5, '#e8f1ff'); mg.addColorStop(1, '#8aa0bb');
+    x.fillStyle = mg; x.fill(); x.strokeStyle = '#5c6b80'; x.lineWidth = 3; x.stroke();
+    poly([P(-560, 226, mz), P(-90, 226, mz), P(-90, 240, mz), P(-560, 240, mz)], '#6b7c94');
+    poly([P(-600, 240, 0), P(-530, 240, 0), P(-530, 290, 0), P(-600, 290, 0)], '#7a5130');
+    // beams (on the paper surface)
+    const O = [-300, 224], T = [-580, 9];
+    const dir = norm([O[0] - T[0], O[1] - T[1]]), rdir = [dir[0], -dir[1]];
+    const tEdge = (0 - O[0]) / rdir[0], E = [0, O[1] + rdir[1] * tEdge];
+    const tEnd = (300 - E[0]) / rdir[0], F2 = [300, E[1] + rdir[1] * tEnd];
+    const fl2 = t * 120 * App.speed;
+    beam(x, [P(T[0], T[1], 1), P(O[0], O[1], 1)], '#fff3c8', { flow: fl2, w: 4 });
+    // normal on paper
+    const np = [P(O[0], O[1], 1), P(O[0], O[1] - 220, 1)];
+    x.save(); x.strokeStyle = 'rgba(30,40,60,.8)'; x.lineWidth = 2.5; x.setLineDash([10, 8]); x.beginPath(); x.moveTo(np[0][0], np[0][1]); x.lineTo(np[1][0], np[1][1]); x.stroke(); x.restore();
+    beam(x, [P(O[0], O[1], 1), P(E[0], E[1], 1)], '#fff3c8', { flow: fl2 - 300, w: 4 });
+    const visible = B < 1.5 * DEG;
+    if (visible) beam(x, [flap(E[0], E[1]), flap(F2[0], F2[1])], '#fff3c8', { w: 4, flow: fl2 - 600 });
+    else if (f.truth) {
+      beam(x, [P(E[0], E[1], 0), P(F2[0], F2[1], 0)], COL.ref, { dash: [6, 10], a: .9 });
+      const m = P(160, (E[1] + F2[1]) / 2, 0);
+      tag(x, 'beam continues in the original plane — no paper there to show it', m[0] + 30, m[1] - 40, { size: 19, col: COL.ref, align: 'left', need: true });
+    }
+    drawTorch(x, P(T[0], T[1], 1)[0], P(T[0], T[1], 1)[1], Math.atan2(P(O[0], O[1], 1)[1] - P(T[0], T[1], 1)[1], P(O[0], O[1], 1)[0] - P(T[0], T[1], 1)[0]), .9);
+    const lab = (s, p, o = {}) => tag(x, s, p[0], p[1], Object.assign({ size: 20 }, o));
+    lab('Plane mirror', P(-330, 240, mz + 40));
+    lab('Incident beam', P(-470, 70, 0), { col: COL.inc });
+    lab('Normal', P(O[0] + 20, O[1] - 240, 1), { col: '#fff' });
+    lab('Reflected beam', P(-140, 120, 0), { col: COL.ref });
+    lab('Edge of table', P(0, -330, -90), { col: COL.mute });
+    lab(B > .02 ? 'Bent part — beam NOT seen' : 'Extended part — beam seen', flap(220, -330), { col: B > .02 ? '#ffb0a0' : COL.real });
+    f.state.innerHTML = visible ? '<span class="hr">Reflected beam visible</span>' : '<span style="color:#ffb0a0">Reflected beam disappears</span>';
+  }
+});
+
+/* ---------- MODULE 7: many parallel rays ---------- */
+frame({
+  mod: 7, kick: 'Activity 10.6 · Let us explore', title: 'Many parallel rays', mapTitle: 'Parallel rays: plane, concave, convex mirrors',
+  sub: 'Each ray obeys i = r. The shape of the mirror decides what the beam does.',
+  build(b, f) {
+    f.n = 10; f.ang = 0;
+    f.P = [{ type: 'plane', name: 'PLANE MIRROR', res: 'stay parallel', col: '#fff' }, { type: 'concave', name: 'CONCAVE MIRROR', res: 'converge', col: COL.ray }, { type: 'convex', name: 'CONVEX MIRROR', res: 'diverge', col: COL.ref }];
+    f.P.forEach((p, i) => {
+      const wrap = h('div', { class: 'abs', style: `left:${i * 606}px;top:0;width:580px` }); b.append(wrap);
+      p.c = canvas(wrap, 580, 560); p.c.cv.classList.add('glass');
+      wrap.append(h('div', { style: `text-align:center;margin-top:10px;font-size:30px;font-weight:800;color:${p.col}` }, 'Reflected rays ' + p.res));
+    });
+    const row = h('div', { class: 'abs', style: 'left:0;top:640px;width:1792px;display:grid;grid-template-columns:520px 520px 1fr;gap:20px' });
+    row.append(ui.card('Number of rays', ui.seg({ options: [1, 5, 10, 20].map(v => ({ v, t: v + (v === 1 ? ' ray' : ' rays') })), value: 10, onChange: v => f.n = v })),
+      ui.card(null, ui.slider({ label: 'Angle of the beam', min: -20, max: 20, value: 0, fmt: v => v + '°', onInput: v => f.ang = v })),
+      ui.card(null, h('p', { html: '<b class="hl">Concave</b> mirror <b>converges</b> a beam. <b class="hc">Convex</b> mirror <b>diverges</b> it. The laws of reflection hold for every ray, on every mirror.' })));
+    b.append(row);
+  },
+  tick(f, dt, t) {
+    const x0 = 480, cy = 280, A = 380, R = 560, a = f.ang * DEG;
+    f.P.forEach(p => {
+      const x = begin(p.c); bgGrid(x, p.c.w, p.c.h, 40);
+      const V = [x0, cy], s = mirrorSurf(p.type, V, [-1, 0], R, A);
+      const n = f.n, fl = t * 110 * App.speed;
+      for (let k = 0; k < n; k++) {
+        const yh = n === 1 ? cy - 60 : cy - 150 + 300 * k / (n - 1);
+        const p0 = [0, yh - Math.tan(a) * x0];
+        const r = trace(p0, [Math.cos(a), Math.sin(a)], [s], { len: 900, max: 3 });
+        beam(x, r.pts, COL.ray, { flow: fl, w: n > 10 ? 1.6 : 2.2, a: n > 10 ? .8 : 1, as: 10 });
+        if (p.type === 'convex' && r.pts.length > 2) { const H = r.pts[1]; beam(x, [H, [H[0] - r.dir[0] * 330, H[1] - r.dir[1] * 330]], COL.ray, { dash: [6, 8], a: .4 }); }
+      }
+      drawMirror(x, mirrorGeom(p.type, V, [-1, 0], R, A));
+      if (p.type === 'concave') { const F = [x0 - R / 2 + 4, cy - Math.tan(a) * R / 2]; glow(x, F[0], F[1], 40, 'rgba(255,240,200,.9)', .8); tag(x, 'rays meet near F', F[0], F[1] + 46, { size: 20, col: COL.ray }); }
+      if (p.type === 'convex') tag(x, 'dashed: rays seem to spread from behind the mirror', 290, p.c.h - 26, { size: 18, col: COL.mute });
+      tag(x, p.name, 20, 30, { size: 22, col: p.col, align: 'left', weight: 800, bg: false, need: true });
+    });
+  }
+});
+
+/* ---------- MODULE 8: concentration of light ---------- */
+function sunScene(x, w, hh, t) {
+  const sky = x.createLinearGradient(0, 0, 0, hh); sky.addColorStop(0, '#0e1d33'); sky.addColorStop(.75, '#1a2a3a'); sky.addColorStop(1, '#22311f');
+  x.fillStyle = sky; x.fillRect(0, 0, w, hh);
+  drawSun(x, 150, 90, 46, t);
+}
+/* auto-focus: scan distances and return the one giving the narrowest spot */
+function bestFocus(spot, lo, hi) {
+  let best = lo, bw = 1e9;
+  for (let d = lo; d <= hi; d += 1) { const s = spot(d); if (s.n >= s.N * .6 && s.w < bw) { bw = s.w; best = d; } }
+  return best;
+}
+const SUNM = { al: 26 * DEG, R: 660, A: 240, V: [840, 610], N: 30, span: 104 };
+function sunMirrorSpot(dp) {
+  const { al, R, A, V, N } = SUNM, ax = [-Math.sin(al), -Math.cos(al)], rC = [-Math.sin(2 * al), -Math.cos(2 * al)], pr = [-rC[1], rC[0]];
+  const Pc = [V[0] + rC[0] * dp, V[1] + rC[1] * dp], half = 70;
+  const card = { kind: 'absorb', geom: 'seg', a: [Pc[0] - pr[0] * half, Pc[1] - pr[1] * half], b: [Pc[0] + pr[0] * half, Pc[1] + pr[1] * half], id: 'card' };
+  const ground = { kind: 'absorb', geom: 'seg', a: [-10, 720], b: [1400, 720], id: 'ground' };
+  const ms = mirrorSurf('concave', V, ax, R, A), rays = [], hits = [];
+  for (let k = 0; k < N; k++) {
+    const r = trace([V[0] - SUNM.span + 2 * SUNM.span * k / (N - 1), -10], [0, 1], [ms, card, ground], { len: 1400, max: 4 });
+    r.reflected = r.pts.length >= 3; rays.push(r);
+    if (r.hit && r.hit.s.id === 'card' && r.reflected) hits.push((r.hit.q[0] - Pc[0]) * pr[0] + (r.hit.q[1] - Pc[1]) * pr[1]);
+  }
+  const w = hits.length ? Math.max(...hits) - Math.min(...hits) : 1e9;
+  return { rays, hits, w, n: hits.length, N, Pc, pr, rC, ax, card };
+}
+frame({
+  mod: 8, kick: 'Activity 10.7 · Let us explore', title: 'Concentrating sunlight', mapTitle: 'Concave mirror concentrates sunlight',
+  sub: 'Parallel sunlight → concave mirror → a small, very bright spot on the paper.',
+  build(b, f) {
+    f.dp = 200; f.heat = 0; f.char = 0; f.smoke = [];
+    f.c = canvas(b, 1328, 778, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+    const side = h('div', { class: 'side', style: 'gap:14px' }); b.append(side);
+    side.append(ui.warn('<b>Safety first.</b> Never look at the Sun, or into a mirror or lens reflecting the Sun. Focus sunlight only on paper, never on anyone’s face or eyes. Do this only with a teacher.'));
+    f.sl = ui.slider({ label: 'Distance of paper from mirror', min: 130, max: 460, value: 200, fmt: v => (v / PX_CM).toFixed(1) + ' cm', onInput: v => { f.dp = v; f.auto = null; } });
+    f.ro = ui.readout([['spot', 'Spot width'], ['conc', 'Sunlight concentrated'], ['st', 'Paper']]);
+    side.append(ui.card('Move the paper', f.sl, h('div', { class: 'row', style: 'margin:10px 0 14px;gap:10px' }, ui.btn('Find the brightest spot', () => f.auto = bestFocus(sunMirrorSpot, 130, 460), 'pri'), ui.btn('Reset', () => { f.char = 0; f.heat = 0; f.dp = 200; f.sl.set(200); f.auto = null; })), f.ro));
+    const iw = h('div', { class: 'abs card', style: 'left:20px;top:250px;padding:10px 12px' }, h('h3', { style: 'margin-bottom:6px' }, 'Paper, seen from the front'));
+    f.inset = canvas(iw, 300, 170); b.append(iw);
+  },
+  tick(f, dt, t) {
+    const x = begin(f.c); sunScene(x, f.c.w, f.c.h, t);
+    const { R, A, V, N } = SUNM;
+    if (f.auto != null) { f.dp += (f.auto - f.dp) * Math.min(1, dt * 2.5); f.sl.set(Math.round(f.dp)); if (Math.abs(f.dp - f.auto) < .5) { f.dp = f.auto; f.auto = null; } }
+    const sp0 = sunMirrorSpot(f.dp), { Pc, pr, rC, ax, card, hits } = sp0;
+    const gg = x.createLinearGradient(0, 700, 0, 778); gg.addColorStop(0, '#2c4a26'); gg.addColorStop(1, '#16260f'); x.fillStyle = gg; x.fillRect(0, 712, f.c.w, 70);
+    const fl = t * 120 * App.speed;
+    for (const r of sp0.rays) beam(x, r.pts, '#ffe6a0', { flow: fl, w: 1.6, a: r.reflected ? .85 : .35, arrows: false });
+    drawMirror(x, mirrorGeom('concave', V, ax, R, A));
+    // stand
+    x.fillStyle = '#3a3f4a'; x.beginPath(); x.moveTo(V[0] - 20, V[1] + 40); x.lineTo(V[0] + 30, V[1] + 40); x.lineTo(V[0] + 10, 716); x.lineTo(V[0] - 6, 716); x.fill();
+    // paper card (edge-on) + holder
+    let w = 0, mn = 0, mx = 0;
+    if (hits.length) { mn = Math.min(...hits); mx = Math.max(...hits); w = mx - mn; }
+    const conc = hits.length ? hits.length * (2 * SUNM.span / (N - 1)) / Math.max(w, 1.2) : 0;
+    f.heat += (Math.min(conc, 120) - f.heat) * Math.min(1, dt * .6);
+    if (f.heat > 12) f.char = Math.min(1, f.char + dt * (f.heat - 12) / 60);
+    x.save(); x.lineCap = 'round'; x.strokeStyle = '#d8cbb0'; x.lineWidth = 8;
+    x.beginPath(); x.moveTo(card.a[0], card.a[1]); x.lineTo(card.b[0], card.b[1]); x.stroke(); x.restore();
+    if (hits.length) {
+      const sp = mn + w / 2, S = [Pc[0] + pr[0] * sp, Pc[1] + pr[1] * sp];
+      glow(x, S[0], S[1], 30 + 400 / Math.max(w, 3), 'rgba(255,245,210,1)', clamp(conc / 30, .3, 1));
+    }
+    // smoke
+    if (f.char > .25 && Math.random() < dt * 14) f.smoke.push({ x: Pc[0], y: Pc[1], vx: (Math.random() - .5) * 20, vy: -40 - Math.random() * 30, a: .5, r: 8 });
+    f.smoke = f.smoke.filter(s => (s.a -= dt * .25) > 0);
+    f.smoke.forEach(s => { s.x += s.vx * dt; s.y += s.vy * dt; s.r += dt * 18; x.fillStyle = `rgba(200,200,210,${s.a * .5})`; x.beginPath(); x.arc(s.x, s.y, s.r, 0, TAU); x.fill(); });
+    // focus label
+    const F = [V[0] + rC[0] * R / 2, V[1] + rC[1] * R / 2];
+    dashLine(x, V[0], V[1], V[0] + rC[0] * 520, V[1] + rC[1] * 520, 'rgba(255,255,255,.15)', 1.5);
+    dot(x, F[0], F[1], 4, '#fff'); tag(x, 'F', F[0] + 18, F[1] - 18, { size: 20, weight: 700 });
+    tag(x, 'Parallel sunlight', 470, 120, { size: 22, col: '#ffe6a0' });
+    tag(x, 'Concave mirror', V[0] + 160, V[1] + 10, { size: 22, col: COL.mute });
+    tag(x, 'Paper', card.b[0] - 30, card.b[1] - 30, { size: 20 });
+    // readouts
+    f.ro.set('spot', hits.length ? (w / PX_CM * 10).toFixed(1) + ' mm' : '—');
+    f.ro.set('conc', hits.length ? '×' + Math.round(conc * conc) : '—', conc > 10 ? COL.ray : null);
+    f.ro.set('st', f.char > .25 ? 'smoking!' : f.heat > 7 ? 'getting hot' : 'cool', f.char > .25 ? COL.warn : f.heat > 7 ? COL.ray : COL.real);
+    // inset: paper from the front
+    const y = begin(f.inset, '#0b0f18');
+    y.fillStyle = '#e6dcc4'; rrect(y, 30, 8, 240, 154, 6); y.fill();
+    if (f.char > 0) { y.fillStyle = `rgba(60,30,10,${f.char})`; y.beginPath(); y.arc(150, 85, 6 + f.char * 26, 0, TAU); y.fill(); }
+    if (hits.length) { const r = clamp(w / 2, 2, 70); glow(y, 150, 85, r * 2.2, 'rgba(255,240,190,1)', clamp(conc / 40, .25, 1)); dot(y, 150, 85, r * .7, `rgba(255,255,240,${clamp(conc / 30, .3, 1)})`); }
+  }
+});
+
+/* ---------- MODULE 8b: solar concentrators ---------- */
+const SOLAR = [
+  {
+    t: 'Solar concentrator', d: 'Long curved mirrors focus sunlight on a pipe. The liquid inside gets very hot.',
+    draw(x, w, hh, t) {
+      const V = [w / 2, hh - 40], R = 300, s = mirrorSurf('concave', V, [0, -1], R, 260), F = [V[0], V[1] - R / 2];
+      for (let k = 0; k < 12; k++) { const X = V[0] - 120 + 240 * k / 11; beam(x, trace([X, 0], [0, 1], [s], { len: 140, max: 2 }).pts, '#ffe6a0', { w: 1.4, flow: t * 90, arrows: false, a: .8 }); }
+      drawMirror(x, mirrorGeom('concave', V, [0, -1], R, 260));
+      dot(x, F[0], F[1], 11, '#c0c6d2'); glow(x, F[0], F[1], 36, 'rgba(255,170,80,.9)', .6 + .2 * Math.sin(t * 3));
+      tag(x, 'hot pipe', F[0] + 70, F[1], { size: 16 });
+    }
+  },
+  {
+    t: 'Solar furnace', d: 'Many mirrors aim sunlight at one small spot — hot enough to melt steel.',
+    draw(x, w, hh, t) {
+      const T = [w - 70, 70];
+      x.fillStyle = '#5a6272'; x.fillRect(T[0] - 10, T[1], 20, hh - T[1] - 20);
+      for (let k = 0; k < 6; k++) {
+        const M = [40 + k * 48, hh - 40], inc = [0, 1], out = norm([T[0] - M[0], T[1] - M[1]]);
+        const nrm = norm([out[0] - inc[0], out[1] - inc[1]]);
+        beam(x, [[M[0], 0], M, T], '#ffe6a0', { w: 1.3, flow: t * 90 + k * 20, arrows: false, a: .7 });
+        drawMirror(x, mirrorGeom('plane', M, nrm, 1, 30));
+      }
+      glow(x, T[0], T[1], 50, 'rgba(255,200,120,1)', .8 + .2 * Math.sin(t * 4));
+      tag(x, 'very hot', T[0] - 10, T[1] - 30, { size: 16 });
+    }
+  },
+  {
+    t: 'Solar cooking', d: 'A curved mirror throws concentrated sunlight onto a cooking pot (Fig. 10.29).',
+    draw(x, w, hh, t) {
+      const V = [130, hh - 50], ax = norm([.9, -1]), R = 340, s = mirrorSurf('concave', V, ax, R, 200);
+      const pot = { kind: 'absorb', geom: 'seg', a: [300, 110], b: [300, 170] };
+      for (let k = 0; k < 10; k++) { const X = 50 + 170 * k / 9; beam(x, trace([X, 0], [0, 1], [s, pot], { len: 400, max: 3 }).pts, '#ffe6a0', { w: 1.3, flow: t * 90, arrows: false, a: .8 }); }
+      drawMirror(x, mirrorGeom('concave', V, ax, R, 200));
+      x.fillStyle = '#3b3f48'; rrect(x, 296, 100, 80, 80, 8); x.fill(); x.fillStyle = '#6b7180'; x.fillRect(290, 96, 92, 10);
+      for (let k = 0; k < 3; k++) { const y0 = 92 - ((t * 30 + k * 20) % 60); x.strokeStyle = `rgba(220,220,230,${.5 - (92 - y0) / 140})`; x.lineWidth = 3; x.beginPath(); x.moveTo(320 + k * 16, y0); x.quadraticCurveTo(326 + k * 16, y0 - 10, 320 + k * 16, y0 - 20); x.stroke(); }
+    }
+  },
+  {
+    t: 'Heat → steam → electricity', d: 'Concentrated heat boils water. Steam spins a turbine, which generates electricity.',
+    draw(x, w, hh, t) {
+      glow(x, 60, hh / 2, 50, 'rgba(255,190,90,1)', .9); tag(x, 'heat', 60, hh / 2 + 56, { size: 16 });
+      x.fillStyle = '#4a5468'; rrect(x, 100, hh / 2 - 40, 80, 80, 12); x.fill(); tag(x, 'water→steam', 140, hh / 2 + 58, { size: 15 });
+      for (let k = 0; k < 6; k++) { const p = ((t * 60 + k * 30) % 160); x.fillStyle = 'rgba(220,230,255,.6)'; x.beginPath(); x.arc(180 + p, hh / 2 - 6 + Math.sin(k + t * 4) * 4, 6, 0, TAU); x.fill(); }
+      x.save(); x.translate(370, hh / 2); x.rotate(t * 6); x.fillStyle = '#9aa6bb'; for (let k = 0; k < 6; k++) { x.rotate(TAU / 6); x.fillRect(0, -6, 38, 12); } x.restore(); tag(x, 'turbine', 370, hh / 2 + 58, { size: 15 });
+      glow(x, w - 30, 60, 40, 'rgba(255,240,170,1)', .7 + .3 * Math.sin(t * 5)); dot(x, w - 30, 60, 12, '#fff6c8');
+    }
+  }
+];
+frame({
+  mod: 8, kick: 'A step further', title: 'Putting concentrated sunlight to work', mapTitle: 'Solar concentrators, furnaces, cooking',
+  sub: 'Devices that concentrate sunlight into a small area, using mirrors and lenses, are called <b>solar concentrators</b>.',
+  build(b, f) {
+    f.cs = SOLAR.map((S, i) => {
+      const wrap = h('div', { class: 'abs card', style: `left:${(i % 2) * 906}px;top:${Math.floor(i / 2) * 392}px;width:886px;height:372px;display:grid;grid-template-columns:440px 1fr;gap:22px;align-items:center` });
+      const c = canvas(wrap, 440, 330); c.cv.style.background = '#0b1220';
+      wrap.append(h('div', null, h('div', { class: 'big', style: 'font-size:34px;margin-bottom:12px' }, S.t), h('p', { style: 'font-size:25px' }, S.d)));
+      b.append(wrap); return c;
+    });
+  },
+  tick(f, dt, t) { f.cs.forEach((c, i) => { const x = begin(c, '#0b1220'); SOLAR[i].draw(x, c.w, c.h, t * App.speed); }); }
+});
+
+/* ================= Modules 9–12, 15, 16: lenses ================= */
+
+/* 2.5-D picture of a lens (like Fig. 10.15a / 10.16a) */
+function drawLens3D(x, cx, cy, R, k) {
+  // k > 0 convex (thick middle), k < 0 concave (thick edge), 0 flat plate
+  const rim = 18 + Math.max(0, -k) * 34, bulge = Math.max(0, k) * 46, dip = Math.max(0, -k) * 30;
+  x.save();
+  // edge band
+  const eg = x.createLinearGradient(0, cy - R * .35, 0, cy + R * .35 + rim);
+  eg.addColorStop(0, 'rgba(110,190,170,.55)'); eg.addColorStop(1, 'rgba(40,110,100,.75)');
+  x.fillStyle = eg; x.beginPath(); x.ellipse(cx, cy + rim, R, R * .32, 0, 0, Math.PI); x.lineTo(cx - R, cy); x.ellipse(cx, cy, R, R * .32, 0, Math.PI, 0, true); x.closePath(); x.fill();
+  // top face
+  const tg = x.createRadialGradient(cx - R * .3, cy - R * .12 - bulge * .5, 4, cx, cy, R);
+  tg.addColorStop(0, 'rgba(235,250,255,.75)'); tg.addColorStop(.5, 'rgba(150,215,225,.35)'); tg.addColorStop(1, 'rgba(90,170,170,.5)');
+  x.fillStyle = tg; x.beginPath(); x.ellipse(cx, cy, R, R * .32, 0, 0, TAU); x.fill();
+  x.strokeStyle = 'rgba(220,250,255,.8)'; x.lineWidth = 2; x.stroke();
+  // curvature cue
+  x.globalCompositeOperation = 'lighter';
+  if (bulge) { x.fillStyle = `rgba(255,255,255,${.12 + k * .12})`; x.beginPath(); x.ellipse(cx - R * .25, cy - R * .06, R * .45, R * .1, -.08, 0, TAU); x.fill(); }
+  if (dip) { x.strokeStyle = 'rgba(255,255,255,.35)'; x.lineWidth = 3; x.beginPath(); x.ellipse(cx, cy, R * .82, R * .25, 0, Math.PI * 1.1, Math.PI * 1.9); x.stroke(); }
+  x.restore();
+}
+
+/* ---------- MODULE 9: what is a lens? ---------- */
+frame({
+  mod: 9, kick: 'From mirrors to lenses', title: 'What is a lens?', mapTitle: 'What is a lens? Flat glass vs curved glass',
+  sub: 'A lens is a piece of transparent material — glass or plastic — with curved surfaces. Light passes <b>through</b> it.',
+  build(b, f) {
+    f.k = 0; f.n = 9; f.intro = 0;
+    f.c = canvas(b, 1328, 778, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+    const side = h('div', { class: 'side' }); b.append(side);
+    f.sl = ui.slider({ label: 'Shape of the glass', min: -100, max: 100, value: 0, fmt: v => v < -8 ? 'concave' : v > 8 ? 'convex' : 'flat', onInput: v => { f.k = v / 100; f.anim = null; } });
+    side.append(ui.card('Bend the surfaces', f.sl, h('div', { class: 'row', style: 'gap:8px;margin-top:12px' },
+      ui.btn('Concave', () => f.anim = -1), ui.btn('Flat', () => f.anim = 0), ui.btn('Convex', () => f.anim = 1))));
+    f.c3 = canvas(null, 392, 230); side.append(ui.card('What it looks like', f.c3.cv));
+    f.txt = h('p'); side.append(ui.card(null, f.txt));
+  },
+  enter(f) { f.intro = 0; },
+  tick(f, dt, t) {
+    if (f.anim != null) { f.k += (f.anim - f.k) * Math.min(1, dt * 3); f.sl.set(Math.round(f.k * 100)); if (Math.abs(f.k - f.anim) < .005) { f.k = f.anim; f.anim = null; } }
+    f.intro = Math.min(1, f.intro + dt * .45);
+    const x = begin(f.c); bgGrid(x, f.c.w, f.c.h);
+    const x0 = 640, cy = 390, A = 320, cmax = 1 / 330, c = f.k * cmax;
+    const tc = c > 0 ? 8 + 2 * sagOf(c, A / 2) : 14;
+    const L = lensModel(x0, cy, A, c, -c, tc);
+    const p = ease(clamp((f.intro - .25) / .6, 0, 1));   // mirror → glass transition
+    const fl = t * 110 * App.speed, N = 13;
+    if (p < 1) {
+      const ms = mirrorSurf('plane', [x0, cy], [-1, 0], 1, A);
+      for (let k = 0; k < N; k++) { const y = cy - 140 + 280 * k / (N - 1); beam(x, trace([0, y], [1, 0], [ms], { len: 700 }).pts, COL.ray, { flow: fl, w: 2, a: 1 - p, arrows: false }); }
+      x.save(); x.globalAlpha = 1 - p; drawMirror(x, mirrorGeom('plane', [x0, cy], [-1, 0], 1, A)); x.restore();
+      if (p < .5) tag(x, 'A mirror sends light back…', x0 - 330, 60, { size: 28, col: '#fff', need: true });
+    }
+    if (p > 0) {
+      x.save(); x.globalAlpha = p; drawGlass(x, L.outline); x.restore();
+      for (let k = 0; k < N; k++) { const y = cy - 140 + 280 * k / (N - 1); beam(x, trace([0, y], [1, 0], L.surfs, { len: 900 }).pts, COL.ray, { flow: fl, w: 2, a: p, arrows: false }); }
+    }
+    if (p >= 1) {
+      const ttl = f.k < -.08 ? 'CONCAVE LENS — thicker at the edges' : f.k > .08 ? 'CONVEX LENS — thicker in the middle' : 'FLAT GLASS — light goes straight through';
+      tag(x, ttl, f.c.w / 2, 56, { size: 30, weight: 800, col: f.k < -.08 ? COL.ref : f.k > .08 ? COL.ray : '#fff', need: true });
+      tag(x, f.k < -.08 ? 'rays spread out' : f.k > .08 ? 'rays bend towards each other' : 'rays unchanged', 1110, cy + 260, { size: 24, col: COL.mute });
+    } else if (p > .5) tag(x, '…glass lets it pass through', x0 - 330, 60, { size: 28, col: '#fff', need: true });
+    const y = begin(f.c3); drawLens3D(y, 196, 96, 150, f.k);
+    tag(y, f.k < -.08 ? 'Concave lens' : f.k > .08 ? 'Convex lens' : 'Glass plate', 196, 205, { size: 20, need: true, bg: false });
+    f.txt.innerHTML = f.k > .08 ? 'A <b class="hl">convex lens</b> is thicker at the middle than at the edges.' : f.k < -.08 ? 'A <b class="hc">concave lens</b> is thicker at the edges than at the middle.' : 'Flat glass: things look the same size and shape through a window pane.';
+  }
+});
+
+/* ---------- MODULE 10a / 11a: parallel beam through a lens ---------- */
+function beamFrame(def) {
+  frame({
+    mod: def.mod, kick: def.kick, title: def.title, sub: def.sub, mapTitle: def.mapTitle,
+    build(b, f) {
+      f.n = 10; f.fl = 280; f.cross = false;
+      f.c = canvas(b, 1328, 778, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+      const side = h('div', { class: 'side' }); b.append(side);
+      side.append(ui.card('Rays', ui.seg({ options: [1, 5, 10, 20].map(v => ({ v, t: v + '' })), value: 10, onChange: v => f.n = v })));
+      side.append(ui.card('Lens', ui.slider({ label: 'Focal length (curvature)', min: 230, max: 420, value: 280, fmt: v => (v / PX_CM).toFixed(0) + ' cm', onInput: v => f.fl = v }),
+        h('p', { style: 'margin-top:10px;font-size:21px;color:var(--mute)' }, 'More curved surfaces → shorter focal length.')));
+      side.append(ui.card(null, h('p', { html: def.note })));
+      if (def.disc) side.append(ui.discover(def.disc));
+    },
+    tick(f, dt, t) {
+      const x = begin(f.c); bgGrid(x, f.c.w, f.c.h);
+      const x0 = def.x0, cy = 380, A = 280, L = makeLens(def.type, x0, cy, A, f.fl), fl = t * 110 * App.speed, lab = App.labels;
+      dashLine(x, 0, cy, f.c.w, cy, COL.axis, 1.5, [14, 10]);
+      drawGlass(x, L.outline);
+      const cr = [];
+      for (let k = 0; k < f.n; k++) {
+        const y = f.n === 1 ? cy - 80 : cy - 115 + 230 * k / (f.n - 1);
+        const r = trace([0, y], [1, 0], L.surfs, { len: 1400 });
+        beam(x, r.pts, COL.ray, { flow: fl, w: f.n > 10 ? 1.6 : 2.2, as: 10 });
+        const last = r.pts[r.pts.length - 2];
+        if (Math.abs(y - cy) > 2 && Math.abs(r.dir[1]) > 1e-4) {
+          const tA = (cy - last[1]) / r.dir[1];
+          if (def.type === 'convexLens' ? tA > 0 : tA < 0) cr.push(last[0] + r.dir[0] * tA);
+          if (def.type === 'concaveLens' && tA < 0) beam(x, [last, [last[0] + r.dir[0] * tA, cy]], COL.ray, { dash: [7, 8], a: .5 });
+        }
+      }
+      // focal points (thin lens) and the focal region (where the real rays actually cross)
+      const F1 = x0 - f.fl, F2 = x0 + f.fl;
+      if (cr.length) {
+        const mn = Math.min(...cr), mx = Math.max(...cr);
+        x.save(); x.globalCompositeOperation = 'lighter';
+        const g = x.createLinearGradient(mn - 20, 0, mx + 20, 0); g.addColorStop(0, 'rgba(255,220,140,0)'); g.addColorStop(.5, 'rgba(255,220,140,.35)'); g.addColorStop(1, 'rgba(255,220,140,0)');
+        x.fillStyle = g; x.beginPath(); x.ellipse((mn + mx) / 2, cy, (mx - mn) / 2 + 26, 30, 0, 0, TAU); x.fill(); x.restore();
+        if (lab && f.n > 1) tag(x, def.type === 'convexLens' ? 'Focal region — rays cross here' : 'Rays seem to come from here', (mn + mx) / 2, cy + 74, { size: 21, col: COL.ray });
+      }
+      [[F1, 'F'], [F2, "F'"]].forEach(([X, s]) => { dot(x, X, cy, 6, '#fff'); if (lab) tag(x, s, X, cy + 30, { size: 22, weight: 700 }); });
+      dot(x, x0, cy, 6, COL.ref);
+      if (lab) {
+        tag(x, 'Optical centre O', x0, cy - A / 2 - 34, { size: 21, col: COL.ref });
+        tag(x, 'Principal axis', f.c.w - 110, cy - 24, { size: 20, col: COL.mute, bg: false });
+        tag(x, 'Parallel rays', 120, cy - 150, { size: 22, col: COL.ray });
+        tag(x, `Focal length = ${(f.fl / PX_CM).toFixed(0)} cm`, def.type === 'convexLens' ? (x0 + F2) / 2 : (x0 + F1) / 2, cy + 190, { size: 20, col: COL.mute });
+        const fx = def.type === 'convexLens' ? F2 : F1; dashLine(x, x0, cy + 160, fx, cy + 160, 'rgba(255,255,255,.35)', 1.5, [4, 5]);
+      }
+    }
+  });
+}
+beamFrame({
+  mod: 10, type: 'convexLens', x0: 520, kick: 'Converging lens', title: 'Convex lens: rays converge', mapTitle: 'Convex lens: parallel rays converge',
+  sub: 'Every ray bends twice — entering and leaving the glass — following the real law of refraction.',
+  note: 'A <b class="hl">convex lens</b> bends parallel rays <b>towards each other</b>. That is why it is called a <b>converging lens</b>. The point where they meet is the <b>focal point</b>; real rays meet in a small <b>focal region</b>.'
+});
+
+/* lens labs (object you can drag) */
+labFrame({
+  mod: 10, kick: 'Activity 10.9 · Let us experiment', title: 'Convex lens: move the object', mapTitle: 'Convex lens: image formation lab',
+  sub: 'Drag the candle along the principal axis. The image moves and resizes continuously.',
+  type: 'convexLens', x0: 700, y0: 400, f: 170, u0: 520, umin: 30, umax: 680, A: 420,
+  glideTxt: 'Walk object in ⟶',
+  disc: {
+    qs: ['Object far from the lens. Is the image erect or inverted?', 'Move it closer. Does the image get bigger or smaller?', 'Where is the object when the image is very far away?', 'Object very close to the lens: what do you see now?'],
+    reveal: 'Object close to the lens (inside F): <b>erect and enlarged</b> (virtual) — a magnifying glass. Farther away: <b>inverted</b> and real, first enlarged and then diminished as the object moves away. Like a concave mirror, a convex lens can form many kinds of images.'
+  },
+  overlay(x, f) { lensInset(x, f); }
+});
+function lensInset(x, f) {
+  const cx = 120, cy = 120, r = 92, m = f.info.s.m, am = Math.abs(m);
+  x.save(); x.beginPath(); x.arc(cx, cy, r, 0, TAU); x.fillStyle = '#121826'; x.fill(); x.clip();
+  if (!f.info.inf && am < 30) { x.filter = am > 5 ? `blur(${Math.min(10, (am - 5) * 2)}px)` : 'none'; x.translate(cx, cy + (m > 0 ? 40 : -40) * Math.min(am, 2.2)); x.scale(Math.min(am, 5) * .9, (m > 0 ? 1 : -1) * Math.min(am, 5) * .9); drawObj(x, 'candle', 90, {}); }
+  x.restore();
+  x.strokeStyle = 'rgba(200,238,255,.9)'; x.lineWidth = 4; x.beginPath(); x.arc(cx, cy, r, 0, TAU); x.stroke();
+  tag(x, 'Looking through the lens', cx + r + 12, cy - r + 14, { align: 'left', size: 18, col: COL.mute, bg: false });
+}
+
+beamFrame({
+  mod: 11, type: 'concaveLens', x0: 620, kick: 'Diverging lens', title: 'Concave lens: rays diverge', mapTitle: 'Concave lens: parallel rays diverge',
+  sub: 'Follow the dashed lines backwards: the spreading rays all seem to come from one point, F.',
+  note: 'A <b class="hc">concave lens</b> spreads parallel rays apart: a <b>diverging lens</b>. Traced backwards (dashed), they appear to start from the focal point F on the same side as the light comes from.'
+});
+labFrame({
+  mod: 11, kick: 'Concave lens lab', title: 'Concave lens: move the object', mapTitle: 'Concave lens: image formation lab',
+  sub: 'The rays leaving the lens spread out. Your eye traces them back to where the image seems to be.',
+  type: 'concaveLens', x0: 840, y0: 400, f: 190, u0: 440, umin: 30, umax: 820, A: 420,
+  disc: {
+    qs: ['Move the object anywhere. Is the image ever inverted?', 'Is the image ever larger than the object?', 'Where does the image appear — and why is it drawn dashed?'],
+    reveal: 'A concave lens always forms an <b>erect, diminished</b> image on the same side as the object. No light actually reaches it — the dashed backward extensions of the diverging rays meet there. It is a <b>virtual</b> image.'
+  },
+  overlay(x, f) { lensInset(x, f); }
+});
+
+/* ---------- MODULE 12: convex vs concave lens, split screen ---------- */
+frame({
+  mod: 12, kick: 'Split-screen comparison', title: 'Convex vs concave lens', mapTitle: 'Convex vs concave lens: split screen',
+  sub: 'Each side has its own object. Drag either one.',
+  build(b, f) {
+    f.L = [{ type: 'convexLens', x0: 520, u: 300, name: 'CONVEX — converging lens', col: COL.ray }, { type: 'concaveLens', x0: 560, u: 300, name: 'CONCAVE — diverging lens', col: COL.ref }];
+    f.L.forEach((p, i) => {
+      const wrap = h('div', { class: 'abs', style: `left:${i * 906}px;top:0;width:886px` }); b.append(wrap);
+      p.c = canvas(wrap, 886, 540); p.c.cv.classList.add('glass');
+      p.ro = ui.readout([['ori', 'Orientation'], ['size', 'Size'], ['kind', 'Type'], ['img', 'Image']]);
+      wrap.append(h('div', { class: 'card', style: 'margin-top:16px' }, p.ro));
+      const near = q => Math.abs(q.x - (p.x0 - p.u)) < 50;
+      pointer(p.c, { hover: near, down: q => near(q) || Math.abs(q.y - 300) < 60 ? (p.u = clamp(p.x0 - q.x, 30, p.x0 - 20), true) : false, move: q => p.u = clamp(p.x0 - q.x, 30, p.x0 - 20) });
+    });
+  },
+  tick(f, dt, t) {
+    f.L.forEach(p => {
+      const x = begin(p.c); bgGrid(x, p.c.w, p.c.h, 40);
+      const info = bench(x, { type: p.type, x0: p.x0, y0: 300, f: 140, u: p.u, h: 70, A: 340, w: p.c.w, h2: p.c.h, rays: 'principal', flow: t * 100 * App.speed, small: true, axisLabel: false });
+      offscreenHint(x, info, p.c.w, 300);
+      tag(x, p.name, 24, 34, { size: 24, col: p.col, weight: 800, align: 'left', bg: false, need: true });
+      const d = describe(p.type, info, p.u, 140);
+      p.ro.set('ori', d.ori, d.ocol); p.ro.set('size', d.size); p.ro.set('kind', d.kind, d.col); p.ro.set('img', d.where);
+    });
+  }
+});
+
+/* ---------- MODULE 15: parallel light through three materials ---------- */
+frame({
+  mod: 15, kick: 'Activity 10.10 · Let us investigate', title: 'Plate, convex lens, concave lens', mapTitle: 'Parallel light through plate, convex and concave lens',
+  sub: 'The same parallel beam meets three pieces of glass.',
+  build(b, f) {
+    f.n = 10; f.ang = 0;
+    f.P = [{ type: 'plate', name: 'THIN GLASS PLATE', res: 'passes straight through', col: '#fff' }, { type: 'convexLens', name: 'CONVEX LENS', res: 'converges', col: COL.ray }, { type: 'concaveLens', name: 'CONCAVE LENS', res: 'diverges', col: COL.ref }];
+    f.P.forEach((p, i) => {
+      const wrap = h('div', { class: 'abs', style: `left:${i * 606}px;top:0;width:580px` }); b.append(wrap);
+      p.c = canvas(wrap, 580, 540); p.c.cv.classList.add('glass');
+      wrap.append(h('div', { style: `text-align:center;margin-top:10px;font-size:29px;font-weight:800;color:${p.col}` }, 'Beam ' + p.res));
+    });
+    const row = h('div', { class: 'abs', style: 'left:0;top:620px;width:1792px;display:grid;grid-template-columns:520px 520px 1fr;gap:20px' });
+    row.append(ui.card('Number of rays', ui.seg({ options: [1, 5, 10, 20].map(v => ({ v, t: v + '' })), value: 10, onChange: v => f.n = v })),
+      ui.card(null, ui.slider({ label: 'Angle of the beam', min: -15, max: 15, value: 0, fmt: v => v + '°', onInput: v => f.ang = v })),
+      ui.card(null, h('p', { html: 'Convex lens = <b class="hl">converging lens</b>. Concave lens = <b class="hc">diverging lens</b>. A thin flat plate leaves the beam parallel.' })));
+    b.append(row);
+  },
+  tick(f, dt, t) {
+    const x0 = 250, cy = 270, A = 270, a = f.ang * DEG;
+    f.P.forEach(p => {
+      const x = begin(p.c); bgGrid(x, p.c.w, p.c.h, 40);
+      const L = makeLens(p.type, x0, cy, A, 270), fl = t * 110 * App.speed;
+      drawGlass(x, L.outline);
+      for (let k = 0; k < f.n; k++) {
+        const yh = f.n === 1 ? cy - 70 : cy - 110 + 220 * k / (f.n - 1);
+        const r = trace([0, yh - Math.tan(a) * x0], [Math.cos(a), Math.sin(a)], L.surfs, { len: 900 });
+        beam(x, r.pts, COL.ray, { flow: fl, w: f.n > 10 ? 1.6 : 2.2, as: 10 });
+      }
+      tag(x, p.name, 20, 30, { size: 22, col: p.col, align: 'left', weight: 800, bg: false, need: true });
+    });
+  }
+});
+
+/* ---------- MODULE 16: convex lens + sunlight ---------- */
+const SUNL = { fL: 320, groundY: 700, N: 26, span: 92 };
+function sunLensSpot(dp) {
+  const { fL, groundY, N } = SUNL, lensX = groundY - dp;
+  const L = makeLens('convexLens', lensX, 0, 220, fL), paper = { kind: 'absorb', geom: 'seg', a: [groundY, -400], b: [groundY, 400] };
+  const rays = [], hits = [];
+  for (let k = 0; k < N; k++) {
+    const r = trace([-20, -SUNL.span + 2 * SUNL.span * k / (N - 1)], [1, 0], [...L.surfs, paper], { len: 900 });
+    rays.push(r); if (r.hit && r.pts.length >= 4) hits.push(r.hit.q[1]);
+  }
+  const w = hits.length ? Math.max(...hits) - Math.min(...hits) : 1e9;
+  return { rays, hits, w, n: hits.length, N, L, lensX };
+}
+frame({
+  mod: 16, kick: 'Activity 10.11 · Let us investigate', title: 'A convex lens can burn paper', mapTitle: 'Convex lens concentrates sunlight',
+  sub: 'Parallel sunlight → convex lens → a tiny bright spot. Concentrated light produces strong heating.',
+  build(b, f) {
+    f.dp = 200; f.heat = 0; f.char = 0; f.smoke = [];
+    f.c = canvas(b, 1328, 778, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+    const side = h('div', { class: 'side', style: 'gap:14px' }); b.append(side);
+    side.append(ui.warn('<b>Safety first.</b> Never look at the Sun directly or through a lens — it can permanently damage your eyes. Never point focused sunlight at people, animals or anything that can catch fire.'));
+    f.sl = ui.slider({ label: 'Height of lens above paper', min: 120, max: 520, value: 200, fmt: v => (v / PX_CM).toFixed(1) + ' cm', onInput: v => { f.dp = v; f.auto = null; } });
+    f.ro = ui.readout([['spot', 'Spot size'], ['conc', 'Sunlight concentrated'], ['st', 'Paper']]);
+    side.append(ui.card('Raise or lower the lens', f.sl, h('div', { class: 'row', style: 'margin:10px 0 14px;gap:10px' }, ui.btn('Find the sharpest spot', () => f.auto = bestFocus(sunLensSpot, 120, 520), 'pri'), ui.btn('Reset', () => { f.char = 0; f.heat = 0; f.dp = 200; f.sl.set(200); f.auto = null; })), f.ro));
+    const iw = h('div', { class: 'abs card', style: 'left:20px;top:250px;padding:10px 12px' }, h('h3', { style: 'margin-bottom:6px' }, 'Paper, seen from above'));
+    f.inset = canvas(iw, 300, 170); b.append(iw);
+  },
+  tick(f, dt, t) {
+    const x = begin(f.c); sunScene(x, f.c.w, f.c.h, t);
+    if (f.auto != null) { f.dp += (f.auto - f.dp) * Math.min(1, dt * 2.5); f.sl.set(Math.round(f.dp)); if (Math.abs(f.dp - f.auto) < .5) { f.dp = f.auto; f.auto = null; } }
+    const Tx = 700, groundY = SUNL.groundY, sp0 = sunLensSpot(f.dp), { L, lensX, hits } = sp0, N = SUNL.N;
+    const S = (mx, my) => [Tx - my, mx];
+    const g2 = x.createLinearGradient(0, groundY, 0, 778); g2.addColorStop(0, '#2c4a26'); g2.addColorStop(1, '#15240f'); x.fillStyle = g2; x.fillRect(0, groundY, f.c.w, 90);
+    x.fillStyle = '#e2d6bb'; x.fillRect(Tx - 260, groundY - 4, 520, 10);
+    x.save(); x.translate(Tx, 0); x.rotate(Math.PI / 2);
+    const fl = t * 120 * App.speed;
+    for (const r of sp0.rays) beam(x, r.pts, '#ffe6a0', { flow: fl, w: 1.6, a: .85, arrows: false });
+    for (const my of [-240, -170, 170, 240]) beam(x, [[-20, my], [groundY, my]], '#ffe6a0', { w: 1.4, a: .3, arrows: false });
+    drawGlass(x, L.outline);
+    x.restore();
+    // lens holder
+    const lp = S(lensX, 0); x.strokeStyle = '#6b7180'; x.lineWidth = 6; x.beginPath(); x.moveTo(lp[0] + 150, lp[1]); x.lineTo(lp[0] + 260, lp[1] - 30); x.stroke();
+    let w = 0, mn = 0, mx = 0; if (hits.length) { mn = Math.min(...hits); mx = Math.max(...hits); w = mx - mn; }
+    const conc = hits.length ? hits.length * (2 * SUNL.span / (N - 1)) / Math.max(w, 1.2) : 0;
+    f.heat += (Math.min(conc, 120) - f.heat) * Math.min(1, dt * .6);
+    if (f.heat > 12) f.char = Math.min(1, f.char + dt * (f.heat - 12) / 60);
+    const sc = Tx - (mn + mx) / 2;
+    glow(x, sc, groundY, 24 + 300 / Math.max(w, 3), 'rgba(255,245,210,1)', clamp(conc / 30, .3, 1));
+    if (f.char > .25 && Math.random() < dt * 14) f.smoke.push({ x: sc, y: groundY - 6, vx: (Math.random() - .5) * 20, vy: -40 - Math.random() * 30, a: .5, r: 8 });
+    f.smoke = f.smoke.filter(s => (s.a -= dt * .25) > 0);
+    f.smoke.forEach(s => { s.x += s.vx * dt; s.y += s.vy * dt; s.r += dt * 18; x.fillStyle = `rgba(200,200,210,${s.a * .5})`; x.beginPath(); x.arc(s.x, s.y, s.r, 0, TAU); x.fill(); });
+    tag(x, 'Convex lens', lp[0] - 260, lp[1], { size: 22, col: COL.ink });
+    tag(x, 'Paper', Tx + 300, groundY - 24, { size: 20 });
+    dashLine(x, Tx + 330, lp[1], Tx + 330, groundY, 'rgba(255,255,255,.4)', 2, [6, 6]);
+    tag(x, (f.dp / PX_CM).toFixed(1) + ' cm', Tx + 330, (lp[1] + groundY) / 2, { size: 20, mono: true });
+    f.ro.set('spot', hits.length ? (w / PX_CM * 10).toFixed(1) + ' mm' : '—');
+    f.ro.set('conc', '×' + Math.round(conc * conc), conc > 10 ? COL.ray : null);
+    f.ro.set('st', f.char > .25 ? 'smoking!' : f.heat > 7 ? 'getting hot' : 'cool', f.char > .25 ? COL.warn : f.heat > 7 ? COL.ray : COL.real);
+    const y = begin(f.inset, '#0b0f18');
+    y.fillStyle = '#c9a66b'; rrect(y, 30, 8, 240, 154, 6); y.fill();
+    if (f.char > 0) { y.fillStyle = `rgba(40,20,5,${f.char})`; y.beginPath(); y.arc(150, 85, 5 + f.char * 26, 0, TAU); y.fill(); }
+    const r = clamp(w / 2, 2, 80); glow(y, 150, 85, r * 2.2, 'rgba(255,240,190,1)', clamp(conc / 40, .25, 1)); dot(y, 150, 85, r * .7, `rgba(255,255,240,${clamp(conc / 30, .3, 1)})`);
+  }
+});
+
+/* ================= Modules 13–14: water drop and magnifying glass ================= */
+
+/* ---------- MODULE 13: water drop as a lens (Activity 10.8) ---------- */
+frame({
+  mod: 13, kick: 'Activity 10.8 · Let us explore', title: 'A drop of water is a lens', mapTitle: 'Water drop as a simple lens',
+  sub: 'Place a drop of water on an oiled glass strip over printed text. Look down through the drop.',
+  build(b, f) {
+    f.on = false; f.R = 0; f.fall = -1;
+    const S = 2, Wd = 860, Hd = 778;
+    f.c = canvas(b, Wd, Hd, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+    // printed page at 2x resolution
+    const src = document.createElement('canvas'); src.width = Wd * S; src.height = Hd * S;
+    const s = src.getContext('2d'); s.scale(S, S);
+    s.fillStyle = '#efeadf'; s.fillRect(0, 0, Wd, Hd);
+    for (let i = 0; i < 2000; i++) { s.fillStyle = `rgba(120,100,70,${Math.random() * .05})`; s.fillRect(Math.random() * Wd, Math.random() * Hd, 2, 2); }
+    s.fillStyle = '#2b2f38'; s.textAlign = 'center'; s.textBaseline = 'middle';
+    for (let i = 0; i < 9; i++) { s.font = `600 30px ${FONT}`; s.fillText('SCIENCE', Wd / 2, 90 + i * 74); }
+    s.font = `16px ${FONT}`; s.textAlign = 'left'; s.fillStyle = '#5a5f6b';
+    const words = 'Light travels in straight lines. Rays show the path along which light travels. A lens is a piece of transparent material with curved surfaces. Like mirrors, lenses can also be convex or concave. '.repeat(6).split(' ');
+    for (const X of [24, Wd - 236]) { let line = '', yy = 40; for (const w of words) { const tt = line + w + ' '; if (s.measureText(tt).width > 205) { s.fillText(line, X, yy); line = w + ' '; yy += 28; if (yy > Hd - 20) break; } else line = tt; } }
+    f.src = src; f.S = S; f.srcData = s.getImageData(0, 0, src.width, src.height);
+    f.patch = document.createElement('canvas'); f.cx = Wd / 2; f.cy = 90 + 4 * 74;
+    // cross-section + controls
+    f.c2 = canvas(b, 910, 420, 'position:absolute;left:882px;top:0'); f.c2.cv.classList.add('glass');
+    const ctl = h('div', { class: 'abs', style: 'left:882px;top:440px;width:910px;display:grid;grid-template-columns:1fr 1fr;gap:16px' }); b.append(ctl);
+    f.seg = ui.seg({ options: [{ v: false, t: 'NO WATER DROP' }, { v: true, t: 'WATER DROP' }], value: false, onChange: v => { f.on = v; if (v) f.fall = 0; } });
+    ctl.append(ui.card('Toggle', f.seg, h('p', { style: 'margin-top:14px;font-size:22px', html: 'The drop’s surface <b>curves outward</b>, like a convex lens.' })),
+      ui.discover({ prompt: 'LOOK AT THE LETTERS UNDER THE DROP.', qs: ['Are the letters under the drop larger or smaller?', 'What is the shape of the drop’s surface?', 'What everyday tool does the same thing?'], reveal: 'The curved water surface acts like a simple <b>convex lens</b>, so the letters look <b>enlarged</b>. A magnifying glass works the same way.' }));
+  },
+  tick(f, dt, t) {
+    const target = f.on ? 110 : 0;
+    if (f.on && f.fall >= 0 && f.fall < 1) f.fall = Math.min(1, f.fall + dt * 1.4);
+    const grow = f.on ? (f.fall >= 1 ? 1 : 0) : 1;
+    if (grow) f.R += (target - f.R) * Math.min(1, dt * (f.on ? 3 : 5));
+    const wob = f.on && f.R > 5 && f.R < 108 ? Math.sin(t * 9) * (1 - f.R / 110) * 6 : 0;
+    const Rd = Math.max(0, f.R + wob);
+    const x = begin(f.c);
+    x.drawImage(f.src, 0, 0, f.c.w, f.c.h);
+    // glass strip
+    x.fillStyle = 'rgba(190,225,255,.13)'; x.fillRect(f.cx - 180, 0, 360, f.c.h);
+    x.strokeStyle = 'rgba(220,240,255,.6)'; x.lineWidth = 2; x.strokeRect(f.cx - 180, -4, 360, f.c.h + 8);
+    tag(x, 'glass strip (oiled)', f.cx + 120, 22, { size: 16, col: '#3b4a60', bg: 'rgba(255,255,255,.6)', need: true });
+    if (Rd > 2) {
+      const S = f.S, R2 = Math.round(Rd * S), M0 = 1 + .85 * (Rd / 110);
+      const pw = 2 * R2 + 2; f.patch.width = pw; f.patch.height = pw;
+      const pc = f.patch.getContext('2d'), out = pc.createImageData(pw, pw), sd = f.srcData, sw = f.src.width;
+      const ccx = Math.round(f.cx * S), ccy = Math.round(f.cy * S);
+      for (let j = 0; j < pw; j++) for (let i = 0; i < pw; i++) {
+        const dx = i - R2, dy = j - R2, r = Math.hypot(dx, dy); if (r > R2) continue;
+        const q = r / R2, rp = r / M0 + (1 - 1 / M0) * R2 * q * q * q, k = r > 0 ? rp / r : 0;
+        const sx = clamp(Math.round(ccx + dx * k), 0, sw - 1), sy = clamp(Math.round(ccy + dy * k), 0, f.src.height - 1);
+        const si = (sy * sw + sx) * 4, oi = (j * pw + i) * 4, shade = 1 - .25 * Math.pow(q, 6);
+        out.data[oi] = sd.data[si] * shade; out.data[oi + 1] = sd.data[si + 1] * shade; out.data[oi + 2] = sd.data[si + 2] * shade * 1.02; out.data[oi + 3] = 255;
+      }
+      pc.putImageData(out, 0, 0);
+      x.drawImage(f.patch, f.cx - pw / S / 2, f.cy - pw / S / 2, pw / S, pw / S);
+      x.save(); x.globalCompositeOperation = 'lighter';
+      const g = x.createRadialGradient(f.cx - Rd * .35, f.cy - Rd * .4, 2, f.cx - Rd * .35, f.cy - Rd * .4, Rd * .5);
+      g.addColorStop(0, 'rgba(255,255,255,.55)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.beginPath(); x.arc(f.cx, f.cy, Rd, 0, TAU); x.fill();
+      x.restore();
+      x.strokeStyle = 'rgba(120,150,180,.55)'; x.lineWidth = 2; x.beginPath(); x.arc(f.cx, f.cy, Rd, 0, TAU); x.stroke();
+    }
+    if (f.on && f.fall >= 0 && f.fall < 1) { const yy = lerp(-60, f.cy, ease(f.fall)); glow(x, f.cx, yy, 30, 'rgba(180,220,255,.9)', 1); dot(x, f.cx, yy, 12, 'rgba(200,235,255,.9)'); }
+    // cross-section
+    const y = begin(f.c2); bgGrid(y, f.c2.w, f.c2.h, 40);
+    const base = 300, gl = 250, cx = 455, k = Rd / 110;
+    y.fillStyle = '#efeadf'; y.fillRect(80, base, 750, 10); tag(y, 'paper with text', 160, base + 34, { size: 17, col: COL.mute, bg: false });
+    y.fillStyle = '#2b2f38'; y.fillRect(cx - 40, base - 6, 80, 6);
+    y.fillStyle = 'rgba(190,225,255,.25)'; y.fillRect(140, gl, 630, 20); y.strokeStyle = 'rgba(220,240,255,.7)'; y.strokeRect(140, gl, 630, 20);
+    tag(y, 'glass strip', 720, gl + 10, { size: 16, col: COL.mute, bg: false });
+    if (k > .02) {
+      y.beginPath(); y.moveTo(cx - 130, gl); y.quadraticCurveTo(cx, gl - 150 * k, cx + 130, gl); y.closePath();
+      y.fillStyle = 'rgba(140,200,255,.35)'; y.fill(); y.strokeStyle = 'rgba(210,240,255,.9)'; y.lineWidth = 2; y.stroke();
+      tag(y, 'water drop — curved outward', cx + 160, gl - 90 * k, { size: 18, col: COL.ref, align: 'left' });
+    }
+    const M = 1 + .85 * k, top = 40, fl = t * 90 * App.speed;
+    [-1, 1].forEach(sg => {
+      const ex = cx + sg * 40, ax = cx + sg * 40 * M;
+      if (k > .02) {
+        const H = [ex, gl - 75 * k];
+        const dv = [H[0] - ax, H[1] - (base - 6)], tt = (top - H[1]) / dv[1];
+        beam(y, [[ex, base - 6], H, [H[0] + dv[0] * tt, top]], COL.ray, { flow: fl, w: 2 });
+        beam(y, [H, [ax, base - 6]], COL.virt, { dash: [7, 7], a: .7 });
+      } else beam(y, [[ex, base - 6], [ex, top]], COL.ray, { flow: fl, w: 2 });
+    });
+    if (k > .02) { y.fillStyle = 'rgba(185,166,255,.35)'; y.fillRect(cx - 40 * M, base - 12, 80 * M, 6); tag(y, 'letter looks this wide', cx, base - 40, { size: 17, col: COL.virt }); }
+    tag(y, 'eye ↑', cx, 22, { size: 18, need: true, bg: false });
+    tag(y, 'Side view', 20, 24, { size: 18, col: COL.mute, align: 'left', bg: false, need: true });
+  }
+});
+
+/* ---------- MODULE 14: magnifying glass ---------- */
+frame({
+  mod: 14, kick: 'Magnifying glass', title: 'A magnifying glass is a convex lens', mapTitle: 'Magnifying glass (convex lens)',
+  sub: 'Drag the magnifying glass over the tiny print. Change how high you hold it above the page.',
+  build(b, f) {
+    f.p = [520, 380]; f.d = 6;
+    const Wd = 1180, Hd = 778, S = 2;
+    f.c = canvas(b, Wd, Hd, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+    const src = document.createElement('canvas'); src.width = Wd * S; src.height = Hd * S;
+    const s = src.getContext('2d'); s.scale(S, S);
+    s.fillStyle = '#f3efe6'; s.fillRect(0, 0, Wd, Hd);
+    s.fillStyle = '#1f2430'; s.font = `700 26px ${FONT}`; s.fillText('Light: Mirrors and Lenses', 70, 70);
+    s.font = `11px ${FONT}`; s.fillStyle = '#333a46';
+    const txt = 'A lens is a piece of transparent material, usually made of glass or plastic, which has curved surfaces. A lens which is thicker at the middle as compared to the edges is called a convex lens. A magnifying glass is also a lens that helps in reading small print by making the letters appear bigger. Hold a magnifying glass over text and identify the distance where you can see the text bigger than it is written. Now move it away from the text. What do you notice? ';
+    let line = '', yy = 110;
+    const words = (txt + txt + txt + txt + txt).split(' ');
+    for (const w of words) { const tt = line + w + ' '; if (s.measureText(tt).width > 700) { s.fillText(line, 70, yy); line = w + ' '; yy += 17; if (yy > 720) break; } else line = tt; }
+    // a tiny ant drawing
+    s.save(); s.translate(960, 300); s.strokeStyle = '#222'; s.fillStyle = '#222'; s.lineWidth = 1;
+    s.beginPath(); s.ellipse(0, 0, 9, 6, 0, 0, TAU); s.ellipse(13, 0, 6, 5, 0, 0, TAU); s.ellipse(23, 0, 5, 4.5, 0, 0, TAU); s.fill();
+    for (let k = -1; k <= 1; k++) { s.beginPath(); s.moveTo(12 + k * 3, 0); s.lineTo(8 + k * 8, -11); s.moveTo(12 + k * 3, 0); s.lineTo(8 + k * 8, 11); s.stroke(); }
+    s.beginPath(); s.moveTo(26, -3); s.lineTo(32, -10); s.moveTo(26, 3); s.lineTo(32, 10); s.stroke(); s.restore();
+    s.font = `10px ${FONT}`; s.fillText('an ant (actual size)', 930, 330);
+    s.font = `9px ${FONT}`; s.fillText('Reprint 2026-27 · small print is hard to read without a lens', 840, 740);
+    f.src = src;
+    const near = q => Math.hypot(q.x - f.p[0], q.y - f.p[1]) < 150 || (q.x > f.p[0] + 90 && q.x < f.p[0] + 260 && Math.abs(q.y - (f.p[1] + 130)) < 80);
+    let off = [0, 0];
+    pointer(f.c, { hover: near, down: q => { if (!near(q)) return false; off = [f.p[0] - q.x, f.p[1] - q.y]; return true; }, move: q => { f.p = [clamp(q.x + off[0], 0, Wd), clamp(q.y + off[1], 0, Hd)]; } });
+    const side = h('div', { class: 'abs', style: 'left:1204px;top:0;width:588px;display:flex;flex-direction:column;gap:14px' }); b.append(side);
+    f.sl = ui.slider({ label: 'Height of lens above the page', min: 1, max: 19, step: .2, value: 6, fmt: v => v.toFixed(1) + ' cm', onInput: v => f.d = v });
+    f.ro = ui.readout([['m', 'Text looks'], ['o', 'Orientation']]);
+    side.append(ui.card('Hold it higher or lower', f.sl, h('div', { style: 'margin-top:10px' }, f.ro), h('p', { style: 'margin-top:10px;font-size:20px;color:var(--mute)' }, 'Focal length of this lens: 10 cm')));
+    f.c2 = canvas(null, 544, 250); side.append(ui.card('Ray diagram', f.c2.cv));
+    side.append(ui.card(null, h('p', { html: 'A magnifying glass is a <b class="hl">convex lens</b>. Held closer to the text than its focal length, it gives an <b>erect, enlarged</b> image. Hold it too high and the text blurs, then turns upside down.' })));
+  },
+  tick(f, dt, t) {
+    const fL = 10, d = f.d, Rl = 130;
+    let M = d < fL ? fL / (fL - d) : -fL / (d - fL);
+    const blur = clamp(9 - Math.abs(d - fL) * 4.5, 0, 9);
+    M = clamp(M, -8, 8);
+    const x = begin(f.c);
+    x.drawImage(f.src, 0, 0, f.c.w, f.c.h);
+    const [px, py] = f.p;
+    // shadow of the lens on the page
+    x.save(); x.fillStyle = 'rgba(0,0,0,.18)'; x.beginPath(); x.ellipse(px + d * 3, py + d * 4, Rl, Rl, 0, 0, TAU); x.fill(); x.restore();
+    // handle
+    x.save(); x.translate(px, py); x.rotate(.6);
+    const hg = x.createLinearGradient(0, -14, 0, 14); hg.addColorStop(0, '#5a3a22'); hg.addColorStop(.5, '#9b6a42'); hg.addColorStop(1, '#4a2f1b');
+    x.fillStyle = hg; rrect(x, Rl + 10, -14, 190, 28, 12); x.fill(); x.fillStyle = '#c0c6d2'; rrect(x, Rl - 2, -16, 26, 32, 5); x.fill(); x.restore();
+    // magnified view
+    x.save(); x.beginPath(); x.arc(px, py, Rl, 0, TAU); x.clip();
+    x.fillStyle = '#f3efe6'; x.fillRect(px - Rl, py - Rl, 2 * Rl, 2 * Rl);
+    if (blur > .3) x.filter = `blur(${blur}px)`;
+    x.translate(px, py); x.scale(M, M); x.translate(-px, -py);
+    x.drawImage(f.src, 0, 0, f.c.w, f.c.h);
+    x.restore();
+    x.save(); x.globalCompositeOperation = 'lighter';
+    const g = x.createRadialGradient(px - 50, py - 60, 4, px - 50, py - 60, 90); g.addColorStop(0, 'rgba(255,255,255,.35)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = g; x.beginPath(); x.arc(px, py, Rl, 0, TAU); x.fill(); x.restore();
+    x.strokeStyle = '#2b2f38'; x.lineWidth = 12; x.beginPath(); x.arc(px, py, Rl + 6, 0, TAU); x.stroke();
+    x.strokeStyle = '#8b93a3'; x.lineWidth = 3; x.beginPath(); x.arc(px, py, Rl + 1, 0, TAU); x.stroke();
+    f.ro.set('m', blur > 6 ? 'blurred' : Math.abs(M) > 1.02 ? `×${Math.abs(M).toFixed(1)} bigger` : `×${Math.abs(M).toFixed(2)}`, M > 0 ? COL.real : '#ffb0a0');
+    f.ro.set('o', M > 0 ? 'Erect' : 'Inverted', M > 0 ? COL.real : '#ffb0a0');
+    const y = begin(f.c2); bgGrid(y, f.c2.w, f.c2.h, 30);
+    const inf2 = bench(y, { type: 'convexLens', x0: 330, y0: 140, f: 80, u: d / fL * 80, h: 30, A: 200, w: f.c2.w, h2: f.c2.h, rays: 'principal', flow: t * 90 * App.speed, small: true, obj: 'arrow', axisLabel: false, twoF: false, objLabel: false, labels: false });
+    dot(y, 250, 140, 4, '#fff'); dot(y, 410, 140, 4, '#fff'); tag(y, 'F', 250, 160, { size: 15, bg: false }); tag(y, "F'", 410, 160, { size: 15, bg: false });
+    if (inf2.show) tag(y, inf2.real ? 'real image' : 'virtual image', inf2.xi, 140 - inf2.s.m * 30 - 14 * Math.sign(inf2.s.m || 1), { size: 15, col: inf2.real ? COL.real : COL.virt });
+    tag(y, 'text', 330 - d / fL * 80, 176, { size: 15, col: COL.obj, bg: false });
+  }
+});
+
+/* ================= Modules 17–18: where lenses and mirrors are used ================= */
+
+/* paraxial ray through a row of thin lenses [{x, f, cy}] */
+function parax(p0, aim, elems, xEnd) {
+  let px = p0[0], py = p0[1], s = (aim[1] - p0[1]) / (aim[0] - p0[0]);
+  const pts = [[px, py]];
+  for (const e of elems) { if (e.x <= px) continue; py += s * (e.x - px); px = e.x; pts.push([px, py]); s -= (py - e.cy) / e.f; }
+  pts.push([xEnd, py + s * (xEnd - px)]);
+  return { pts, s };
+}
+function eyeball(x, lensX, retX, cy, thick) {
+  const cx = (lensX + retX) / 2 + 10, r = (retX - lensX) / 2 + 16;
+  const g = x.createRadialGradient(cx - 40, cy - 40, 10, cx, cy, r);
+  g.addColorStop(0, '#2a3346'); g.addColorStop(1, '#151b28');
+  x.fillStyle = g; x.beginPath(); x.arc(cx, cy, r, 0, TAU); x.fill();
+  x.strokeStyle = '#d8dde8'; x.lineWidth = 4; x.stroke();
+  x.strokeStyle = '#ff7a7a'; x.lineWidth = 6; x.beginPath(); x.arc(cx, cy, r - 4, -.75, .75); x.stroke();
+  x.strokeStyle = 'rgba(200,238,255,.6)'; x.lineWidth = 3; x.beginPath(); x.arc(lensX + 8, cy, 90, Math.PI * .78, Math.PI * 1.22); x.stroke();
+  x.fillStyle = '#4b6fa8'; x.fillRect(lensX - 6, cy - 80, 8, 46); x.fillRect(lensX - 6, cy + 34, 8, 46);
+  x.save(); x.beginPath(); x.ellipse(lensX + 4, cy, thick, 46, 0, 0, TAU); x.fillStyle = 'rgba(175,228,255,.45)'; x.fill(); x.strokeStyle = 'rgba(210,240,255,.95)'; x.lineWidth = 2; x.stroke(); x.restore();
+  tag(x, 'retina', retX + 50, cy + 110, { size: 17, col: '#ff9a9a' });
+  tag(x, 'eye lens', lensX, cy + 112, { size: 17, col: COL.ref });
+}
+function drawRaysTo(x, obj, aims, elems, xStop, col, fl) {
+  const ends = [];
+  for (const a of aims) {
+    const r = parax(obj, a, elems, xStop);
+    beam(x, r.pts, col, { flow: fl, w: 2, as: 10 });
+    ends.push(r.pts[r.pts.length - 1][1]);
+  }
+  return ends;
+}
+
+const LENS_APPS = [
+  {
+    name: 'Eyeglasses', modes: ['Without glasses', 'With reading glasses'],
+    text: 'Reading glasses are <b class="hl">convex lenses</b>. They bend light a little before it enters the eye, so a near page is focused sharply on the retina. The curved line on some glasses (bifocals) separates a part for reading from a part for seeing far.',
+    icon(x, w, hh) { x.strokeStyle = '#ff7aa8'; x.lineWidth = 6; x.beginPath(); x.ellipse(w / 2 - 50, hh / 2, 40, 30, 0, 0, TAU); x.ellipse(w / 2 + 50, hh / 2, 40, 30, 0, 0, TAU); x.stroke(); x.beginPath(); x.moveTo(w / 2 - 10, hh / 2 - 6); x.quadraticCurveTo(w / 2, hh / 2 - 16, w / 2 + 10, hh / 2 - 6); x.stroke(); x.fillStyle = 'rgba(175,228,255,.25)'; x.beginPath(); x.ellipse(w / 2 - 50, hh / 2, 38, 28, 0, 0, TAU); x.ellipse(w / 2 + 50, hh / 2, 38, 28, 0, 0, TAU); x.fill(); },
+    scene(x, w, hh, t, st) {
+      const cy = 280, lensX = 770, retX = 1050, on = st.mode === 1, fl = t * 100;
+      const obj = [470, cy - 70];
+      eyeball(x, lensX, retX, cy, 16);
+      x.save(); x.translate(470, cy); drawObj(x, 'arrow', 70, {}); x.restore(); tag(x, 'page (near)', 470, cy + 30, { size: 18, col: COL.obj });
+      const elems = on ? [{ x: 680, f: 489, cy }, { x: lensX, f: 180, cy }] : [{ x: lensX, f: 180, cy }];
+      if (on) { drawLens(x, 680, cy, 220, 'convexLens', { bulge: 12 }); tag(x, 'convex lens of the glasses', 680, cy - 140, { size: 18, col: COL.ray }); }
+      const aimX = on ? 680 : lensX, aims = [-36, -18, 0, 18, 36].map(d => [aimX, cy + d]);
+      const ends = drawRaysTo(x, obj, aims, elems, retX, COL.ray, fl);
+      const mn = Math.min(...ends), mx = Math.max(...ends);
+      if (mx - mn < 6) { glow(x, retX, (mn + mx) / 2, 26, 'rgba(255,255,220,1)', .9); tag(x, 'sharp image on the retina', retX - 40, cy - 150, { size: 21, col: COL.real, need: true }); }
+      else { x.fillStyle = 'rgba(255,207,107,.35)'; x.fillRect(retX - 5, mn, 10, mx - mn); tag(x, 'blurred — light would focus behind the retina', retX - 120, cy - 150, { size: 21, col: '#ffb0a0', need: true }); }
+    }
+  },
+  {
+    name: 'Smartphone camera', text: 'Tiny <b class="hl">convex lens</b> elements focus light from the scene onto a sensor. The image on the sensor is small and upside down; the phone turns it upright.',
+    icon(x, w, hh) { x.fillStyle = '#3aa0ff'; rrect(x, w / 2 - 70, 14, 140, hh - 28, 18); x.fill(); x.fillStyle = '#1b2433'; [[-30, 0], [-30, 40], [16, 20]].forEach(([dx, dy]) => { x.beginPath(); x.arc(w / 2 + dx, 40 + dy, 15, 0, TAU); x.fill(); }); x.fillStyle = '#9ad4ff'; [[-30, 0], [-30, 40], [16, 20]].forEach(([dx, dy]) => { x.beginPath(); x.arc(w / 2 + dx, 40 + dy, 6, 0, TAU); x.fill(); }); },
+    scene(x, w, hh, t) {
+      const cy = 300, L = 850, f = 88, sensor = L + 1 / (1 / f - 1 / 700), fl = t * 100;
+      x.fillStyle = '#2b6fb3'; rrect(x, 812, 120, 210, 360, 26); x.fill(); x.fillStyle = '#0f1520'; rrect(x, 822, 130, 190, 340, 20); x.fill();
+      [-1, 0, 1].forEach(k => drawLens(x, L + k * 14, cy, 70 - Math.abs(k) * 10, k === 0 ? 'concaveLens' : 'convexLens', { bulge: 6, edge: 6 }));
+      x.fillStyle = '#4ad19a'; x.fillRect(sensor, cy - 60, 6, 120); tag(x, 'sensor', sensor + 4, cy + 84, { size: 17, col: '#4ad19a' });
+      x.save(); x.translate(150, cy); drawObj(x, 'tree', 160, {}); x.restore();
+      const top = [150, cy - 160], bot = [150, cy - 2];
+      [top, bot].forEach((p, i) => [-22, 0, 22].forEach(d => beam(x, parax(p, [L, cy + d], [{ x: L, f, cy }], sensor).pts, i ? COL.ref : COL.ray, { flow: fl, w: 1.8, as: 9 })));
+      const m = -(sensor - L) / 700; x.save(); x.translate(sensor - 4, cy); x.scale(Math.abs(m), m); drawObj(x, 'tree', 160, {}); x.restore();
+      tag(x, 'tiny inverted image', sensor - 60, cy + 120, { size: 18, col: COL.real });
+      tag(x, 'lens elements', L, cy - 70, { size: 17, col: COL.ref });
+    }
+  },
+  {
+    name: 'Camera', text: 'A camera’s <b class="hl">convex lens</b> forms a real, inverted image on the sensor. To focus on near or far things, the lens moves closer to or farther from the sensor.',
+    icon(x, w, hh) { x.fillStyle = '#4a5162'; rrect(x, w / 2 - 80, 30, 160, 90, 14); x.fill(); x.fillRect(w / 2 - 30, 20, 50, 16); x.fillStyle = '#121722'; x.beginPath(); x.arc(w / 2, 75, 34, 0, TAU); x.fill(); x.fillStyle = '#7cc4ff'; x.beginPath(); x.arc(w / 2, 75, 16, 0, TAU); x.fill(); },
+    scene(x, w, hh, t) {
+      const cy = 300, S = 1040, f = 150, u = 560 + 260 * Math.sin(t * .45), v = 1 / (1 / f - 1 / u), L = S - v, fl = t * 100;
+      x.fillStyle = '#2b303b'; rrect(x, 660, 150, 420, 300, 22); x.fill(); x.fillStyle = '#0d1119'; rrect(x, 674, 164, 392, 272, 16); x.fill();
+      x.fillStyle = '#3a404d'; rrect(x, L - 22, 170, 44, 260, 8); x.fill();
+      drawLens(x, L, cy, 200, 'convexLens', { bulge: 16 });
+      x.fillStyle = '#4ad19a'; x.fillRect(S, cy - 90, 6, 180); tag(x, 'sensor', S + 4, cy + 112, { size: 17, col: '#4ad19a' });
+      const ox = L - u; x.save(); x.translate(ox, cy); drawObj(x, 'candle', 110, {}); x.restore();
+      [-70, 0, 70].forEach(d => beam(x, parax([ox, cy - 110], [L, cy + d], [{ x: L, f, cy }], S).pts, COL.ray, { flow: fl, w: 2 }));
+      const m = -v / u; x.save(); x.translate(S - 2, cy); x.scale(Math.abs(m), m); drawObj(x, 'candle', 110, {}); x.restore();
+      tag(x, 'lens slides to focus', L, 140, { size: 19, col: COL.ref, need: true });
+      tag(x, `object ${(u / PX_CM).toFixed(0)} cm away`, ox, cy + 40, { size: 17, col: COL.obj });
+    }
+  },
+  {
+    name: 'Telescope', text: 'A refracting telescope uses two <b class="hl">convex lenses</b>: a big objective lens collects light from a distant object and forms an image; the eyepiece magnifies it so the object looks much bigger.',
+    icon(x, w, hh) { x.save(); x.translate(w / 2, hh / 2 + 10); x.rotate(-.35); x.fillStyle = '#c9cfda'; rrect(x, -90, -16, 180, 32, 8); x.fill(); x.fillStyle = '#7cc4ff'; x.fillRect(84, -16, 8, 32); x.restore(); x.strokeStyle = '#8b93a3'; x.lineWidth = 4; x.beginPath(); x.moveTo(w / 2, hh / 2 + 10); x.lineTo(w / 2 - 30, hh - 10); x.moveTo(w / 2, hh / 2 + 10); x.lineTo(w / 2 + 30, hh - 10); x.stroke(); },
+    scene(x, w, hh, t) {
+      const cy = 300, O = 220, fo = 520, E = O + fo + 120, fe = 120, fl = t * 100, ang = -3.2 * DEG;
+      x.fillStyle = '#1a2130'; x.fillRect(O, cy - 120, E - O, 240); x.strokeStyle = '#3a4458'; x.lineWidth = 2; x.strokeRect(O, cy - 120, E - O, 240);
+      drawLens(x, O, cy, 230, 'convexLens', { bulge: 18 }); drawLens(x, E, cy, 110, 'convexLens', { bulge: 12 });
+      for (let k = -2; k <= 2; k++) {
+        const y0 = cy + k * 40, p0 = [O - 200, y0 - Math.tan(ang) * 200];
+        beam(x, parax(p0, [O, y0], [{ x: O, f: fo, cy }, { x: E, f: fe, cy }], E + 260).pts, COL.ray, { flow: fl, w: 2, as: 10 });
+      }
+      x.fillStyle = '#fff'; x.beginPath(); x.ellipse(E + 290, cy + 50, 26, 15, 0, 0, TAU); x.fill(); x.fillStyle = '#2b3c66'; x.beginPath(); x.arc(E + 282, cy + 50, 9, 0, TAU); x.fill();
+      tag(x, 'objective lens', O, cy - 150, { size: 18, col: COL.ref }); tag(x, 'eyepiece', E, cy - 150, { size: 18, col: COL.ref });
+      tag(x, 'light from a distant star', 120, 120, { size: 18, col: COL.ray });
+      tag(x, 'rays leave at a bigger angle → looks bigger', E + 120, cy + 140, { size: 18, col: COL.real });
+    }
+  },
+  {
+    name: 'Microscope', text: 'A microscope uses two <b class="hl">convex lenses</b>. The objective makes an enlarged image of a tiny object; the eyepiece enlarges it again, like a magnifying glass.',
+    icon(x, w, hh) { x.fillStyle = '#c9cfda'; x.save(); x.translate(w / 2 + 10, hh / 2); x.rotate(.35); rrect(x, -12, -55, 24, 80, 6); x.fill(); x.restore(); x.fillStyle = '#5a6272'; rrect(x, w / 2 - 50, hh - 26, 100, 14, 5); x.fill(); x.fillRect(w / 2 - 34, hh / 2 + 10, 12, 50); x.fillStyle = '#7cc4ff'; x.fillRect(w / 2 - 20, hh / 2 + 16, 40, 5); },
+    scene(x, w, hh, t) {
+      const cy = 280, Ob = 330, fo = 70, u = 90, ox = Ob - u, v1 = 1 / (1 / fo - 1 / u), I1 = Ob + v1, m1 = -v1 / u, oh = 18;
+      const Ep = I1 + 105, fe = 150, ue = Ep - I1, v2 = 1 / (1 / fe - 1 / ue), I2 = Ep + v2, m2 = -v2 / ue, fl = t * 100;
+      drawLens(x, Ob, cy, 120, 'convexLens', { bulge: 14 }); drawLens(x, Ep, cy, 200, 'convexLens', { bulge: 16 });
+      x.save(); x.translate(ox, cy); drawObj(x, 'arrow', oh, {}); x.restore(); tag(x, 'tiny object', ox, cy + 26, { size: 17, col: COL.obj });
+      const tip = [ox, cy - oh], i1 = [I1, cy - m1 * oh];
+      [-30, 0, 30].forEach(d => {
+        const r = parax(tip, [Ob, cy + d], [{ x: Ob, f: fo, cy }, { x: Ep, f: fe, cy }], Ep + 240);
+        beam(x, r.pts, COL.ray, { flow: fl, w: 2, as: 9 });
+        const H = r.pts[2]; beam(x, [H, [I2, cy - m1 * m2 * oh]], COL.ray, { dash: [7, 8], a: .45 });
+      });
+      drawImage(x, 'arrow', oh, I1, cy, m1, false); tag(x, 'first image (real, enlarged)', I1, cy + 40, { size: 17, col: COL.real });
+      drawImage(x, 'arrow', oh, I2, cy, m1 * m2, true); tag(x, 'what you see — much bigger', I2, cy - m1 * m2 * oh + 30, { size: 18, col: COL.virt });
+      tag(x, 'objective', Ob, cy - 90, { size: 17, col: COL.ref }); tag(x, 'eyepiece', Ep, cy - 130, { size: 17, col: COL.ref });
+    }
+  },
+  {
+    name: 'Human eye', modes: ['Looking far', 'Reading close'],
+    text: 'Our eye has a <b class="hl">convex lens</b> inside. It can change its shape — thinner for far objects, thicker for near ones — so the image always lands sharply on the retina (upside down! the brain sorts it out).',
+    icon(x, w, hh) { x.fillStyle = '#e9edf4'; x.beginPath(); x.ellipse(w / 2, hh / 2, 70, 40, 0, 0, TAU); x.fill(); x.fillStyle = '#3a7bd5'; x.beginPath(); x.arc(w / 2, hh / 2, 26, 0, TAU); x.fill(); x.fillStyle = '#0b0f18'; x.beginPath(); x.arc(w / 2, hh / 2, 11, 0, TAU); x.fill(); },
+    scene(x, w, hh, t, st) {
+      st.k = st.k == null ? 0 : st.k; st.k += ((st.mode === 1 ? 1 : 0) - st.k) * .06;
+      const cy = 280, lensX = 770, retX = 1050, v = retX - lensX, u = lerp(5000, 300, st.k), f = 1 / (1 / u + 1 / v), fl = t * 100;
+      eyeball(x, lensX, retX, cy, lerp(9, 22, st.k));
+      const oh = lerp(900, 70, st.k), ox = lensX - u;
+      if (st.k > .5) { x.save(); x.translate(ox, cy); drawObj(x, 'candle', 70, {}); x.restore(); }
+      else tag(x, 'distant tree → rays nearly parallel', 260, 80, { size: 18, col: COL.ray });
+      const tip = [ox, cy - oh];
+      [-30, -10, 10, 30].forEach(d => beam(x, parax(tip, [lensX, cy + d], [{ x: lensX, f, cy }], retX).pts, COL.ray, { flow: fl, w: 2, as: 10 }));
+      const m = -v / u, ih = oh * m;
+      x.save(); x.strokeStyle = COL.real; x.lineWidth = 4; x.beginPath(); x.moveTo(retX - 6, cy); x.lineTo(retX - 6, cy - ih); x.stroke(); x.restore();
+      glow(x, retX - 6, cy - ih, 22, 'rgba(220,255,230,1)', .8);
+      tag(x, st.k > .5 ? 'lens thicker' : 'lens thinner', lensX, cy - 120, { size: 20, col: COL.ref, need: true });
+      tag(x, 'inverted image on retina', retX - 40, cy + 150, { size: 18, col: COL.real });
+    }
+  }
+];
+
+const MIRROR_APPS = [
+  {
+    name: 'Torch reflector', modes: ['Bulb at the focus', 'Bulb too close'],
+    text: 'Behind the bulb is a <b class="hl">concave mirror</b>. With the bulb at its focus, the reflected rays come out <b>parallel</b> — a strong straight beam.',
+    icon(x, w, hh) { drawTorch(x, w / 2 + 70, hh / 2, 0, .9); glow(x, w / 2 + 80, hh / 2, 40, 'rgba(255,240,180,1)', .7); },
+    scene(x, w, hh, t, st) { reflectorScene(x, w, hh, t, st, false); }
+  },
+  {
+    name: 'Vehicle headlight', modes: ['Bulb at the focus', 'Bulb too close'],
+    text: 'Headlights of cars and scooters use <b class="hl">concave reflectors</b> to send the light far down the road in a strong beam.',
+    icon(x, w, hh) { x.fillStyle = '#c64a3a'; rrect(x, 30, 50, w - 60, 60, 20); x.fill(); x.fillStyle = '#1b2433'; x.fillRect(70, 34, w - 140, 24); [70, w - 70].forEach(X => { x.fillStyle = '#fff6c8'; x.beginPath(); x.arc(X, 80, 14, 0, TAU); x.fill(); glow(x, X, 80, 30, 'rgba(255,240,180,1)', .7); }); },
+    scene(x, w, hh, t, st) { reflectorScene(x, w, hh, t, st, true); }
+  },
+  {
+    name: 'Dentist’s mirror', text: 'A small <b class="hl">concave mirror</b> held close to a tooth (inside its focus) gives an <b>erect, enlarged</b> image — so the dentist sees the tooth in detail.',
+    icon(x, w, hh) { x.strokeStyle = '#c9cfda'; x.lineWidth = 6; x.beginPath(); x.moveTo(40, hh - 20); x.lineTo(w / 2 + 20, hh / 2); x.stroke(); x.fillStyle = '#dfe8f5'; x.beginPath(); x.arc(w / 2 + 40, hh / 2 - 10, 24, 0, TAU); x.fill(); x.fillStyle = '#9fb3cc'; x.beginPath(); x.arc(w / 2 + 40, hh / 2 - 10, 17, 0, TAU); x.fill(); },
+    scene(x, w, hh, t) {
+      const info = bench(x, { type: 'concave', x0: 640, y0: 330, f: 200, u: 110 + 20 * Math.sin(t * .6), h: 80, A: 340, w, h2: hh, rays: 'principal', flow: t * 100, obj: 'tooth', axisLabel: false });
+      x.strokeStyle = '#c9cfda'; x.lineWidth = 10; x.beginPath(); x.moveTo(670, 480); x.lineTo(880, 580); x.stroke();
+      tag(x, `image ×${info.s.m.toFixed(1)} · erect · enlarged`, info.xi, 120, { size: 21, col: COL.virt, need: true });
+    }
+  },
+  { name: 'Side-view mirror', text: SCENES.side.note.replace('The convex', 'The <b class="hc">convex</b>'), icon: sideIcon, scene(x, w, hh, t) { sceneScaled(x, w, hh, t, 'side'); } },
+  { name: 'Road safety mirror', text: SCENES.road.note.replace('convex', '<b class="hc">convex</b>'), icon: roadIcon, scene(x, w, hh, t) { sceneScaled(x, w, hh, t, 'road'); } },
+  { name: 'Store surveillance mirror', text: SCENES.store.note.replace('convex', '<b class="hc">convex</b>'), icon: storeIcon, scene(x, w, hh, t) { sceneScaled(x, w, hh, t, 'store'); } },
+  {
+    name: 'Telescope', text: 'Most modern telescopes are <b>reflecting telescopes</b>. A large <b class="hl">concave mirror</b> collects faint starlight and converges it; a small flat mirror sends it to the eyepiece.',
+    icon(x, w, hh) { x.fillStyle = '#e8ecf3'; rrect(x, w / 2 - 80, hh / 2 - 26, 160, 52, 10); x.fill(); x.fillStyle = '#1b2433'; x.fillRect(w / 2 - 82, hh / 2 - 20, 6, 40); x.fillStyle = '#8b93a3'; x.fillRect(w / 2 - 40, hh / 2 - 40, 14, 16); },
+    scene(x, w, hh, t) {
+      const cy = 330, V = [1080, cy], R = 1300, A = 280, fl = t * 100;
+      x.fillStyle = '#1a2130'; x.fillRect(250, cy - 160, 860, 320); x.strokeStyle = '#3a4458'; x.lineWidth = 2; x.strokeRect(250, cy - 160, 860, 320);
+      const sx = V[0] - 560, sec = mirrorSurf('plane', [sx, cy], norm([1, -1]), 1, 60), pri = mirrorSurf('concave', V, [-1, 0], R, A);
+      const eyep = { kind: 'absorb', geom: 'seg', a: [sx - 40, cy - 190], b: [sx + 40, cy - 190] };
+      x.fillStyle = '#1a2130'; x.fillRect(sx - 30, cy - 200, 60, 50);
+      for (let k = 0; k < 12; k++) { const y = cy - 132 + 264 * k / 11; if (Math.abs(y - cy) < 30) continue; beam(x, trace([0, y], [1, 0], [pri, sec, eyep], { len: 400, max: 4 }).pts, COL.ray, { flow: fl, w: 1.8, arrows: false }); }
+      drawMirror(x, mirrorGeom('concave', V, [-1, 0], R, A)); drawMirror(x, mirrorGeom('plane', [sx, cy], norm([1, -1]), 1, 60));
+      drawLens(x, sx, cy - 190, 70, 'convexLens', { bulge: 8 });
+      tag(x, 'large concave mirror', V[0] - 20, cy + 190, { size: 18, col: COL.ray }); tag(x, 'small flat mirror', sx, cy + 70, { size: 17 }); tag(x, 'eyepiece', sx + 90, cy - 190, { size: 17, col: COL.ref });
+      tag(x, 'starlight', 110, cy - 180, { size: 18, col: COL.ray });
+    }
+  }
+];
+function reflectorScene(x, w, hh, t, st, car) {
+  const cy = 300, V = [360, cy], R = 380, f = R / 2, bx = V[0] + (st.mode === 1 ? f * .55 : f), fl = t * 100;
+  if (car) {
+    x.fillStyle = '#20252f'; x.fillRect(0, cy + 190, w, 80); x.strokeStyle = 'rgba(255,220,120,.4)'; x.setLineDash([40, 30]); x.lineWidth = 4; x.beginPath(); x.moveTo(0, cy + 230); x.lineTo(w, cy + 230); x.stroke(); x.setLineDash([]);
+    x.fillStyle = '#8a2f25'; rrect(x, 40, cy - 170, 330, 360, 40); x.fill();
+  } else { x.fillStyle = '#2a303c'; x.beginPath(); x.moveTo(V[0] - 40, cy - 170); x.lineTo(V[0] + 210, cy - 210); x.lineTo(V[0] + 210, cy + 210); x.lineTo(V[0] - 40, cy + 170); x.closePath(); x.fill(); x.fillStyle = '#20252f'; x.fillRect(V[0] - 300, cy - 60, 260, 120); }
+  const ms = mirrorSurf('concave', V, [1, 0], R, 320);
+  for (let k = 0; k < 20; k++) {
+    const a = Math.PI - 1.15 + 2.3 * k / 19, r = trace([bx, cy], [Math.cos(a), Math.sin(a)], [ms], { len: 1400, max: 3 });
+    if (r.pts.length > 2) beam(x, r.pts, '#fff1c4', { flow: fl, w: 1.8, a: .9, arrows: false });
+  }
+  drawMirror(x, mirrorGeom('concave', V, [1, 0], R, 320));
+  x.fillStyle = 'rgba(200,235,255,.15)'; x.fillRect(V[0] + 200, cy - 210, 10, 420);
+  glow(x, bx, cy, 40, 'rgba(255,245,200,1)', 1); dot(x, bx, cy, 9, '#fffbe8');
+  dot(x, V[0] + f, cy + 26, 5, '#fff'); tag(x, 'F', V[0] + f, cy + 50, { size: 18 });
+  tag(x, st.mode === 1 ? 'bulb not at F → beam spreads out' : 'bulb at F → reflected rays parallel', 860, 80, { size: 22, col: st.mode === 1 ? '#ffb0a0' : COL.real, need: true });
+}
+function sceneScaled(x, w, hh, t, k) {
+  const s = hh / 778; x.save(); x.translate((w - 1328 * s) / 2, 0); x.scale(s, s);
+  const r = SCENES[k].draw(x, t, 'convex');
+  const rays = fovFan(r.eye, 'convex', r.V, r.ax, r.R, r.A, 2600, 30);
+  drawFan(x, rays, COL.ref, .15); drawMirror(x, mirrorGeom('convex', r.V, r.ax, r.R, r.A));
+  dot(x, r.eye[0], r.eye[1], 9, '#fff');
+  r.targets.forEach(p => { if (inFan(rays, p) >= 0) { x.strokeStyle = '#7ef0a8'; x.lineWidth = 4; x.beginPath(); x.arc(p[0], p[1], 62, 0, TAU); x.stroke(); } });
+  x.restore();
+}
+function sideIcon(x, w, hh) { x.fillStyle = '#2b2f38'; x.beginPath(); x.ellipse(w / 2, hh / 2, 72, 46, -.15, 0, TAU); x.fill(); const g = x.createLinearGradient(w / 2 - 60, 0, w / 2 + 60, 0); g.addColorStop(0, '#7fb6ff'); g.addColorStop(1, '#c9e2ff'); x.fillStyle = g; x.beginPath(); x.ellipse(w / 2, hh / 2, 62, 37, -.15, 0, TAU); x.fill(); x.fillStyle = '#e04a3a'; x.fillRect(w / 2 - 12, hh / 2 - 6, 24, 14); }
+function roadIcon(x, w, hh) { x.strokeStyle = '#ff9a2f'; x.lineWidth = 8; x.beginPath(); x.arc(w / 2, hh / 2 - 10, 38, 0, TAU); x.stroke(); x.fillStyle = '#c9e2ff'; x.beginPath(); x.arc(w / 2, hh / 2 - 10, 33, 0, TAU); x.fill(); x.fillStyle = '#8b93a3'; x.fillRect(w / 2 - 4, hh / 2 + 28, 8, 40); }
+function storeIcon(x, w, hh) { const g = x.createRadialGradient(w / 2 - 15, hh / 2 - 15, 4, w / 2, hh / 2, 55); g.addColorStop(0, '#ffffff'); g.addColorStop(1, '#5e6b80'); x.fillStyle = g; x.beginPath(); x.arc(w / 2, hh / 2, 52, 0, TAU); x.fill(); x.strokeStyle = '#2b2f38'; x.lineWidth = 6; x.stroke(); }
+
+function appFrame(def) {
+  frame({
+    mod: def.mod, kick: def.kick, title: def.title, sub: def.sub, mapTitle: def.mapTitle,
+    build(b, f) {
+      f.sel = 0; f.st = { mode: 0 }; f.z = 0;
+      const cols = def.items.length > 6 ? 2 : 2, tw = 280;
+      const grid = h('div', { class: 'tiles abs', style: `left:0;top:0;width:${tw * cols + 14}px;grid-template-columns:repeat(${cols},${tw}px)` }); b.append(grid);
+      f.tiles = def.items.map((it, i) => {
+        const ic = canvas(null, 250, def.items.length > 6 ? 106 : 150); const x = begin(ic); it.icon(x, ic.w, ic.h);
+        const tl = h('button', { class: 'tile', onclick: () => select(i) }, ic.cv, it.name); grid.append(tl); return tl;
+      });
+      const wrap = h('div', { class: 'abs', style: `left:${tw * cols + 40}px;top:0;right:0;bottom:0` }); b.append(wrap);
+      const W2 = 1792 - (tw * cols + 40);
+      f.dw = h('div', { class: 'glass', style: 'overflow:hidden' }); wrap.append(f.dw);
+      f.c = canvas(f.dw, W2, 560);
+      f.name = h('div', { class: 'big', style: 'font-size:34px' });
+      f.text = h('p', { style: 'font-size:24px;margin-top:8px' });
+      f.modes = h('div', { style: 'margin-top:12px' });
+      wrap.append(h('div', { class: 'card', style: 'margin-top:16px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start' }, h('div', null, f.name, f.text), f.modes));
+      function select(i) {
+        f.sel = i; f.st = { mode: 0 }; f.z = 0;
+        f.tiles.forEach((tl, k) => tl.classList.toggle('on', k === i));
+        const it = def.items[i]; f.name.textContent = it.name; f.text.innerHTML = it.text;
+        f.modes.innerHTML = ''; if (it.modes) f.modes.append(ui.seg({ options: it.modes.map((m, k) => ({ v: k, t: m })), value: 0, onChange: v => f.st.mode = v }));
+        f.dw.classList.remove('zoomin'); void f.dw.offsetWidth; f.dw.classList.add('zoomin');
+      }
+      select(0);
+    },
+    tick(f, dt, t) {
+      f.z = Math.min(1, f.z + dt * 1.1);
+      const x = begin(f.c, '#0a0e17'); bgGrid(x, f.c.w, f.c.h, 50);
+      const e = ease(f.z), s = lerp(1.35, 1, e);
+      x.save(); x.translate(f.c.w / 2, f.c.h / 2); x.scale(s, s); x.translate(-f.c.w / 2, -f.c.h / 2);
+      def.items[f.sel].scene(x, f.c.w, f.c.h, t * App.speed, f.st);
+      x.restore();
+    }
+  });
+}
+appFrame({ mod: 17, kick: 'Where do we use lenses?', title: 'Lenses all around us', mapTitle: 'Lenses in real life', sub: 'Tap an object to look inside at its lens.', items: LENS_APPS });
+appFrame({ mod: 18, kick: 'Where do we use mirrors?', title: 'Mirrors in real life', mapTitle: 'Mirrors in real life', sub: 'Tap an object to zoom into its optics and see why that mirror is used.', items: MIRROR_APPS });
+
+/* ================= Modules 19–21: optical lab, discovery mode, recap ================= */
+const TYPES = [
+  { v: 'plane', t: 'Plane mirror', x0: 640 }, { v: 'concave', t: 'Concave mirror', x0: 760 }, { v: 'convex', t: 'Convex mirror', x0: 720 },
+  { v: 'convexLens', t: 'Convex lens', x0: 620 }, { v: 'concaveLens', t: 'Concave lens', x0: 720 }];
+
+/* ---------- MODULE 19: the optical lab ---------- */
+frame({
+  mod: 19, kick: 'Virtual experiment lab', title: 'The Optical Lab', mapTitle: 'Optical Lab: free experimentation',
+  sub: 'Every control changes the simulation instantly. Drag the object on the bench too.',
+  build(b, f) {
+    const D = { type: 'concave', ucm: 30, hcm: 7, fcm: 15, rays: 'principal', on: true, labels: true, speed: 1 };
+    f.s = Object.assign({}, D);
+    f.c = canvas(b, 1190, 778, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+    const near = p => Math.abs(p.x - f.info.xo) < 50 && p.y > f.info.ty - 30 && p.y < 430;
+    pointer(f.c, { hover: near, down: p => near(p), move: p => { f.s.ucm = clamp((f.x0 - p.x) / PX_CM, 2, 55); f.cU.set(f.s.ucm); } });
+    const side = h('div', { class: 'abs', style: 'left:1212px;top:0;width:580px;display:flex;flex-direction:column;gap:12px' }); b.append(side);
+    f.ro = ui.readout([['obj', 'Object position'], ['img', 'Image position'], ['size', 'Image size'], ['ori', 'Orientation'], ['kind', 'Image type']]);
+    side.append(ui.card('Live information', f.ro));
+    f.cT = ui.seg({ options: TYPES.map(o => ({ v: o.v, t: o.t })), value: D.type, onChange: v => { f.s.type = v; } });
+    f.cT2 = { set() { } };
+    b.append(h('div', { class: 'topc' }, f.cT));
+    f.cU = ui.slider({ label: 'Object position', min: 2, max: 55, step: .5, value: D.ucm, fmt: v => v.toFixed(1) + ' cm', onInput: v => f.s.ucm = v });
+    f.cH = ui.slider({ label: 'Object height', min: 2, max: 12, step: .5, value: D.hcm, fmt: v => v.toFixed(1) + ' cm', onInput: v => f.s.hcm = v });
+    f.cF = ui.slider({ label: 'Focal length', min: 8, max: 25, step: .5, value: D.fcm, fmt: v => v.toFixed(1) + ' cm', onInput: v => f.s.fcm = v });
+    f.cR = ui.seg({ options: [{ v: 'principal', t: 'Key 3' }, { v: 1, t: '1' }, { v: 5, t: '5' }, { v: 10, t: '10' }, { v: 20, t: '20' }], value: 'principal', onChange: v => f.s.rays = v });
+    f.cS = ui.slider({ label: 'Animation speed', min: 0, max: 3, step: .1, value: 1, fmt: v => v.toFixed(1) + '×', onInput: v => App.speed = v });
+    f.tRay = ui.toggle({ label: 'Ray tracing', value: true, onChange: v => f.s.on = v });
+    f.tLab = ui.toggle({ label: 'Labels', value: true, onChange: v => App.labels = v });
+    side.append(ui.card('Controls', h('div', { style: 'display:grid;grid-template-columns:1fr 1fr;gap:6px 22px' }, f.cU, f.cH, f.cF, f.cS),
+      h('div', { class: 'ctl', style: 'margin-top:8px' }, h('div', { class: 'lab' }, h('span', null, 'Ray count')), f.cR),
+      h('div', { class: 'row', style: 'margin-top:14px;justify-content:space-between' }, f.tRay, f.tLab,
+        ui.btn('↺ Reset experiment', () => { f.s = Object.assign({}, D); f.cT.set(D.type); f.cT2.set(null); f.cU.set(D.ucm); f.cH.set(D.hcm); f.cF.set(D.fcm); f.cR.set('principal'); f.cS.set(1); App.speed = 1; f.tRay.set(true); f.tLab.set(true); App.labels = true; }))));
+  },
+  leave() { App.speed = 1; },
+  tick(f, dt, t) {
+    const s = f.s, T = TYPES.find(o => o.v === s.type); f.x0 = T.x0;
+    const x = begin(f.c); bgGrid(x, f.c.w, f.c.h);
+    const fp = s.fcm * PX_CM, u = s.ucm * PX_CM;
+    const A = Math.min(460, s.type === 'concave' || s.type === 'convex' ? 4 * fp * .92 : 460);
+    f.info = bench(x, { type: s.type, x0: T.x0, y0: 400, f: fp, u, h: s.hcm * PX_CM, A, w: f.c.w, h2: f.c.h, rays: s.rays, showRays: s.on, flow: App.t * 110 * App.speed });
+    offscreenHint(x, f.info, f.c.w, 400);
+    const d = describe(s.type, f.info, u, fp);
+    f.ro.set('obj', d.obj + (d.zone ? ' · ' + d.zone : '')); f.ro.set('img', d.where, d.col); f.ro.set('size', d.size); f.ro.set('ori', d.ori, d.ocol); f.ro.set('kind', d.kind, d.col);
+  }
+});
+
+/* ---------- MODULE 20: discovery mode — the mystery optic ---------- */
+frame({
+  mod: 20, kick: 'Discovery mode', title: 'What is hidden behind the screen?', mapTitle: 'Discovery mode: identify the hidden mirror or lens',
+  sub: 'MOVE THE OBJECT AND OBSERVE the image. Then decide what is hidden.',
+  build(b, f) {
+    f.k = 1; f.u = 420; f.rev = false; f.obs = new Set(); f.guess = null;
+    f.c = canvas(b, 1328, 778, 'position:absolute;left:0;top:0'); f.c.cv.classList.add('glass');
+    const near = p => Math.abs(p.x - f.info.xo) < 50 && p.y > f.info.ty - 30 && p.y < 430;
+    pointer(f.c, { hover: near, down: p => near(p) || (Math.abs(p.y - 400) < 50 && p.x < 680) ? (f.u = clamp(700 - p.x, 30, 680), true) : false, move: p => f.u = clamp(700 - p.x, 30, 680) });
+    const side = h('div', { class: 'side' }); b.append(side);
+    f.obsEl = h('div', { style: 'display:flex;flex-wrap:wrap;gap:8px;min-height:44px' });
+    side.append(ui.card('Your observations', f.obsEl, h('p', { style: 'margin-top:10px;font-size:20px;color:var(--mute)' }, 'Collected automatically as you move the object.')));
+    f.qs = h('div', { class: 'dq', style: 'font-size:24px' });
+    side.append(h('div', { class: 'card disc' }, h('div', { class: 'dtag' }, 'THINK'), f.qs));
+    f.btns = TYPES.map(o => ui.btn(o.t, () => { f.guess = o.v; f.btns.forEach(bb => bb.classList.toggle('on', bb === bt(o.v))); }));
+    const bt = v => f.btns[TYPES.findIndex(o => o.v === v)];
+    f.res = h('div', { class: 'big', style: 'margin-top:12px;min-height:40px' });
+    side.append(ui.card('Your decision', h('div', { style: 'display:grid;grid-template-columns:1fr 1fr;gap:8px' }, ...f.btns),
+      h('div', { class: 'row', style: 'margin-top:12px;gap:8px' }, ui.btn('Reveal', () => { f.rev = true; }, 'pri'), ui.btn('New mystery', () => newMystery(f))), f.res));
+    newMystery(f);
+  },
+  tick(f, dt, t) {
+    const type = TYPES[f.k].v, x0 = 700;
+    const x = begin(f.c); bgGrid(x, f.c.w, f.c.h);
+    f.info = bench(x, { type, x0, y0: 400, f: 170, u: f.u, h: 80, A: 420, w: f.c.w, h2: f.c.h, rays: 'principal', showRays: f.rev, flow: t * 100 * App.speed, labels: f.rev, marks: f.rev });
+    offscreenHint(x, f.info, f.c.w, 400);
+    if (!f.rev) {
+      x.save(); const g = x.createLinearGradient(x0 - 100, 0, x0 + 100, 0); g.addColorStop(0, '#28344e'); g.addColorStop(.5, '#465678'); g.addColorStop(1, '#28344e');
+      x.fillStyle = g; rrect(x, x0 - 100, 120, 200, 560, 20); x.fill(); x.strokeStyle = 'rgba(143,176,255,.5)'; x.lineWidth = 2; x.stroke(); x.restore();
+      tag(x, '?', x0, 400, { size: 110, weight: 800, col: 'rgba(255,255,255,.85)', bg: false, need: true });
+    }
+    const d = describe(type, f.info, f.u, 170);
+    const add = s => { if (!f.obs.has(s)) { f.obs.add(s); f.obsEl.append(h('span', { style: 'padding:6px 14px;border-radius:999px;border:1px solid var(--line2);font-size:20px;animation:fadeup .4s' }, s)); } };
+    if (!f.info.inf) { add(d.ori); add(d.sw); if (f.info.show) add(isLens(type) ? (f.info.real ? 'image beyond the screen' : 'image on object’s side') : (f.info.real ? 'image in front' : 'image behind the screen')); }
+    const qi = Math.floor(t / 5) % 4;
+    f.qs.textContent = ['What changed as you moved the object?', 'Did the image become larger or smaller?', 'Did it ever become inverted?', 'Where does the image appear?'][qi];
+    if (f.rev) f.res.innerHTML = `It was a <span class="hl">${TYPES[f.k].t}</span>` + (f.guess ? (f.guess === type ? ' — <span class="hr">you were right!</span>' : ' — <span style="color:#ffb0a0">look at the clues again</span>') : '');
+  }
+});
+function newMystery(f) {
+  let k; do { k = Math.floor(Math.random() * TYPES.length); } while (k === f.k);
+  f.k = k; f.rev = false; f.guess = null; f.obs = new Set(); f.obsEl.innerHTML = ''; f.res.innerHTML = '';
+  f.btns.forEach(b => b.classList.remove('on')); f.u = 420;
+}
+
+/* ---------- MODULE 21: chapter recap — the optical map ---------- */
+const MAP = [
+  ['LIGHT', 'travels in straight lines; drawn as rays', 'intro'],
+  ['REFLECTION', 'light bounces off a mirror', 1],
+  ['PLANE MIRROR', 'erect, same-size image', 1],
+  ['SPHERICAL MIRRORS', 'part of a hollow sphere', 2],
+  ['CONCAVE / CONVEX', 'curves inward / outward', 3],
+  ['IMAGE FORMATION', 'concave: varies · convex: erect, diminished', 5],
+  ['LAWS OF REFLECTION', 'i = r · all in one plane', 6],
+  ['CONVERGE / DIVERGE', 'concave mirror converges · convex diverges', 7],
+  ['LENSES', 'transparent, curved surfaces', 9],
+  ['CONVEX / CONCAVE', 'thick middle / thick edges', 10],
+  ['IMAGE FORMATION', 'convex: varies · concave: erect, diminished', 12],
+  ['REAL-WORLD USES', 'torches, side mirrors, cameras, eyes…', 17]];
+frame({
+  mod: 21, kick: 'Chapter recap', title: 'The whole chapter, as one beam of light', mapTitle: 'Chapter recap: the optical map',
+  sub: 'Follow the beam. Tap any stop to jump back to that experiment.',
+  build(b, f) {
+    f.c = canvas(b, 1792, 700, 'position:absolute;left:0;top:0');
+    f.nodes = MAP.map((m, i) => {
+      const row = Math.floor(i / 4), col = row % 2 ? 3 - (i % 4) : i % 4;
+      return { x: 230 + col * 444, y: 110 + row * 240, t: m[0], s: m[1], go: m[2] };
+    });
+    pointer(f.c, {
+      hover: p => f.nodes.some(n => Math.abs(p.x - n.x) < 190 && Math.abs(p.y - n.y) < 70),
+      down: p => { const n = f.nodes.find(n => Math.abs(p.x - n.x) < 190 && Math.abs(p.y - n.y) < 70); if (n) go(App.frames.findIndex(fr => fr.mod === n.go)); return false; }
+    });
+    b.append(h('div', { class: 'abs card', style: 'left:0;right:0;top:712px;display:flex;gap:26px;align-items:center;padding:14px 24px' },
+      h('div', { class: 'kick', style: 'flex:none' }, 'OUR SCIENTIFIC HERITAGE'),
+      h('p', { style: 'font-size:22px', html: 'More than 800 years ago, in the time of <b>Bhāskara II</b>, astronomers watched the reflections of stars and planets in shallow bowls of water to measure their positions — using reflection long before its laws were written down.' })));
+  },
+  enter(f) { f.p = 0; },
+  tick(f, dt, t) {
+    f.p = Math.min(f.nodes.length + .5, (f.p || 0) + dt * 2.2);
+    const x = begin(f.c), N = f.nodes;
+    // path through the nodes
+    const pts = []; N.forEach((n, i) => { pts.push([n.x, n.y]); });
+    const seg = Math.floor(f.p), frac = f.p - seg;
+    const lit = pts.slice(0, Math.min(N.length, seg + 1)); if (seg < N.length - 1) lit.push([lerp(pts[seg][0], pts[seg + 1][0], frac), lerp(pts[seg][1], pts[seg + 1][1], frac)]);
+    x.save(); x.strokeStyle = 'rgba(255,255,255,.08)'; x.lineWidth = 3; path(x, pts); x.stroke(); x.restore();
+    if (lit.length > 1) beam(x, lit, COL.ray, { flow: t * 140, w: 3.2, arrowAt: 120 });
+    N.forEach((n, i) => {
+      const on = i <= f.p, k = clamp(f.p - i, 0, 1);
+      x.save(); x.fillStyle = on ? '#1a160c' : '#0e121c'; rrect(x, n.x - 180, n.y - 62, 360, 124, 20); x.fill();
+      x.globalAlpha = .35 + .65 * k; x.strokeStyle = on ? `rgba(255,207,107,${.4 + .5 * k})` : 'rgba(160,180,220,.2)'; x.lineWidth = 2; x.stroke();
+      x.restore();
+      if (on) glow(x, n.x, n.y, 200, 'rgba(255,200,110,.12)', k);
+      tag(x, n.t, n.x, n.y - 20, { size: 27, weight: 800, col: on ? '#fff' : COL.mute, bg: false, need: true });
+      tag(x, n.s, n.x, n.y + 24, { size: 18, col: on ? '#e7d7b0' : COL.dim, bg: false, need: true });
+      tag(x, String(i + 1).padStart(2, '0'), n.x - 158, n.y - 40, { size: 14, mono: true, col: COL.ray, bg: false, need: true });
+    });
+  }
+});
+COL.dim = '#6b778c';
+
+boot();
+</script>
+</body>
+</html>
