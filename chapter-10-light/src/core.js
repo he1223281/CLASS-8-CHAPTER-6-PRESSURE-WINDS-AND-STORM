@@ -89,6 +89,7 @@ function go(i) {
   nf.root.classList.add('on'); nf.root.classList.remove('prev');
   App.cur = i; nf.seen = true; nf.t = 0;
   nf.enter && nf.enter(nf);
+  if (typeof Notes !== 'undefined') Notes.show(nf);
   updateBar();
   try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) { }
 }
@@ -153,6 +154,7 @@ function boot() {
     else if (e.key === 'l' || e.key === 'L') App.labels = !App.labels;
     else if (e.key === 'p' || e.key === 'P') document.body.classList.toggle('pres');
   });
+  if (typeof Notes !== 'undefined') Notes.init();
   const start = parseInt((location.hash || '').slice(1)) - 1;
   go(start >= 0 && start < App.frames.length ? start : 0);
   requestAnimationFrame(loop);

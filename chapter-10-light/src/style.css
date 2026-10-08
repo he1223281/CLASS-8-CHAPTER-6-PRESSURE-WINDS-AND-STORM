@@ -119,7 +119,7 @@ input[type=range]:focus-visible{outline:3px solid var(--acc);outline-offset:4px;
 /* bottom bar */
 #bar{position:absolute;left:0;right:0;bottom:0;height:84px;display:flex;align-items:center;gap:16px;padding:0 28px;
   border-top:1px solid var(--line);background:rgba(4,6,11,.88);z-index:20;transition:opacity .4s}
-#bar .chap{font:600 18px var(--f-mono);letter-spacing:.14em;color:var(--mute);white-space:nowrap}
+#bar .chap{display:none;font:600 18px var(--f-mono);letter-spacing:.14em;color:var(--mute);white-space:nowrap}
 #bar .chap b{color:var(--ray)}
 #dots{flex:1;display:flex;gap:4px;align-items:center;justify-content:center}
 #dots button{width:32px;height:32px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--dim);font:600 14px var(--f-mono);cursor:pointer;padding:0;transition:all .25s}
@@ -163,3 +163,36 @@ table.t101 tr.new td{animation:fadeup .5s}
 .onc .tog{background:rgba(10,14,23,.85);padding:10px 16px;border-radius:16px;border:1px solid var(--line2)}
 .topc{position:absolute;left:20px;top:18px;z-index:2}
 .topc .seg{background:rgba(10,14,23,.88);backdrop-filter:blur(6px)}
+
+/* textbook notes drawer */
+.nb.notesb{background:var(--ray);color:#1a1205;border-color:transparent;font-weight:700}
+.nb.notesb.on{background:#fff;color:#0a0e17}
+.nb:disabled{opacity:.35;cursor:default}
+#notes{position:absolute;top:0;right:0;bottom:84px;width:660px;z-index:30;display:flex;flex-direction:column;
+  background:linear-gradient(180deg,#0e121e,#080b13);border-left:1px solid var(--line2);
+  box-shadow:-30px 0 80px rgba(0,0,0,.55);transform:translateX(105%);transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+#notes.on{transform:none}
+#notes .nhead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:30px 34px 18px;border-bottom:1px solid var(--line)}
+#notestitle{font-size:34px;font-weight:800;letter-spacing:-.02em;margin-top:10px;line-height:1.1}
+#notesbody{flex:1;overflow:auto;padding:10px 34px 34px;font-size:25px;line-height:1.45;color:#dfe5f1}
+#notesbody h4{margin:22px 0 8px;font:600 18px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ray)}
+#notesbody p{margin:8px 0}
+#notesbody ul,#notesbody ol{margin:8px 0;padding-left:30px}
+#notesbody li{margin:7px 0}
+#notesbody b{color:#fff}
+#notesbody dl{margin:6px 0}
+#notesbody dt{font-weight:800;color:var(--ref);margin-top:12px}
+#notesbody dd{margin:2px 0 0 0}
+#notesbody .law{background:rgba(255,207,107,.1);border-left:5px solid var(--ray);border-radius:10px;padding:14px 18px;font-weight:700;color:#fff}
+#notesbody .warnp{background:rgba(255,70,70,.12);border:1px solid rgba(255,93,93,.55);border-radius:12px;padding:12px 16px;color:#ffd9d9}
+#notesbody table.nt{width:100%;border-collapse:collapse;font-size:22px;margin-top:8px}
+#notesbody table.nt th,#notesbody table.nt td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:top}
+#notesbody table.nt th{color:var(--ray);font-weight:700}
+
+/* snapshots */
+.snaps{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.snap{text-align:left;display:flex;gap:20px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--c);
+  border-radius:20px;padding:20px 24px;font-size:26px;line-height:1.38;color:#dfe5f1;cursor:pointer;animation:fadeup .7s both;transition:background .3s,transform .3s}
+.snap b{color:#fff}
+.snap .sn{font:600 20px var(--f-mono);color:var(--c);padding-top:5px}
+.snap.on{background:rgba(255,207,107,.14);transform:scale(1.02)}

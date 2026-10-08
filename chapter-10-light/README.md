@@ -6,7 +6,8 @@ An interactive classroom experience for **Grade 8 Science (Curiosity), Chapter 1
 
 1. Open `index.html` in Chrome or Edge. Nothing needs to be installed and it works offline (fonts fall back to system fonts).
 2. Press **F** for fullscreen. Move with **→ / ←** or **Page Down / Page Up** (presentation clickers work), or the on-screen buttons.
-3. **M** opens the chapter map (jump to any screen), **L** turns diagram labels on/off, **P** hides the bottom bar.
+3. **📖 Textbook notes** (or **N**) slides in the chapter's own explanations for the current screen: definitions, activity steps, observations, laws and uses.
+4. **M** opens the chapter map (jump to any screen), **L** turns diagram labels on/off, **P** hides the bottom bar.
 
 The stage is a fixed 1920×1080 frame that scales to any screen. On a 4K TV the diagrams render at double resolution.
 
@@ -16,7 +17,7 @@ The stage is a fixed 1920×1080 frame that scales to any screen. On a 4K TV the 
 - **Parallel beams** (Modules 7, 9, 10, 11, 15, 16, solar demos, torch, telescope) use an exact 2-D ray tracer: the law of reflection on spherical mirrors and Snell's law through real thick glass lenses (n = 1.5). Convergence, divergence and the "focal region" are therefore real, not drawn by hand.
 - "Find the brightest/sharpest spot" scans the paper distance and picks the narrowest traced spot. "Sunlight concentrated" is the area ratio (aperture ÷ spot)².
 
-## What's inside (28 screens, 21 modules)
+## What's inside (29 screens, 21 modules)
 
 | Module | Screen | Interactions |
 |---|---|---|
@@ -46,12 +47,13 @@ The stage is a fixed 1920×1080 frame that scales to any screen. On a 4K TV the 
 | 19 | Optical Lab | Type, object position & height, focal length, ray count, ray tracing, labels, speed, reset; live info panel |
 | 20 | Discovery mode | A hidden mirror or lens: move the object, collect observations, decide, reveal |
 | 21 | Recap | The chapter as one beam of light (tap a stop to jump back); Bhāskara II heritage note |
+| 21 | Snapshots | The chapter's eight summary points; tap to highlight |
 
 Discovery cards ("MOVE THE OBJECT AND OBSERVE.") in the labs ask a sequence of questions and only reveal the science when the teacher taps **Reveal**.
 
 ## Editing
 
-Source is in `src/` (`core.js` frame engine and controls, `optics.js` ray tracer and drawing, one file per module group). After editing, rebuild:
+Textbook notes for each screen are in `src/notes.js`. Source is in `src/` (`core.js` frame engine and controls, `optics.js` ray tracer and drawing, one file per module group). After editing, rebuild:
 
 ```
 python3 build.py
