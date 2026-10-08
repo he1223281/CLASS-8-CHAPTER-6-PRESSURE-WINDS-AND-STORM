@@ -54,3 +54,7 @@ python3 build.py
 This writes `index.html` (standalone) and `dist/artifact.html`.
 
 Fonts load from Google Fonts when online. Offline, the page falls back to system fonts and still works fully.
+
+## Also in this repository
+
+- [`class-7-india-and-her-neighbours/`](class-7-india-and-her-neighbours/): interactive Grade 7 Social Science lesson, *India and Her Neighbours*. Open its `index.html`.
