@@ -54,3 +54,7 @@ python3 build.py
 This writes `index.html` (standalone) and `dist/artifact.html`.
 
 Fonts load from Google Fonts when online. Offline, the page falls back to system fonts and still works fully.
+
+## Also in this repository
+
+- **[Light Lab: Mirrors and Lenses](light-mirrors-lenses/)**: an interactive lab for Grade 8 Chapter 10. Open `light-mirrors-lenses/light-lab-standalone.html`.

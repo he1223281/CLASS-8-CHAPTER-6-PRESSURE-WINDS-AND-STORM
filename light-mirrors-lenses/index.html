@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mirrors &amp; Lenses Light Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&amp;family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="viewport">
+<div id="stage">
+  <header id="topbar">
+    <button class="brand" id="brand" title="Back to the opening screen">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text"><b>LIGHT LAB</b><small>Class 8 · Ch 10 · Mirrors and Lenses</small></span>
+    </button>
+    <nav id="sections" aria-label="Chapter sections"></nav>
+    <div class="top-tools">
+      <div class="seg" id="modeSeg" role="group" aria-label="Teaching mode">
+        <button data-mode="teacher" aria-pressed="true" title="Explanations visible beside the simulation (key T)">Teacher</button>
+        <button data-mode="explore" aria-pressed="false" title="Students experiment first, then reveal (key T)">Explore</button>
+      </div>
+      <button class="tbtn" id="sayBtn" title="Read the explanation aloud">Read aloud</button>
+      <button class="tbtn" id="fsBtn" title="Fullscreen (F)">Fullscreen</button>
+      <button class="tbtn" id="menuBtn" title="All scenes (M)">Scenes</button>
+      <button class="tbtn icon" id="helpBtn" title="Keyboard shortcuts (?)">?</button>
+    </div>
+  </header>
+
+  <main id="scenes"></main>
+
+  <footer id="botbar">
+    <button class="nav" id="prevBtn" aria-label="Previous scene">◀&nbsp; Back</button>
+    <div class="sim-tools" role="group" aria-label="Simulation controls">
+      <button class="tbtn" id="pauseBtn" title="Pause or play the animation (Space)">Pause</button>
+      <button class="tbtn" id="replayBtn" title="Replay the animation (R)">Replay</button>
+      <button class="tbtn" id="resetBtn" title="Reset every control on this scene (Shift+R)">Reset</button>
+      <button class="tbtn" id="slowBtn" title="Slow motion (S)">Slow motion</button>
+    </div>
+    <div class="where">
+      <div class="where-title" id="whereTitle"></div>
+      <div class="dots" id="dots"></div>
+    </div>
+    <div class="count" id="count"></div>
+    <button class="nav primary" id="nextBtn" aria-label="Next scene">Next &nbsp;▶</button>
+  </footer>
+
+  <div id="menu" class="overlay" hidden>
+    <div class="ov-box wide">
+      <div class="ov-head"><h2>All scenes</h2><button class="tbtn" data-close>Close</button></div>
+      <div id="menuGrid" class="menu-grid"></div>
+    </div>
+  </div>
+
+  <div id="help" class="overlay" hidden>
+    <div class="ov-box">
+      <div class="ov-head"><h2>Keyboard and clicker</h2><button class="tbtn" data-close>Close</button></div>
+      <table class="keys">
+        <tr><td><kbd>→</kbd> <kbd>PgDn</kbd></td><td>Next scene</td></tr>
+        <tr><td><kbd>←</kbd> <kbd>PgUp</kbd></td><td>Previous scene</td></tr>
+        <tr><td><kbd>Space</kbd></td><td>Pause or play the animation</td></tr>
+        <tr><td><kbd>R</kbd></td><td>Replay the animation</td></tr>
+        <tr><td><kbd>Shift</kbd> + <kbd>R</kbd></td><td>Reset every control on the scene</td></tr>
+        <tr><td><kbd>S</kbd></td><td>Slow motion</td></tr>
+        <tr><td><kbd>T</kbd></td><td>Switch Teacher / Explore mode</td></tr>
+        <tr><td><kbd>E</kbd></td><td>Reveal the observation and explanation (Explore mode)</td></tr>
+        <tr><td><kbd>F</kbd></td><td>Fullscreen</td></tr>
+        <tr><td><kbd>M</kbd></td><td>All scenes</td></tr>
+        <tr><td><kbd>Home</kbd> <kbd>End</kbd></td><td>First or last scene</td></tr>
+      </table>
+      <p class="ov-note"><b>Teacher mode</b> keeps the explanation beside the simulation. <b>Explore mode</b> hides the observation and explanation until the class has made a prediction and tried the experiment.</p>
+    </div>
+  </div>
+
+  <div id="errbar" hidden></div>
+</div>
+</div>
+<noscript><p style="color:#fff;padding:24px;font:20px sans-serif">This lab needs JavaScript. Please open it in Chrome, Edge or Firefox.</p></noscript>
+<script src="js/core.js"></script>
+<script src="js/draw.js"></script>
+<script src="js/optics.js"></script>
+<script src="js/s_intro.js"></script>
+<script src="js/s_mirrors.js"></script>
+<script src="js/s_mirrorlab.js"></script>
+<script src="js/s_reflection.js"></script>
+<script src="js/s_beams.js"></script>
+<script src="js/s_apps.js"></script>
+<script src="js/s_lenses.js"></script>
+<script src="js/s_lenslab.js"></script>
+<script src="js/s_lensapps.js"></script>
+<script src="js/s_recap.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
