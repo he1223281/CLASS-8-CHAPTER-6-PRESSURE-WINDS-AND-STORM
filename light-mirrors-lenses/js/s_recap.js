@@ -4,7 +4,7 @@
 function miniRays(c, w, h, kind) {
   // tiny icon: parallel rays meeting a mirror/lens (exact tracing), used in the recap table
   const Y = h / 2;
-  c.fillStyle = '#040817'; c.fillRect(0, 0, w, h);
+  c.fillStyle = '#f6f7fb'; c.fillRect(0, 0, w, h);
   if (!kind.endsWith('-l')) {
     const m = { type: kind, P: P(w - 26, Y), R: 120, a: 30, rot: 0 };
     for (const y of [-20, -10, 0, 10, 20]) { const r = OPT.traceMirror(m, P(6, Y + y), P(1, 0), 120); D.ray(c, r.pts, COL.cyan, 1.4, { glow: false }); }
@@ -111,8 +111,8 @@ LL.add({
       const row = el('div', { style: 'display:flex;gap:12px;margin:8px 0' });
       const sels = draws.map((d, i) => {
         const cv = makeCanvas(150, 150);
-        statics.push(() => { cv.begin(); cv.ctx.fillStyle = '#0a1430'; cv.ctx.fillRect(0, 0, 150, 150); d(cv.ctx); });
-        const s = el('select', { id: `ll-quiz-${no}-${i}`, style: 'font:700 17px var(--f-body);background:#040817;color:#eef3ff;border:1px solid #233466;border-radius:8px;padding:5px;width:150px' },
+        statics.push(() => { cv.begin(); cv.ctx.fillStyle = '#f2f4f9'; cv.ctx.fillRect(0, 0, 150, 150); d(cv.ctx); });
+        const s = el('select', { id: `ll-quiz-${no}-${i}`, },
           el('option', { value: '' }, 'Choose…'), choices.map(cn => el('option', { value: cn }, cn)));
         row.append(el('div', { style: 'display:flex;flex-direction:column;gap:6px;align-items:center' }, el('div', { class: 'cvwrap' }, cv.cv), el('b', { style: 'font-size:18px' }, '(' + ['i', 'ii', 'iii'][i] + ')'), s));
         return { s, cv };
@@ -141,7 +141,7 @@ LL.add({
     mcq(10, '<b>Assertion:</b> Convex mirrors are preferred for observing the traffic behind us. <b>Reason:</b> Convex mirrors provide a significantly larger view area than plane mirrors.', ['Both correct, and the Reason explains the Assertion', 'Both correct, but the Reason does not explain the Assertion', 'Assertion correct, Reason incorrect', 'Both incorrect'], 0, 'Both are correct, and the wider field of view is exactly why convex mirrors are used (see the field-of-view diagram in Scene 7).');
     const fig11 = makeCanvas(520, 130);
     statics.push(function () {
-      const c = fig11.ctx; fig11.begin(); c.fillStyle = '#040817'; c.fillRect(0, 0, 520, 130);
+      const c = fig11.ctx; fig11.begin(); c.fillStyle = '#f6f7fb'; c.fillRect(0, 0, 520, 130);
       const rowF = (y, mi, lab) => { D.text(c, lab, 14, y, { size: 18, col: COL.muted, align: 'left' }); D.arrowObj(c, 70, y + 22, 34, COL.amber, { w: 4 }); D.line(c, P(260, y - 22), P(260, y + 26), '#dfe8ff', 4); D.arrowObj(c, mi, y + 22, (mi === 450 ? 34 : 14), COL.magenta, { dashed: true, w: 3 }); D.text(c, 'O', 70, y + 34, { size: 15, col: COL.amber }); D.text(c, 'M', 260, y + 36, { size: 15, col: COL.white }); D.text(c, 'I', mi, y + 34, { size: 15, col: COL.magenta }); };
       rowF(28, 450, '(a)'); rowF(92, 320, '(b)');
     });

@@ -167,6 +167,8 @@ function labLayout(root, { kicker, title, cvH = 700 }) {
 
 /* ---------- scene engine ---------- */
 LL.add = s => LL.scenes.push(s);
+/* place a scene just before another one (used by the concept slides) */
+LL.insertBefore = (id, s) => { const i = LL.find(id); if (i < 0) LL.scenes.push(s); else LL.scenes.splice(i, 0, s); };
 LL.find = id => LL.scenes.findIndex(s => s.id === id);
 
 function buildScene(s) {
@@ -192,7 +194,8 @@ LL.go = (i, opts) => {
   try { history.replaceState(null, '', '#' + s.id); } catch (e) { /* sandboxed */ }
 };
 LL.goId = (id, opts) => { const i = LL.find(id); if (i >= 0) LL.go(i, opts); };
-LL.next = () => LL.go(LL.idx + 1);
+/* Next first reveals the next build step of the current scene (concept slides), then moves on */
+LL.next = () => { const i = LL.cur && LL.cur.inst; if (i && i.advance && i.advance()) return; LL.go(LL.idx + 1); };
 LL.prev = () => LL.go(LL.idx - 1);
 
 function updateBars() {

@@ -1,6 +1,6 @@
 # Light Lab: Mirrors and Lenses
 
-An interactive classroom lab for **Grade 8 Science (NCERT Curiosity), Chapter 10: Light: Mirrors and Lenses**. It is built for a 65-inch classroom TV or a projector, and also works on a laptop.
+An interactive classroom lab for **Grade 8 Science (NCERT Curiosity), Chapter 10: Light: Mirrors and Lenses**. It is built for a 65-inch classroom TV or a projector, and also works on a laptop. It uses a light, colourful theme.
 
 ## How to open it
 
@@ -24,9 +24,13 @@ No installation, no internet and no libraries are needed. When the computer is o
 
 **Read aloud** reads the explanation using the browser's built-in voice, where one is available.
 
-## Scenes (18, plus the opening)
+## Scenes (29, plus the opening)
 
-Each lab follows **Predict → Experiment → Observe → Explain**.
+**Concept slides (11)** teach each idea before its lab: definition boxes with key words as blanks (filled in Teacher mode, hidden in Explore mode until clicked), the laws in their own boxes, important points, a "Remember" box, an animated labelled diagram, and object-position tables for concave mirrors and convex lenses. **Next ▶** reveals one point at a time, like a slide build; once everything is shown it moves on. *Show all* and *Start again* are under the diagram.
+
+Concept slides: Light, reflection and images · What are spherical mirrors? · Parts of a spherical mirror · Real and virtual images · Images formed by spherical mirrors · The laws of reflection · Converging and diverging mirrors · Uses of spherical mirrors · What is a lens? · Refraction of light · Images formed by lenses.
+
+**Labs** follow **Predict → Experiment → Observe → Explain**.
 
 | # | Scene | NCERT link | What students can do |
 |---|---|---|---|

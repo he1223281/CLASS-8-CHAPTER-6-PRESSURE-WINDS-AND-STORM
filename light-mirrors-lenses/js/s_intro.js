@@ -42,12 +42,12 @@ LL.add({
       frame(dt, now) {
         tt += dt; const T = tt % 11;
         const c = o.ctx; o.begin(); D.bg(o, { grid: false, top: '#0b1840', bot: '#03060f' });
-        for (const s of stars) { c.globalAlpha = s.a * (.6 + .4 * Math.sin(now * 1.3 + s.p)); c.fillStyle = '#cfe3ff'; c.fillRect(s.x, s.y, s.r, s.r); }
+        for (const s of stars) { c.globalAlpha = s.a * (.6 + .4 * Math.sin(now * 1.3 + s.p)); c.fillStyle = 'rgba(10,124,255,.35)'; c.fillRect(s.x, s.y, s.r, s.r); }
         c.globalAlpha = 1;
         const fade = T > 10 ? 1 - (T - 10) : 1;
         const p1 = clamp((T - .4) / 2.6, 0, 1), p2 = clamp((T - 3.4) / 2.6, 0, 1);
         // soft spotlight panels
-        c.fillStyle = 'rgba(63,230,255,.035)'; D.rrect(c, 960, 140, 920, 380, 30); c.fill(); D.rrect(c, 960, 590, 920, 400, 30); c.fill();
+        c.fillStyle = 'rgba(10,124,255,.035)'; D.rrect(c, 960, 140, 920, 380, 30); c.fill(); D.rrect(c, 960, 590, 920, 400, 30); c.fill();
         D.text(c, 'REFLECTION', 990, 166, { size: 20, col: COL.amber, align: 'left', font: 'mono', alpha: fade });
         D.text(c, 'a concave mirror brings parallel light together', 990, 192, { size: 19, col: COL.muted, align: 'left', weight: 400, alpha: fade });
         D.text(c, 'REFRACTION', 990, 625, { size: 20, col: COL.amber, align: 'left', font: 'mono', alpha: fade });
@@ -168,7 +168,7 @@ LL.add({
           let cap;
           if (r.inf) cap = 'Too large and blurred to see';
           else { const a = Math.abs(r.m); cap = (r.m > 0 ? 'Upright' : 'Upside down') + ' · ' + (a > 1.03 ? 'larger' : a < .97 ? 'smaller' : 'same size') + '  (×' + a.toFixed(a >= 10 ? 0 : 2) + ')'; }
-          D.text(c, cap, cx, 566, { size: 21, col: r.inf ? COL.amber : r.m > 0 ? COL.cyan : COL.magenta, bg: 'rgba(4,8,23,.8)' });
+          D.text(c, cap, cx, 566, { size: 21, col: r.inf ? COL.amber : r.m > 0 ? COL.cyan : COL.magenta, bg: 'rgba(255,255,255,.9)' });
           // the student seen from behind, nearer = bigger
           const hs = clamp(110 - dcm * 1.2, 36, 110), hy = 700 - hs * .55;
           c.save(); c.translate(cx, hy);
@@ -176,7 +176,7 @@ LL.add({
           c.fillStyle = '#20140c'; c.beginPath(); c.ellipse(0, 0, hs * .42, hs * .5, 0, 0, Math.PI * 2); c.fill();
           c.restore();
         }
-        D.text(c, 'Distance: ' + dcm + ' cm', 1240, 640, { size: 20, col: COL.amber, align: 'right', font: 'mono', bg: 'rgba(4,8,23,.75)' });
+        D.text(c, 'Distance: ' + dcm + ' cm', 1240, 640, { size: 20, col: COL.amber, align: 'right', font: 'mono', bg: 'rgba(255,255,255,.9)' });
         D.text(c, 'Model: f = 20 cm for the curved mirrors · click a mirror to investigate it', 20, 16, { size: 16, col: COL.muted, align: 'left', weight: 400 });
       }
     };

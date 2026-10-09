@@ -54,7 +54,7 @@ LL.add({
     }
     function inset(c, mi) {
       const x0 = 920, y0 = 30, w = 320, h = 640;
-      c.save(); c.fillStyle = 'rgba(4,8,23,.92)'; D.rrect(c, x0, y0, w, h, 16); c.fill(); c.strokeStyle = COL.line; c.lineWidth = 2; c.stroke(); c.restore();
+      c.save(); c.fillStyle = 'rgba(255,255,255,.9)'; D.rrect(c, x0, y0, w, h, 16); c.fill(); c.strokeStyle = COL.line; c.lineWidth = 2; c.stroke(); c.restore();
       D.text(c, 'Side view: light from a letter', x0 + w / 2, y0 + 26, { size: 17, col: COL.muted });
       // vertical layout: page at bottom, eye at top
       const pageY = y0 + h - 60, S = stage === 'mag' ? 26 : 80, lensY = pageY - (stage === 'mag' ? hcm : 1) * S, cx = x0 + w / 2;
@@ -123,7 +123,7 @@ LL.add({
           c.strokeStyle = '#2b2b33'; c.lineWidth = 16; c.beginPath(); c.arc(pos.x, pos.y, r + 6, 0, Math.PI * 2); c.stroke();
           c.strokeStyle = '#c9a24a'; c.lineWidth = 4; c.stroke();
           c.save(); c.translate(pos.x, pos.y); c.rotate(.75); c.fillStyle = '#3a2418'; D.rrect(c, r + 8, -16, 150, 32, 14); c.fill(); c.restore();
-          const g = c.createLinearGradient(pos.x - r, pos.y - r, pos.x + r, pos.y + r); g.addColorStop(0, 'rgba(255,255,255,.35)'); g.addColorStop(.3, 'rgba(255,255,255,0)');
+          const g = c.createLinearGradient(pos.x - r, pos.y - r, pos.x + r, pos.y + r); g.addColorStop(0, 'rgba(30,35,60,.35)'); g.addColorStop(.3, 'rgba(255,255,255,0)');
           c.fillStyle = g; c.beginPath(); c.arc(pos.x, pos.y, r, 0, Math.PI * 2); c.fill();
         }
         c.restore();
@@ -254,7 +254,7 @@ LL.add({
         t += dt; const c = o.ctx; o.begin(); D.bg(o);
         const n1 = MEDIA[m1].n, n2 = MEDIA[m2].n, a = iDeg * DEG;
         c.save(); c.fillStyle = MEDIA[m1].col; c.fillRect(0, 0, o.w, O.y); c.fillStyle = MEDIA[m2].col; c.fillRect(0, O.y, o.w, o.h - O.y); c.restore();
-        D.line(c, P(0, O.y), P(o.w, O.y), 'rgba(200,230,255,.7)', 2);
+        D.line(c, P(0, O.y), P(o.w, O.y), '#6f9fe0', 2);
         D.text(c, MEDIA[m1].name + '  (n = ' + n1.toFixed(2) + ')', 24, 30, { size: 22, col: COL.white, align: 'left' });
         D.text(c, MEDIA[m2].name + '  (n = ' + n2.toFixed(2) + ')', 24, O.y + 34, { size: 22, col: COL.white, align: 'left' });
         D.line(c, P(O.x, O.y - 330), P(O.x, O.y + 330), COL.amber, 2, [10, 7]);
@@ -287,11 +287,11 @@ LL.add({
           }
         }
         D.ray(c, [S, O], COL.cyan, 3.2); D.arrowOn(c, S, O, COL.cyan, 15, .55);
-        if (!tir) { D.ray(c, [O, E], COL.magenta, 3.2); D.arrowOn(c, O, E, COL.magenta, 15, .55); D.line(c, O, V.add(O, V.mul(din, 300)), 'rgba(255,255,255,.35)', 1.5, [4, 6]); D.text(c, 'if it did not bend', O.x + din.x * 300 + 8, O.y + din.y * 300, { size: 15, col: COL.muted, align: 'left', weight: 400 }); }
+        if (!tir) { D.ray(c, [O, E], COL.magenta, 3.2); D.arrowOn(c, O, E, COL.magenta, 15, .55); D.line(c, O, V.add(O, V.mul(din, 300)), 'rgba(30,35,60,.35)', 1.5, [4, 6]); D.text(c, 'if it did not bend', O.x + din.x * 300 + 8, O.y + din.y * 300, { size: 15, col: COL.muted, align: 'left', weight: 400 }); }
         D.dot(c, S.x, S.y, 12, '#fff6c8');
         if (iDeg > 0) D.angleArc(c, O, 90, -Math.PI / 2 - a, -Math.PI / 2, COL.cyan, 'i = ' + iDeg + '°', 128);
         if (!tir && rr > .002) D.angleArc(c, O, 90, Math.PI / 2 - rr, Math.PI / 2, COL.magenta, 'r = ' + (rr / DEG).toFixed(1) + '°', 128);
-        if (tir) D.text(c, 'No light gets out: total internal reflection (higher classes)', O.x, O.y + 120, { size: 21, col: COL.amber, bg: 'rgba(4,8,23,.85)' });
+        if (tir) D.text(c, 'No light gets out: total internal reflection (higher classes)', O.x, O.y + 120, { size: 21, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
         ro.set('sp', `${MEDIA[m1].name}: ${(300 / n1).toFixed(0)}k → ${MEDIA[m2].name}: ${(300 / n2).toFixed(0)}k km/s`);
         ro.set('i', iDeg + '°'); ro.set('r', tir ? '— (no refracted ray)' : (rr / DEG).toFixed(1) + '°', true);
         ro.set('b', tir ? 'All reflected back' : iDeg === 0 || n1 === n2 ? 'Not at all' : n2 > n1 ? 'Towards the normal' : 'Away from the normal');
@@ -319,13 +319,13 @@ function drawLensBeam(c, o, Lg, opt, now) {
     if (showBack && Lg.type === 'concave' && pr >= 1 && r.out) D.line(c, r.exit, V.sub(r.exit, V.mul(r.out, 520)), COL.magenta, 1.6, [7, 7], .75);
   }
   const outline = OPT.lensOutline(Lg);
-  c.save(); D.path(c, outline); c.closePath(); c.fillStyle = 'rgba(120,225,255,.18)'; c.fill(); c.strokeStyle = 'rgba(160,240,255,.95)'; c.lineWidth = 2.5; c.stroke(); c.restore();
+  c.save(); D.path(c, outline); c.closePath(); c.fillStyle = 'rgba(120,225,255,.18)'; c.fill(); c.strokeStyle = '#1f8fff'; c.lineWidth = 2.5; c.stroke(); c.restore();
   if (showF && Lg.type !== 'plate') {
     const fx = OPT.lensFocusX(Lg);
     if (fx != null && fx > 0 && fx < o.w) {
       const real = Lg.type === 'convex';
       if (real) D.dot(c, fx, Lg.Y, 7, COL.amber); else { c.save(); c.strokeStyle = COL.magenta; c.lineWidth = 2.5; c.setLineDash([4, 4]); c.beginPath(); c.arc(fx, Lg.Y, 9, 0, Math.PI * 2); c.stroke(); c.restore(); }
-      D.text(c, real ? 'F' : 'F (virtual)', fx, Lg.Y + 30, { size: 20, col: real ? COL.amber : COL.magenta, font: 'mono', bg: 'rgba(4,8,23,.7)' });
+      D.text(c, real ? 'F' : 'F (virtual)', fx, Lg.Y + 30, { size: 20, col: real ? COL.amber : COL.magenta, font: 'mono', bg: 'rgba(255,255,255,.9)' });
     }
   }
 }
@@ -362,7 +362,7 @@ LL.add({
           D.axis(c, 350, 0, o.w, null);
           drawLensBeam(c, o, lensGeom(st.type, 560, 350, 420, 170), { ...base, n: st.n, spacing: st.spacing }, now);
           const msg = { plate: 'Flat plate: rays stay parallel', convex: 'Convex lens: rays converge (converging lens)', concave: 'Concave lens: rays diverge (diverging lens)' }[st.type];
-          D.text(c, msg, 630, 34, { size: 24, col: st.type === 'concave' ? COL.magenta : st.type === 'convex' ? COL.amber : COL.cyan, bg: 'rgba(4,8,23,.85)' });
+          D.text(c, msg, 630, 34, { size: 24, col: st.type === 'concave' ? COL.magenta : st.type === 'convex' ? COL.amber : COL.cyan, bg: 'rgba(255,255,255,.9)' });
         } else {
           ['plate', 'convex', 'concave'].forEach((tp, i) => {
             const y = 118 + i * 232;

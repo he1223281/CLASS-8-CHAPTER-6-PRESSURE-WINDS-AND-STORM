@@ -112,7 +112,7 @@ function ImageLab(root, cfg) {
       const I = R.I, real = !img.inf && (kind === 'mirror' ? img.v < 0 : img.v > 0);
 
       // behind-the-mirror tint
-      if (kind === 'mirror') { c.save(); c.fillStyle = 'rgba(2,4,12,.45)'; c.fillRect(X, 0, o.w - X, o.h); c.restore(); D.text(c, 'BEHIND THE MIRROR', o.w - 18, 24, { size: 15, col: COL.muted, align: 'right', font: 'mono' }); }
+      if (kind === 'mirror') { c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(X, 0, o.w - X, o.h); c.restore(); D.text(c, 'BEHIND THE MIRROR', o.w - 18, 24, { size: 15, col: COL.muted, align: 'right', font: 'mono' }); }
       D.axis(c, Y, 0, o.w, st.labels ? 'Principal axis' : null);
       if (st.labels) zoneLabels(c);
       // focal markers
@@ -143,7 +143,7 @@ function ImageLab(root, cfg) {
       if (realistic) D.candle(c, T.x, Y, st.h * S, { t: now });
       else D.arrowObj(c, T.x, Y, st.h * S, COL.amber, { w: 6 });
       D.dot(c, T.x, T.y, 7, COL.amber);
-      if (st.labels) D.text(c, 'Object', T.x, Y + 26, { size: 18, col: COL.amber, bg: 'rgba(4,8,23,.7)' });
+      if (st.labels) D.text(c, 'Object', T.x, Y + 26, { size: 18, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
 
       // image
       let offTxt = null;
@@ -153,21 +153,21 @@ function ImageLab(root, cfg) {
         if (inView) {
           if (realistic) D.candle(c, I.x, Y, hpx, { ghost: !real, real, t: now });
           else D.arrowObj(c, I.x, Y, hpx, real ? COL.cyan : COL.magenta, { dashed: !real, w: 5 });
-          if (st.labels) D.text(c, real ? 'Real image' : 'Virtual image', I.x, Y + (hpx > 0 ? 26 : -26) + (hpx > 0 ? 0 : 0), { size: 18, col: real ? COL.cyan : COL.magenta, bg: 'rgba(4,8,23,.75)' });
+          if (st.labels) D.text(c, real ? 'Real image' : 'Virtual image', I.x, Y + (hpx > 0 ? 26 : -26) + (hpx > 0 ? 0 : 0), { size: 18, col: real ? COL.cyan : COL.magenta, bg: 'rgba(255,255,255,.9)' });
         } else {
           offTxt = `Image off screen: v = ${img.v.toFixed(0)} cm, ${Math.abs(img.m).toFixed(1)}× ${real ? 'real' : 'virtual'}`;
           D.offscreen(c, o, I.x, I.y, offTxt);
         }
       }
       if (img.inf && p >= .98) {
-        D.text(c, kind === 'mirror' ? 'Object at F: reflected rays come out parallel.' : 'Object at F₁: refracted rays come out parallel.', o.w / 2, 46, { size: 22, col: COL.amber, bg: 'rgba(4,8,23,.85)' });
-        D.text(c, 'They never meet, so the image is "at infinity" (no clear image).', o.w / 2, 80, { size: 19, col: COL.amber, weight: 400, bg: 'rgba(4,8,23,.85)' });
+        D.text(c, kind === 'mirror' ? 'Object at F: reflected rays come out parallel.' : 'Object at F₁: refracted rays come out parallel.', o.w / 2, 46, { size: 22, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
+        D.text(c, 'They never meet, so the image is "at infinity" (no clear image).', o.w / 2, 80, { size: 19, col: COL.amber, weight: 400, bg: 'rgba(255,255,255,.9)' });
       }
 
       // lens screen
       if (kind === 'lens' && st.screen) {
         const sx = st.sx;
-        c.save(); c.fillStyle = 'rgba(236,240,250,.92)'; c.fillRect(sx - 7, Y - 200, 14, 400); c.restore();
+        c.save(); c.fillStyle = '#c9d0de'; c.fillRect(sx - 7, Y - 200, 14, 400); c.restore();
         D.text(c, 'Screen', sx, Y - 216, { size: 17, col: COL.white });
         let msg;
         if (img.inf) msg = 'Only a blur on the screen';
@@ -182,7 +182,7 @@ function ImageLab(root, cfg) {
           c.restore();
           msg = blur < 4 ? 'Sharp image on the screen!' : 'Blurred: move the screen';
         }
-        D.text(c, msg, clamp(sx, 150, o.w - 150), Y + 230, { size: 18, col: msg.startsWith('Sharp') ? COL.green : COL.magenta, bg: 'rgba(4,8,23,.85)' });
+        D.text(c, msg, clamp(sx, 150, o.w - 150), Y + 230, { size: 18, col: msg.startsWith('Sharp') ? COL.green : COL.magenta, bg: 'rgba(255,255,255,.9)' });
       }
 
       legend(c, R.rays);

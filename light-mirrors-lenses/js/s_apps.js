@@ -20,7 +20,7 @@ function fovDiagram(c, x0, w, h, type, label, now) {
   if (rA && rB) {
     const fa = V.add(rA.hit, V.mul(rA.out, 600)), fb = V.add(rB.hit, V.mul(rB.out, 600));
     c.save(); c.beginPath(); c.rect(x0, 0, w, h); c.clip();
-    c.fillStyle = type === 'convex' ? 'rgba(255,79,168,.16)' : 'rgba(63,230,255,.14)';
+    c.fillStyle = type === 'convex' ? 'rgba(255,79,168,.16)' : 'rgba(10,124,255,.14)';
     c.beginPath(); c.moveTo(rA.hit.x, rA.hit.y); c.lineTo(fa.x, fa.y); c.lineTo(fb.x, fb.y); c.lineTo(rB.hit.x, rB.hit.y); c.closePath(); c.fill();
     D.ray(c, [E, rA.hit, fa], COL.amber, 2); D.ray(c, [E, rB.hit, fb], COL.amber, 2);
     c.restore();
@@ -77,11 +77,11 @@ const APPS = [
         const d = V.norm(P(Math.cos(a * DEG), Math.sin(a * DEG)));
         const r = OPT.traceMirror(m, Fp, d, 430);
         if (!r.hit) continue;
-        D.ray(c, r.pts, '#ffd27a', 2.2); D.arrowOn(c, r.pts[1], r.pts[2], '#ffd27a', 12, .5);
+        D.ray(c, r.pts, '#ff9500', 2.2); D.arrowOn(c, r.pts[1], r.pts[2], '#ff9500', 12, .5);
         D.pulses(c, r.pts, t, '#fff', { speed: 200, gap: 150, r: 2.6 });
       }
       D.mirror(c, m); D.dot(c, Fp.x, Fp.y, 9, '#fff3b0'); D.text(c, 'bulb at F', Fp.x, Fp.y + 32, { size: 17, col: COL.amber });
-      D.text(c, 'parallel beam', 90, 40, { size: 18, col: '#ffd27a' });
+      D.text(c, 'parallel beam', 90, 40, { size: 18, col: '#ff9500' });
     }
   },
   {
@@ -131,7 +131,7 @@ const APPS = [
         if (!best || e < best.e) best = { e, pt: hh.pt };
       }
       if (best) { D.ray(c, [B, best.pt, A], COL.amber, 2.4); D.arrowOn(c, B, best.pt, COL.amber); D.arrowOn(c, best.pt, A, COL.amber); }
-      D.line(c, A, B, COL.red, 2, [6, 6], .7); D.text(c, 'direct view blocked', 200, 150, { size: 15, col: COL.red, bg: 'rgba(4,8,23,.7)' });
+      D.line(c, A, B, COL.red, 2, [6, 6], .7); D.text(c, 'direct view blocked', 200, 150, { size: 15, col: COL.red, bg: 'rgba(255,255,255,.9)' });
       D.mirror(c, m);
       carShape(c, A.x, A.y, 60, '#2f6fd6', 1); D.text(c, 'driver', A.x, A.y + 30, { size: 15, col: COL.white });
       carShape(c, B.x + 20, B.y, 60, '#e04848', 1); D.text(c, 'hidden car', B.x + 110, B.y, { size: 15, col: COL.white });
@@ -158,12 +158,12 @@ const APPS = [
       const img = OPT.mirrorImage(u, f), T = P(X + u * S, Y - 72);
       const m = { type: 'convex', P: P(X, Y), R: 160, a: 120, rot: 0 };
       const R = OPT.labRays({ kind: 'mirror', type: 'convex', X, Y, s: S, f, T, img, mirror: m, on: { r1: true, r2: false, r3: true, r4: false }, box: { x0: 0, y0: 0, x1: w, y1: h } });
-      c.save(); c.fillStyle = 'rgba(2,4,12,.4)'; c.fillRect(X, 0, w - X, h); c.restore();
+      c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(X, 0, w - X, h); c.restore();
       D.axis(c, Y, 0, w, null); D.mark(c, X + f * S, Y, 'F'); D.mark(c, X + 2 * f * S, Y, 'C', COL.amber);
       for (const r of R.rays) if (r.inc) { D.ray(c, [r.inc[0], r.inc[1], r.out[1]], r.col, 2.4); D.arrowOn(c, r.inc[0], r.inc[1], r.col); if (r.back) D.line(c, r.back[0], r.back[1], r.col, 2, [7, 6]); }
       D.mirror(c, m); D.arrowObj(c, T.x, Y, 72, COL.amber, { label: 'shopper' });
       D.arrowObj(c, R.I.x, Y, Y - R.I.y, COL.magenta, { dashed: true, w: 4 });
-      D.text(c, 'image ×' + img.m.toFixed(2), R.I.x + 10, R.I.y - 30, { size: 17, col: COL.magenta, align: 'left', bg: 'rgba(4,8,23,.7)' });
+      D.text(c, 'image ×' + img.m.toFixed(2), R.I.x + 10, R.I.y - 30, { size: 17, col: COL.magenta, align: 'left', bg: 'rgba(255,255,255,.9)' });
       void t;
     }
   },
@@ -182,7 +182,7 @@ const APPS = [
     detail(c, w, h, t) {
       const pm = { type: 'concave', P: P(530, 175), R: 600, a: 62, rot: 0 };
       const sm = { type: 'plane', P: P(320, 175), R: 1, a: 28, rot: 3 * Math.PI / 4 };
-      c.save(); c.strokeStyle = 'rgba(200,210,235,.6)'; c.lineWidth = 3; c.strokeRect(40, 108, 500, 134); c.strokeRect(300, 66, 40, 42); c.restore();
+      c.save(); c.strokeStyle = 'rgba(70,80,120,.55)'; c.lineWidth = 3; c.strokeRect(40, 108, 500, 134); c.strokeRect(300, 66, 40, 42); c.restore();
       D.text(c, 'eyepiece', 320, 50, { size: 16, col: COL.white });
       for (const y of [-52, -40, 40, 52]) {
         const s = P(0, 175 + y), r1 = OPT.traceMirror(pm, s, P(1, 0), 600);

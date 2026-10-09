@@ -1,9 +1,10 @@
 'use strict';
 /* Drawing helpers: glowing rays, labels, objects, mirrors, lenses, protractor, simple 3D projection. */
 const COL = {
-  ink: '#050a1c', cyan: '#3fe6ff', magenta: '#ff4fa8', amber: '#ffb84d', white: '#eef3ff', muted: '#9fb0d6',
-  green: '#63f2a8', red: '#ff6b7a', violet: '#a98bff', axis: 'rgba(170,190,240,.55)', line: '#233466',
-  r1: '#3fe6ff', r2: '#ffb84d', r3: '#63f2a8', r4: '#c59bff'
+  // light, vibrant palette: 'white' is the main label colour (dark ink on the light canvases)
+  ink: '#f5f5f7', cyan: '#0a7cff', magenta: '#ff2d78', amber: '#f57c00', white: '#1d1d1f', muted: '#6e6e73',
+  green: '#14a356', red: '#ff3b30', violet: '#8e44ec', axis: 'rgba(40,50,90,.42)', line: '#e1e4ec',
+  r1: '#0a7cff', r2: '#ff9500', r3: '#14b85c', r4: '#a347ff', pill: 'rgba(255,255,255,.9)'
 };
 const FONT = {
   body: '"Atkinson Hyperlegible", "Segoe UI", Verdana, sans-serif',
@@ -14,16 +15,18 @@ const P = (x, y) => ({ x, y });
 
 const D = {
   /* cached background: deep gradient, faint optical-bench grid */
-  bg(o, { grid = true, top = '#0c1a44', bot = '#040817' } = {}) {
+  bg(o, { grid = true } = {}) {
     const c = o.ctx;
     if (!o._bg) {
       const off = document.createElement('canvas'); off.width = o.cv.width; off.height = o.cv.height;
       const g = off.getContext('2d'); g.setTransform(o.k, 0, 0, o.k, 0, 0);
-      const gr = g.createRadialGradient(o.w * .45, o.h * .42, 40, o.w * .5, o.h * .5, o.w * .8);
-      gr.addColorStop(0, top); gr.addColorStop(1, bot);
-      g.fillStyle = gr; g.fillRect(0, 0, o.w, o.h);
+      g.fillStyle = '#ffffff'; g.fillRect(0, 0, o.w, o.h);
+      for (const [x, y, r, col] of [[0, 0, .7, 'rgba(10,124,255,.07)'], [1, .1, .6, 'rgba(255,45,120,.06)'], [.7, 1.1, .7, 'rgba(255,149,0,.06)']]) {
+        const gr = g.createRadialGradient(o.w * x, o.h * y, 10, o.w * x, o.h * y, Math.max(o.w, o.h) * r);
+        gr.addColorStop(0, col); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, o.w, o.h);
+      }
       if (grid) {
-        g.strokeStyle = 'rgba(120,150,230,.07)'; g.lineWidth = 1;
+        g.strokeStyle = 'rgba(30,60,140,.06)'; g.lineWidth = 1;
         for (let x = 0; x <= o.w; x += 36) { g.beginPath(); g.moveTo(x + .5, 0); g.lineTo(x + .5, o.h); g.stroke(); }
         for (let y = 0; y <= o.h; y += 36) { g.beginPath(); g.moveTo(0, y + .5); g.lineTo(o.w, y + .5); g.stroke(); }
       }
@@ -38,8 +41,8 @@ const D = {
     c.save(); c.lineJoin = 'round'; c.lineCap = 'round'; c.strokeStyle = col;
     if (dash) c.setLineDash(dash);
     if (glow && !dash) {
-      c.globalAlpha = alpha * .14; c.lineWidth = w * 5; D.path(c, pts); c.stroke();
-      c.globalAlpha = alpha * .3; c.lineWidth = w * 2.2; D.path(c, pts); c.stroke();
+      c.globalAlpha = alpha * .10; c.lineWidth = w * 4.5; D.path(c, pts); c.stroke();
+      c.globalAlpha = alpha * .22; c.lineWidth = w * 2.2; D.path(c, pts); c.stroke();
     }
     c.globalAlpha = alpha; c.lineWidth = w; D.path(c, pts); c.stroke();
     c.restore();
@@ -75,8 +78,10 @@ const D = {
   pulses(c, pts, t, col, { speed = 260, gap = 120, r = 4.5, limit = Infinity } = {}) {
     if (LL.reduced) return;
     const L = Math.min(D.polyLen(pts), limit); if (L < 2) return;
-    c.save(); c.fillStyle = col; c.shadowColor = col; c.shadowBlur = 12;
-    for (let s = (t * speed) % gap; s < L; s += gap) { const q = D.pointAt(pts, s); c.beginPath(); c.arc(q.x, q.y, r, 0, Math.PI * 2); c.fill(); }
+    // on the light theme a pulse is a white bead with a coloured rim (white-ish colours get the ray blue)
+    const rim = /^#f|^#fff|^rgba\(255,255,255/i.test(col) ? COL.cyan : col;
+    c.save(); c.fillStyle = '#ffffff'; c.strokeStyle = rim; c.lineWidth = 2; c.shadowColor = rim; c.shadowBlur = 6;
+    for (let s = (t * speed) % gap; s < L; s += gap) { const q = D.pointAt(pts, s); c.beginPath(); c.arc(q.x, q.y, r, 0, Math.PI * 2); c.fill(); c.stroke(); }
     c.restore();
   },
   text(c, str, x, y, { size = 22, col = COL.white, align = 'center', base = 'middle', weight = 700, font = 'body', bg = null, pad = 6, alpha = 1 } = {}) {
@@ -95,7 +100,7 @@ const D = {
   /* labelled point on the principal axis (F, C, 2F, P...) */
   mark(c, x, y, label, col = COL.white, below = true) {
     D.line(c, P(x, y - 9), P(x, y + 9), col, 2.5);
-    D.text(c, label, x, y + (below ? 26 : -26), { size: 21, col, font: 'mono', bg: 'rgba(4,8,23,.7)', pad: 4 });
+    D.text(c, label, x, y + (below ? 26 : -26), { size: 21, col, font: 'mono', bg: 'rgba(255,255,255,.9)', pad: 4 });
   },
   axis(c, y, x0, x1, label = 'Principal axis') {
     D.line(c, P(x0, y), P(x1, y), COL.axis, 1.5, [10, 7]);
@@ -113,7 +118,7 @@ const D = {
     c.beginPath(); c.moveTo(x, tipY); c.lineTo(x - hs * .7, tipY + dir * hs); c.lineTo(x + hs * .7, tipY + dir * hs); c.closePath(); c.fill();
     if (dashed) { c.globalAlpha = alpha; c.lineWidth = 2.5; c.stroke(); }
     c.restore();
-    if (label) D.text(c, label, x, tipY - dir * 22, { size: 20, col, bg: 'rgba(4,8,23,.7)' });
+    if (label) D.text(c, label, x, tipY - dir * 22, { size: 20, col, bg: 'rgba(255,255,255,.9)' });
   },
   /* candle object/image. hpx<0 draws an inverted candle. ghost = virtual image look. */
   candle(c, x, y0, hpx, { ghost = false, real = false, t = 0, alpha = 1 } = {}) {
@@ -148,16 +153,16 @@ const D = {
     const ax = OPT.mirrorAxis(m), back = P(-ax.x, -ax.y);
     c.save(); c.lineCap = 'round';
     if (hatch) {
-      c.strokeStyle = 'rgba(160,175,210,.55)'; c.lineWidth = 2;
+      c.strokeStyle = 'rgba(70,80,115,.55)'; c.lineWidth = 2;
       for (let i = 2; i < pts.length - 1; i += 3) {
         const q = pts[i]; c.beginPath(); c.moveTo(q.x, q.y); c.lineTo(q.x + back.x * 14 + ax.y * 9, q.y + back.y * 14 - ax.x * 9); c.stroke();
       }
     }
     // silver body
-    c.strokeStyle = realistic ? '#cfd8ea' : '#dfe8ff'; c.lineWidth = realistic ? 10 : 6; c.shadowColor = 'rgba(160,220,255,.6)'; c.shadowBlur = 14;
+    c.strokeStyle = realistic ? '#a9b4c8' : '#8792aa'; c.lineWidth = realistic ? 10 : 6; c.shadowColor = 'rgba(10,124,255,.35)'; c.shadowBlur = 10;
     D.path(c, pts); c.stroke(); c.shadowBlur = 0;
     // reflecting edge highlight
-    c.strokeStyle = 'rgba(63,230,255,.9)'; c.lineWidth = 2;
+    c.strokeStyle = COL.cyan; c.lineWidth = 2.5;
     D.path(c, pts.map(q => P(q.x + ax.x * 3, q.y + ax.y * 3))); c.stroke();
     c.restore();
   },
@@ -174,20 +179,20 @@ const D = {
     c.closePath();
     const g = c.createLinearGradient(x - 40, y - a, x + 40, y + a);
     g.addColorStop(0, 'rgba(120,230,255,.30)'); g.addColorStop(.5, 'rgba(160,240,255,.12)'); g.addColorStop(1, 'rgba(90,200,255,.28)');
-    c.fillStyle = g; c.fill(); c.strokeStyle = 'rgba(150,235,255,.95)'; c.lineWidth = 2.5; c.stroke();
+    c.fillStyle = g; c.fill(); c.strokeStyle = '#1f8fff'; c.lineWidth = 2.5; c.stroke();
     c.restore();
   },
   /* protractor centred on O, angles measured from the normal (straight up) */
   protractor(c, O, r) {
     c.save();
-    c.fillStyle = 'rgba(63,230,255,.05)'; c.strokeStyle = 'rgba(63,230,255,.45)'; c.lineWidth = 2;
+    c.fillStyle = 'rgba(10,124,255,.05)'; c.strokeStyle = 'rgba(10,124,255,.45)'; c.lineWidth = 2;
     c.beginPath(); c.arc(O.x, O.y, r, Math.PI, 2 * Math.PI); c.closePath(); c.fill(); c.stroke();
     for (let d = -90; d <= 90; d += 5) {
       const a = d * DEG, big = d % 10 === 0, L = d % 30 === 0 ? 22 : big ? 15 : 8;
       const sx = O.x + Math.sin(a) * r, sy = O.y - Math.cos(a) * r;
       const ex = O.x + Math.sin(a) * (r - L), ey = O.y - Math.cos(a) * (r - L);
       c.beginPath(); c.moveTo(sx, sy); c.lineTo(ex, ey); c.stroke();
-      if (d % 30 === 0 && Math.abs(d) < 90) D.text(c, Math.abs(d) + '°', O.x + Math.sin(a) * (r - 42) + (d === 0 ? 22 : 0), O.y - Math.cos(a) * (r - 42), { size: 17, col: 'rgba(160,230,255,.9)', font: 'mono', weight: 500 });
+      if (d % 30 === 0 && Math.abs(d) < 90) D.text(c, Math.abs(d) + '°', O.x + Math.sin(a) * (r - 42) + (d === 0 ? 22 : 0), O.y - Math.cos(a) * (r - 42), { size: 17, col: '#2e63b0', font: 'mono', weight: 500 });
     }
     c.restore();
   },
@@ -198,7 +203,7 @@ const D = {
     c.arc(O.x, O.y, r, s, e); c.stroke();
     c.globalAlpha = .14; c.fillStyle = col; c.beginPath(); c.moveTo(O.x, O.y); c.arc(O.x, O.y, r, s, e); c.closePath(); c.fill();
     c.restore();
-    if (label) { const m = (s + e) / 2; D.text(c, label, O.x + Math.cos(m) * lr, O.y + Math.sin(m) * lr, { size: 21, col, font: 'mono', bg: 'rgba(4,8,23,.75)', pad: 5 }); }
+    if (label) { const m = (s + e) / 2; D.text(c, label, O.x + Math.cos(m) * lr, O.y + Math.sin(m) * lr, { size: 21, col, font: 'mono', bg: 'rgba(255,255,255,.9)', pad: 5 }); }
   },
   eye(c, x, y, s = 1, dir = 1) {
     c.save(); c.translate(x, y); c.scale(dir * s, s);
@@ -214,7 +219,7 @@ const D = {
     const ang = Math.atan2(y - cy, x - cx);
     c.save(); c.translate(cx, cy); c.rotate(ang); c.fillStyle = COL.magenta;
     c.beginPath(); c.moveTo(18, 0); c.lineTo(-8, -12); c.lineTo(-8, 12); c.closePath(); c.fill(); c.restore();
-    D.text(c, text, clamp(cx + (cx < o.w / 2 ? 30 : -30), 20, o.w - 20), clamp(cy + 34, 20, o.h - 20), { size: 18, col: COL.magenta, align: cx < o.w / 2 ? 'left' : 'right', bg: 'rgba(4,8,23,.85)' });
+    D.text(c, text, clamp(cx + (cx < o.w / 2 ? 30 : -30), 20, o.w - 20), clamp(cy + 34, 20, o.h - 20), { size: 18, col: COL.magenta, align: cx < o.w / 2 ? 'left' : 'right', bg: 'rgba(255,255,255,.9)' });
   },
   sunGlow(c, x, y, r) {
     const g = c.createRadialGradient(x, y, 2, x, y, r);

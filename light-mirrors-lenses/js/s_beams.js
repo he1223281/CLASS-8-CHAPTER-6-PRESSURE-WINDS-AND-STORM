@@ -31,8 +31,8 @@ function drawMirrorBeam(c, o, m, opt, now) {
   D.mirror(c, m);
   if (showF && m.type !== 'plane') {
     const glow = .5 + .5 * Math.sin(now * 4);
-    if (m.type === 'concave') { D.dot(c, Fp.x, Fp.y, 6 + glow * 3, COL.amber); D.text(c, 'F', Fp.x, Fp.y + 30, { size: 22, col: COL.amber, font: 'mono', bg: 'rgba(4,8,23,.7)' }); }
-    else { c.save(); c.strokeStyle = COL.magenta; c.lineWidth = 2.5; c.setLineDash([4, 4]); c.beginPath(); c.arc(Fp.x, Fp.y, 9, 0, Math.PI * 2); c.stroke(); c.restore(); D.text(c, 'F', Fp.x, Fp.y + 30, { size: 22, col: COL.magenta, font: 'mono', bg: 'rgba(4,8,23,.7)' }); }
+    if (m.type === 'concave') { D.dot(c, Fp.x, Fp.y, 6 + glow * 3, COL.amber); D.text(c, 'F', Fp.x, Fp.y + 30, { size: 22, col: COL.amber, font: 'mono', bg: 'rgba(255,255,255,.9)' }); }
+    else { c.save(); c.strokeStyle = COL.magenta; c.lineWidth = 2.5; c.setLineDash([4, 4]); c.beginPath(); c.arc(Fp.x, Fp.y, 9, 0, Math.PI * 2); c.stroke(); c.restore(); D.text(c, 'F', Fp.x, Fp.y + 30, { size: 22, col: COL.magenta, font: 'mono', bg: 'rgba(255,255,255,.9)' }); }
   }
   return hits;
 }
@@ -77,8 +77,8 @@ LL.add({
           const m = { type: st.type, P: P(1000, 350), R: 600, a: 260, rot };
           drawMirrorBeam(c, o, m, { ...base, n: st.n, spacing: st.spacing, ...mk(st.n) }, now);
           const msg = { plane: 'Plane mirror: parallel rays stay parallel', concave: 'Concave mirror: rays converge at F (real focus)', convex: 'Convex mirror: rays diverge from F (virtual focus)' }[st.type];
-          D.text(c, msg, 630, 36, { size: 24, col: st.type === 'convex' ? COL.magenta : st.type === 'concave' ? COL.amber : COL.cyan, bg: 'rgba(4,8,23,.85)' });
-          if (st.type === 'convex' && st.showF) { const Fp = OPT.mirrorFocus(m); D.text(c, 'rays only seem to come from here', Fp.x + 10, Fp.y - 30, { size: 17, col: COL.magenta, align: 'left', bg: 'rgba(4,8,23,.75)' }); }
+          D.text(c, msg, 630, 36, { size: 24, col: st.type === 'convex' ? COL.magenta : st.type === 'concave' ? COL.amber : COL.cyan, bg: 'rgba(255,255,255,.9)' });
+          if (st.type === 'convex' && st.showF) { const Fp = OPT.mirrorFocus(m); D.text(c, 'rays only seem to come from here', Fp.x + 10, Fp.y - 30, { size: 17, col: COL.magenta, align: 'left', bg: 'rgba(255,255,255,.9)' }); }
         } else {
           ['plane', 'concave', 'convex'].forEach((tp, i) => {
             const y = 118 + i * 232;
@@ -184,20 +184,20 @@ LL.add({
         // rays
         if (sun) for (const h of drawH) {
           const r = traceOne(h);
-          D.ray(c, r.pts, '#ffd27a', 2.2, { alpha: r.miss ? .3 : .9 });
-          D.arrowOn(c, r.pts[0], r.pts[1], '#ffd27a', 11, .35);
+          D.ray(c, r.pts, '#ff9500', 2.2, { alpha: r.miss ? .3 : .9 });
+          D.arrowOn(c, r.pts[0], r.pts[1], '#ff9500', 11, .35);
           if (!LL.reduced) D.pulses(c, r.pts, now + h * .002, '#fff8de', { speed: 300, gap: 200, r: 2.6 });
         }
         if (dev === 'mirror') D.mirror(c, m, { realistic: true });
-        else { const ol = OPT.lensOutline(lensG); c.save(); D.path(c, ol); c.closePath(); c.fillStyle = 'rgba(120,225,255,.2)'; c.fill(); c.strokeStyle = 'rgba(160,240,255,.95)'; c.lineWidth = 2.5; c.stroke(); c.restore(); }
+        else { const ol = OPT.lensOutline(lensG); c.save(); D.path(c, ol); c.closePath(); c.fillStyle = 'rgba(120,225,255,.2)'; c.fill(); c.strokeStyle = '#1f8fff'; c.lineWidth = 2.5; c.stroke(); c.restore(); }
         if (showF) D.mark(c, Fx(), Y, 'F', COL.amber);
         // the paper card (side view)
-        c.save(); c.fillStyle = '#f2f4fa'; c.fillRect(xs - 7, Y - CH, 14, CH * 2); c.restore();
+        c.save(); c.fillStyle = '#c9d0de'; c.fillRect(xs - 7, Y - CH, 14, CH * 2); c.restore();
         if (sun && ys.length) { const yc = (Math.max(...ys) + Math.min(...ys)) / 2; D.dot(c, xs + (dev === 'mirror' ? 8 : -8), yc, 4 + 10 * heat, '#fff6c8'); }
         D.text(c, 'Paper', xs, Y - CH - 18, { size: 18, col: COL.white });
         // paper face inset
         const ix = 30, iy = 470, iw = 300, ih = 200;
-        c.save(); c.fillStyle = 'rgba(4,8,23,.85)'; D.rrect(c, ix, iy, iw, ih, 14); c.fill(); c.strokeStyle = COL.line; c.lineWidth = 2; c.stroke(); c.restore();
+        c.save(); c.fillStyle = 'rgba(255,255,255,.9)'; D.rrect(c, ix, iy, iw, ih, 14); c.fill(); c.strokeStyle = COL.line; c.lineWidth = 2; c.stroke(); c.restore();
         D.text(c, 'What the paper looks like', ix + iw / 2, iy + 20, { size: 16, col: COL.muted });
         const cx = ix + iw / 2, cy = iy + 112, card = 76;
         c.save(); c.fillStyle = '#c9ccd6'; c.fillRect(cx - card, cy - card, card * 2, card * 2);
@@ -213,12 +213,12 @@ LL.add({
         if (heat > .82 && sun) for (let i = 0; i < 4; i++) { const ph = (now * .6 + i * .25) % 1; c.save(); c.globalAlpha = (1 - ph) * .5; c.fillStyle = '#c9c9d4'; c.beginPath(); c.arc(cx + Math.sin(now * 2 + i) * 10, cy - 10 - ph * 70, 6 + ph * 10, 0, Math.PI * 2); c.fill(); c.restore(); }
         // heat meter
         const mx = ix + iw + 18, my = iy + 10, mh = 180;
-        c.save(); c.fillStyle = 'rgba(4,8,23,.85)'; D.rrect(c, mx, my - 10, 36, mh + 20, 10); c.fill();
+        c.save(); c.fillStyle = 'rgba(255,255,255,.9)'; D.rrect(c, mx, my - 10, 36, mh + 20, 10); c.fill();
         const gh = c.createLinearGradient(0, my + mh, 0, my); gh.addColorStop(0, '#3fe6ff'); gh.addColorStop(.5, '#ffb84d'); gh.addColorStop(1, '#ff4f4f');
         c.fillStyle = gh; c.fillRect(mx + 10, my + mh * (1 - heat), 16, mh * heat); c.restore();
         D.text(c, heat > .82 ? 'may char!' : heat > .55 ? 'hot' : heat > .25 ? 'warm' : 'cool', mx + 46, my + mh * (1 - heat), { size: 17, col: heat > .82 ? COL.red : COL.amber, align: 'left' });
         // safety banner
-        D.text(c, '⚠ Virtual experiment. Never look at the Sun or at focused sunlight.', 630, 30, { size: 19, col: COL.amber, bg: 'rgba(40,24,4,.9)' });
+        D.text(c, '⚠ Virtual experiment. Never look at the Sun or at focused sunlight.', 630, 30, { size: 19, col: COL.amber, bg: 'rgba(255,149,0,.14)' });
         ro.set('d', sun && ys.length ? (dSpot / 10).toFixed(dSpot < 30 ? 1 : 0) + ' cm across' : '—');
         ro.set('c', sun && ys.length ? '≈ ' + (conc >= 100 ? Math.round(conc / 10) * 10 : conc.toFixed(1)) + '× direct sunlight' : '—', true);
         ro.set('h', !sun ? 'No sunlight' : heat > .82 ? 'Very hot: paper may start to char' : heat > .55 ? 'Hot' : heat > .25 ? 'Warm' : 'Barely warm');

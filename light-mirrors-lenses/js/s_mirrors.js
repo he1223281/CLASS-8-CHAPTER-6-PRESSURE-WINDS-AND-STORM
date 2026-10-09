@@ -80,18 +80,18 @@ LL.add({
         D.line(c, Cp, Pp, COL.amber, 3, [8, 6]);
         D.dot(c, Cp.x, Cp.y, 7, COL.amber); D.text(c, 'C', Cp.x - 18, Cp.y - 22, { size: 24, col: COL.amber, font: 'mono' });
         D.dot(c, Pp.x, Pp.y, 6, COL.cyan); D.text(c, 'P', Pp.x + 18, Pp.y - 22, { size: 24, col: COL.cyan, font: 'mono' });
-        D.text(c, 'R', (Cp.x + Pp.x) / 2, (Cp.y + Pp.y) / 2 - 22, { size: 22, col: COL.amber, font: 'mono', bg: 'rgba(4,8,23,.7)' });
+        D.text(c, 'R', (Cp.x + Pp.x) / 2, (Cp.y + Pp.y) / 2 - 22, { size: 22, col: COL.amber, font: 'mono', bg: 'rgba(255,255,255,.9)' });
       }
-      D.text(c, type === 'concave' ? 'Shiny side: inside (faces C)' : 'Shiny side: outside (faces away from C)', 390, 40, { size: 22, col: type === 'concave' ? COL.amber : COL.magenta, bg: 'rgba(4,8,23,.75)' });
+      D.text(c, type === 'concave' ? 'Shiny side: inside (faces C)' : 'Shiny side: outside (faces away from C)', 390, 40, { size: 22, col: type === 'concave' ? COL.amber : COL.magenta, bg: 'rgba(255,255,255,.9)' });
       D.text(c, 'Silver = reflecting surface · brown = coated back', 390, 630, { size: 17, col: COL.muted, weight: 400 });
     }
 
     function frame2D(c) {
       const cx = 940, cy = 360, r = 150, aw = capA;
-      c.save(); c.fillStyle = 'rgba(10,20,48,.6)'; c.fillRect(780, 0, 480, 700); c.restore();
+      c.save(); c.fillStyle = 'rgba(10,124,255,.04)'; c.fillRect(780, 0, 480, 700); c.restore();
       D.line(c, P(780, 0), P(780, 700), COL.line, 2);
       D.text(c, 'Side view (cross-section)', 1020, 40, { size: 21, col: COL.white });
-      c.save(); c.setLineDash([6, 6]); c.strokeStyle = 'rgba(127,156,224,.5)'; c.lineWidth = 1.5; c.beginPath(); c.arc(cx, cy, r, 0, Math.PI * 2); c.stroke(); c.restore();
+      c.save(); c.setLineDash([6, 6]); c.strokeStyle = 'rgba(70,100,180,.35)'; c.lineWidth = 1.5; c.beginPath(); c.arc(cx, cy, r, 0, Math.PI * 2); c.stroke(); c.restore();
       D.axis(c, cy, 800, 1240, null);
       // same arc of the circle in both cases; rot = π turns the reflecting side to face right (away from C)
       const m = { type, P: P(cx + r, cy), R: r, a: r * Math.sin(aw), rot: type === 'concave' ? 0 : Math.PI };
@@ -175,7 +175,7 @@ LL.add({
 
     function bracket(c, x0, x1, y, label, col, on) {
       D.line(c, P(x0, y), P(x1, y), col, on ? 3.5 : 2); D.line(c, P(x0, y - 8), P(x0, y + 8), col, 2); D.line(c, P(x1, y - 8), P(x1, y + 8), col, 2);
-      D.text(c, label, (x0 + x1) / 2, y + 22, { size: 20, col, font: 'mono', bg: on ? 'rgba(255,184,77,.25)' : 'rgba(4,8,23,.7)' });
+      D.text(c, label, (x0 + x1) / 2, y + 22, { size: 20, col, font: 'mono', bg: on ? 'rgba(255,184,77,.25)' : 'rgba(255,255,255,.9)' });
     }
     return {
       reset() { setSel('focus'); rays = true; tR.set(true); },
@@ -183,10 +183,10 @@ LL.add({
         t += dt; const c = o.ctx; o.begin(); D.bg(o);
         const glow = .5 + .5 * Math.sin(now * 5);
         // faint full circles
-        c.save(); c.setLineDash([5, 7]); c.strokeStyle = 'rgba(127,156,224,.25)'; c.lineWidth = 1.2;
+        c.save(); c.setLineDash([5, 7]); c.strokeStyle = 'rgba(70,100,180,.35)'; c.lineWidth = 1.2;
         c.beginPath(); c.arc(C1.x, C1.y, cm.R, -.62, .62); c.stroke(); c.beginPath(); c.arc(C2.x, C2.y, vm.R, Math.PI - .62, Math.PI + .62); c.stroke(); c.restore();
         D.line(c, P(20, Y), P(1240, Y), sel === 'axis' ? COL.amber : COL.axis, sel === 'axis' ? 3 : 1.5, [10, 7]);
-        D.text(c, 'Principal axis', 1150, Y - 20, { size: 18, col: sel === 'axis' ? COL.amber : COL.muted, bg: 'rgba(4,8,23,.7)' });
+        D.text(c, 'Principal axis', 1150, Y - 20, { size: 18, col: sel === 'axis' ? COL.amber : COL.muted, bg: 'rgba(255,255,255,.9)' });
         if (rays) {
           for (let k = -3; k <= 3; k++) {
             if (!k) continue;
@@ -210,7 +210,7 @@ LL.add({
           const on = sel === k;
           if (on) D.dot(c, lab === 'P' ? (x < 660 ? cm.P.x : vm.P.x) : x, Y, 6 + glow * 4, COL.amber);
           else D.dot(c, lab === 'P' ? (x < 660 ? cm.P.x : vm.P.x) : x, Y, 4.5, COL.white, false);
-          D.text(c, lab, x, Y + 34, { size: 24, col: hl(k), font: 'mono', bg: on ? 'rgba(255,184,77,.25)' : 'rgba(4,8,23,.7)' });
+          D.text(c, lab, x, Y + 34, { size: 24, col: hl(k), font: 'mono', bg: on ? 'rgba(255,184,77,.25)' : 'rgba(255,255,255,.9)' });
         }
         bracket(c, C1.x, cm.P.x, Y + 116, 'R = PC', sel === 'radius' ? COL.amber : COL.white, sel === 'radius');
         bracket(c, vm.P.x, C2.x, Y + 116, 'R = PC', sel === 'radius' ? COL.amber : COL.white, sel === 'radius');
@@ -222,7 +222,7 @@ LL.add({
           D.text(c, 'A', A.x + (m === cm ? -18 : 18), A.y - 12, { size: 20, col: hl('aperture'), font: 'mono' });
           D.text(c, 'B', B.x + (m === cm ? -18 : 18), B.y + 14, { size: 20, col: hl('aperture'), font: 'mono' });
           if (on) { c.save(); c.strokeStyle = COL.amber; c.lineWidth = 9; c.globalAlpha = .35 + .3 * glow; D.path(c, OPT.mirrorPoints(m, 30)); c.stroke(); c.restore(); }
-          D.text(c, 'Aperture', x, Y - 205, { size: 18, col: hl('aperture'), bg: on ? 'rgba(255,184,77,.25)' : 'rgba(4,8,23,.7)' });
+          D.text(c, 'Aperture', x, Y - 205, { size: 18, col: hl('aperture'), bg: on ? 'rgba(255,184,77,.25)' : 'rgba(255,255,255,.9)' });
         }
         D.text(c, 'Concave mirror', cm.P.x - 170, 600, { size: 26, col: COL.amber, font: 'disp' });
         D.text(c, 'Convex mirror', vm.P.x + 170, 600, { size: 26, col: COL.magenta, font: 'disp' });
@@ -278,14 +278,14 @@ LL.add({
 
     function drawDistance(c, now) {
       // behind-the-mirror zone
-      c.save(); c.fillStyle = 'rgba(2,4,12,.55)'; c.fillRect(MX, 0, o.w - MX, o.h); c.restore();
+      c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(MX, 0, o.w - MX, o.h); c.restore();
       D.text(c, 'BEHIND THE MIRROR', MX + 20, 30, { size: 17, col: COL.muted, align: 'left', font: 'mono' });
       D.text(c, 'no light travels here', MX + 20, 54, { size: 17, col: COL.muted, align: 'left', weight: 400 });
-      D.line(c, P(0, FLOOR), P(o.w, FLOOR), 'rgba(160,180,230,.3)', 2);
+      D.line(c, P(0, FLOOR), P(o.w, FLOOR), 'rgba(60,70,110,.35)', 2);
       const xi = 2 * MX - xo, T = P(xo, FLOOR - OH), B = P(xo, FLOOR - 4), IT = P(xi, FLOOR - OH), IB = P(xi, FLOOR - 4);
       if (screen) {
-        c.save(); c.fillStyle = 'rgba(235,240,255,.88)'; c.fillRect(xi - 6, FLOOR - 230, 12, 230); c.restore();
-        D.text(c, 'Screen: no image appears!', xi, FLOOR - 250, { size: 19, col: COL.magenta, bg: 'rgba(4,8,23,.85)' });
+        c.save(); c.fillStyle = '#c9d0de'; c.fillRect(xi - 6, FLOOR - 230, 12, 230); c.restore();
+        D.text(c, 'Screen: no image appears!', xi, FLOOR - 250, { size: 19, col: COL.magenta, bg: 'rgba(255,255,255,.9)' });
       }
       D.candle(c, xi, FLOOR, OH, { ghost: true, t: now });
       D.candle(c, xo, FLOOR, OH, { t: now });
@@ -304,7 +304,7 @@ LL.add({
           D.angleArc(c, H, 42 + k * 16, Math.PI, ai < 0 ? ai + 2 * Math.PI : ai, col, null);
           D.angleArc(c, H, 42 + k * 16, Math.PI, ar < 0 ? ar + 2 * Math.PI : ar, col, null);
           const ang = Math.abs(Math.atan2(S.y - H.y, MX - S.x)) / DEG;
-          D.text(c, `i = r = ${ang.toFixed(0)}°`, MX - 130, H.y + (k ? 22 : -22), { size: 17, col, font: 'mono', align: 'right', bg: 'rgba(4,8,23,.75)' });
+          D.text(c, `i = r = ${ang.toFixed(0)}°`, MX - 130, H.y + (k ? 22 : -22), { size: 17, col, font: 'mono', align: 'right', bg: 'rgba(255,255,255,.9)' });
         }
         k++;
       }
@@ -341,7 +341,7 @@ LL.add({
         const x = 110 + i * 148;
         D.text(c, ch, x - 30, 382, { size: 52, col: COL.white, font: 'disp' });
         c.save(); c.translate(x + 30, 382); c.scale(-1, 1); D.text(c, ch, 0, 0, { size: 52, col: COL.magenta, font: 'disp' }); c.restore();
-        D.line(c, P(x, 350), P(x, 414), 'rgba(63,230,255,.5)', 1.5, [4, 4]);
+        D.line(c, P(x, 350), P(x, 414), 'rgba(10,124,255,.5)', 1.5, [4, 4]);
       });
       D.text(c, 'A, H and O look the same: they are symmetric left-to-right.', 630, 440, { size: 18, col: COL.muted, weight: 400 });
       // ambulance
@@ -359,8 +359,8 @@ LL.add({
     function drawHalf(c) {
       const S = 3.4, floor = 655, MXh = 720, px = MXh - dist * S, eyeH = ph - 10;
       const top = floor - ph * S, eyeY = floor - eyeH * S, ix = MXh + dist * S;
-      c.save(); c.fillStyle = 'rgba(2,4,12,.5)'; c.fillRect(MXh, 0, o.w - MXh, o.h); c.restore();
-      D.line(c, P(0, floor), P(o.w, floor), 'rgba(160,180,230,.35)', 2);
+      c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(MXh, 0, o.w - MXh, o.h); c.restore();
+      D.line(c, P(0, floor), P(o.w, floor), 'rgba(60,70,110,.35)', 2);
       // wall
       D.line(c, P(MXh, 30), P(MXh, floor), 'rgba(160,180,230,.4)', 3);
       const mTop = floor - (ph + eyeH) / 2 * S, mBot = floor - eyeH / 2 * S;
@@ -383,8 +383,8 @@ LL.add({
       // dimension
       const need = (mBot - mTop) / S;
       D.line(c, P(MXh + 26, mTop), P(MXh + 26, mBot), COL.green, 3); D.line(c, P(MXh + 16, mTop), P(MXh + 36, mTop), COL.green, 3); D.line(c, P(MXh + 16, mBot), P(MXh + 36, mBot), COL.green, 3);
-      D.text(c, `Mirror needed: ${need.toFixed(0)} cm`, MXh + 46, (mTop + mBot) / 2 - 16, { size: 22, col: COL.green, align: 'left', bg: 'rgba(4,8,23,.85)' });
-      D.text(c, `= ½ × ${ph} cm`, MXh + 46, (mTop + mBot) / 2 + 18, { size: 20, col: COL.green, align: 'left', font: 'mono', bg: 'rgba(4,8,23,.85)' });
+      D.text(c, `Mirror needed: ${need.toFixed(0)} cm`, MXh + 46, (mTop + mBot) / 2 - 16, { size: 22, col: COL.green, align: 'left', bg: 'rgba(255,255,255,.9)' });
+      D.text(c, `= ½ × ${ph} cm`, MXh + 46, (mTop + mBot) / 2 + 18, { size: 20, col: COL.green, align: 'left', font: 'mono', bg: 'rgba(255,255,255,.9)' });
       D.text(c, `Height ${ph} cm`, px - 70, top - 16, { size: 19, col: COL.white });
       D.text(c, 'Knowledge Pod: the mirror only needs to be half your height, whatever your distance.', 20, 26, { size: 18, col: COL.amber, align: 'left' });
       ro.set('u', dist + ' cm'); ro.set('v', dist + ' cm (behind)'); ro.set('h', ph + ' cm'); ro.set('n', 'Mirror needed: ' + need.toFixed(0) + ' cm', true);

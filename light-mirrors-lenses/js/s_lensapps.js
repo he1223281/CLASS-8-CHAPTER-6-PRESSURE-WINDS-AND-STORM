@@ -59,7 +59,7 @@ LL.add({
     }
     function eyeball(c, x, D_, lensF, label = true) {
       const r = D_ / 2 + 30, cx = x + D_ - r;          // retina (back of the eyeball) sits exactly D_ behind the lens
-      c.save(); c.fillStyle = 'rgba(240,244,252,.08)'; c.strokeStyle = 'rgba(240,244,252,.6)'; c.lineWidth = 3;
+      c.save(); c.fillStyle = 'rgba(150,170,210,.12)'; c.strokeStyle = '#8a94ad'; c.lineWidth = 3;
       c.beginPath(); c.arc(cx, Y, r, 0, Math.PI * 2); c.fill(); c.stroke();
       c.strokeStyle = '#ff6b7a'; c.lineWidth = 6; c.beginPath(); c.arc(cx, Y, r - 3, -.75, .75); c.stroke();      // retina
       c.fillStyle = '#3a6fd8'; c.fillRect(x - 8, Y - 64, 6, 40); c.fillRect(x - 8, Y + 24, 6, 40);                // iris
@@ -77,9 +77,9 @@ LL.add({
         const img = OPT.lensImage(-uPx, f);
         D.axis(c, Y, 0, o.w, null); D.mark(c, X - f, Y, 'F₁'); D.mark(c, X + f, Y, 'F₂');
         lensRays(X, f, T, img);
-        D.lens(c, X, Y, 230, 'convex'); D.arrowObj(c, T.x, Y, 34, COL.amber); D.text(c, 'tiny print', T.x, Y + 56, { size: 18, col: COL.amber, bg: 'rgba(4,8,23,.75)' });
+        D.lens(c, X, Y, 230, 'convex'); D.arrowObj(c, T.x, Y, 34, COL.amber); D.text(c, 'tiny print', T.x, Y + 56, { size: 18, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
         const I = P(X + img.v, Y - img.m * 34);
-        if (I.x > 0) { D.arrowObj(c, I.x, Y, Y - I.y, COL.magenta, { dashed: true }); D.text(c, 'enlarged image ×' + img.m.toFixed(1), I.x, I.y - 26, { size: 19, col: COL.magenta, bg: 'rgba(4,8,23,.75)' }); }
+        if (I.x > 0) { D.arrowObj(c, I.x, Y, Y - I.y, COL.magenta, { dashed: true }); D.text(c, 'enlarged image ×' + img.m.toFixed(1), I.x, I.y - 26, { size: 19, col: COL.magenta, bg: 'rgba(255,255,255,.9)' }); }
         D.eye(c, 1130, Y - 20, 1.2, 1); D.text(c, 'eye', 1130, Y - 60, { size: 17, col: COL.white });
         void now;
       },
@@ -109,8 +109,8 @@ LL.add({
         if (st.wear) { D.lens(c, gx, Y, 90, fg > 0 ? 'convex' : 'concave', { bulge: 14 }); D.text(c, (fg > 0 ? 'convex' : 'concave') + ' spectacle lens', gx, Y - 112, { size: 17, col: COL.green }); }
         const sharp = Math.abs(focusX - retX) < 8;
         D.dot(c, focusX, Y, 6, sharp ? COL.green : COL.amber);
-        D.text(c, sharp ? 'Sharp image on the retina' : focusX < retX ? 'Focus falls in front of the retina: blurred' : 'Focus falls behind the retina: blurred', 630, 40, { size: 22, col: sharp ? COL.green : COL.amber, bg: 'rgba(4,8,23,.85)' });
-        D.text(c, my ? 'Short sight (myopia): far things look blurred' : 'Long sight (hypermetropia): near things look blurred', 630, 74, { size: 19, col: COL.white, weight: 400, bg: 'rgba(4,8,23,.85)' });
+        D.text(c, sharp ? 'Sharp image on the retina' : focusX < retX ? 'Focus falls in front of the retina: blurred' : 'Focus falls behind the retina: blurred', 630, 40, { size: 22, col: sharp ? COL.green : COL.amber, bg: 'rgba(255,255,255,.9)' });
+        D.text(c, my ? 'Short sight (myopia): far things look blurred' : 'Long sight (hypermetropia): near things look blurred', 630, 74, { size: 19, col: COL.white, weight: 400, bg: 'rgba(255,255,255,.9)' });
         void now;
       },
       camera(c, now) {
@@ -128,15 +128,15 @@ LL.add({
         D.text(c, 'sensor', sx + 5, Y + 140, { size: 17, col: COL.green });
         D.arrowObj(c, X + img.v, Y, img.m * h, COL.cyan, { w: 4 });
         if (T.x > 0) D.arrowObj(c, T.x, Y, h, COL.amber, { label: 'object' }); else D.text(c, '← object far away (off screen)', 20, Y - h - 20, { size: 18, col: COL.amber, align: 'left' });
-        D.text(c, `image ×${Math.abs(img.m).toFixed(2)}, upside down`, X + img.v + 30, Y + 70, { size: 18, col: COL.cyan, align: 'left', bg: 'rgba(4,8,23,.75)' });
-        D.text(c, 'Autofocus: the lens–sensor gap changes so the image stays sharp', 630, 34, { size: 19, col: COL.white, bg: 'rgba(4,8,23,.85)' });
+        D.text(c, `image ×${Math.abs(img.m).toFixed(2)}, upside down`, X + img.v + 30, Y + 70, { size: 18, col: COL.cyan, align: 'left', bg: 'rgba(255,255,255,.9)' });
+        D.text(c, 'Autofocus: the lens–sensor gap changes so the image stays sharp', 630, 34, { size: 19, col: COL.white, bg: 'rgba(255,255,255,.9)' });
         void now;
       },
       microscope(c, now) {
         const xo = 330, fo = 70, uo = 85, h = 16, xe0 = 0;
         const v1 = 1 / (1 / fo - 1 / uo), I1x = xo + v1, m1 = -v1 / uo, xe = I1x + 90, fe = 120;
         const u2 = -(xe - I1x), v2 = 1 / (1 / fe + 1 / u2), m2 = v2 / u2, Fx = xe + v2;
-        c.save(); c.strokeStyle = 'rgba(200,210,235,.45)'; c.lineWidth = 3; c.strokeRect(xo - 10, Y - 120, xe - xo + 20, 240); c.restore();
+        c.save(); c.strokeStyle = 'rgba(70,80,120,.55)'; c.lineWidth = 3; c.strokeRect(xo - 10, Y - 120, xe - xo + 20, 240); c.restore();
         D.axis(c, Y, 0, o.w, null);
         const objX = xo - uo;
         const lenses = [{ x: xo, f: fo }, { x: xe, f: fe }];
@@ -149,15 +149,15 @@ LL.add({
         }
         D.lens(c, xo, Y, 90, 'convex', { bulge: 22 }); D.lens(c, xe, Y, 110, 'convex', { bulge: 14 });
         D.arrowObj(c, objX, Y, h, COL.amber, { label: 'specimen' });
-        D.arrowObj(c, I1x, Y, h * m1, COL.cyan, { w: 4 }); D.text(c, 'first image (real)', I1x, sy(h * m1) + 22, { size: 16, col: COL.cyan, bg: 'rgba(4,8,23,.7)' });
-        D.arrowObj(c, Fx, Y, h * m1 * m2, COL.magenta, { dashed: true }); D.text(c, `final image ×${Math.abs(m1 * m2).toFixed(0)}`, Fx, sy(h * m1 * m2) + 24, { size: 18, col: COL.magenta, bg: 'rgba(4,8,23,.75)' });
+        D.arrowObj(c, I1x, Y, h * m1, COL.cyan, { w: 4 }); D.text(c, 'first image (real)', I1x, sy(h * m1) + 22, { size: 16, col: COL.cyan, bg: 'rgba(255,255,255,.9)' });
+        D.arrowObj(c, Fx, Y, h * m1 * m2, COL.magenta, { dashed: true }); D.text(c, `final image ×${Math.abs(m1 * m2).toFixed(0)}`, Fx, sy(h * m1 * m2) + 24, { size: 18, col: COL.magenta, bg: 'rgba(255,255,255,.9)' });
         D.text(c, 'objective', xo, Y - 140, { size: 17, col: COL.white }); D.text(c, 'eyepiece', xe, Y - 140, { size: 17, col: COL.white });
         D.eye(c, 1200, Y, 1.1, 1);
         void now; void xe0;
       },
       telescope(c, now) {
         const xo = 140, fo = 520, fe = 130, xe = xo + fo + fe, a = st.starA * DEG, s = -Math.tan(a);
-        c.save(); c.strokeStyle = 'rgba(200,210,235,.4)'; c.lineWidth = 3; c.strokeRect(xo - 10, Y - 90, xe - xo + 30, 180); c.restore();
+        c.save(); c.strokeStyle = 'rgba(70,80,120,.55)'; c.lineWidth = 3; c.strokeRect(xo - 10, Y - 90, xe - xo + 30, 180); c.restore();
         D.axis(c, Y, 0, o.w, null);
         for (const hh of [-60, -30, 0, 30, 60]) {
           const tr = OPT.thinTrace(0, hh - s * xo, s, [{ x: xo, f: fo }, { x: xe, f: fe }], 1240);
@@ -168,7 +168,7 @@ LL.add({
         D.text(c, 'objective lens (collects light)', xo + 40, Y - 120, { size: 17, col: COL.white, align: 'left' });
         D.text(c, 'eyepiece', xe, Y - 82, { size: 17, col: COL.white });
         D.eye(c, 1180, Y, 1.1, 1);
-        D.text(c, `star at ${st.starA.toFixed(1)}° → seen at ${(Math.atan(Math.tan(a) * fo / fe) / DEG).toFixed(1)}° (${(fo / fe).toFixed(0)}× bigger angle)`, 630, 40, { size: 20, col: COL.amber, bg: 'rgba(4,8,23,.85)' });
+        D.text(c, `star at ${st.starA.toFixed(1)}° → seen at ${(Math.atan(Math.tan(a) * fo / fe) / DEG).toFixed(1)}° (${(fo / fe).toFixed(0)}× bigger angle)`, 630, 40, { size: 20, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
         void now;
       },
       eye(c, now) {
@@ -182,8 +182,8 @@ LL.add({
         lensRays(ex, st.eyeF, T, img);
         D.arrowObj(c, T.x, Y, 70, COL.amber, { label: 'object' });
         if (!img.inf && img.v > 0) D.arrowObj(c, ex + img.v, Y, 70 * img.m, COL.cyan, { w: 4 });
-        D.text(c, 'Upside-down image on the retina; the brain turns it upright', 630, 36, { size: 20, col: COL.white, bg: 'rgba(4,8,23,.85)' });
-        D.text(c, st.eyeD < 80 ? 'Near object: eye lens becomes thicker' : 'Far object: eye lens becomes thinner', 630, 70, { size: 19, col: COL.cyan, bg: 'rgba(4,8,23,.85)' });
+        D.text(c, 'Upside-down image on the retina; the brain turns it upright', 630, 36, { size: 20, col: COL.white, bg: 'rgba(255,255,255,.9)' });
+        D.text(c, st.eyeD < 80 ? 'Near object: eye lens becomes thicker' : 'Far object: eye lens becomes thinner', 630, 70, { size: 19, col: COL.cyan, bg: 'rgba(255,255,255,.9)' });
         void retX; void now;
       }
     };

@@ -64,7 +64,7 @@ LL.add({
         t += dt; const c = o.ctx; o.begin(); D.bg(o);
         const a = iDeg * DEG, S = src(), E = P(O.x + Math.sin(a) * RS, O.y - Math.cos(a) * RS), N = P(O.x, O.y - 400);
         // mirror (reflecting side up)
-        c.save(); c.fillStyle = 'rgba(2,4,12,.5)'; c.fillRect(0, O.y, o.w, o.h - O.y); c.restore();
+        c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(0, O.y, o.w, o.h - O.y); c.restore();
         D.mirror(c, { type: 'plane', P: O, R: 1, a: 520, rot: Math.PI / 2 });
         if (labels) D.text(c, 'Plane mirror', 140, O.y + 40, { size: 20, col: COL.muted });
         if (proto) D.protractor(c, O, PR);
@@ -75,7 +75,7 @@ LL.add({
         if (iDeg === 0) {
           D.ray(c, [P(O.x + 7, O.y), P(O.x + 7, O.y - RS)], COL.magenta, 3); D.arrowOn(c, P(O.x + 7, O.y), P(O.x + 7, O.y - RS), COL.magenta, 16, .7);
           D.pulses(c, [S, O], now, '#fff', { speed: 240, gap: 130 }); D.pulses(c, [P(O.x + 7, O.y), P(O.x + 7, O.y - RS)], now, COL.magenta, { speed: 240, gap: 130 });
-          D.text(c, 'i = 0°: the ray retraces its path', O.x + 30, O.y - 250, { size: 21, col: COL.white, align: 'left', bg: 'rgba(4,8,23,.85)' });
+          D.text(c, 'i = 0°: the ray retraces its path', O.x + 30, O.y - 250, { size: 21, col: COL.white, align: 'left', bg: 'rgba(255,255,255,.9)' });
         } else {
           D.ray(c, [O, E], COL.magenta, 3.4); D.arrowOn(c, O, E, COL.magenta, 16, .55);
           D.pulses(c, [S, O, E], now, '#fff', { speed: 240, gap: 130 });
@@ -83,8 +83,8 @@ LL.add({
           D.angleArc(c, O, 120, up - a, up, COL.cyan, null);
           D.angleArc(c, O, 120, up, up + a, COL.magenta, null);
           const lr = 175, m = a / 2;
-          D.text(c, 'i = ' + iDeg + '°', O.x - Math.sin(m) * lr - 46, O.y - Math.cos(m) * lr, { size: 21, col: COL.cyan, font: 'mono', bg: 'rgba(4,8,23,.8)', pad: 5 });
-          D.text(c, 'r = ' + iDeg + '°', O.x + Math.sin(m) * lr + 46, O.y - Math.cos(m) * lr, { size: 21, col: COL.magenta, font: 'mono', bg: 'rgba(4,8,23,.8)', pad: 5 });
+          D.text(c, 'i = ' + iDeg + '°', O.x - Math.sin(m) * lr - 46, O.y - Math.cos(m) * lr, { size: 21, col: COL.cyan, font: 'mono', bg: 'rgba(255,255,255,.9)', pad: 5 });
+          D.text(c, 'r = ' + iDeg + '°', O.x + Math.sin(m) * lr + 46, O.y - Math.cos(m) * lr, { size: 21, col: COL.magenta, font: 'mono', bg: 'rgba(255,255,255,.9)', pad: 5 });
         }
         torch(c, S, a);
         D.dot(c, O.x, O.y, 6, COL.white);
@@ -93,10 +93,10 @@ LL.add({
           D.text(c, 'A', S.x + (O.x - S.x) * .2 - 26, S.y + (O.y - S.y) * .2, { size: 22, col: COL.cyan, font: 'mono' });
           if (iDeg) D.text(c, 'B', E.x + 26, E.y - 26, { size: 22, col: COL.magenta, font: 'mono' });
           const mi = P((S.x + O.x) / 2, (S.y + O.y) / 2), mr = P((E.x + O.x) / 2, (E.y + O.y) / 2);
-          if (iDeg > 8) { D.text(c, 'Incident ray', mi.x - 80, mi.y, { size: 19, col: COL.cyan, bg: 'rgba(4,8,23,.75)' }); D.text(c, 'Reflected ray', mr.x + 84, mr.y, { size: 19, col: COL.magenta, bg: 'rgba(4,8,23,.75)' }); }
+          if (iDeg > 8) { D.text(c, 'Incident ray', mi.x - 80, mi.y, { size: 19, col: COL.cyan, bg: 'rgba(255,255,255,.9)' }); D.text(c, 'Reflected ray', mr.x + 84, mr.y, { size: 19, col: COL.magenta, bg: 'rgba(255,255,255,.9)' }); }
           D.text(c, 'Point of incidence', O.x + 110, O.y + 26, { size: 17, col: COL.muted, weight: 400 });
         }
-        D.text(c, `∠i = ${iDeg}°   ∠r = ${iDeg}°`, 1240, 40, { size: 26, col: COL.white, align: 'right', font: 'mono', bg: 'rgba(4,8,23,.8)' });
+        D.text(c, `∠i = ${iDeg}°   ∠r = ${iDeg}°`, 1240, 40, { size: 26, col: COL.white, align: 'right', font: 'mono', bg: 'rgba(255,255,255,.9)' });
         liveRow.innerHTML = `Now: ∠i = <span style="color:var(--cyan)">${iDeg}°</span>, ∠r = <span style="color:var(--magenta)">${iDeg}°</span>`;
       }
     };
@@ -152,7 +152,7 @@ LL.add({
         // mirror standing upright on the paper (plane z = 0, facing +z)
         polys.push({ pts: [W3(-1.6, 0, 0), W3(EDGE - .05, 0, 0), W3(EDGE - .05, 1.5, 0), W3(-1.6, 1.5, 0)], fill: 'rgba(170,200,240,.85)', stroke: '#e8f1ff', lw: 2, bias: .1 });
         polys.push({ pts: [W3(-1.6, 0, -.06), W3(EDGE - .05, 0, -.06), W3(EDGE - .05, 1.5, -.06), W3(-1.6, 1.5, -.06)], fill: '#4a3a33', bias: 0 });
-        if (showPlane) polys.push({ pts: [W3(-3.4, Y0 + .01, 0), W3(3.4, Y0 + .01, 0), W3(3.4, Y0 + .01, 3.5), W3(-3.4, Y0 + .01, 3.5)], fill: 'rgba(63,230,255,.16)', stroke: 'rgba(63,230,255,.6)', lw: 1.5, bias: .2 });
+        if (showPlane) polys.push({ pts: [W3(-3.4, Y0 + .01, 0), W3(3.4, Y0 + .01, 0), W3(3.4, Y0 + .01, 3.5), W3(-3.4, Y0 + .01, 3.5)], fill: 'rgba(10,124,255,.16)', stroke: 'rgba(10,124,255,.6)', lw: 1.5, bias: .2 });
         drawPolys(c, cam, polys);
         const pr = cam.proj;
         // incident beam: always on the flat paper
@@ -167,12 +167,12 @@ LL.add({
         if (showNormal) { D.line(c, pr(O), pr(W3(0, Y0, 3.2)), COL.amber, 2.5, [9, 7]); D.text(c, 'N', pr(W3(0, Y0, 3.45)).x, pr(W3(0, Y0, 3.45)).y, { size: 22, col: COL.amber, font: 'mono' }); }
         // torch
         const tp = pr(A); D.dot(c, tp.x, tp.y, 9, '#fff6c8');
-        D.text(c, 'Torch + comb slit', tp.x, tp.y - 26, { size: 17, col: COL.white, bg: 'rgba(4,8,23,.7)' });
+        D.text(c, 'Torch + comb slit', tp.x, tp.y - 26, { size: 17, col: COL.white, bg: 'rgba(255,255,255,.9)' });
         D.text(c, 'O', pr(O).x - 4, pr(O).y - 22, { size: 20, col: COL.white, font: 'mono' });
         const eb = pr(W3(EDGE, 0, 3.4)); D.text(c, 'table edge', eb.x, eb.y + 22, { size: 16, col: COL.muted, weight: 400 });
-        const mb = pr(W3(-.6, 1.65, 0)); D.text(c, 'Plane mirror', mb.x, mb.y, { size: 18, col: COL.white, bg: 'rgba(4,8,23,.7)' });
+        const mb = pr(W3(-.6, 1.65, 0)); D.text(c, 'Plane mirror', mb.x, mb.y, { size: 18, col: COL.white, bg: 'rgba(255,255,255,.9)' });
         const msg = flat ? 'Paper flat: the reflected beam is seen along the whole sheet.' : `Paper bent by ${bend}°: the reflected beam is NOT seen on the bent part.`;
-        D.text(c, msg, 640, 40, { size: 22, col: flat ? COL.green : COL.amber, bg: 'rgba(4,8,23,.85)' });
+        D.text(c, msg, 640, 40, { size: 22, col: flat ? COL.green : COL.amber, bg: 'rgba(255,255,255,.9)' });
         status.textContent = flat ? 'Flat paper → beam visible on the extended part.' : 'Bent paper → beam missing on the bent part. Flatten it to bring it back.';
       }
     };
