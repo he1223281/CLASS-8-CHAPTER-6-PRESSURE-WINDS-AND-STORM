@@ -60,8 +60,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .brand-mark::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: #fff; }
 .brand-text b { display: block; font-family: var(--f-display); font-size: 20px; letter-spacing: .12em; }
 .brand-text small { display: block; font-size: 15px; color: var(--muted); letter-spacing: .02em; }
-#sections { display: flex; gap: 8px; margin-left: 10px; flex: 1; }
-#sections button { background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 9px 22px; font-size: 18px; font-weight: 700; color: var(--muted); letter-spacing: .03em; }
+#sections { display: flex; gap: 6px; margin-left: 4px; flex: 1; }
+#sections button { background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-size: 17px; font-weight: 700; color: var(--muted); letter-spacing: .03em; }
 #sections button.on { color: var(--on-accent); background: var(--grad); border-color: transparent; box-shadow: 0 6px 18px rgba(var(--blue-rgb),.28); }
 #sections button:hover:not(.on) { color: var(--text); border-color: #c9cede; }
 .top-tools { display: flex; align-items: center; gap: 10px; }
@@ -264,6 +264,26 @@ body.explore .blank:not(.shown) { color: transparent; background: rgba(var(--ora
 .build-bar { display: flex; align-items: center; gap: 12px; font-size: 18px; color: var(--muted); }
 .build-bar .prog { font-family: var(--f-mono); font-weight: 700; color: var(--cyan); }
 .c-cap { font-size: 18px; color: var(--muted); text-align: center; }
+/* ---------- part title slides ---------- */
+.part-wrap { position: absolute; inset: 22px 40px; display: flex; flex-direction: column; gap: 40px; }
+.part-road { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
+.part-step { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 12px 14px; text-align: left; box-shadow: var(--shadow); }
+.part-step b { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; flex: none; background: var(--bench-2); color: var(--muted); font-family: var(--f-display); font-size: 18px; }
+.part-step span { font-size: 18px; font-weight: 700; color: var(--muted); line-height: 1.2; }
+.part-step.done b { background: rgba(var(--green-rgb),.15); color: var(--green); }
+.part-step.on { border-color: transparent; background: var(--grad); }
+.part-step.on b { background: #fff; color: var(--cyan); }
+.part-step.on span { color: #fff; }
+.part-main { max-width: 1500px; }
+.part-no { font-family: var(--f-display); font-size: 34px; font-weight: 800; background: var(--grad-warm); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.part-main h1 { font-family: var(--f-display); font-size: 74px; line-height: 1.04; font-weight: 800; letter-spacing: -.02em; margin: 6px 0 18px; text-wrap: balance; }
+.part-about { font-size: 30px; line-height: 1.45; color: #3a3a40; margin: 0 0 30px; max-width: 1300px; }
+.part-in h3 { font-family: var(--f-mono); font-size: 16px; letter-spacing: .16em; color: var(--green); margin: 0 0 12px; }
+.part-list { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 18px; }
+.part-list li { counter-increment: s; }
+.part-list button { width: 100%; text-align: left; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 14px 18px; font-size: 24px; font-weight: 700; box-shadow: var(--shadow); display: flex; gap: 14px; align-items: center; }
+.part-list button::before { content: counter(s); width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; flex: none; background: rgba(var(--blue-rgb),.12); color: var(--cyan); font-size: 18px; }
+.part-list button:hover { border-color: var(--cyan); }
 @keyframes hintOut { to { opacity: 0; visibility: hidden; } }
 @media (prefers-reduced-motion: reduce) {
   .bi { transition: none; }
@@ -521,6 +541,9 @@ function buildScene(s) {
   $('#scenes').append(root);
   LL.building = s.id; s.root = root;
   try { s.inst = s.build(root) || {}; } catch (e) { console.error(e); showError('Scene "' + s.title + '" failed to load: ' + e.message); s.inst = {}; }
+  // label every slide with its part of the teaching sequence
+  const k = root.querySelector('.kicker');
+  if (k && s.part) k.textContent = 'Part ' + s.part + ' · ' + k.textContent.replace(/^Scene \d+\s*·\s*/, '');
   s.t0 = performance.now();
 }
 
@@ -1248,7 +1271,7 @@ LL.add({
       el('h1', { class: 'fade', style: 'animation-delay:.35s' }, 'Light:', el('span', null, 'Mirrors'), el('em', null, '& Lenses')),
       el('p', { class: 'fade', style: 'animation-delay:.7s' }, 'Light travels in straight lines. When it meets a mirror, it bounces back. When it passes through glass or water, it can bend.'),
       el('p', { class: 'fade', style: 'animation-delay:.9s' }, 'In this lab you will predict, experiment, observe and explain how mirrors and lenses form images.'),
-      el('div', { class: 'topics fade', style: 'animation-delay:1.1s' }, ['Plane mirrors', 'Concave & convex mirrors', 'Laws of reflection', 'Lenses', 'Refraction'].map(t => el('span', null, t))),
+      el('div', { class: 'topics fade', style: 'animation-delay:1.1s' }, ['1 · Laws of reflection', '2 · Plane mirror images', '3 · Spherical mirrors', '4 · Mirror images', '5 · Lenses', '6 · Lens images', '7 · Uses & recap'].map(t => el('span', null, t))),
       el('div', { class: 'cta fade', style: 'animation-delay:1.3s' },
         UI.btn('Begin the lab  ▶', () => LL.go(1), 'big-btn'),
         UI.btn('How to use', () => { $('#help').hidden = false; }, 'big-btn ghost'))
@@ -3876,7 +3899,72 @@ conceptScene('lens-lab', {
 </script>
 <script>
 'use strict';
-/* Scenes register themselves in load order (see index.html); start the lab. */
+/* Teaching order: seven parts, each finished before the next begins.
+   Scenes register themselves in load order; here they are rearranged into the parts,
+   and a short title slide opens each part. */
+const PARTS = [
+  { tab: 'Part 1', name: 'Plane mirrors: reflection and its laws', short: 'Laws of reflection',
+    about: 'What reflection is, the words we use (incident ray, normal, angles) and the two laws of reflection.',
+    ids: ['c-reflection', 'c-laws', 'laws', 'first-law'] },
+  { tab: 'Part 2', name: 'Image formation in plane mirrors', short: 'Plane mirror images',
+    about: 'Where the image in a plane mirror forms, why it is virtual, and its characteristics.',
+    ids: ['c-plane', 'plane-lab'] },
+  { tab: 'Part 3', name: 'Spherical mirrors', short: 'Spherical mirrors',
+    about: 'Concave and convex mirrors, their parts (pole, centre of curvature, principal axis, focus) and what they do to parallel light.',
+    ids: ['mystery', 'c-spherical', 'sphere', 'c-parts', 'terms', 'c-converge', 'parallel', 'sunlight'] },
+  { tab: 'Part 4', name: 'Image formation by spherical mirrors', short: 'Mirror images',
+    about: 'Ray diagrams for different object positions: where the image forms, its size and its nature, and why.',
+    ids: ['c-sph-images', 'mirror-lab'] },
+  { tab: 'Part 5', name: 'Lenses', short: 'Lenses',
+    about: 'Convex and concave lenses, their shapes, refraction (why lenses bend light) and how lenses converge or diverge light.',
+    ids: ['c-lens', 'lens-intro', 'lens-3d', 'c-refraction', 'refraction', 'lens-beams'] },
+  { tab: 'Part 6', name: 'Image formation by lenses', short: 'Lens images',
+    about: 'Ray diagrams through convex and concave lenses for different object positions, and the image formed.',
+    ids: ['c-lens-images', 'lens-lab'] },
+  { tab: 'Part 7', name: 'Applications and comparison', short: 'Uses & recap',
+    about: 'Mirrors and lenses in daily life, a final comparison of mirrors and lenses, and the chapter questions.',
+    ids: ['c-uses', 'mirror-apps', 'lens-apps', 'recap', 'quiz'] }
+];
+
+function partSlide(p, n) {
+  return {
+    id: 'part-' + n, title: `Part ${n}: ${p.name}`, section: p.tab, part: n, full: true, divider: true,
+    narrate: `Part ${n}. ${p.name}. ${p.about}`,
+    build(root) {
+      const list = el('ol', { class: 'part-list' });
+      p.scenes.forEach(s => {
+        const b = el('button', { type: 'button' }, s.title);
+        b.addEventListener('click', () => LL.goId(s.id));
+        list.append(el('li', null, b));
+      });
+      const road = el('div', { class: 'part-road' }, PARTS.map((q, i) =>
+        el('button', { type: 'button', class: 'part-step' + (i + 1 === n ? ' on' : i + 1 < n ? ' done' : ''), onclick: () => LL.goId('part-' + (i + 1)) },
+          el('b', null, String(i + 1)), el('span', null, q.short))));
+      root.append(el('div', { class: 'part-wrap' },
+        road,
+        el('div', { class: 'part-main' },
+          el('div', { class: 'part-no' }, 'Part ' + n),
+          el('h1', null, p.name),
+          el('p', { class: 'part-about' }, p.about),
+          el('div', { class: 'part-in' }, el('h3', null, 'IN THIS PART'), list))));
+      return {};
+    }
+  };
+}
+
+(function arrange() {
+  const byId = Object.fromEntries(LL.scenes.map(s => [s.id, s]));
+  const used = new Set(['start']);
+  const ordered = [byId.start];
+  PARTS.forEach((p, i) => {
+    p.scenes = p.ids.map(id => byId[id]).filter(Boolean);
+    p.scenes.forEach(s => { s.section = p.tab; s.part = i + 1; used.add(s.id); });
+    ordered.push(partSlide(p, i + 1), ...p.scenes);
+  });
+  LL.scenes.forEach(s => { if (!used.has(s.id)) ordered.push(s); });   // anything not listed stays at the end
+  LL.scenes = ordered;
+})();
+
 boot();
 
 </script>

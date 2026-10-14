@@ -16,7 +16,7 @@ LL.add({
       el('h1', { class: 'fade', style: 'animation-delay:.35s' }, 'Light:', el('span', null, 'Mirrors'), el('em', null, '& Lenses')),
       el('p', { class: 'fade', style: 'animation-delay:.7s' }, 'Light travels in straight lines. When it meets a mirror, it bounces back. When it passes through glass or water, it can bend.'),
       el('p', { class: 'fade', style: 'animation-delay:.9s' }, 'In this lab you will predict, experiment, observe and explain how mirrors and lenses form images.'),
-      el('div', { class: 'topics fade', style: 'animation-delay:1.1s' }, ['Plane mirrors', 'Concave & convex mirrors', 'Laws of reflection', 'Lenses', 'Refraction'].map(t => el('span', null, t))),
+      el('div', { class: 'topics fade', style: 'animation-delay:1.1s' }, ['1 · Laws of reflection', '2 · Plane mirror images', '3 · Spherical mirrors', '4 · Mirror images', '5 · Lenses', '6 · Lens images', '7 · Uses & recap'].map(t => el('span', null, t))),
       el('div', { class: 'cta fade', style: 'animation-delay:1.3s' },
         UI.btn('Begin the lab  ▶', () => LL.go(1), 'big-btn'),
         UI.btn('How to use', () => { $('#help').hidden = false; }, 'big-btn ghost'))

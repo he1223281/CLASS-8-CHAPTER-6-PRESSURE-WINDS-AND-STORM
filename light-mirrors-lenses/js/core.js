@@ -176,6 +176,9 @@ function buildScene(s) {
   $('#scenes').append(root);
   LL.building = s.id; s.root = root;
   try { s.inst = s.build(root) || {}; } catch (e) { console.error(e); showError('Scene "' + s.title + '" failed to load: ' + e.message); s.inst = {}; }
+  // label every slide with its part of the teaching sequence
+  const k = root.querySelector('.kicker');
+  if (k && s.part) k.textContent = 'Part ' + s.part + ' · ' + k.textContent.replace(/^Scene \d+\s*·\s*/, '');
   s.t0 = performance.now();
 }
 

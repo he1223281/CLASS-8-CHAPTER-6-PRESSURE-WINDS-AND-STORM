@@ -24,34 +24,23 @@ No installation, no internet and no libraries are needed. When the computer is o
 
 **Read aloud** reads the explanation using the browser's built-in voice, where one is available.
 
-## Scenes (29, plus the opening)
+## Teaching order (7 parts, 36 slides after the opening)
 
-**Concept slides (11)** teach each idea before its lab: definition boxes with key words as blanks (filled in Teacher mode, hidden in Explore mode until clicked), the laws in their own boxes, important points, a "Remember" box, an animated labelled diagram, and object-position tables for concave mirrors and convex lenses. **Next ▶** reveals one point at a time, like a slide build; once everything is shown it moves on. *Show all* and *Start again* are under the diagram.
+Each part opens with a **Part title slide** (what the part covers, with clickable links to its slides). One concept is finished before the next begins.
 
-Concept slides: Light, reflection and images · What are spherical mirrors? · Parts of a spherical mirror · Real and virtual images · Images formed by spherical mirrors · The laws of reflection · Converging and diverging mirrors · Uses of spherical mirrors · What is a lens? · Refraction of light · Images formed by lenses.
+| Part | Topic | Slides |
+|---|---|---|
+| 1 | Plane mirrors: reflection and its laws | Light, reflection and images (concept) · The laws of reflection (concept) · Second law: optical bench (Activity 10.4) · First law in 3D (Activity 10.5) |
+| 2 | Image formation in plane mirrors | Real and virtual images (concept) · Plane mirror lab |
+| 3 | Spherical mirrors | Meena's mystery (Activity 10.1) · What are spherical mirrors? (concept) · Imaginary sphere in 3D (Activity 10.2) · Parts of a spherical mirror (concept) · Terms lab · Converging and diverging mirrors (concept) · Parallel rays (Activity 10.6) · Concentrating sunlight (Activities 10.7, 10.11) |
+| 4 | Image formation by spherical mirrors | Images formed by spherical mirrors (concept, position table) · Spherical mirror lab (Activity 10.3) |
+| 5 | Lenses | What is a lens? (concept) · Water drop to magnifying glass (Activity 10.8) · Lenses in 3D · Refraction (concept) · Refraction lab · Flat plate, convex, concave (Activity 10.10) |
+| 6 | Image formation by lenses | Images formed by lenses (concept, position table) · Lens lab (Activity 10.9) |
+| 7 | Applications and comparison | Uses of spherical mirrors (concept) · Mirrors in the real world · Lenses around us · Recap comparison · Chapter questions 1–12 |
+
+**Concept slides** have definition boxes (key words as blanks: filled in Teacher mode, hidden in Explore mode until clicked), laws, important points, a Remember box and an animated diagram. **Next ▶** reveals one point at a time, then moves on.
 
 **Labs** follow **Predict → Experiment → Observe → Explain**.
-
-| # | Scene | NCERT link | What students can do |
-|---|---|---|---|
-| 1 | Meena's mystery at the science centre | Activity 10.1 | Move a face towards plane, concave and convex mirrors; size and orientation change |
-| 2 | Curved inwards or outwards? | Activity 10.2, "A step further" | Rotate a 3D imaginary sphere, lift the mirror piece out, see the coated and reflecting sides |
-| 2 | Pole, centre, focus | Reference book p. 204 (extension) | Clickable P, C, F, R, f, principal axis, aperture; f = R/2; comparison table |
-| 3 | Plane mirror lab | Grade 7 recap | Image distance (drag candle and eye), screen test, lateral inversion with any word, half-height mirror |
-| 3 | Spherical mirror lab | Activity 10.3 | Drag the candle, change its height, plane/concave/convex, toggle 4 rays, realistic view, "Place at" positions, live u, v, m |
-| 4 | Second law: optical bench | Activity 10.4, Table 10.1 | Drag the torch, protractor measured from the normal, presets 0–75°, observation table, optional ±1° reading error |
-| 4 | First law in 3D | Activity 10.5 | Bend the chart paper, view edge-on to see all three lines in one plane |
-| 5 | Parallel rays | Activity 10.6 | Exact reflection; number, spacing, mirror rotation, normals, trace one ray at a time, compare all three |
-| 6 | Concentrating sunlight | Activities 10.7 and 10.11 | Move the paper through the focus of a concave mirror or a convex lens; spot size, concentration, heating; safety notice |
-| 7 | Mirrors in the real world | Figs 10.6, 10.7 | Dentist, headlight, side-view mirror (field of view), blind corner, shop mirror, reflecting telescope; in-text question |
-| 8 | Water drop to magnifying glass | Activity 10.8 | Drag a flat sheet, a water drop or a magnifier over text; side-view ray diagram |
-| 8 | Lenses in 3D | Figs 10.15, 10.16 | Rotate convex and concave lenses, cut them in half, show rays |
-| 9 | Refraction | Extension | Air, water and glass; angle of refraction; wavefronts showing the change of speed |
-| 10 | Flat plate, convex, concave | Activity 10.10 | Exact Snell's-law tracing, beam tilt, normals, compare all three |
-| 11 | Lens lab | Activity 10.9 | Like the mirror lab, plus a screen that shows a sharp or blurred real image |
-| 12 | Lenses around us | Section 10.4 | Magnifier, eyeglasses (short and long sight, with and without glasses), phone camera autofocus, microscope, telescope, human eye |
-| 13 | Recap | Snapshots | Comparison table with live ray icons, laws, real vs virtual, Bhāskara II |
-| 14 | Keep the curiosity alive | End-of-chapter questions 1–12 | MCQs, picture-matching, answers to reveal, score |
 
 ## The physics model
 
