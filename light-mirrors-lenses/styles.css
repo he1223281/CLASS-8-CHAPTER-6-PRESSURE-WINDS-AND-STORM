@@ -274,6 +274,14 @@ body.explore .blank:not(.shown) { color: transparent; background: rgba(var(--ora
 .part-list button { width: 100%; text-align: left; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 14px 18px; font-size: 24px; font-weight: 700; box-shadow: var(--shadow); display: flex; gap: 14px; align-items: center; }
 .part-list button::before { content: counter(s); width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; flex: none; background: rgba(var(--blue-rgb),.12); color: var(--cyan); font-size: 18px; }
 .part-list button:hover { border-color: var(--cyan); }
+/* step lists (image construction) */
+.step-list { list-style: none; padding: 0 !important; margin: 0; display: flex; flex-direction: column; gap: 8px !important; }
+.step-list li { font-size: 20px !important; line-height: 1.4; padding: 8px 12px; border-radius: 12px; border: 1px solid var(--line); color: var(--muted); background: var(--bench-2); }
+.step-list li span { display: inline-block; font-family: var(--f-mono); font-size: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-right: 6px; }
+.step-list li.done { color: var(--text); background: #fff; }
+.step-list li.done span { color: var(--green); }
+.step-list li.on { color: var(--text); background: rgba(var(--blue-rgb),.08); border-color: var(--cyan); box-shadow: 0 0 0 2px rgba(var(--blue-rgb),.2); }
+.step-list li.on span { color: var(--cyan); }
 @keyframes hintOut { to { opacity: 0; visibility: hidden; } }
 @media (prefers-reduced-motion: reduce) {
   .bi { transition: none; }

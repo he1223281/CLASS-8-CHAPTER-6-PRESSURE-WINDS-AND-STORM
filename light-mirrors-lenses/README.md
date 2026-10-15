@@ -24,7 +24,7 @@ No installation, no internet and no libraries are needed. When the computer is o
 
 **Read aloud** reads the explanation using the browser's built-in voice, where one is available.
 
-## Teaching order (7 parts, 36 slides after the opening)
+## Teaching order (7 parts, 46 slides after the opening)
 
 Each part opens with a **Part title slide** (what the part covers, with clickable links to its slides). One concept is finished before the next begins.
 
@@ -33,7 +33,7 @@ Each part opens with a **Part title slide** (what the part covers, with clickabl
 | 1 | Plane mirrors: reflection and its laws | Light, reflection and images (concept) · The laws of reflection (concept) · Second law: optical bench (Activity 10.4) · First law in 3D (Activity 10.5) |
 | 2 | Image formation in plane mirrors | Real and virtual images (concept) · Plane mirror lab |
 | 3 | Spherical mirrors | Meena's mystery (Activity 10.1) · What are spherical mirrors? (concept) · Imaginary sphere in 3D (Activity 10.2) · Parts of a spherical mirror (concept) · Terms lab · Converging and diverging mirrors (concept) · Parallel rays (Activity 10.6) · Concentrating sunlight (Activities 10.7, 10.11) |
-| 4 | Image formation by spherical mirrors | Images formed by spherical mirrors (concept, position table) · Spherical mirror lab (Activity 10.3) |
+| 4 | Image formation by spherical mirrors | Four special-ray slides (Rule 1 parallel ray → F; Rule 2 ray through F → parallel; Rule 3 ray through C → back on itself; Rule 4 ray at P → equal angles), each drawn in stages (ray, normal through C, ∠i, reflected ray) for a concave then a convex mirror, with a "Why?" box · Six case slides (object beyond C, at C, between C and F, at F, between F and P, convex mirror), each built in 5 steps: object → Ray 1 → Ray 2 → where they meet → result and why · Images formed by spherical mirrors (concept, position table) · Spherical mirror lab (Activity 10.3) |
 | 5 | Lenses | What is a lens? (concept) · Water drop to magnifying glass (Activity 10.8) · Lenses in 3D · Refraction (concept) · Refraction lab · Flat plate, convex, concave (Activity 10.10) |
 | 6 | Image formation by lenses | Images formed by lenses (concept, position table) · Lens lab (Activity 10.9) |
 | 7 | Applications and comparison | Uses of spherical mirrors (concept) · Mirrors in the real world · Lenses around us · Recap comparison · Chapter questions 1–12 |
