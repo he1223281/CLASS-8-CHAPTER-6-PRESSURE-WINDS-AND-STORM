@@ -1,0 +1,10 @@
+/* Chapter 4 extras */
+.booklets .bk{background:#efe5cd;border:2px solid var(--paper-line);border-left:14px solid #8a4a17;padding:22px 22px 24px;display:flex;flex-direction:column;gap:10px;min-height:170px;box-shadow:0 10px 24px rgba(60,40,10,.18);}
+.booklets .bk b{font-family:var(--f-display);font-weight:400;font-size:36px;line-height:1.05;}
+.booklets .bk span{font-family:var(--f-hand);font-size:27px;line-height:1.25;color:#7a3b16;}
+.booklets .bk.inside{background:var(--ink);color:var(--cream);border-color:var(--ink);border-left-color:var(--red);}
+.booklets .bk.inside span{color:var(--saffron-soft);font-family:var(--f-body);font-size:25px;}
+.wnode circle{fill:var(--saffron-soft);}
+.s-paper .ladder div{border-bottom-color:var(--paper-line);}
+.s-paper .ladder span{font-size:30px;}
+#tools .navb{font-weight:700;}
