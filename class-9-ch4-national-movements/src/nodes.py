@@ -24,3 +24,30 @@ for i,(e,y,l,d) in enumerate(N):
     out.append('<div class="nd %s" data-era="%d" style="left:%.2f%%"><button type="button" aria-label="%s %s" data-d="%s"></button><div class="lbl"><span class="yr">%s</span>%s</div></div>'%(ud,e,left,html.escape(y),html.escape(l),html.escape(dd,quote=True),y,l))
 s=open('slides.html',encoding='utf-8').read().replace('TIMELINE_NODES','\n    '.join(out))
 open('slides.final.html','w',encoding='utf-8').write(s)
+
+# ---- picture credits slide ----
+import re,json,os
+jobs=dict(l.split('=',1) for l in open('../scripts/jobs.txt').read().split('\n') if l)
+jobs['dyer']='File:General-Reginald-Dyer.jpg'
+lic={}
+try: lic=json.load(open('../dl/licenses.json'))
+except Exception: pass
+used=sorted(set(re.findall(r'img/w-([a-z0-9]+)\.jpg',s)))
+rows=[]
+for k in used:
+    f=jobs[k].replace('File:',''); L=lic.get(k,{}).get('license') or 'see file page'
+    host='en.wikipedia.org' if k=='dyer' else 'commons.wikimedia.org'
+    A=(lic.get(k,{}).get('artist') or '').replace('Unknown authorUnknown author','Unknown author').replace('UnknownUnknown','Unknown')[:60]
+    rows.append('<li><b>%s</b> · %s%s</li>'%(html.escape(f.replace('_',' ')),html.escape(L),(' · '+html.escape(A)) if A and L!='Public domain' else ''))
+cred='''<section class="slide s-paper grain" data-act="Credits" data-title="Picture credits">
+  <div class="eyebrow">Credits <b>·</b> Where the pictures come from</div>
+  <div class="pad" style="top:130px;bottom:70px">
+    <p class="small" style="margin:0 0 14px"><b>Textbook figures</b> (Std 9 Social Science, GSEB): Fig. 4.3 (opening, title, Nagpur and closing slides) and the portrait of Vasudev Balvant Phadke. <b>Historical photographs, stamps and maps:</b> Wikimedia Commons (one portrait from English Wikipedia), used for non-commercial classroom teaching. Search the file name on commons.wikimedia.org to see its page. CC-licensed works are credited below with their author. <b>Redrawn or reconstructed:</b> the maps, the Jallianwala Bagh schematic, the 1905 newspaper page and Madam Cama's flag.</p>
+    <ul class="credits">%s</ul>
+  </div>
+  <aside class="notes"><p>Picture sources for the teacher. You don't need to show this slide in class.</p></aside>
+</section>'''%'\n'.join(rows)
+s=s.replace('</section>\n','</section>\n',1)
+s=s.rstrip()+'\n\n'+cred+'\n'
+open('slides.final.html','w',encoding='utf-8').write(s)
+print('credits',len(rows))
