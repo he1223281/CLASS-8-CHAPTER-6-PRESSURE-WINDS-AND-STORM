@@ -58,4 +58,3 @@ This writes `light-lab-standalone.html` and `dist/artifact.html` (the same page 
 
 - The 3D views use a small built-in renderer on the 2D canvas instead of Three.js, so the lab needs no internet. HyperFrames and Blender were not used: they are not available here and were not needed.
 - Applications diagrams are not to scale.
-- The eye and spectacles diagrams treat the eye as one thin lens; in a real eye the cornea does much of the bending.
