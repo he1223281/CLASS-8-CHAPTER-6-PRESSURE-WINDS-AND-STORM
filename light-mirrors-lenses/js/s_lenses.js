@@ -1,5 +1,5 @@
 'use strict';
-/* Scene 8: introduction to lenses (droplet → magnifier, 3D lens shapes). Scene 10: refraction. Lens beam lab. */
+/* Introduction to lenses (water drop → magnifier, 3D lens shapes) and parallel beams through glass shapes (Activity 10.10). */
 
 const PAGE_TEXT = [
   'All of us are familiar with light. At night, when we switch',
@@ -18,7 +18,7 @@ const PAGE_TEXT = [
 LL.add({
   id: 'lens-intro', title: 'From a water drop to a magnifying glass', section: 'Lenses',
   build(root) {
-    const L = labLayout(root, { kicker: 'Scene 8 · Activity 10.8', title: 'Why does a water drop make letters bigger?' });
+    const L = labLayout(root, { kicker: 'Activity 10.8', title: 'Why does a water drop make letters bigger?' });
     const o = L.cv;
     let stage = 'drop', pos = P(470, 300), hcm = 6, t = 0;
     const FM = 10;                                     // magnifier focal length (cm)
@@ -30,11 +30,11 @@ LL.add({
     o.cv.parentElement.append(el('div', { class: 'cv-hint' }, 'Drag the sheet, drop or lens over the text'));
     const ro = UI.readout([['m', 'Letters look'], ['img', 'Image']]);
     L.setPanel(UI.panel({
-      predict: { q: 'A drop of water sits on a clear plastic sheet over printed words. The letters under the drop will look…', opts: ['bigger', 'smaller', 'exactly the same'], ans: 0, why: 'The curved top of the drop bends light like a tiny magnifying glass.' },
+      predict: { q: 'A drop of water sits on a clear plastic sheet over printed words. The letters under the drop will look…', opts: ['bigger', 'smaller', 'exactly the same'], ans: 0, why: 'The curved water drop acts like a simple lens.' },
       experiment: ['Start with the <b>flat sheet</b> and drag it over the words.', 'Switch to the <b>water drop</b>, then the <b>magnifying glass</b>.', 'Raise the magnifying glass slowly with the slider.'],
       live: UI.card('live', 'What you see', null, ro.el),
       observe: ['Through a flat sheet the letters look the same size.', 'Under the curved water drop the letters look <b>larger</b>.', 'The magnifying glass enlarges more. Raised too high, the letters blur, then appear <b>upside down</b>.'],
-      explain: '<p>Light bends when it passes from one transparent material into another at an angle (this is <b>refraction</b>, Scene 9). A <b>flat</b> sheet bends rays going in and out by equal and opposite amounts, so nothing changes size. A <b>curved</b> surface bends different rays by different amounts and makes them spread less, so the letters look bigger.</p><p>A piece of transparent glass or plastic with curved surfaces is a <b>lens</b>. A magnifying glass is a <b>convex lens</b>: thicker in the middle than at the edges.</p>'
+      explain: '<p>The surface of the water drop is <b>curved outwards</b>. This curved drop acts like a simple <b>lens</b> and makes the letters look bigger. A flat transparent sheet does not change the size of the letters.</p><p>A piece of transparent glass or plastic with curved surfaces is a <b>lens</b>. A magnifying glass is a <b>convex lens</b>: thicker in the middle than at the edges. It helps us read small print by making the letters appear bigger.</p>'
     }));
     dragOn(o, { hit: p => V.dist(p, pos) < (stage === 'sheet' ? 150 : stage === 'drop' ? 90 : 140) ? 'l' : null, move: (h, p) => { pos = P(clamp(p.x, 120, 820), clamp(p.y, 110, 560)); } });
 
@@ -46,11 +46,11 @@ LL.add({
     }
     function magInfo() {
       if (stage === 'sheet') return { m: 1, blur: 0, txt: 'The same size', img: 'No change' };
-      if (stage === 'drop') { const m = 3 / (3 - 1); return { m, blur: 0, txt: 'About ' + m.toFixed(1) + '× bigger', img: 'Virtual, erect, enlarged' }; }
+      if (stage === 'drop') { const m = 3 / (3 - 1); return { m, blur: 0, txt: 'About ' + m.toFixed(1) + '× bigger', img: 'Erect and enlarged' }; }
       const r = OPT.lensImage(-hcm, FM);
-      if (r.inf || Math.abs(r.m) > 7) return { m: 7 * Math.sign(r.m || 1), blur: 12, txt: 'Very blurred', img: 'No clear image (near the focus)' };
+      if (r.inf || Math.abs(r.m) > 7) return { m: 7 * Math.sign(r.m || 1), blur: 12, txt: 'Very blurred', img: 'Very blurred' };
       const blur = Math.abs(r.m) > 3.5 ? (Math.abs(r.m) - 3.5) * 2.5 : r.m < 0 ? 1.5 : 0;
-      return { m: r.m, blur, txt: Math.abs(r.m).toFixed(1) + '× ' + (Math.abs(r.m) >= 1 ? 'bigger' : 'smaller') + (r.m < 0 ? ', upside down' : ''), img: r.m > 0 ? 'Virtual, erect, enlarged' : 'Real, inverted' };
+      return { m: r.m, blur, txt: Math.abs(r.m).toFixed(1) + '× ' + (Math.abs(r.m) >= 1 ? 'bigger' : 'smaller') + (r.m < 0 ? ', upside down' : ''), img: r.m > 0 ? 'Erect and enlarged' : 'Inverted (upside down)' };
     }
     function inset(c, mi) {
       const x0 = 920, y0 = 30, w = 320, h = 640;
@@ -138,7 +138,7 @@ LL.add({
 LL.add({
   id: 'lens-3d', title: 'Convex and concave lenses in 3D', section: 'Lenses',
   build(root) {
-    const L = labLayout(root, { kicker: 'Scene 8 · Figs 10.15 & 10.16', title: 'Thick in the middle, or thin in the middle?' });
+    const L = labLayout(root, { kicker: 'Figs 10.15 & 10.16', title: 'Thick in the middle, or thin in the middle?' });
     const o = L.cv, cam = Cam3D(630, 380, 120);
     cam.yaw = -.7; cam.pitch = .3;
     let auto = true, cut = false, rays = true, t = 0, target = null;
@@ -157,7 +157,7 @@ LL.add({
       predict: { q: 'Which lens is used in a magnifying glass?', opts: ['The one thicker at the centre (convex)', 'The one thinner at the centre (concave)'], ans: 0, why: 'A convex lens converges light and can make things look bigger.' },
       experiment: ['Drag to turn the lenses. Try <b>Side (profile)</b> and <b>Face-on</b>.', 'Turn on <b>Cut in half</b> to see the thickness.', 'Turn on <b>Light rays</b>.'],
       observe: ['Face-on, both lenses look like plain glass discs.', 'From the side, the <b>convex</b> lens bulges out and is <b>thicker at the centre</b>; the <b>concave</b> lens is <b>thinner at the centre</b> and thicker at the edges.', 'Parallel rays come together after a convex lens and spread apart after a concave lens.'],
-      explain: '<p>A <b>convex lens</b> (converging lens) is thicker at the middle than at the edges. A <b>concave lens</b> (diverging lens) is thinner at the middle than at the edges.</p><p>A simple test: a convex lens makes nearby print look bigger; a concave lens always makes it look smaller.</p><p class="note">The rays here are the simple thin-lens picture; Scene 10 traces them exactly with Snell’s law.</p>'
+      explain: '<p>A <b>convex lens</b> (converging lens) is thicker at the middle than at the edges. A <b>concave lens</b> (diverging lens) is thinner at the middle than at the edges.</p><p>A simple test: a convex lens makes nearby print look bigger; a concave lens always makes it look smaller.</p>'
     }));
     const A = 1.5, NR = 7, NS = 28;
     const prof = (type, r) => type === 'convex' ? .05 + .32 * (1 - (r / A) ** 2) : .06 + .3 * (r / A) ** 2;   // half-thickness along the axis
@@ -208,93 +208,13 @@ LL.add({
             D.ray(c, [a0, a1, a2], COL.cyan, 2.2, { alpha: .95 });
             const b0 = cam.proj([cxs.concave - 2.2 + 1.0, y, 0]), b1 = cam.proj([cxs.concave, y, 0]), b2 = cam.proj([cxs.concave + 1.6, y + y * 1.6 / 1.9, 0]);
             D.ray(c, [b0, b1, b2], COL.magenta, 2.2, { alpha: .95 });
-            D.line(c, b1, cam.proj([cxs.concave - 1.9, 0, 0]), COL.magenta, 1.4, [5, 6], .6);
           }
-          const Fc = cam.proj([cxs.convex + 1.9, 0, 0]); D.dot(c, Fc.x, Fc.y, 6, COL.amber); D.text(c, 'F', Fc.x, Fc.y + 24, { size: 20, col: COL.amber, font: 'mono' });
-          const Fv = cam.proj([cxs.concave - 1.9, 0, 0]); D.text(c, 'F', Fv.x, Fv.y + 24, { size: 20, col: COL.magenta, font: 'mono' });
         }
         const l1 = cam.proj([cxs.convex, A + .7, 0]), l2 = cam.proj([cxs.concave, A + .7, 0]);
         D.text(c, 'Convex lens', l1.x, l1.y - 18, { size: 26, col: COL.cyan, font: 'disp' });
         D.text(c, 'thicker at the centre', l1.x, l1.y + 14, { size: 19, col: COL.white, weight: 400 });
         D.text(c, 'Concave lens', l2.x, l2.y - 18, { size: 26, col: COL.magenta, font: 'disp' });
         D.text(c, 'thinner at the centre', l2.x, l2.y + 14, { size: 19, col: COL.white, weight: 400 });
-      }
-    };
-  }
-});
-
-/* ---------- refraction ---------- */
-const MEDIA = { air: { n: 1.0, name: 'Air', col: 'rgba(30,50,110,.0)' }, water: { n: 1.33, name: 'Water', col: 'rgba(40,120,220,.22)' }, glass: { n: 1.5, name: 'Glass', col: 'rgba(120,220,255,.24)' } };
-LL.add({
-  id: 'refraction', title: 'Refraction: why light bends', section: 'Lenses',
-  build(root) {
-    const L = labLayout(root, { kicker: 'Scene 9 · Refraction (extension)', title: 'Light changes speed, and so it changes direction' });
-    const o = L.cv, O = P(630, 360), LS = 420;
-    let m1 = 'air', m2 = 'glass', iDeg = 40, waves = true, t = 0;
-    const s1 = UI.seg('From', ['air', 'water', 'glass'].map(v => ({ v, t: MEDIA[v].name })), m1, v => { m1 = v; });
-    const s2 = UI.seg('Into', ['air', 'water', 'glass'].map(v => ({ v, t: MEDIA[v].name })), m2, v => { m2 = v; });
-    const sI = UI.slider('Angle of incidence', 0, 80, 1, iDeg, v => v + '°', v => { iDeg = v; });
-    const tW = UI.toggle('Wavefronts (crests of the light wave)', waves, v => { waves = v; }, COL.amber);
-    L.controls.append(s1.el, s2.el, el('div', { class: 'break' }), sI.el, tW.el);
-    o.cv.parentElement.append(el('div', { class: 'cv-hint' }, 'Drag the light source'));
-    const ro = UI.readout([['sp', 'Speed of light'], ['i', 'Angle of incidence'], ['r', 'Angle of refraction'], ['b', 'Bends']]);
-    L.setPanel(UI.panel({
-      predict: { q: 'A ray of light goes from air into glass at an angle. What happens to it?', opts: ['It goes straight on', 'It bends towards the normal', 'It bends away from the normal'], ans: 1, why: 'Light slows down in glass, so it bends towards the normal.' },
-      experiment: ['Drag the source or use the slider to change the angle.', 'Try <b>0°</b>: straight down the normal.', 'Swap the materials: <b>Glass → Air</b>.', 'Watch the wavefronts squeeze together in the slower material.'],
-      live: UI.card('live', 'Measurements', null, ro.el),
-      observe: ['Entering a slower (denser) material, light bends <b>towards</b> the normal.', 'Leaving it, light bends <b>away</b> from the normal.', 'Along the normal (0°) light does not bend, it only slows down.', 'A little light is always reflected too.'],
-      explain: '<p><b>Refraction</b> is the change in direction of light when it passes at an angle from one transparent material into another. It happens because light travels at different speeds in different materials: fastest in air, slower in water, slower still in glass.</p><p>Look at the wavefronts: the side of the beam that enters glass first slows down first, so the whole beam swings round, like a toy car whose front wheel runs from a smooth floor onto a carpet.</p><p><b>Mirrors reflect</b> light back. <b>Lenses refract</b> light as it passes through their curved surfaces.</p><p class="note">This scene extends the chapter’s lens introduction. Angles follow Snell’s law, n₁ sin i = n₂ sin r, which you will meet in higher classes.</p>'
-    }));
-    dragOn(o, { hit: p => p.y < O.y && V.dist(p, src()) < 60 ? 's' : null, move: (h, p) => { iDeg = clamp(Math.round(Math.atan2(O.x - p.x, O.y - p.y) / DEG), 0, 80); sI.set(iDeg); } });
-    function src() { const a = iDeg * DEG; return P(O.x - Math.sin(a) * LS, O.y - Math.cos(a) * LS); }
-    return {
-      reset() { m1 = 'air'; m2 = 'glass'; s1.set(m1); s2.set(m2); iDeg = 40; sI.set(40); waves = true; tW.set(true); },
-      replay() { t = 0; },
-      frame(dt, now) {
-        t += dt; const c = o.ctx; o.begin(); D.bg(o);
-        const n1 = MEDIA[m1].n, n2 = MEDIA[m2].n, a = iDeg * DEG;
-        c.save(); c.fillStyle = MEDIA[m1].col; c.fillRect(0, 0, o.w, O.y); c.fillStyle = MEDIA[m2].col; c.fillRect(0, O.y, o.w, o.h - O.y); c.restore();
-        D.line(c, P(0, O.y), P(o.w, O.y), '#6f9fe0', 2);
-        D.text(c, MEDIA[m1].name + '  (n = ' + n1.toFixed(2) + ')', 24, 30, { size: 22, col: COL.white, align: 'left' });
-        D.text(c, MEDIA[m2].name + '  (n = ' + n2.toFixed(2) + ')', 24, O.y + 34, { size: 22, col: COL.white, align: 'left' });
-        D.line(c, P(O.x, O.y - 330), P(O.x, O.y + 330), COL.amber, 2, [10, 7]);
-        D.text(c, 'normal', O.x + 12, O.y - 316, { size: 17, col: COL.amber, align: 'left' });
-        const S = src(), din = V.norm(V.sub(O, S));
-        const s2r = n1 * Math.sin(a) / n2, tir = s2r > 1;
-        const rr = tir ? null : Math.asin(s2r);
-        const E = tir ? null : P(O.x + Math.sin(rr) * LS, O.y + Math.cos(rr) * LS);
-        const Rf = P(O.x + Math.sin(a) * LS, O.y - Math.cos(a) * LS);
-        D.ray(c, [O, Rf], COL.cyan, 2, { alpha: tir ? 1 : .22, glow: tir });
-        // wavefronts: three parallel rays, pulses travel at speed 1/n
-        if (waves) {
-          const perp = P(-din.y, din.x), offs = [-46, -23, 0, 23, 46];
-          const dout = tir ? null : V.norm(V.sub(E, O));
-          const v1 = 150 / n1, v2 = 150 / n2, period = .55;
-          const paths = offs.map(k => {
-            const s = V.add(S, V.mul(perp, k));
-            const tt = (O.y - s.y) / din.y, hit = V.add(s, V.mul(din, tt));
-            return { s, hit, L1: tt };
-          });
-          for (let j = 0; j < 14; j++) {
-            const tau = ((t / period) % 1 + j) * period;
-            const pts = paths.map(p => {
-              const d = tau * v1;
-              if (d <= p.L1 || tir) return V.add(p.s, V.mul(din, Math.min(d, p.L1 + (tir ? 0 : 0))));
-              const rem = (tau - p.L1 / v1) * v2; return V.add(p.hit, V.mul(dout, rem));
-            });
-            if (pts.some(q => q.y > O.y + 340 || q.x > o.w || q.x < 0)) continue;
-            c.save(); c.strokeStyle = 'rgba(255,184,77,.75)'; c.lineWidth = 2.5; D.path(c, pts); c.stroke(); c.restore();
-          }
-        }
-        D.ray(c, [S, O], COL.cyan, 3.2); D.arrowOn(c, S, O, COL.cyan, 15, .55);
-        if (!tir) { D.ray(c, [O, E], COL.magenta, 3.2); D.arrowOn(c, O, E, COL.magenta, 15, .55); D.line(c, O, V.add(O, V.mul(din, 300)), 'rgba(30,35,60,.35)', 1.5, [4, 6]); D.text(c, 'if it did not bend', O.x + din.x * 300 + 8, O.y + din.y * 300, { size: 15, col: COL.muted, align: 'left', weight: 400 }); }
-        D.dot(c, S.x, S.y, 12, '#fff6c8');
-        if (iDeg > 0) D.angleArc(c, O, 90, -Math.PI / 2 - a, -Math.PI / 2, COL.cyan, 'i = ' + iDeg + '°', 128);
-        if (!tir && rr > .002) D.angleArc(c, O, 90, Math.PI / 2 - rr, Math.PI / 2, COL.magenta, 'r = ' + (rr / DEG).toFixed(1) + '°', 128);
-        if (tir) D.text(c, 'No light gets out: total internal reflection (higher classes)', O.x, O.y + 120, { size: 21, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
-        ro.set('sp', `${MEDIA[m1].name}: ${(300 / n1).toFixed(0)}k → ${MEDIA[m2].name}: ${(300 / n2).toFixed(0)}k km/s`);
-        ro.set('i', iDeg + '°'); ro.set('r', tir ? '— (no refracted ray)' : (rr / DEG).toFixed(1) + '°', true);
-        ro.set('b', tir ? 'All reflected back' : iDeg === 0 || n1 === n2 ? 'Not at all' : n2 > n1 ? 'Towards the normal' : 'Away from the normal');
       }
     };
   }
@@ -333,25 +253,21 @@ function drawLensBeam(c, o, Lg, opt, now) {
 LL.add({
   id: 'lens-beams', title: 'Parallel rays through glass shapes', section: 'Lenses',
   build(root) {
-    const L = labLayout(root, { kicker: 'Scene 10 · Activity 10.10', title: 'Flat glass, convex lens, concave lens' });
+    const L = labLayout(root, { kicker: 'Activity 10.10', title: 'Flat glass, convex lens, concave lens' });
     const o = L.cv;
-    const st = { type: 'convex', n: 9, spacing: 34, tilt: 0, showF: true, showNormals: false, showBack: true, tt: 0 };
+    const st = { type: 'convex', n: 9, spacing: 34, tilt: 0, showF: false, showNormals: false, showBack: false, tt: 0 };
     const sT = UI.seg('Shape', [{ v: 'plate', t: 'Flat plate' }, { v: 'convex', t: 'Convex' }, { v: 'concave', t: 'Concave' }, { v: 'all', t: 'Compare all 3' }], st.type, v => { st.type = v; st.tt = 0; });
     const sN = UI.slider('Rays', 3, 15, 1, st.n, v => String(v), v => { st.n = v; });
     const sS = UI.slider('Spacing', 12, 44, 2, st.spacing, v => v + ' px', v => { st.spacing = v; });
-    const sTl = UI.slider('Tilt the beam', -20, 20, 1, 0, v => v + '°', v => { st.tilt = v * DEG; });
-    const tF = UI.toggle('Focus F', true, v => { st.showF = v; }, COL.amber);
-    const tN = UI.toggle('Normals', false, v => { st.showNormals = v; }, COL.amber);
-    const tB = UI.toggle('Dashed back-lines', true, v => { st.showBack = v; }, COL.magenta);
-    L.controls.append(sT.el, sN.el, el('div', { class: 'break' }), sS.el, sTl.el, tF.el, tN.el, tB.el);
+    L.controls.append(sT.el, el('div', { class: 'break' }), sN.el, sS.el);
     L.setPanel(UI.panel({
-      predict: { q: 'Why do parallel rays come together after a <b>convex</b> lens but spread apart after a <b>concave</b> lens?', opts: ['Because the glass is a different colour', 'Because the curved surfaces meet each ray at a different angle, so each ray bends by a different amount', 'Because light speeds up inside glass'], ans: 1, why: 'Turn on the normals: they tilt more and more towards the edges of the lens.' },
-      experiment: ['Compare the flat plate, the convex lens and the concave lens.', 'Turn on <b>Normals</b> at both surfaces.', '<b>Tilt the beam</b> through the flat plate.'],
-      observe: ['<b>Flat plate:</b> rays come out parallel to how they went in. When tilted, they are shifted sideways a little.', '<b>Convex lens:</b> rays converge and really meet near F: a <b>converging lens</b>.', '<b>Concave lens:</b> rays diverge, as if from F on the same side as the light (virtual focus): a <b>diverging lens</b>.', 'Edge rays of a strongly curved lens cross slightly nearer the lens.'],
-      explain: '<p>At each surface, light obeys the rule of refraction: it bends towards the normal entering glass and away from it leaving. In a flat plate both surfaces are parallel, so the two bends cancel.</p><p>In a convex lens, the surfaces tilt so that rays near the edge are bent more towards the axis, so all rays head for one point. In a concave lens the tilt is the other way, so rays are bent away from the axis.</p><p class="note">Exact ray tracing with Snell’s law for glass (n = 1.5) and real spherical surfaces; F is found by tracing a ray very close to the axis.</p>'
+      predict: { q: 'Multiple parallel beams of light fall on a thin glass plate, a convex lens and a concave lens. Does the beam pass through as it is in all three cases?', opts: ['Yes, in all three', 'Only through the glass plate; the convex lens converges it and the concave lens diverges it', 'No, none of them lets light through'], ans: 1, why: 'The thin glass plate lets the beam pass as it is, but the curved lenses change it.' },
+      experiment: ['Compare the thin glass plate, the convex lens and the concave lens one by one.', 'Press <b>Compare all 3</b>.', 'Change the number of rays.'],
+      observe: ['<b>Thin glass plate:</b> the light beam passes through as it is.', '<b>Convex lens:</b> the light beams come closer: it <b>converges</b> the light.', '<b>Concave lens:</b> the light beams spread out: it <b>diverges</b> the light.'],
+      explain: '<p>A convex lens converges the light falling on it, so it is also called a <b>converging lens</b>. A concave lens diverges the light, so it is called a <b>diverging lens</b>.</p><p>Since a convex lens converges a light beam, it can also focus sunlight and burn a paper (Activity 10.11).</p>'
     }));
     return {
-      reset() { Object.assign(st, { type: 'convex', n: 9, spacing: 34, tilt: 0, showF: true, showNormals: false, showBack: true, tt: 0 }); sT.set('convex'); sN.set(9); sS.set(34); sTl.set(0); tF.set(true); tN.set(false); tB.set(true); },
+      reset() { Object.assign(st, { type: 'convex', n: 9, spacing: 34, tilt: 0, showF: false, showNormals: false, showBack: false, tt: 0 }); sT.set('convex'); sN.set(9); sS.set(34); },
       replay() { st.tt = 0; },
       onShow() { st.tt = 0; },
       frame(dt, now) {
@@ -361,7 +277,7 @@ LL.add({
         if (st.type !== 'all') {
           D.axis(c, 350, 0, o.w, null);
           drawLensBeam(c, o, lensGeom(st.type, 560, 350, 420, 170), { ...base, n: st.n, spacing: st.spacing }, now);
-          const msg = { plate: 'Flat plate: rays stay parallel', convex: 'Convex lens: rays converge (converging lens)', concave: 'Concave lens: rays diverge (diverging lens)' }[st.type];
+          const msg = { plate: 'Thin glass plate: the light passes as it is', convex: 'Convex lens: the light converges', concave: 'Concave lens: the light diverges' }[st.type];
           D.text(c, msg, 630, 34, { size: 24, col: st.type === 'concave' ? COL.magenta : st.type === 'convex' ? COL.amber : COL.cyan, bg: 'rgba(255,255,255,.9)' });
         } else {
           ['plate', 'convex', 'concave'].forEach((tp, i) => {

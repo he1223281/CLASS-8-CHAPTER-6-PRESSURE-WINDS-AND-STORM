@@ -3,26 +3,26 @@
    Scenes register themselves in load order; here they are rearranged into the parts,
    and a short title slide opens each part. */
 const PARTS = [
-  { tab: 'Part 1', name: 'Plane mirrors: reflection and its laws', short: 'Laws of reflection',
-    about: 'What reflection is, the words we use (incident ray, normal, angles) and the two laws of reflection.',
+  { tab: 'Part 1', name: 'Reflection and the laws of reflection', short: 'Laws of reflection',
+    about: 'What reflection is, the words we use (incident ray, reflected ray, normal, angles) and the two laws of reflection.',
     ids: ['c-reflection', 'c-laws', 'laws', 'first-law'] },
-  { tab: 'Part 2', name: 'Image formation in plane mirrors', short: 'Plane mirror images',
-    about: 'Where the image in a plane mirror forms, why it is virtual, and its characteristics.',
+  { tab: 'Part 2', name: 'The image in a plane mirror', short: 'Plane mirror',
+    about: 'The image in a plane mirror is erect, of the same size as the object, and laterally inverted.',
     ids: ['c-plane', 'plane-lab'] },
   { tab: 'Part 3', name: 'Spherical mirrors', short: 'Spherical mirrors',
-    about: 'Concave and convex mirrors, their parts (pole, centre of curvature, principal axis, focus) and what they do to parallel light.',
-    ids: ['mystery', 'c-spherical', 'sphere', 'c-parts', 'terms', 'c-converge', 'parallel', 'sunlight'] },
-  { tab: 'Part 4', name: 'Image formation by spherical mirrors', short: 'Mirror images',
-    about: 'First the four special rays (parallel ray, ray through F, ray through C, ray at the pole) and why each behaves that way; then the image drawn step by step for every object position.',
-    ids: ['ray-rule-1', 'ray-rule-2', 'ray-rule-3', 'ray-rule-4', 'image-case-1', 'image-case-2', 'image-case-3', 'image-case-4', 'image-case-5', 'image-case-6', 'c-sph-images', 'mirror-lab'] },
+    about: 'Concave and convex mirrors, how to tell them apart, and how they converge or diverge a beam of light.',
+    ids: ['mystery', 'c-spherical', 'sphere', 'c-converge', 'parallel', 'sunlight'] },
+  { tab: 'Part 4', name: 'Images formed by spherical mirrors', short: 'Mirror images',
+    about: 'How the image in concave and convex mirrors changes as the object is moved away (Activity 10.3).',
+    ids: ['c-sph-images', 'mirror-lab'] },
   { tab: 'Part 5', name: 'Lenses', short: 'Lenses',
-    about: 'Convex and concave lenses, their shapes, refraction (why lenses bend light) and how lenses converge or diverge light.',
-    ids: ['c-lens', 'lens-intro', 'lens-3d', 'c-refraction', 'refraction', 'lens-beams'] },
-  { tab: 'Part 6', name: 'Image formation by lenses', short: 'Lens images',
-    about: 'Ray diagrams through convex and concave lenses for different object positions, and the image formed.',
+    about: 'What a lens is, convex and concave lenses, and how they converge or diverge a beam of light.',
+    ids: ['c-lens', 'lens-intro', 'lens-3d', 'lens-beams'] },
+  { tab: 'Part 6', name: 'How objects look through lenses', short: 'Lens images',
+    about: 'How an object looks through convex and concave lenses at different distances (Activity 10.9).',
     ids: ['c-lens-images', 'lens-lab'] },
-  { tab: 'Part 7', name: 'Applications and comparison', short: 'Uses & recap',
-    about: 'Mirrors and lenses in daily life, a final comparison of mirrors and lenses, and the chapter questions.',
+  { tab: 'Part 7', name: 'Uses of mirrors and lenses, and revision', short: 'Uses & recap',
+    about: 'Mirrors and lenses in daily life, a comparison of mirrors and lenses, and the chapter questions.',
     ids: ['c-uses', 'mirror-apps', 'lens-apps', 'recap', 'quiz'] }
 ];
 
@@ -61,7 +61,6 @@ function partSlide(p, n) {
     p.scenes.forEach(s => { s.section = p.tab; s.part = i + 1; used.add(s.id); });
     ordered.push(partSlide(p, i + 1), ...p.scenes);
   });
-  LL.scenes.forEach(s => { if (!used.has(s.id)) ordered.push(s); });   // anything not listed stays at the end
   LL.scenes = ordered;
 })();
 

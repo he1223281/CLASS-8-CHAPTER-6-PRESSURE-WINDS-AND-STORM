@@ -1271,9 +1271,9 @@ LL.add({
     const copy = el('div', { class: 'opening-copy' },
       el('div', { class: 'eyebrow fade', style: 'animation-delay:.1s' }, 'CLASS 8 SCIENCE · CHAPTER 10'),
       el('h1', { class: 'fade', style: 'animation-delay:.35s' }, 'Light:', el('span', null, 'Mirrors'), el('em', null, '& Lenses')),
-      el('p', { class: 'fade', style: 'animation-delay:.7s' }, 'Light travels in straight lines. When it meets a mirror, it bounces back. When it passes through glass or water, it can bend.'),
+      el('p', { class: 'fade', style: 'animation-delay:.7s' }, 'Light travels in straight lines. When it meets a mirror, it bounces back. Lenses let light pass through them and change how things look.'),
       el('p', { class: 'fade', style: 'animation-delay:.9s' }, 'In this lab you will predict, experiment, observe and explain how mirrors and lenses form images.'),
-      el('div', { class: 'topics fade', style: 'animation-delay:1.1s' }, ['1 · Laws of reflection', '2 · Plane mirror images', '3 · Spherical mirrors', '4 · Mirror images', '5 · Lenses', '6 · Lens images', '7 · Uses & recap'].map(t => el('span', null, t))),
+      el('div', { class: 'topics fade', style: 'animation-delay:1.1s' }, ['1 · Laws of reflection', '2 · Plane mirror', '3 · Spherical mirrors', '4 · Mirror images', '5 · Lenses', '6 · Lens images', '7 · Uses & recap'].map(t => el('span', null, t))),
       el('div', { class: 'cta fade', style: 'animation-delay:1.3s' },
         UI.btn('Begin the lab  ▶', () => LL.go(1), 'big-btn'),
         UI.btn('How to use', () => { $('#help').hidden = false; }, 'big-btn ghost'))
@@ -1307,15 +1307,15 @@ LL.add({
         c.fillStyle = 'rgba(10,124,255,.035)'; D.rrect(c, 960, 140, 920, 380, 30); c.fill(); D.rrect(c, 960, 590, 920, 400, 30); c.fill();
         D.text(c, 'REFLECTION', 990, 166, { size: 20, col: COL.amber, align: 'left', font: 'mono', alpha: fade });
         D.text(c, 'a concave mirror brings parallel light together', 990, 192, { size: 19, col: COL.muted, align: 'left', weight: 400, alpha: fade });
-        D.text(c, 'REFRACTION', 990, 625, { size: 20, col: COL.amber, align: 'left', font: 'mono', alpha: fade });
-        D.text(c, 'a convex lens bends parallel light together', 990, 655, { size: 19, col: COL.muted, align: 'left', weight: 400, alpha: fade });
+        D.text(c, 'LENSES', 990, 625, { size: 20, col: COL.amber, align: 'left', font: 'mono', alpha: fade });
+        D.text(c, 'a convex lens brings parallel light together', 990, 655, { size: 19, col: COL.muted, align: 'left', weight: 400, alpha: fade });
         D.axis(c, 340, 990, 1860, null); D.axis(c, 790, 990, 1860, null);
         for (const pts of beamM) { const L = D.polyLen(pts); D.ray(c, D.upTo(pts, L * p1), COL.cyan, 2.2, { alpha: fade * .9 }); }
         for (const pts of beamL) { const L = D.polyLen(pts); D.ray(c, D.upTo(pts, L * p2), COL.cyan, 2.2, { alpha: fade * .9 }); }
         D.mirror(c, mir);
         const LG = OPT.lensOutline(lensG); c.save(); D.path(c, LG); c.closePath(); c.fillStyle = 'rgba(120,230,255,.18)'; c.fill(); c.strokeStyle = 'rgba(160,240,255,.9)'; c.lineWidth = 2.5; c.stroke(); c.restore();
-        if (p1 >= 1) { const g = .6 + .4 * Math.sin(now * 4); D.dot(c, fM.x, fM.y, 7 + g * 4, COL.amber); D.text(c, 'F', fM.x, fM.y + 34, { size: 22, col: COL.amber, font: 'mono', alpha: fade }); }
-        if (p2 >= 1 && fLx) { const g = .6 + .4 * Math.sin(now * 4 + 1); D.dot(c, fLx, 790, 7 + g * 4, COL.amber); D.text(c, 'F', fLx, 824, { size: 22, col: COL.amber, font: 'mono', alpha: fade }); }
+        if (p1 >= 1) { const g = .6 + .4 * Math.sin(now * 4); D.dot(c, fM.x, fM.y, 7 + g * 4, COL.amber);  }
+        if (p2 >= 1 && fLx) { const g = .6 + .4 * Math.sin(now * 4 + 1); D.dot(c, fLx, 790, 7 + g * 4, COL.amber);  }
         if (p1 >= 1) for (const pts of beamM) D.pulses(c, pts, now, COL.white, { speed: 300, gap: 160, r: 3 });
         if (p2 >= 1) for (const pts of beamL) D.pulses(c, pts, now, COL.white, { speed: 300, gap: 160, r: 3 });
       }
@@ -1434,7 +1434,7 @@ LL.add({
           c.restore();
         }
         D.text(c, 'Distance: ' + dcm + ' cm', 1240, 640, { size: 20, col: COL.amber, align: 'right', font: 'mono', bg: 'rgba(255,255,255,.9)' });
-        D.text(c, 'Model: f = 20 cm for the curved mirrors · click a mirror to investigate it', 20, 16, { size: 16, col: COL.muted, align: 'left', weight: 400 });
+        D.text(c, 'Click a mirror to investigate it', 20, 16, { size: 16, col: COL.muted, align: 'left', weight: 400 });
       }
     };
   }
@@ -1451,24 +1451,23 @@ LL.add({
     const L = labLayout(root, { kicker: 'Scene 2 · Activity 10.2', title: 'Curved inwards or curved outwards?' });
     const o = L.cv, cam = Cam3D(390, 360, 120);
     cam.yaw = -.9; cam.pitch = .32;
-    let type = 'concave', off = 0, offT = 0, auto = true, showSphere = true, showCR = true, t = 0;
+    let type = 'concave', off = 0, offT = 0, auto = true, showSphere = true, t = 0;
     const R = 1.75, capA = 38 * DEG;
     cam.dragOn(o);
     const sType = UI.seg('Reflecting side', [{ v: 'concave', t: 'Inside shines (concave)' }, { v: 'convex', t: 'Outside shines (convex)' }], type, v => { type = v; });
     const bCut = UI.btn('Lift the piece out', () => { offT = offT ? 0 : 1.15; bCut.textContent = offT ? 'Put it back' : 'Lift the piece out'; }, 'btn go');
     const tAuto = UI.toggle('Auto-rotate', auto, v => { auto = v; });
     const tSph = UI.toggle('Show whole sphere', showSphere, v => { showSphere = v; });
-    const tCR = UI.toggle('Show C and R', showCR, v => { showCR = v; }, COL.amber);
     const bSide = UI.btn('Side view', () => { auto = false; tAuto.set(false); cam.yaw = 0; cam.pitch = 0; }, 'btn sm');
     const sZoom = UI.slider('Zoom', 60, 200, 5, 100, v => v + '%', v => { cam.zoom = v / 100; });
-    L.controls.append(sType.el, bCut, bSide, el('div', { class: 'break' }), tAuto.el, tSph.el, tCR.el, sZoom.el);
+    L.controls.append(sType.el, bCut, bSide, el('div', { class: 'break' }), tAuto.el, tSph.el, sZoom.el);
     o.cv.parentElement.append(el('div', { class: 'cv-hint' }, 'Drag to rotate · scroll to zoom'));
 
     L.setPanel(UI.panel({
       predict: { q: 'Imagine a spherical mirror as a piece of a hollow sphere. If its <b>inside</b> surface reflects light, what kind of mirror is it?', opts: ['Concave (curved inwards)', 'Convex (bulging outwards)', 'Plane'], ans: 0,
         why: 'The inside of a sphere is "bent in", like a cave: <b>con-cave</b>.' },
       experiment: ['Drag the 3D sphere to look at it from all sides.', 'Press <b>Lift the piece out</b> to separate the mirror from its imaginary sphere.', 'Press <b>Side view</b>: as in Activity 10.2, a side view shows whether the surface curves in or out.', 'Switch which side shines and watch where the shiny side faces.'],
-      observe: ['The concave mirror’s shiny side faces the <b>centre C</b> of the sphere.', 'The convex mirror’s shiny side faces <b>away</b> from C.', 'Both mirrors are the same piece of sphere, so both have the same centre C and radius R.'],
+      observe: ['The concave mirror’s shiny (reflecting) side is the <b>inside</b>, curved inwards.', 'The convex mirror’s shiny side is the <b>outside</b>, bulging outwards.', 'Seen from the side, the curve shows at once which mirror it is (Activity 10.2).'],
       explain: '<p>A <b>spherical mirror</b> is a mirror whose reflecting surface is part of a hollow sphere. If the reflecting surface is the inner, <b>bent-in</b> side, it is a <b>concave mirror</b>. If it is the outer, <b>bulging-out</b> side, it is a <b>convex mirror</b>. The other side is coated and painted, so it does not reflect.</p>' +
         '<p><b>A step further:</b> real spherical mirrors are not made by slicing a glass sphere. A flat piece of glass is ground and polished into a curved shape and then coated (for example with a thin layer of aluminium). Coating the <b>outer</b> curved surface makes a concave mirror; coating the <b>inner</b> curved surface makes a convex mirror.</p>' +
         '<p><b>How to tell them apart:</b> slowly bring your face close to the mirror. A concave mirror gives a big, upright image close up and an upside-down image far away. A convex mirror always gives a smaller, upright image. A plane mirror always gives a same-size image.</p>'
@@ -1519,14 +1518,8 @@ LL.add({
       c.save(); c.strokeStyle = type === 'concave' ? COL.amber : COL.magenta; c.lineWidth = 3; c.beginPath();
       for (let j = 0; j <= 48; j++) { const q = cam.proj(pt(capA, j * 2 * Math.PI / 48)); j ? c.lineTo(q.x, q.y) : c.moveTo(q.x, q.y); }
       c.stroke(); c.restore();
-      if (showCR) {
-        const Cp = cam.proj([0, 0, 0]), Pp = cam.proj(pole);
-        D.line(c, Cp, Pp, COL.amber, 3, [8, 6]);
-        D.dot(c, Cp.x, Cp.y, 7, COL.amber); D.text(c, 'C', Cp.x - 18, Cp.y - 22, { size: 24, col: COL.amber, font: 'mono' });
-        D.dot(c, Pp.x, Pp.y, 6, COL.cyan); D.text(c, 'P', Pp.x + 18, Pp.y - 22, { size: 24, col: COL.cyan, font: 'mono' });
-        D.text(c, 'R', (Cp.x + Pp.x) / 2, (Cp.y + Pp.y) / 2 - 22, { size: 22, col: COL.amber, font: 'mono', bg: 'rgba(255,255,255,.9)' });
-      }
-      D.text(c, type === 'concave' ? 'Shiny side: inside (faces C)' : 'Shiny side: outside (faces away from C)', 390, 40, { size: 22, col: type === 'concave' ? COL.amber : COL.magenta, bg: 'rgba(255,255,255,.9)' });
+
+      D.text(c, type === 'concave' ? 'Shiny side: inside (curves inwards)' : 'Shiny side: outside (bulges outwards)', 390, 40, { size: 22, col: type === 'concave' ? COL.amber : COL.magenta, bg: 'rgba(255,255,255,.9)' });
       D.text(c, 'Silver = reflecting surface · brown = coated back', 390, 630, { size: 17, col: COL.muted, weight: 400 });
     }
 
@@ -1536,14 +1529,9 @@ LL.add({
       D.line(c, P(780, 0), P(780, 700), COL.line, 2);
       D.text(c, 'Side view (cross-section)', 1020, 40, { size: 21, col: COL.white });
       c.save(); c.setLineDash([6, 6]); c.strokeStyle = 'rgba(70,100,180,.35)'; c.lineWidth = 1.5; c.beginPath(); c.arc(cx, cy, r, 0, Math.PI * 2); c.stroke(); c.restore();
-      D.axis(c, cy, 800, 1240, null);
-      // same arc of the circle in both cases; rot = π turns the reflecting side to face right (away from C)
+            // same arc of the circle in both cases; rot = π turns the reflecting side to face right (away from C)
       const m = { type, P: P(cx + r, cy), R: r, a: r * Math.sin(aw), rot: type === 'concave' ? 0 : Math.PI };
       D.mirror(c, m);
-      D.dot(c, cx, cy, 6, COL.amber); D.text(c, 'C', cx, cy + 30, { size: 22, col: COL.amber, font: 'mono' });
-      D.dot(c, cx + r, cy, 5, COL.cyan); D.text(c, 'P', cx + r + (type === 'concave' ? 26 : -24), cy + 30, { size: 22, col: COL.cyan, font: 'mono' });
-      D.line(c, P(cx, cy), P(cx + r * Math.cos(-aw * .6), cy + r * Math.sin(-aw * .6)), COL.amber, 2.5);
-      D.text(c, 'R', cx + r * .36, cy - 62, { size: 21, col: COL.amber, font: 'mono' });
       // incoming light on the reflecting side
       for (const dy of [-60, 0, 60]) {
         const sx = cx + r - (r - Math.sqrt(r * r - dy * dy));            // surface x at this height
@@ -1554,7 +1542,7 @@ LL.add({
       D.text(c, type === 'concave' ? 'CONCAVE: bent in' : 'CONVEX: bulging out', 1020, 600, { size: 24, col: type === 'concave' ? COL.amber : COL.magenta, font: 'disp' });
     }
     return {
-      reset() { type = 'concave'; sType.set(type); offT = 0; off = 0; bCut.textContent = 'Lift the piece out'; auto = true; tAuto.set(true); showSphere = true; tSph.set(true); showCR = true; tCR.set(true); cam.zoom = 1; sZoom.set(100); cam.yaw = -.9; cam.pitch = .32; },
+      reset() { type = 'concave'; sType.set(type); offT = 0; off = 0; bCut.textContent = 'Lift the piece out'; auto = true; tAuto.set(true); showSphere = true; tSph.set(true); cam.zoom = 1; sZoom.set(100); cam.yaw = -.9; cam.pitch = .32; },
       replay() { off = 0; offT = 1.15; bCut.textContent = 'Put it back'; },
       frame(dt, now) {
         t += dt; if (auto && !cam.dragging) cam.yaw += dt * .35;
@@ -1566,149 +1554,35 @@ LL.add({
   }
 });
 
-/* ---------- terms related to spherical mirrors ---------- */
-LL.add({
-  id: 'terms', title: 'Terms for spherical mirrors', section: 'Mirrors',
-  build(root) {
-    const L = labLayout(root, { kicker: 'Scene 2 · Extension (reference book p. 204)', title: 'Pole, centre, focus: naming the parts' });
-    const o = L.cv;
-    const Y = 320;
-    const cm = { type: 'concave', P: P(560, Y), R: 340, a: 190, rot: 0 };
-    const vm = { type: 'convex', P: P(760, Y), R: 340, a: 190, rot: 0 };
-    const C1 = OPT.mirrorCenter(cm), F1 = OPT.mirrorFocus(cm), C2 = OPT.mirrorCenter(vm), F2 = OPT.mirrorFocus(vm);
-    const TERMS = {
-      pole: ['Pole (P)', 'The geometric centre of the reflecting surface. It is denoted by P.'],
-      centre: ['Centre of curvature (C)', 'The centre of the sphere of which the mirror forms a part. It is denoted by C. It is in front of a concave mirror and behind a convex mirror.'],
-      radius: ['Radius of curvature (R)', 'The radius of the sphere of which the mirror forms a part. PC is the radius of curvature R.'],
-      axis: ['Principal axis', 'The straight line passing through the centre of curvature C and the pole P.'],
-      focus: ['Principal focus (F)', 'Parallel rays falling on a concave mirror meet at F after reflection. For a convex mirror, the reflected rays appear to spread out from F behind the mirror.'],
-      flen: ['Focal length (f)', 'The distance between the pole and the principal focus, PF. Focal length f = R / 2.'],
-      aperture: ['Aperture', 'The portion of the mirror available for reflection (APB in the diagram).']
-    };
-    let sel = 'focus', rays = true, t = 0;
-    const live = UI.card('live', 'Selected term', null, el('div', { class: 'q', id: 'll-terms-name' }), el('p', { id: 'll-terms-def' }));
-    const setSel = k => { sel = k; $('#ll-terms-name', live).textContent = TERMS[k][0]; $('#ll-terms-def', live).textContent = TERMS[k][1]; segT.set(k); };
-    const segT = UI.seg(null, Object.keys(TERMS).map(k => ({ v: k, t: TERMS[k][0].replace(/ \(.+\)/, '') })), sel, setSel);
-    const tR = UI.toggle('Parallel light rays', rays, v => { rays = v; });
-    L.controls.append(segT.el, el('div', { class: 'break' }), tR.el, el('span', { class: 'lbl', style: 'font-size:17px;color:var(--muted)' }, 'Tip: click any label on the diagram.'));
-
-    const table = el('table', { class: 'mini-table' },
-      el('thead', null, el('tr', null, el('th', null, ''), el('th', null, 'Plane'), el('th', null, 'Concave'), el('th', null, 'Convex'))),
-      el('tbody', null,
-        el('tr', null, el('th', null, 'Surface'), el('td', null, 'Flat'), el('td', null, 'Bent inwards'), el('td', null, 'Bulges outwards')),
-        el('tr', null, el('th', null, 'Parallel rays'), el('td', null, 'Stay parallel'), el('td', null, 'Converge at F'), el('td', null, 'Diverge, seem to come from F')),
-        el('tr', null, el('th', null, 'Image'), el('td', null, 'Virtual, erect, same size'), el('td', null, 'Real & inverted, or virtual, erect & enlarged'), el('td', null, 'Always virtual, erect, diminished')),
-        el('tr', null, el('th', null, 'Also called'), el('td', null, '—'), el('td', null, 'Converging mirror'), el('td', null, 'Diverging mirror'))));
-    L.setPanel(UI.panel({
-      predict: { q: 'The radius of curvature of a concave mirror is 20 cm. What is its focal length?', opts: ['40 cm', '20 cm', '10 cm', '5 cm'], ans: 2, why: 'The focus is halfway between P and C, so f = R / 2 = 20 / 2 = 10 cm.' },
-      live,
-      observe: ['C and F are <b>in front</b> of a concave mirror and <b>behind</b> a convex mirror.', 'F lies exactly halfway between P and C.', 'The principal axis joins C and P.'],
-      explain: '<p>Focal length, f = Radius of curvature / 2 = <b>R / 2</b>.</p>', extra: [UI.card('explain', 'Plane, concave and convex compared', null, table)]
-    }));
-    setSel(sel);
-
-    // clickable label hotspots
-    const hot = [
-      ['pole', cm.P.x + 16, Y + 34], ['pole', vm.P.x - 16, Y + 34], ['centre', C1.x, Y + 34], ['centre', C2.x, Y + 34], ['focus', F1.x, Y + 34], ['focus', F2.x, Y + 34],
-      ['radius', (C1.x + cm.P.x) / 2, Y + 128], ['radius', (C2.x + vm.P.x) / 2, Y + 128], ['axis', 1150, Y - 20], ['flen', (F1.x + cm.P.x) / 2, Y + 84], ['flen', (F2.x + vm.P.x) / 2, Y + 84],
-      ['aperture', cm.P.x - 42, Y - 205], ['aperture', vm.P.x + 50, Y - 205]
-    ];
-    const hitT = p => { const h = hot.find(([, x, y]) => Math.abs(p.x - x) < 46 && Math.abs(p.y - y) < 24); return h ? h[0] : null; };
-    o.cv.addEventListener('click', e => { const k = hitT(o.pt(e)); if (k) setSel(k); });
-    o.cv.addEventListener('pointermove', e => { o.cv.style.cursor = hitT(o.pt(e)) ? 'pointer' : 'default'; });
-
-    function bracket(c, x0, x1, y, label, col, on) {
-      D.line(c, P(x0, y), P(x1, y), col, on ? 3.5 : 2); D.line(c, P(x0, y - 8), P(x0, y + 8), col, 2); D.line(c, P(x1, y - 8), P(x1, y + 8), col, 2);
-      D.text(c, label, (x0 + x1) / 2, y + 22, { size: 20, col, font: 'mono', bg: on ? 'rgba(255,184,77,.25)' : 'rgba(255,255,255,.9)' });
-    }
-    return {
-      reset() { setSel('focus'); rays = true; tR.set(true); },
-      frame(dt, now) {
-        t += dt; const c = o.ctx; o.begin(); D.bg(o);
-        const glow = .5 + .5 * Math.sin(now * 5);
-        // faint full circles
-        c.save(); c.setLineDash([5, 7]); c.strokeStyle = 'rgba(70,100,180,.35)'; c.lineWidth = 1.2;
-        c.beginPath(); c.arc(C1.x, C1.y, cm.R, -.62, .62); c.stroke(); c.beginPath(); c.arc(C2.x, C2.y, vm.R, Math.PI - .62, Math.PI + .62); c.stroke(); c.restore();
-        D.line(c, P(20, Y), P(1240, Y), sel === 'axis' ? COL.amber : COL.axis, sel === 'axis' ? 3 : 1.5, [10, 7]);
-        D.text(c, 'Principal axis', 1150, Y - 20, { size: 18, col: sel === 'axis' ? COL.amber : COL.muted, bg: 'rgba(255,255,255,.9)' });
-        if (rays) {
-          for (let k = -3; k <= 3; k++) {
-            if (!k) continue;
-            const r1 = OPT.traceMirror(cm, P(20, Y + k * 36), P(1, 0), 520);
-            D.ray(c, r1.pts.slice(0, 2), COL.cyan, 2, { alpha: .75 }); D.ray(c, [r1.pts[1], V.add(r1.pts[1], V.mul(r1.out, 380))], COL.cyan, 2, { alpha: .75 });
-            D.arrowOn(c, r1.pts[0], r1.pts[1], COL.cyan, 11, .5);
-          }
-          // convex: light from the left, reflecting surface faces left
-          for (let k = -3; k <= 3; k++) {
-            if (!k) continue;
-            const y = Y + k * 36, r = OPT.traceMirror(vm, P(640, y), P(1, 0), 220);
-            if (!r.hit) continue;
-            D.ray(c, [P(600, y), r.hit], COL.magenta, 2, { alpha: .75 }); D.ray(c, [r.hit, V.add(r.hit, V.mul(r.out, 150))], COL.magenta, 2, { alpha: .75 });
-            D.line(c, r.hit, F2, COL.magenta, 1.5, [5, 6], .6);
-          }
-        }
-        D.mirror(c, cm); D.mirror(c, vm);
-        const hl = k => sel === k ? COL.amber : COL.white;
-        // points
-        for (const [x, lab, k] of [[cm.P.x + 16, 'P', 'pole'], [vm.P.x - 16, 'P', 'pole'], [C1.x, 'C', 'centre'], [C2.x, 'C', 'centre'], [F1.x, 'F', 'focus'], [F2.x, 'F', 'focus']]) {
-          const on = sel === k;
-          if (on) D.dot(c, lab === 'P' ? (x < 660 ? cm.P.x : vm.P.x) : x, Y, 6 + glow * 4, COL.amber);
-          else D.dot(c, lab === 'P' ? (x < 660 ? cm.P.x : vm.P.x) : x, Y, 4.5, COL.white, false);
-          D.text(c, lab, x, Y + 34, { size: 24, col: hl(k), font: 'mono', bg: on ? 'rgba(255,184,77,.25)' : 'rgba(255,255,255,.9)' });
-        }
-        bracket(c, C1.x, cm.P.x, Y + 116, 'R = PC', sel === 'radius' ? COL.amber : COL.white, sel === 'radius');
-        bracket(c, vm.P.x, C2.x, Y + 116, 'R = PC', sel === 'radius' ? COL.amber : COL.white, sel === 'radius');
-        bracket(c, F1.x, cm.P.x, Y + 72, 'f = PF', sel === 'flen' ? COL.amber : COL.white, sel === 'flen');
-        bracket(c, vm.P.x, F2.x, Y + 72, 'f = PF', sel === 'flen' ? COL.amber : COL.white, sel === 'flen');
-        // aperture A–B
-        for (const [m, x] of [[cm, cm.P.x - 42], [vm, vm.P.x + 50]]) {
-          const pts = OPT.mirrorPoints(m, 2), A = pts[0], B = pts[2], on = sel === 'aperture';
-          D.text(c, 'A', A.x + (m === cm ? -18 : 18), A.y - 12, { size: 20, col: hl('aperture'), font: 'mono' });
-          D.text(c, 'B', B.x + (m === cm ? -18 : 18), B.y + 14, { size: 20, col: hl('aperture'), font: 'mono' });
-          if (on) { c.save(); c.strokeStyle = COL.amber; c.lineWidth = 9; c.globalAlpha = .35 + .3 * glow; D.path(c, OPT.mirrorPoints(m, 30)); c.stroke(); c.restore(); }
-          D.text(c, 'Aperture', x, Y - 205, { size: 18, col: hl('aperture'), bg: on ? 'rgba(255,184,77,.25)' : 'rgba(255,255,255,.9)' });
-        }
-        D.text(c, 'Concave mirror', cm.P.x - 170, 600, { size: 26, col: COL.amber, font: 'disp' });
-        D.text(c, 'Convex mirror', vm.P.x + 170, 600, { size: 26, col: COL.magenta, font: 'disp' });
-        D.text(c, 'Rays come from the left in both diagrams (exact law-of-reflection tracing).', 630, 668, { size: 17, col: COL.muted, weight: 400 });
-      }
-    };
-  }
-});
-
 /* ---------- plane mirror lab ---------- */
 LL.add({
   id: 'plane-lab', title: 'Plane mirror lab', section: 'Mirrors',
   build(root) {
-    const L = labLayout(root, { kicker: 'Scene 3 · Plane mirror (Grade 7 recap)', title: 'Images in a plane mirror' });
+    const L = labLayout(root, { kicker: 'Plane mirror (recap of Grade 7)', title: 'The image in a plane mirror' });
     const o = L.cv;
-    let mode = 'distance', xo = 360, eye = P(180, 240), screen = false, normals = true, word = 'AMBULANCE', ph = 160, dist = 90, t = 0;
+    let mode = 'distance', xo = 360, eye = P(180, 240), normals = true, word = 'AMBULANCE', t = 0;
     const MX = 700, FLOOR = 570, OH = 150, SC = 10;   // 10 px per cm
-    const sMode = UI.seg('Experiment', [{ v: 'distance', t: 'Where is the image?' }, { v: 'lateral', t: 'Left–right swap' }, { v: 'half', t: 'How tall a mirror?' }], mode, v => { mode = v; showCtl(); });
-    const tScreen = UI.toggle('Put a screen at the image', screen, v => { screen = v; }, COL.magenta);
+    const sMode = UI.seg('Experiment', [{ v: 'distance', t: 'Seeing the image' }, { v: 'lateral', t: 'Left–right swap' }], mode, v => { mode = v; showCtl(); });
     const tNorm = UI.toggle('Normals and angles', normals, v => { normals = v; }, COL.amber);
     const sObj = UI.slider('Object distance', 6, 56, 1, (MX - xo) / SC, v => v + ' cm', v => { xo = MX - v * SC; });
     const inp = el('input', { type: 'text', class: 'txt', id: 'll-plane-word', value: word, maxlength: 14, 'aria-label': 'Word to reflect' });
     inp.addEventListener('input', () => { word = inp.value.toUpperCase().slice(0, 14) || ' '; });
     const wordCtl = UI.ctl('Type a word', inp);
-    const sH = UI.slider('Your height', 120, 180, 1, ph, v => v + ' cm', v => { ph = v; });
-    const sD = UI.slider('Distance from mirror', 40, 140, 1, dist, v => v + ' cm', v => { dist = v; });
-    L.controls.append(sMode.el, el('div', { class: 'break' }), sObj.el, tScreen.el, tNorm.el, wordCtl, sH.el, sD.el);
+    L.controls.append(sMode.el, el('div', { class: 'break' }), sObj.el, tNorm.el, wordCtl);
     function showCtl() {
-      [sObj.el, tScreen.el, tNorm.el].forEach(e => { e.hidden = mode !== 'distance'; });
-      wordCtl.hidden = mode !== 'lateral'; sH.el.hidden = sD.el.hidden = mode !== 'half';
+      [sObj.el, tNorm.el].forEach(e => { e.hidden = mode !== 'distance'; });
+      wordCtl.hidden = mode !== 'lateral';
     }
     showCtl();
     o.cv.parentElement.append(el('div', { class: 'cv-hint', id: 'll-plane-hint' }, 'Drag the candle or the eye'));
 
-    const ro = UI.readout([['u', 'Object to mirror'], ['v', 'Mirror to image'], ['h', 'Image height'], ['n', 'Nature']]);
+    const ro = UI.readout([['o', 'Image is'], ['s', 'Image size'], ['l', 'Left and right']]);
     L.setPanel(UI.panel({
-      predict: { q: 'You stand 2 m in front of a plane mirror. How far are you from your image?', opts: ['1 m', '2 m', '4 m', 'It depends on the mirror’s size'], ans: 2, why: 'Your image is 2 m <b>behind</b> the mirror, so it is 2 + 2 = 4 m away from you.' },
-      experiment: ['<b>Where is the image?</b> Drag the candle and the eye. Compare the two distances.', 'Turn on the screen: can the image be caught on it?', '<b>Left–right swap:</b> type your name.', '<b>How tall a mirror?</b> Change your height and distance.'],
+      predict: { q: 'You look at yourself in a plane mirror. Your image is…', opts: ['erect and the same size', 'upside down', 'smaller than you', 'bigger than you'], ans: 0, why: 'A plane mirror always forms an erect image of the same size as the object.' },
+      experiment: ['<b>Seeing the image:</b> drag the candle and the eye. Follow the light from the candle to the mirror and into the eye.', 'Turn on <b>Normals and angles</b>: at the mirror, ∠i = ∠r for each ray.', '<b>Left–right swap:</b> type your name and look at its image.'],
       live: UI.card('live', 'Live measurements', null, ro.el),
-      observe: ['The image is as far <b>behind</b> the mirror as the object is in front.', 'The image is upright and the same size.', 'No image forms on a screen: the image is <b>virtual</b>.', 'Writing appears reversed: <b>lateral inversion</b>.', 'You need a mirror only <b>half your height</b>, at any distance.'],
-      explain: '<p>Light from the candle reflects off the mirror (angle of incidence = angle of reflection) and enters the eye. The brain assumes light travels in straight lines, so it traces the rays <b>backwards</b> (dashed lines) to a point behind the mirror. No light actually goes there, so the image is <b>virtual</b>.</p>' +
-        '<p><b>Characteristics:</b> (i) virtual and erect, (ii) laterally inverted, (iii) same shape and size as the object, (iv) as far behind the mirror as the object is in front of it.</p>' +
+      observe: ['The image is <b>erect</b> (upright) and of the <b>same size</b> as the candle.', 'Each ray reflects with ∠i = ∠r.', 'Writing appears reversed left to right: <b>lateral inversion</b>.'],
+      explain: '<p>Light from the candle reflects off the mirror, obeying the laws of reflection, and enters the eye. The image seen in a plane mirror is always <b>erect</b> and of the <b>same size</b> as the object, and it is <b>laterally inverted</b>.</p>' +
         '<p>That is why <b>AMBULANCE</b> is painted in mirror writing on the front of the vehicle: drivers ahead read it correctly in their rear-view mirrors.</p>'
     }));
 
@@ -1724,13 +1598,9 @@ LL.add({
       // behind-the-mirror zone
       c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(MX, 0, o.w - MX, o.h); c.restore();
       D.text(c, 'BEHIND THE MIRROR', MX + 20, 30, { size: 17, col: COL.muted, align: 'left', font: 'mono' });
-      D.text(c, 'no light travels here', MX + 20, 54, { size: 17, col: COL.muted, align: 'left', weight: 400 });
       D.line(c, P(0, FLOOR), P(o.w, FLOOR), 'rgba(60,70,110,.35)', 2);
       const xi = 2 * MX - xo, T = P(xo, FLOOR - OH), B = P(xo, FLOOR - 4), IT = P(xi, FLOOR - OH), IB = P(xi, FLOOR - 4);
-      if (screen) {
-        c.save(); c.fillStyle = '#c9d0de'; c.fillRect(xi - 6, FLOOR - 230, 12, 230); c.restore();
-        D.text(c, 'Screen: no image appears!', xi, FLOOR - 250, { size: 19, col: COL.magenta, bg: 'rgba(255,255,255,.9)' });
-      }
+
       D.candle(c, xi, FLOOR, OH, { ghost: true, t: now });
       D.candle(c, xo, FLOOR, OH, { t: now });
       D.mirror(c, { type: 'plane', P: P(MX, 340), R: 1, a: 250, rot: 0 });
@@ -1754,15 +1624,9 @@ LL.add({
       }
       D.eye(c, eye.x, eye.y, 1.2, -1);
       D.text(c, 'Eye', eye.x, eye.y - 34, { size: 18, col: COL.white });
-      // distances
-      const y = FLOOR + 45, u = (MX - xo) / SC;
-      for (const [a, b] of [[xo, MX], [MX, xi]]) {
-        D.line(c, P(a, y), P(b, y), COL.white, 2); D.line(c, P(a, y - 9), P(a, y + 9), COL.white, 2); D.line(c, P(b, y - 9), P(b, y + 9), COL.white, 2);
-        D.text(c, u + ' cm', (a + b) / 2, y + 26, { size: 20, col: COL.white, font: 'mono' });
-      }
       D.text(c, 'Object', xo, FLOOR - OH - 70, { size: 19, col: COL.amber });
-      D.text(c, 'Image (virtual)', xi, FLOOR - OH - 70, { size: 19, col: COL.magenta });
-      ro.set('u', u + ' cm'); ro.set('v', u + ' cm (behind)', true); ro.set('h', '15 cm = object height'); ro.set('n', '<span class="tag virt">Virtual</span><span class="tag green">Erect</span>');
+      D.text(c, 'Image', xi, FLOOR - OH - 70, { size: 19, col: COL.magenta });
+      ro.set('o', 'Erect (upright)', true); ro.set('s', 'Same size as the object'); ro.set('l', 'Swapped (laterally inverted)');
     }
 
     function drawLateral(c) {
@@ -1797,49 +1661,16 @@ LL.add({
       c.save(); c.fillStyle = '#25345c'; D.rrect(c, 780, 515, 400, 120, 50); c.fill(); c.lineWidth = 6; c.strokeStyle = '#9fb3d9'; c.stroke(); c.restore();
       D.text(c, 'AMBULANCE', 980, 575, { size: 40, col: '#ff6b7a', font: 'disp' });
       D.text(c, 'Seen in the rear-view mirror of the car ahead', 980, 668, { size: 17, col: COL.muted, weight: 400 });
-      ro.set('u', '—'); ro.set('v', '—'); ro.set('h', '—'); ro.set('n', 'Left and right swapped', true);
+      ro.set('o', 'Erect (upright)'); ro.set('s', 'Same size'); ro.set('l', 'Swapped (laterally inverted)', true);
     }
 
-    function drawHalf(c) {
-      const S = 3.4, floor = 655, MXh = 720, px = MXh - dist * S, eyeH = ph - 10;
-      const top = floor - ph * S, eyeY = floor - eyeH * S, ix = MXh + dist * S;
-      c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(MXh, 0, o.w - MXh, o.h); c.restore();
-      D.line(c, P(0, floor), P(o.w, floor), 'rgba(60,70,110,.35)', 2);
-      // wall
-      D.line(c, P(MXh, 30), P(MXh, floor), 'rgba(160,180,230,.4)', 3);
-      const mTop = floor - (ph + eyeH) / 2 * S, mBot = floor - eyeH / 2 * S;
-      D.mirror(c, { type: 'plane', P: P(MXh, (mTop + mBot) / 2), R: 1, a: (mBot - mTop) / 2, rot: 0 });
-      const person = (x, alpha, ghost) => {
-        c.save(); c.globalAlpha = alpha; c.strokeStyle = ghost ? COL.magenta : '#e8eef9'; c.fillStyle = ghost ? 'rgba(255,79,168,.25)' : '#2a4a9a'; c.lineWidth = 4;
-        if (ghost) c.setLineDash([7, 6]);
-        const hr = 11 * S; c.beginPath(); c.arc(x, top + hr, hr, 0, Math.PI * 2); c.fill(); c.stroke();
-        c.beginPath(); D.rrect(c, x - 22 * S * .5, top + 2 * hr, 22 * S, (ph * .42) * S, 10); c.fill(); c.stroke();
-        c.beginPath(); c.moveTo(x - 4 * S, top + 2 * hr + ph * .42 * S); c.lineTo(x - 5 * S, floor); c.moveTo(x + 4 * S, top + 2 * hr + ph * .42 * S); c.lineTo(x + 5 * S, floor); c.stroke();
-        c.restore();
-      };
-      person(ix, .8, true); person(px, 1, false);
-      D.eye(c, px + 6, eyeY, .7, -1);
-      const E = P(px + 10, eyeY), Hd = P(px, top), Ft = P(px, floor);
-      const mT = P(MXh, mTop), mB = P(MXh, mBot);
-      D.ray(c, [Hd, mT, E], COL.cyan, 2.6); D.arrowOn(c, Hd, mT, COL.cyan); D.arrowOn(c, mT, E, COL.cyan);
-      D.ray(c, [Ft, mB, E], COL.amber, 2.6); D.arrowOn(c, Ft, mB, COL.amber); D.arrowOn(c, mB, E, COL.amber);
-      D.line(c, mT, P(ix, top), COL.magenta, 2, [7, 6], .8); D.line(c, mB, P(ix, floor), COL.magenta, 2, [7, 6], .8);
-      // dimension
-      const need = (mBot - mTop) / S;
-      D.line(c, P(MXh + 26, mTop), P(MXh + 26, mBot), COL.green, 3); D.line(c, P(MXh + 16, mTop), P(MXh + 36, mTop), COL.green, 3); D.line(c, P(MXh + 16, mBot), P(MXh + 36, mBot), COL.green, 3);
-      D.text(c, `Mirror needed: ${need.toFixed(0)} cm`, MXh + 46, (mTop + mBot) / 2 - 16, { size: 22, col: COL.green, align: 'left', bg: 'rgba(255,255,255,.9)' });
-      D.text(c, `= ½ × ${ph} cm`, MXh + 46, (mTop + mBot) / 2 + 18, { size: 20, col: COL.green, align: 'left', font: 'mono', bg: 'rgba(255,255,255,.9)' });
-      D.text(c, `Height ${ph} cm`, px - 70, top - 16, { size: 19, col: COL.white });
-      D.text(c, 'Knowledge Pod: the mirror only needs to be half your height, whatever your distance.', 20, 26, { size: 18, col: COL.amber, align: 'left' });
-      ro.set('u', dist + ' cm'); ro.set('v', dist + ' cm (behind)'); ro.set('h', ph + ' cm'); ro.set('n', 'Mirror needed: ' + need.toFixed(0) + ' cm', true);
-    }
     return {
-      reset() { mode = 'distance'; sMode.set(mode); xo = 360; sObj.set(34); eye = P(180, 240); screen = false; tScreen.set(false); normals = true; tNorm.set(true); word = 'AMBULANCE'; inp.value = word; ph = 160; sH.set(160); dist = 90; sD.set(90); showCtl(); },
+      reset() { mode = 'distance'; sMode.set(mode); xo = 360; sObj.set(34); eye = P(180, 240); normals = true; tNorm.set(true); word = 'AMBULANCE'; inp.value = word; showCtl(); },
       configure() {},
       frame(dt, now) {
         t += dt; const c = o.ctx; o.begin(); D.bg(o);
         $('#ll-plane-hint').hidden = mode !== 'distance';
-        if (mode === 'distance') drawDistance(c, now); else if (mode === 'lateral') drawLateral(c); else drawHalf(c);
+        if (mode === 'distance') drawDistance(c, now); else drawLateral(c);
       }
     };
   }
@@ -1848,203 +1679,97 @@ LL.add({
 </script>
 <script>
 'use strict';
-/* Shared image-formation lab (used by the spherical-mirror lab and the lens lab).
-   Paraxial model with the New Cartesian sign convention — see optics.js. */
+/* "What do you see?" lab, shared by the mirror lab (Activity 10.3) and the lens lab (Activity 10.9).
+   Class 8 level: students move the object and watch how the image looks (erect or inverted, enlarged or diminished).
+   The image size is worked out internally (optics.js) but no formulas, foci or ray diagrams are shown. */
 
 function ImageLab(root, cfg) {
   const kind = cfg.kind;                         // 'mirror' | 'lens'
-  const L = labLayout(root, { kicker: cfg.kicker, title: cfg.title, cvH: 630 });
-  const o = L.cv, X = cfg.X, Y = 330, S = 18, F = 10;
-  const uMax = cfg.uMax, box = { x0: -10, y0: -10, x1: o.w + 10, y1: o.h + 10 };
-  const st = { type: cfg.defType, u: cfg.defU, h: 4, view: 'ray', on: { r1: true, r2: true, r3: true, r4: true }, labels: true, screen: false, sx: X + 470, rp: 0 };
-  const geom = () => ({ type: st.type, P: P(X, Y), R: 2 * F * S, a: 210, rot: 0 });
+  const L = labLayout(root, { kicker: cfg.kicker, title: cfg.title });
+  const o = L.cv, X = cfg.X, Y = 420, S = 12, F = 10;
+  const st = { type: cfg.defType, u: cfg.defU };
   const fSigned = () => {
     if (kind === 'mirror') return st.type === 'plane' ? Infinity : st.type === 'concave' ? -F : F;
     return st.type === 'convex' ? F : -F;
   };
-  const converging = () => (kind === 'mirror' && st.type === 'concave') || (kind === 'lens' && st.type === 'convex');
 
   // ---------- controls ----------
-  const sType = UI.seg(kind === 'mirror' ? 'Mirror' : 'Lens', cfg.types.map(v => ({ v, t: v[0].toUpperCase() + v.slice(1) })), st.type, v => { st.type = v; afterType(); });
-  const sView = UI.seg('View', [{ v: 'ray', t: 'Ray diagram' }, { v: 'real', t: 'Realistic' }], st.view, v => { st.view = v; });
-  const sU = UI.slider('Object distance', 2, uMax, .5, st.u, v => v.toFixed(1) + ' cm', v => { st.u = snap(v); });
-  const sH = UI.slider('Object height', 1, 6, .5, st.h, v => v.toFixed(1) + ' cm', v => { st.h = v; });
-  const placeWrap = el('div', { class: 'ctl' }, el('span', { class: 'lbl' }, 'Place at'));
-  const rayT = {};
-  const rayWrap = el('div', { class: 'ctl' }, el('span', { class: 'lbl' }, 'Rays'));
-  ['r1', 'r2', 'r3', 'r4'].forEach((k, i) => { rayT[k] = UI.toggle(String(i + 1), true, v => { st.on[k] = v; }, COL[k]); rayWrap.append(rayT[k].el); });
-  const tLab = UI.toggle('Labels', true, v => { st.labels = v; });
-  const tScr = kind === 'lens' ? UI.toggle('Screen', false, v => { st.screen = v; }, COL.white) : null;
-  L.controls.append(...[sType.el, sView.el, sH.el, el('div', { class: 'break' }), sU.el, rayWrap, tLab.el, tScr && tScr.el, el('div', { class: 'break' }), placeWrap].filter(Boolean));
-  o.cv.parentElement.append(el('div', { class: 'cv-hint' }, kind === 'lens' ? 'Drag the object · drag its tip to change height · drag the screen' : 'Drag the object · drag its tip to change its height'));
-
-  function snap(v) {
-    if (converging()) { if (Math.abs(v - F) < .3) return F; if (Math.abs(v - 2 * F) < .3) return 2 * F; }
-    return v;
-  }
-  function afterType() {
-    placeWrap.querySelectorAll('button').forEach(b => b.remove());
-    const pl = cfg.places[st.type];
-    pl.forEach(([t, u]) => placeWrap.append(UI.btn(t, () => { st.u = u; sU.set(u); st.rp = 0; }, 'btn sm')));
-    rayT.r4.el.hidden = kind === 'lens';
-    rayT.r3.el.hidden = kind === 'mirror' && st.type === 'plane';
-    sType.set(st.type);
-    st.rp = 0;
-  }
-  afterType();
+  const sType = UI.seg(kind === 'mirror' ? 'Mirror' : 'Lens', cfg.types.map(v => ({ v, t: v[0].toUpperCase() + v.slice(1) })), st.type, v => { st.type = v; sType.set(v); });
+  const sU = UI.slider('Distance of the object', 3, cfg.uMax, .5, st.u, v => v.toFixed(0) + ' cm', v => { st.u = v; });
+  const place = el('div', { class: 'ctl' }, el('span', { class: 'lbl' }, 'Move the object'),
+    ...[['Very close', 4], ['Close', 7], ['A little farther', 15], ['Far', 25], ['Very far', cfg.uMax]].map(([t, u]) => UI.btn(t, () => { st.u = u; sU.set(u); }, 'btn sm')));
+  L.controls.append(sType.el, sU.el, el('div', { class: 'break' }), place);
+  o.cv.parentElement.append(el('div', { class: 'cv-hint' }, 'Drag the candle closer or farther'));
 
   // ---------- panel ----------
-  const ro = UI.readout([['zone', 'Object'], ['u', 'u (object)'], ['v', 'v (image)'], ['m', 'Magnification'], ['nat', 'Image'], ['where', 'Image position']]);
+  const ro = UI.readout([['d', 'Object distance'], ['o', 'Image is'], ['s', 'Image size']]);
   const notes = el('p', { class: 'note' });
-  const live = UI.card('live', 'Live measurements', null, ro.el, notes);
-  const conv = UI.card('explain', 'Model used here', null, el('p', { class: 'note', html: cfg.modelNote }));
-  L.setPanel(UI.panel({ ...cfg.panel, live, liveFirst: true, extra: [conv] }));
+  L.setPanel(UI.panel({ ...cfg.panel, live: UI.card('live', 'What you see', null, ro.el, notes), liveFirst: true }));
 
-  // ---------- dragging ----------
   const objX = () => X - st.u * S;
   dragOn(o, {
-    hit: p => {
-      const x = objX(), top = Y - st.h * S;
-      if (st.screen && kind === 'lens' && Math.abs(p.x - st.sx) < 24 && p.y > Y - 220 && p.y < Y + 220) return 'screen';
-      if (Math.abs(p.x - x) < 34 && Math.abs(p.y - top) < 26) return 'tip';
-      if (Math.abs(p.x - x) < 34 && p.y > top && p.y < Y + 16) return 'obj';
-      return null;
-    },
-    move: (h, p) => {
-      if (h === 'screen') { st.sx = clamp(p.x, X + 30, o.w - 20); return; }
-      if (h === 'tip') { st.h = clamp(Math.round((Y - p.y) / S * 2) / 2, 1, 6); sH.set(st.h); }
-      const u = clamp(Math.round((X - p.x) / S * 2) / 2, 2, uMax);
-      st.u = snap(u); sU.set(st.u);
-    }
+    hit: p => Math.abs(p.x - objX()) < 40 && p.y > Y - 120 && p.y < Y + 16 ? 'obj' : null,
+    move: (h, p) => { st.u = clamp(Math.round((X - p.x) / S * 2) / 2, 3, cfg.uMax); sU.set(st.u); }
   });
 
-  function zoneLabels(c) {
-    if (!converging()) return;
-    const zs = kind === 'mirror'
-      ? [[X - 2 * F * S - 230, X - 2 * F * S, 'Beyond C'], [X - 2 * F * S, X - F * S, 'Between C and F'], [X - F * S, X, 'Between F and P']]
-      : [[X - 2 * F * S - 230, X - 2 * F * S, 'Beyond 2F₁'], [X - 2 * F * S, X - F * S, 'Between 2F₁ and F₁'], [X - F * S, X, 'Between F₁ and O']];
-    const x = objX();
-    for (const [a, b, t] of zs) {
-      const on = x > a && x < b;
-      c.save(); c.fillStyle = on ? 'rgba(255,184,77,.10)' : 'rgba(255,255,255,.025)'; c.fillRect(Math.max(0, a), Y + 52, b - Math.max(0, a), 34); c.restore();
-      D.text(c, t, (Math.max(0, a) + b) / 2, Y + 69, { size: 16, col: on ? COL.amber : COL.muted, weight: on ? 700 : 400 });
-    }
-  }
-
-  function legend(c, rays) {
-    let y = 26;
-    for (const r of rays) {
-      if (!st.on[r.id]) continue;
-      D.line(c, P(18, y), P(52, y), r.col, 3.5);
-      D.text(c, r.label + (r.miss ? '  (misses the ' + (kind === 'mirror' ? 'mirror' : 'lens') + ')' : ''), 62, y, { size: 16, col: r.miss ? COL.muted : COL.white, align: 'left', weight: 400 });
-      y += 26;
-    }
-  }
-
   return {
-    st, sType, sU,
-    configure(opts) { if (opts.type && cfg.types.includes(opts.type)) { st.type = opts.type; afterType(); } },
-    onShow() { st.rp = 0; },
-    replay() { st.rp = 0; },
-    reset() {
-      st.type = cfg.defType; st.u = cfg.defU; st.h = 4; st.view = 'ray'; st.labels = true; st.screen = false; st.sx = X + 470;
-      ['r1', 'r2', 'r3', 'r4'].forEach(k => { st.on[k] = true; rayT[k].set(true); });
-      sView.set('ray'); sU.set(st.u); sH.set(st.h); tLab.set(true); if (tScr) tScr.set(false); afterType();
-    },
+    st,
+    configure(opts) { if (opts.type && cfg.types.includes(opts.type)) { st.type = opts.type; sType.set(st.type); } },
+    reset() { st.type = cfg.defType; st.u = cfg.defU; sType.set(st.type); sU.set(st.u); },
     frame(dt, now) {
-      st.rp += dt / 2.4;
       const c = o.ctx; o.begin(); D.bg(o);
-      const f = fSigned(), u = -st.u;
-      const img = kind === 'mirror' ? OPT.mirrorImage(u, f) : OPT.lensImage(u, f);
-      const T = P(objX(), Y - st.h * S);
-      const R = OPT.labRays({ kind, type: st.type, X, Y, s: S, f, T, img, mirror: geom(), a: 230, on: st.on, box });
-      const I = R.I, real = !img.inf && (kind === 'mirror' ? img.v < 0 : img.v > 0);
+      const f = fSigned();
+      const img = kind === 'mirror' ? OPT.mirrorImage(-st.u, f) : OPT.lensImage(-st.u, f);
+      const blurred = img.inf || Math.abs(img.m) > 4;
+      const m = img.inf ? 4 : img.m;
 
-      // behind-the-mirror tint
-      if (kind === 'mirror') { c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(X, 0, o.w - X, o.h); c.restore(); D.text(c, 'BEHIND THE MIRROR', o.w - 18, 24, { size: 15, col: COL.muted, align: 'right', font: 'mono' }); }
-      D.axis(c, Y, 0, o.w, st.labels ? 'Principal axis' : null);
-      if (st.labels) zoneLabels(c);
-      // focal markers
-      if (isFinite(f)) {
-        const marks = kind === 'mirror' ? [[X + f * S, 'F'], [X + 2 * f * S, 'C']] : [[X - F * S, 'F₁'], [X + F * S, 'F₂'], [X - 2 * F * S, '2F₁'], [X + 2 * F * S, '2F₂']];
-        for (const [x, t] of marks) D.mark(c, x, Y, t, t.startsWith('C') || t.startsWith('2') ? COL.amber : COL.white);
+      // the set-up: table, object, mirror or lens, and the eye
+      D.line(c, P(20, Y), P(860, Y), 'rgba(60,70,110,.35)', 3);
+      D.text(c, 'Side view of the set-up', 24, 28, { size: 18, col: COL.muted, align: 'left' });
+      D.candle(c, objX(), Y, 90, { t: now });
+      D.text(c, 'Object', objX(), Y + 28, { size: 18, col: COL.amber, bg: COL.pill });
+      if (kind === 'mirror') {
+        D.mirror(c, { type: st.type, P: P(X, Y - 110), R: 240, a: 120, rot: 0 }, { realistic: true });
+        D.text(c, st.type + ' mirror', X, Y + 28, { size: 18, col: COL.white, bg: COL.pill });
+        D.eye(c, objX() - 60, Y - 150, 1, -1);
+        D.text(c, 'you look into the mirror', objX() - 60, Y - 186, { size: 16, col: COL.muted, weight: 400 });
+      } else {
+        D.lens(c, X, Y - 110, 120, st.type, { bulge: 18 });
+        D.text(c, st.type + ' lens', X, Y + 28, { size: 18, col: COL.white, bg: COL.pill });
+        D.eye(c, X + 170, Y - 110, 1.1, -1);
+        D.text(c, 'you look through the lens', X + 170, Y - 150, { size: 16, col: COL.muted, weight: 400 });
       }
-      // element
-      const realistic = st.view === 'real';
-      if (kind === 'mirror') { D.mirror(c, geom(), { realistic }); D.mark(c, X, Y, 'P', COL.cyan, false); }
-      else { D.lens(c, X, Y, 230, st.type, { bulge: 22 }); D.mark(c, X, Y, 'O', COL.cyan, false); }
+      // distance marker
+      D.line(c, P(objX(), Y + 60), P(X, Y + 60), COL.white, 2); D.line(c, P(objX(), Y + 52), P(objX(), Y + 68), COL.white, 2); D.line(c, P(X, Y + 52), P(X, Y + 68), COL.white, 2);
+      D.text(c, st.u.toFixed(0) + ' cm', (objX() + X) / 2, Y + 84, { size: 20, col: COL.white, font: 'mono' });
 
-      // rays
-      const rayAlpha = realistic ? .28 : 1;
-      const p = clamp(st.rp, 0, 1);
-      for (const r of R.rays) {
-        if (r.miss || !r.inc) continue;
-        const full = [r.inc[0], r.inc[1], r.out[1]];
-        const Ltot = D.polyLen(full);
-        const shown = D.upTo(full, Ltot * p);
-        D.ray(c, shown, r.col, 2.6, { alpha: rayAlpha });
-        if (!realistic) { D.arrowOn(c, full[0], full[1], r.col, 13, .5); if (p >= 1) D.arrowOn(c, full[1], full[2], r.col, 13, .25); }
-        if (p >= 1 && r.back) D.line(c, r.back[0], r.back[1], r.col, 2, [8, 7], .8 * rayAlpha + .1);
-        if (p >= 1 && !realistic) D.pulses(c, full, now, '#fff', { speed: 230, gap: 150, r: 3.2, limit: 1800 });
+      // the view: what the student sees in the mirror / through the lens
+      const vx = 900, vy = 40, vw = 340, vh = 540, cx = vx + vw / 2, cy = vy + vh / 2 + 40;
+      c.save();
+      if (kind === 'mirror' && st.type === 'plane') D.rrect(c, vx, vy, vw, vh, 22); else { c.beginPath(); c.ellipse(cx, vy + vh / 2, vw / 2, vh / 2, 0, 0, Math.PI * 2); }
+      const g = c.createLinearGradient(vx, vy, vx + vw, vy + vh);
+      g.addColorStop(0, kind === 'mirror' ? '#dfe6f3' : '#eef8ff'); g.addColorStop(1, kind === 'mirror' ? '#c3cde0' : '#dcefff');
+      c.fillStyle = g; c.fill(); c.save(); c.clip();
+      if (blurred && 'filter' in c) c.filter = 'blur(10px)';
+      const am = Math.min(Math.abs(m), 3.2), base = 120;
+      D.candle(c, cx, cy + (m < 0 ? -1 : 1) * base * am / 2 - 40, (m < 0 ? -1 : 1) * base * am, { t: now });
+      c.restore();
+      c.lineWidth = 8; c.strokeStyle = kind === 'mirror' ? '#8792aa' : '#1f8fff'; c.stroke();
+      c.restore();
+      D.text(c, kind === 'mirror' ? 'What you see in the mirror' : 'What you see through the lens', cx, vy + vh + 26, { size: 19, col: COL.white });
+
+      // what you see, in words
+      let orient, size;
+      if (blurred) { orient = 'Very blurred'; size = 'Too large to see clearly'; }
+      else {
+        orient = img.m > 0 ? 'Erect (upright)' : 'Inverted (upside down)';
+        const a = Math.abs(img.m);
+        size = a > 1.03 ? 'Enlarged (bigger)' : a < .97 ? 'Diminished (smaller)' : 'Same size';
       }
-
-      // object
-      if (realistic) D.candle(c, T.x, Y, st.h * S, { t: now });
-      else D.arrowObj(c, T.x, Y, st.h * S, COL.amber, { w: 6 });
-      D.dot(c, T.x, T.y, 7, COL.amber);
-      if (st.labels) D.text(c, 'Object', T.x, Y + 26, { size: 18, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
-
-      // image
-      let offTxt = null;
-      if (!img.inf && p >= .98) {
-        const hpx = Y - I.y;
-        const inView = I.x > 0 && I.x < o.w && Math.abs(hpx) < Y - 10;
-        if (inView) {
-          if (realistic) D.candle(c, I.x, Y, hpx, { ghost: !real, real, t: now });
-          else D.arrowObj(c, I.x, Y, hpx, real ? COL.cyan : COL.magenta, { dashed: !real, w: 5 });
-          if (st.labels) D.text(c, real ? 'Real image' : 'Virtual image', I.x, Y + (hpx > 0 ? 26 : -26) + (hpx > 0 ? 0 : 0), { size: 18, col: real ? COL.cyan : COL.magenta, bg: 'rgba(255,255,255,.9)' });
-        } else {
-          offTxt = `Image off screen: v = ${img.v.toFixed(0)} cm, ${Math.abs(img.m).toFixed(1)}× ${real ? 'real' : 'virtual'}`;
-          D.offscreen(c, o, I.x, I.y, offTxt);
-        }
-      }
-      if (img.inf && p >= .98) {
-        D.text(c, kind === 'mirror' ? 'Object at F: reflected rays come out parallel.' : 'Object at F₁: refracted rays come out parallel.', o.w / 2, 46, { size: 22, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
-        D.text(c, 'They never meet, so the image is "at infinity" (no clear image).', o.w / 2, 80, { size: 19, col: COL.amber, weight: 400, bg: 'rgba(255,255,255,.9)' });
-      }
-
-      // lens screen
-      if (kind === 'lens' && st.screen) {
-        const sx = st.sx;
-        c.save(); c.fillStyle = '#c9d0de'; c.fillRect(sx - 7, Y - 200, 14, 400); c.restore();
-        D.text(c, 'Screen', sx, Y - 216, { size: 17, col: COL.white });
-        let msg;
-        if (img.inf) msg = 'Only a blur on the screen';
-        else if (!real) msg = 'No image on the screen (virtual image)';
-        else {
-          const blur = 80 * Math.abs(sx - I.x) / Math.max(20, Math.abs(I.x - X));
-          const hpx = Y - I.y;
-          c.save(); c.beginPath(); c.rect(sx - 60, Y - 200, 120, 400); c.clip();
-          if ('filter' in c) c.filter = `blur(${Math.min(18, blur / 2).toFixed(1)}px)`;
-          c.globalAlpha = clamp(1 - blur / 120, .25, 1);
-          if (Math.abs(hpx) < 200) D.candle(c, sx, Y, hpx, { real: true, t: now });
-          c.restore();
-          msg = blur < 4 ? 'Sharp image on the screen!' : 'Blurred: move the screen';
-        }
-        D.text(c, msg, clamp(sx, 150, o.w - 150), Y + 230, { size: 18, col: msg.startsWith('Sharp') ? COL.green : COL.magenta, bg: 'rgba(255,255,255,.9)' });
-      }
-
-      legend(c, R.rays);
-      D.text(c, cfg.footer, o.w - 18, o.h - 20, { size: 15, col: COL.muted, align: 'right', weight: 400 });
-
-      // readout
-      const ds = OPT.describe(kind, st.type, u, f, img);
-      ro.set('zone', OPT.objectZone(kind, st.type, u, f));
-      ro.set('u', u.toFixed(1) + ' cm');
-      ro.set('v', img.inf ? '∞ (infinity)' : (img.v > 0 ? '+' : '') + img.v.toFixed(1) + ' cm', true);
-      ro.set('m', img.inf ? '—' : (img.m > 0 ? '+' : '') + img.m.toFixed(2) + ' (' + ds.size.toLowerCase() + ')');
-      ro.set('nat', img.inf ? '<span class="tag amber">No clear image</span>' : `<span class="tag ${ds.real ? 'real' : 'virt'}">${ds.nature}</span><span class="tag green">${ds.orient}</span>`);
-      ro.set('where', ds.where);
+      D.text(c, orient + ' · ' + size, 440, 70, { size: 24, col: blurred ? COL.amber : img.m > 0 ? COL.cyan : COL.magenta, bg: COL.pill });
+      ro.set('d', st.u.toFixed(0) + ' cm');
+      ro.set('o', orient, true);
+      ro.set('s', size);
       const n = cfg.noteFor ? cfg.noteFor(st, img) : '';
       if (notes.innerHTML !== n) notes.innerHTML = n;
     }
@@ -2055,28 +1780,20 @@ LL.add({
   id: 'mirror-lab', title: 'Spherical mirror lab', section: 'Mirrors',
   build(root) {
     return ImageLab(root, {
-      kind: 'mirror', kicker: 'Scene 3 · Activity 10.3 · Live mirror lab', title: 'Move the candle: what does the image do?',
-      X: 980, uMax: 52, types: ['plane', 'concave', 'convex'], defType: 'concave', defU: 30,
-      places: {
-        plane: [['Far', 40], ['Middle', 20], ['Near', 6]],
-        concave: [['Far away', 50], ['Beyond C', 30], ['At C', 20], ['Between C and F', 15], ['At F', 10], ['Between F and P', 6]],
-        convex: [['Far away', 50], ['Middle', 20], ['Near', 6]]
-      },
-      footer: 'School ray-diagram (paraxial) model · f = 10 cm, R = 20 cm · 1 grid square ≈ 2 cm',
-      modelNote: 'Images are calculated with the mirror formula <b>1/v + 1/u = 1/f</b> and <b>m = −v/u</b> (you will learn these in higher classes). Sign convention: distances are measured from the pole P; distances in the direction of the incoming light (to the right) are <b>+</b>, against it are <b>−</b>; heights above the axis are <b>+</b>. Rays are drawn the school way, all meeting at one image point. A real wide spherical mirror gives a slightly blurred image; see the parallel-rays scene.',
+      kind: 'mirror', kicker: 'Activity 10.3', title: 'Move the candle: how does the image change?',
+      X: 780, uMax: 50, types: ['plane', 'concave', 'convex'], defType: 'concave', defU: 4,
       noteFor(st, img) {
-        if (st.type === 'convex') return 'A convex mirror shows a smaller image of a wide area: this <b>wider field of view</b> is why it is used as a rear-view mirror.';
-        if (st.type === 'plane') return 'Plane mirror: v = −u, so the image is as far behind as the object is in front.';
-        if (img.inf) return 'At F the reflected rays are parallel. A torch or headlight puts its bulb here to make a parallel beam.';
-        if (img.v > 0) return 'Object between F and P: upright, enlarged virtual image. This is how a dentist’s mirror and a shaving mirror work.';
-        return 'Real image in front of the mirror: it can be caught on a screen.';
+        if (st.type === 'plane') return 'A plane mirror always forms an erect image of the same size as the object.';
+        if (st.type === 'convex') return 'A convex mirror always forms an erect, diminished image. It gets a little smaller as the object moves away.';
+        if (img.m > 0) return 'Object close to a concave mirror: the image is erect and enlarged, like a dentist’s mirror.';
+        return 'Object farther from a concave mirror: the image is inverted. It is first enlarged, then gets smaller as the object moves away.';
       },
       panel: {
-        predict: { q: 'A candle moves slowly towards a concave mirror from far away. What happens to its image?', opts: ['It stays the same size and upright', 'It starts small and inverted, grows, then becomes upright and enlarged when very close', 'It is always upright and smaller', 'It is always enlarged'], ans: 1,
-          why: 'Watch the image grow as the candle approaches F, vanish at F, and reappear upright and enlarged behind the mirror.' },
-        experiment: ['Drag the candle (or use <b>Place at</b>) from far away towards the mirror.', 'Switch between <b>plane</b>, <b>concave</b> and <b>convex</b>.', 'Turn rays 1–4 on and off. Any two rays are enough to find the image.', 'Switch to <b>Realistic</b> view.'],
-        observe: ['<b>Concave:</b> beyond C → real, inverted, diminished; at C → same size; between C and F → enlarged, beyond C; at F → no image; between F and P → virtual, erect, enlarged.', '<b>Convex:</b> always virtual, erect and diminished. The image gets smaller as the object moves away.', '<b>Plane:</b> always virtual, erect, same size.'],
-        explain: '<p>Each ray obeys the laws of reflection. A ray through C strikes the mirror along the normal and comes straight back. A ray parallel to the axis reflects through F (concave), or as if from F (convex).</p><p>Where the reflected rays <b>actually meet</b>, a <b>real</b> image forms that can be caught on a screen. Where they only <b>seem</b> to come from (dashed lines), the image is <b>virtual</b>.</p>'
+        predict: { q: 'A candle is slowly moved away from a concave mirror. What happens to its image?', opts: ['It stays erect and the same size', 'It is erect and enlarged at first, then becomes inverted and keeps changing in size', 'It is always erect and smaller', 'It disappears'], ans: 1,
+          why: 'Close to a concave mirror the image is erect and enlarged. Farther away it becomes inverted: first enlarged, then smaller.' },
+        experiment: ['Start with the candle <b>very close</b> to the concave mirror.', 'Slowly move it <b>away</b> (drag it, or use the buttons).', 'Watch the image: is it erect or inverted? Bigger or smaller?', 'Repeat with the <b>convex</b> and the <b>plane</b> mirror.'],
+        observe: ['<b>Concave mirror:</b> close up, the image is <b>erect and enlarged</b>. Moved away, it becomes <b>inverted</b>: first enlarged, then smaller and smaller.', '<b>Convex mirror:</b> the image is <b>always erect and diminished</b>; it gets slightly smaller as the object moves away.', '<b>Plane mirror:</b> always <b>erect</b> and of the <b>same size</b>.'],
+        explain: '<p>Spherical mirrors behave differently from plane mirrors. In concave and convex mirrors the <b>size of the image changes</b> as the distance of the object changes, and in a concave mirror the image also turns <b>upside down</b> when the object is taken away.</p><p>So we can identify a mirror by looking at the images it forms.</p>'
       }
     });
   }
@@ -2311,25 +2028,22 @@ LL.add({
   build(root) {
     const L = labLayout(root, { kicker: 'Scene 5 · Activity 10.6', title: 'What happens to a beam of parallel rays?' });
     const o = L.cv;
-    const st = { type: 'concave', n: 9, spacing: 44, rot: 0, showF: true, showAxis: true, showNormals: false, showBack: true, trace: false, tt: 0 };
+    const st = { type: 'concave', n: 9, spacing: 44, rot: 0, showF: false, showAxis: false, showNormals: false, showBack: false, trace: false, tt: 0 };
     const sT = UI.seg('Mirror', [{ v: 'plane', t: 'Plane' }, { v: 'concave', t: 'Concave' }, { v: 'convex', t: 'Convex' }, { v: 'all', t: 'Compare all 3' }], st.type, v => { st.type = v; st.tt = 0; });
     const sN = UI.slider('Rays', 3, 15, 1, st.n, v => String(v), v => { st.n = v; });
     const sS = UI.slider('Spacing', 16, 60, 2, st.spacing, v => v + ' px', v => { st.spacing = v; });
     const sR = UI.slider('Rotate mirror', -25, 25, 1, st.rot, v => v + '°', v => { st.rot = v; });
-    const tF = UI.toggle('Focus F', true, v => { st.showF = v; }, COL.amber);
-    const tA = UI.toggle('Principal axis', true, v => { st.showAxis = v; });
     const tNm = UI.toggle('Normals', false, v => { st.showNormals = v; }, COL.amber);
-    const tB = UI.toggle('Dashed back-lines', true, v => { st.showBack = v; }, COL.magenta);
     const bTrace = UI.btn('Trace rays one at a time', () => { st.trace = !st.trace; st.tt = 0; bTrace.textContent = st.trace ? 'Show all rays together' : 'Trace rays one at a time'; }, 'btn go');
-    L.controls.append(sT.el, sN.el, sS.el, el('div', { class: 'break' }), sR.el, bTrace, tF.el, tA.el, tNm.el, tB.el);
+    L.controls.append(sT.el, sN.el, sS.el, el('div', { class: 'break' }), sR.el, bTrace, tNm.el);
     L.setPanel(UI.panel({
-      predict: { q: 'Parallel rays fall on a <b>convex</b> mirror. After reflection, the rays will…', opts: ['stay parallel', 'meet at one point in front of the mirror', 'spread out, as if coming from a point behind the mirror'], ans: 2, why: 'A convex mirror bulges out, so each ray hits a surface tilted a little more away from the axis than the last one.' },
+      predict: { q: 'Parallel rays fall on a <b>convex</b> mirror. After reflection, the rays will…', opts: ['stay parallel', 'come closer together (converge)', 'spread out (diverge)'], ans: 2, why: 'A convex mirror bulges outwards, so the reflected rays spread out.' },
       experiment: ['Switch between the three mirrors, or compare all three.', 'Turn on <b>Normals</b>: every ray makes equal angles with its normal.', 'Press <b>Trace rays one at a time</b> and follow each ray.', 'Rotate the mirror and change the number of rays.'],
-      observe: ['<b>Plane:</b> parallel rays stay parallel. Rotating the mirror turns the whole beam.', '<b>Concave:</b> the rays converge and really meet near F, a <b>real focus</b>.', '<b>Convex:</b> the rays diverge. Traced backwards (dashed), they seem to come from F behind the mirror, a <b>virtual focus</b>.', 'Rays far from the axis cross a little closer to the mirror, so the focus is really a tiny <b>focal region</b>.'],
-      explain: '<p>Every single ray obeys <b>∠i = ∠r</b> at its own normal, and the normal of a spherical mirror always points through the centre C. On a concave mirror the normals lean <b>towards</b> the axis, so reflected rays bend together: it is a <b>converging mirror</b>. On a convex mirror they lean <b>away</b>, so it is a <b>diverging mirror</b>.</p><p>No light goes behind a convex mirror; the virtual focus is only where the reflected rays <b>appear</b> to start.</p><p class="note">Exact law-of-reflection tracing on a true sphere. The school model’s single point F (f = R/2) is exact only for rays close to the axis.</p>'
+      observe: ['<b>Plane mirror:</b> the reflected beams are also parallel.', '<b>Concave mirror:</b> the reflected beams get closer: they <b>converge</b>.', '<b>Convex mirror:</b> the reflected beams spread: they <b>diverge</b>.'],
+      explain: '<p>Even though each ray of light follows the laws of reflection (∠i = ∠r), the <b>curved surface</b> of a spherical mirror makes a parallel beam <b>converge</b> (concave mirror) or <b>diverge</b> (convex mirror).</p><p>So a concave mirror is called a <b>converging mirror</b> and a convex mirror a <b>diverging mirror</b>.</p>'
     }));
     return {
-      reset() { Object.assign(st, { type: 'concave', n: 9, spacing: 44, rot: 0, showF: true, showAxis: true, showNormals: false, showBack: true, trace: false, tt: 0 }); sT.set('concave'); sN.set(9); sS.set(44); sR.set(0); tF.set(true); tA.set(true); tNm.set(false); tB.set(true); bTrace.textContent = 'Trace rays one at a time'; },
+      reset() { Object.assign(st, { type: 'concave', n: 9, spacing: 44, rot: 0, showF: false, showAxis: false, showNormals: false, showBack: false, trace: false, tt: 0 }); sT.set('concave'); sN.set(9); sS.set(44); sR.set(0); tNm.set(false); bTrace.textContent = 'Trace rays one at a time'; },
       replay() { st.tt = 0; },
       onShow() { st.tt = 0; },
       frame(dt, now) {
@@ -2345,9 +2059,8 @@ LL.add({
         if (st.type !== 'all') {
           const m = { type: st.type, P: P(1000, 350), R: 600, a: 260, rot };
           drawMirrorBeam(c, o, m, { ...base, n: st.n, spacing: st.spacing, ...mk(st.n) }, now);
-          const msg = { plane: 'Plane mirror: parallel rays stay parallel', concave: 'Concave mirror: rays converge at F (real focus)', convex: 'Convex mirror: rays diverge from F (virtual focus)' }[st.type];
+          const msg = { plane: 'Plane mirror: the reflected rays stay parallel', concave: 'Concave mirror: the reflected rays converge', convex: 'Convex mirror: the reflected rays diverge' }[st.type];
           D.text(c, msg, 630, 36, { size: 24, col: st.type === 'convex' ? COL.magenta : st.type === 'concave' ? COL.amber : COL.cyan, bg: 'rgba(255,255,255,.9)' });
-          if (st.type === 'convex' && st.showF) { const Fp = OPT.mirrorFocus(m); D.text(c, 'rays only seem to come from here', Fp.x + 10, Fp.y - 30, { size: 17, col: COL.magenta, align: 'left', bg: 'rgba(255,255,255,.9)' }); }
         } else {
           ['plane', 'concave', 'convex'].forEach((tp, i) => {
             const y = 118 + i * 232;
@@ -2372,7 +2085,7 @@ LL.add({
     const m = { type: 'concave', P: P(1120, Y), R: 820, a: 250, rot: 0 };
     const lensG = lensGeom('convex', 520, Y, 600, 210);            // Activity 10.11: a convex lens instead of the mirror
     const FxM = OPT.mirrorFocus(m).x, FxL = OPT.lensFocusX(lensG);
-    let dev = 'mirror', xs = 900, sun = true, showF = true, t = 0, heat = 0;
+    let dev = 'mirror', xs = 900, sun = true, t = 0, heat = 0;
     const CH = 46;
     const Fx = () => dev === 'mirror' ? FxM : FxL;
     const fpx = () => dev === 'mirror' ? m.R / 2 : FxL - lensG.X;
@@ -2382,8 +2095,7 @@ LL.add({
       dev = v; const [a, b] = range(); sX.input.min = a; sX.input.max = b; xs = v === 'mirror' ? 900 : 760; sX.set(xs); heat = 0;
     });
     const tS = UI.toggle('Sunlight', sun, v => { sun = v; }, COL.amber);
-    const tF = UI.toggle('Mark F', showF, v => { showF = v; }, COL.amber);
-    L.controls.append(sDev.el, el('div', { class: 'break' }), sX.el, UI.btn('Put the paper at the focus', () => { xs = bestX(); sX.set(xs); }, 'btn go'), tS.el, tF.el);
+    L.controls.append(sDev.el, el('div', { class: 'break' }), sX.el, UI.btn('Find the sharp bright spot', () => { xs = bestX(); sX.set(xs); }, 'btn go'), tS.el);
     o.cv.parentElement.append(el('div', { class: 'cv-hint' }, 'Drag the paper along the axis'));
     const ro = UI.readout([['d', 'Spot size'], ['c', 'Concentration'], ['h', 'Heating']]);
     const safety = UI.card('safety', 'Safety first', null, el('p', { html: 'Never look at the Sun, or at sunlight reflected or focused by a mirror or lens: it can permanently damage your eyes. Never point focused sunlight at people, animals or anything that can catch fire. Try a real concave mirror only with your teacher.' }));
@@ -2393,11 +2105,11 @@ LL.add({
       el('li', { html: '<b>Large-scale solar cooking:</b> big concave dish cookers in community kitchens.' }),
       el('li', { html: '<b>Industry:</b> heat for drying, water heating and processing.' })));
     L.setPanel(UI.panel({
-      predict: { q: 'Where should you hold the paper to get the <b>smallest, brightest</b> spot of sunlight?', opts: ['Touching the mirror', 'At the focus F', 'As far from the mirror as possible'], ans: 1, why: 'At F the reflected rays from the whole mirror crowd into the smallest area.' },
-      experiment: ['Drag the paper slowly towards the mirror.', 'Watch the spot in the "paper" view: how big, how bright?', 'Press <b>Put the paper at the focus</b>.', 'Switch to the <b>convex lens</b> (Activity 10.11). Can it burn the paper too?'],
+      predict: { q: 'Where should you hold the paper to get the <b>smallest, brightest</b> spot of sunlight?', opts: ['Touching the mirror', 'At the place where the reflected light comes together', 'As far from the mirror as possible'], ans: 1, why: 'There the reflected light from the whole mirror is concentrated into the smallest area.' },
+      experiment: ['Drag the paper slowly towards the mirror.', 'Watch the spot in the "paper" view: how big, how bright?', 'Press <b>Find the sharp bright spot</b>.', 'Switch to the <b>convex lens</b> (Activity 10.11). Can it burn the paper too?'],
       live: UI.card('live', 'Measurements (qualitative)', null, ro.el),
-      observe: ['Far from F the spot is large and dim.', 'At F it is tiny and dazzlingly bright: the paper heats up fastest.', 'Beyond F the rays cross and spread again, so the spot grows.'],
-      explain: '<p>The Sun is so far away that its rays arrive <b>parallel</b>. A concave mirror reflects them all towards F. The same light energy is squeezed into a much smaller area, so each bit of the paper receives far more energy and gets hot.</p><p>A <b>convex lens</b> does the same job by refraction: sunlight passes through it and converges at F on the other side.</p><p>Devices that concentrate sunlight with mirrors or lenses are called <b>solar concentrators</b>.</p>',
+      observe: ['At most distances the spot is large and dim.', 'At one distance it becomes a <b>sharp, bright spot</b>: the paper heats up fastest and can start to burn.', 'Moved closer still, the light spreads again and the spot grows.'],
+      explain: '<p>The Sun is so far away that its rays arrive <b>parallel</b>. A concave mirror <b>converges</b> them, so the light of the Sun is concentrated on a small spot. This produces enough heat at that point to ignite the paper.</p><p>A <b>convex lens</b> also converges sunlight and can burn paper in the same way (Activity 10.11).</p><p>Devices that concentrate sunlight with mirrors or lenses are called <b>solar concentrators</b>.</p>',
       extra: [safety, apps]
     }));
     dragOn(o, { hit: p => Math.abs(p.x - xs) < 30 && Math.abs(p.y - Y) < CH + 40 ? 'scr' : null, move: (h, p) => { const [a, b] = range(); xs = clamp(p.x, a, b); sX.set(xs); } });
@@ -2434,7 +2146,7 @@ LL.add({
       xs = keep; const [a, b] = range(); return clamp(best, a, b);
     }
     return {
-      reset() { dev = 'mirror'; sDev.set('mirror'); sX.input.min = 330; sX.input.max = 1080; xs = 900; sX.set(900); sun = true; tS.set(true); showF = true; tF.set(true); heat = 0; },
+      reset() { dev = 'mirror'; sDev.set('mirror'); sX.input.min = 330; sX.input.max = 1080; xs = 900; sX.set(900); sun = true; tS.set(true); heat = 0; },
       replay() { heat = 0; t = 0; },
       frame(dt, now) {
         t += dt;
@@ -2459,7 +2171,6 @@ LL.add({
         }
         if (dev === 'mirror') D.mirror(c, m, { realistic: true });
         else { const ol = OPT.lensOutline(lensG); c.save(); D.path(c, ol); c.closePath(); c.fillStyle = 'rgba(120,225,255,.2)'; c.fill(); c.strokeStyle = '#1f8fff'; c.lineWidth = 2.5; c.stroke(); c.restore(); }
-        if (showF) D.mark(c, Fx(), Y, 'F', COL.amber);
         // the paper card (side view)
         c.save(); c.fillStyle = '#c9d0de'; c.fillRect(xs - 7, Y - CH, 14, CH * 2); c.restore();
         if (sun && ys.length) { const yc = (Math.max(...ys) + Math.min(...ys)) / 2; D.dot(c, xs + (dev === 'mirror' ? 8 : -8), yc, 4 + 10 * heat, '#fff6c8'); }
@@ -2487,7 +2198,7 @@ LL.add({
         c.fillStyle = gh; c.fillRect(mx + 10, my + mh * (1 - heat), 16, mh * heat); c.restore();
         D.text(c, heat > .82 ? 'may char!' : heat > .55 ? 'hot' : heat > .25 ? 'warm' : 'cool', mx + 46, my + mh * (1 - heat), { size: 17, col: heat > .82 ? COL.red : COL.amber, align: 'left' });
         // safety banner
-        D.text(c, '⚠ Virtual experiment. Never look at the Sun or at focused sunlight.', 630, 30, { size: 19, col: COL.amber, bg: 'rgba(255,149,0,.14)' });
+        D.text(c, '⚠ On-screen experiment. Never look at the Sun or at focused sunlight.', 630, 30, { size: 19, col: COL.amber, bg: 'rgba(255,149,0,.14)' });
         ro.set('d', sun && ys.length ? (dSpot / 10).toFixed(dSpot < 30 ? 1 : 0) + ' cm across' : '—');
         ro.set('c', sun && ys.length ? '≈ ' + (conc >= 100 ? Math.round(conc / 10) * 10 : conc.toFixed(1)) + '× direct sunlight' : '—', true);
         ro.set('h', !sun ? 'No sunlight' : heat > .82 ? 'Very hot: paper may start to char' : heat > .55 ? 'Hot' : heat > .25 ? 'Warm' : 'Barely warm');
@@ -2534,8 +2245,8 @@ function fovDiagram(c, x0, w, h, type, label, now) {
 const APPS = [
   {
     id: 'dentist', name: 'Dentist’s mirror', type: 'concave',
-    why: 'A small <b>concave</b> mirror held close to a tooth (between P and F) gives an <b>erect, enlarged, virtual</b> image, so the dentist sees the tooth bigger. Shaving and make-up mirrors use the same idea.',
-    prop: 'Object between P and F → virtual, erect, enlarged image',
+    why: 'A dentist uses a <b>concave</b> mirror. Held close to the teeth inside the mouth, it gives an <b>erect, enlarged</b> view of the teeth.',
+    prop: 'Object close to a concave mirror → erect, enlarged image',
     tile(c, w, h, t) {
       c.fillStyle = '#3a0f18'; c.fillRect(0, 0, w, h);
       c.fillStyle = '#7a2434'; c.beginPath(); c.ellipse(w / 2, h * .95, w * .55, h * .5, 0, Math.PI, 0); c.fill();
@@ -2551,17 +2262,17 @@ const APPS = [
       const img = OPT.mirrorImage(u, f), T = P(X + u * S, Y - 40);
       const m = { type: 'concave', P: P(X, Y), R: 240, a: 130, rot: 0 };
       const R = OPT.labRays({ kind: 'mirror', type: 'concave', X, Y, s: S, f, T, img, mirror: m, on: { r1: true, r2: false, r3: true, r4: false }, box: { x0: 0, y0: 0, x1: w, y1: h } });
-      D.axis(c, Y, 0, w, null); D.mark(c, X + f * S, Y, 'F', COL.white); D.mark(c, X + 2 * f * S, Y, 'C', COL.amber);
+      D.axis(c, Y, 0, w, null);
       for (const r of R.rays) if (r.inc) { D.ray(c, [r.inc[0], r.inc[1], r.out[1]], r.col, 2.4); D.arrowOn(c, r.inc[0], r.inc[1], r.col); if (r.back) D.line(c, r.back[0], r.back[1], r.col, 2, [7, 6]); }
       D.mirror(c, m); D.arrowObj(c, T.x, Y, 40, COL.amber, { label: 'tooth' });
-      D.arrowObj(c, R.I.x, Y, Y - R.I.y, COL.magenta, { dashed: true, label: 'image ×' + img.m.toFixed(1) });
+      D.arrowObj(c, R.I.x, Y, Y - R.I.y, COL.magenta, { dashed: true, label: 'enlarged image' });
       void t;
     }
   },
   {
     id: 'headlight', name: 'Torch & headlight', type: 'concave',
-    why: 'The bulb sits at the <b>focus</b> of a concave reflector. Light from F reflects off the mirror as a strong, nearly <b>parallel beam</b>, the reverse of parallel rays meeting at F. Searchlights work the same way.',
-    prop: 'Light from F → reflected parallel',
+    why: 'The reflectors of torches and of the headlights of cars and scooters are <b>concave</b> in shape. The bulb sits in front of the curved reflector, which reflects its light forward as a strong beam.',
+    prop: 'Concave reflector → strong beam of light',
     tile(c, w, h, t) {
       c.fillStyle = '#0a1224'; c.fillRect(0, 0, w, h);
       const g = c.createLinearGradient(w * .7, 0, 0, 0); g.addColorStop(0, 'rgba(255,240,180,.55)'); g.addColorStop(1, 'rgba(255,240,180,0)');
@@ -2580,7 +2291,7 @@ const APPS = [
         D.ray(c, r.pts, '#ff9500', 2.2); D.arrowOn(c, r.pts[1], r.pts[2], '#ff9500', 12, .5);
         D.pulses(c, r.pts, t, '#fff', { speed: 200, gap: 150, r: 2.6 });
       }
-      D.mirror(c, m); D.dot(c, Fp.x, Fp.y, 9, '#fff3b0'); D.text(c, 'bulb at F', Fp.x, Fp.y + 32, { size: 17, col: COL.amber });
+      D.mirror(c, m); D.dot(c, Fp.x, Fp.y, 9, '#fff3b0'); D.text(c, 'bulb', Fp.x, Fp.y + 32, { size: 17, col: COL.amber });
       D.text(c, 'parallel beam', 90, 40, { size: 18, col: '#ff9500' });
     }
   },
@@ -2659,18 +2370,18 @@ const APPS = [
       const m = { type: 'convex', P: P(X, Y), R: 160, a: 120, rot: 0 };
       const R = OPT.labRays({ kind: 'mirror', type: 'convex', X, Y, s: S, f, T, img, mirror: m, on: { r1: true, r2: false, r3: true, r4: false }, box: { x0: 0, y0: 0, x1: w, y1: h } });
       c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(X, 0, w - X, h); c.restore();
-      D.axis(c, Y, 0, w, null); D.mark(c, X + f * S, Y, 'F'); D.mark(c, X + 2 * f * S, Y, 'C', COL.amber);
+      D.axis(c, Y, 0, w, null);
       for (const r of R.rays) if (r.inc) { D.ray(c, [r.inc[0], r.inc[1], r.out[1]], r.col, 2.4); D.arrowOn(c, r.inc[0], r.inc[1], r.col); if (r.back) D.line(c, r.back[0], r.back[1], r.col, 2, [7, 6]); }
       D.mirror(c, m); D.arrowObj(c, T.x, Y, 72, COL.amber, { label: 'shopper' });
       D.arrowObj(c, R.I.x, Y, Y - R.I.y, COL.magenta, { dashed: true, w: 4 });
-      D.text(c, 'image ×' + img.m.toFixed(2), R.I.x + 10, R.I.y - 30, { size: 17, col: COL.magenta, align: 'left', bg: 'rgba(255,255,255,.9)' });
+      D.text(c, 'small image', R.I.x + 10, R.I.y - 30, { size: 17, col: COL.magenta, align: 'left', bg: 'rgba(255,255,255,.9)' });
       void t;
     }
   },
   {
     id: 'telescope', name: 'Reflecting telescope', type: 'concave',
-    why: 'A large <b>concave</b> mirror collects light from a faraway star (parallel rays) and brings it to a focus. A small <b>plane</b> mirror turns the light sideways to the eyepiece. Big mirrors gather more light, so faint stars become visible.',
-    prop: 'Parallel rays → converge at F (plus a plane mirror)',
+    why: 'Most modern telescopes are <b>reflecting telescopes</b>. Their main mirror is a large <b>concave</b> mirror that collects and converges the light from faraway stars. A small <b>plane</b> mirror turns the light sideways to the eyepiece. Big mirrors gather more light, so faint stars become visible.',
+    prop: 'Concave mirror → converges the light from stars',
     tile(c, w, h, t) {
       c.fillStyle = '#050a1c'; c.fillRect(0, 0, w, h);
       for (let i = 0; i < 40; i++) { c.fillStyle = 'rgba(220,235,255,' + (.3 + .5 * Math.abs(Math.sin(t + i))) + ')'; c.fillRect((i * 97) % w, (i * 53) % (h * .6), 2, 2); }
@@ -2714,7 +2425,7 @@ LL.add({
       b.addEventListener('click', () => select(a.id));
       grid.append(b); return { a, cv, b };
     });
-    bench.append(el('p', { class: 'note', style: 'margin:0;font-size:19px' }, 'Each diagram uses exact reflection or the school ray-diagram model, as in the labs.'));
+    bench.append(el('p', { class: 'note', style: 'margin:0;font-size:19px' }, 'Click a scene to see which mirror is used and why.'));
     const dcv = makeCanvas(560, 320);
     const name = el('div', { class: 'q', style: 'display:flex;gap:12px;align-items:center;margin:0' });
     const why = el('p'), prop = el('p', { class: 'note' });
@@ -2747,7 +2458,7 @@ LL.add({
 </script>
 <script>
 'use strict';
-/* Scene 8: introduction to lenses (droplet → magnifier, 3D lens shapes). Scene 10: refraction. Lens beam lab. */
+/* Introduction to lenses (water drop → magnifier, 3D lens shapes) and parallel beams through glass shapes (Activity 10.10). */
 
 const PAGE_TEXT = [
   'All of us are familiar with light. At night, when we switch',
@@ -2766,7 +2477,7 @@ const PAGE_TEXT = [
 LL.add({
   id: 'lens-intro', title: 'From a water drop to a magnifying glass', section: 'Lenses',
   build(root) {
-    const L = labLayout(root, { kicker: 'Scene 8 · Activity 10.8', title: 'Why does a water drop make letters bigger?' });
+    const L = labLayout(root, { kicker: 'Activity 10.8', title: 'Why does a water drop make letters bigger?' });
     const o = L.cv;
     let stage = 'drop', pos = P(470, 300), hcm = 6, t = 0;
     const FM = 10;                                     // magnifier focal length (cm)
@@ -2778,11 +2489,11 @@ LL.add({
     o.cv.parentElement.append(el('div', { class: 'cv-hint' }, 'Drag the sheet, drop or lens over the text'));
     const ro = UI.readout([['m', 'Letters look'], ['img', 'Image']]);
     L.setPanel(UI.panel({
-      predict: { q: 'A drop of water sits on a clear plastic sheet over printed words. The letters under the drop will look…', opts: ['bigger', 'smaller', 'exactly the same'], ans: 0, why: 'The curved top of the drop bends light like a tiny magnifying glass.' },
+      predict: { q: 'A drop of water sits on a clear plastic sheet over printed words. The letters under the drop will look…', opts: ['bigger', 'smaller', 'exactly the same'], ans: 0, why: 'The curved water drop acts like a simple lens.' },
       experiment: ['Start with the <b>flat sheet</b> and drag it over the words.', 'Switch to the <b>water drop</b>, then the <b>magnifying glass</b>.', 'Raise the magnifying glass slowly with the slider.'],
       live: UI.card('live', 'What you see', null, ro.el),
       observe: ['Through a flat sheet the letters look the same size.', 'Under the curved water drop the letters look <b>larger</b>.', 'The magnifying glass enlarges more. Raised too high, the letters blur, then appear <b>upside down</b>.'],
-      explain: '<p>Light bends when it passes from one transparent material into another at an angle (this is <b>refraction</b>, Scene 9). A <b>flat</b> sheet bends rays going in and out by equal and opposite amounts, so nothing changes size. A <b>curved</b> surface bends different rays by different amounts and makes them spread less, so the letters look bigger.</p><p>A piece of transparent glass or plastic with curved surfaces is a <b>lens</b>. A magnifying glass is a <b>convex lens</b>: thicker in the middle than at the edges.</p>'
+      explain: '<p>The surface of the water drop is <b>curved outwards</b>. This curved drop acts like a simple <b>lens</b> and makes the letters look bigger. A flat transparent sheet does not change the size of the letters.</p><p>A piece of transparent glass or plastic with curved surfaces is a <b>lens</b>. A magnifying glass is a <b>convex lens</b>: thicker in the middle than at the edges. It helps us read small print by making the letters appear bigger.</p>'
     }));
     dragOn(o, { hit: p => V.dist(p, pos) < (stage === 'sheet' ? 150 : stage === 'drop' ? 90 : 140) ? 'l' : null, move: (h, p) => { pos = P(clamp(p.x, 120, 820), clamp(p.y, 110, 560)); } });
 
@@ -2794,11 +2505,11 @@ LL.add({
     }
     function magInfo() {
       if (stage === 'sheet') return { m: 1, blur: 0, txt: 'The same size', img: 'No change' };
-      if (stage === 'drop') { const m = 3 / (3 - 1); return { m, blur: 0, txt: 'About ' + m.toFixed(1) + '× bigger', img: 'Virtual, erect, enlarged' }; }
+      if (stage === 'drop') { const m = 3 / (3 - 1); return { m, blur: 0, txt: 'About ' + m.toFixed(1) + '× bigger', img: 'Erect and enlarged' }; }
       const r = OPT.lensImage(-hcm, FM);
-      if (r.inf || Math.abs(r.m) > 7) return { m: 7 * Math.sign(r.m || 1), blur: 12, txt: 'Very blurred', img: 'No clear image (near the focus)' };
+      if (r.inf || Math.abs(r.m) > 7) return { m: 7 * Math.sign(r.m || 1), blur: 12, txt: 'Very blurred', img: 'Very blurred' };
       const blur = Math.abs(r.m) > 3.5 ? (Math.abs(r.m) - 3.5) * 2.5 : r.m < 0 ? 1.5 : 0;
-      return { m: r.m, blur, txt: Math.abs(r.m).toFixed(1) + '× ' + (Math.abs(r.m) >= 1 ? 'bigger' : 'smaller') + (r.m < 0 ? ', upside down' : ''), img: r.m > 0 ? 'Virtual, erect, enlarged' : 'Real, inverted' };
+      return { m: r.m, blur, txt: Math.abs(r.m).toFixed(1) + '× ' + (Math.abs(r.m) >= 1 ? 'bigger' : 'smaller') + (r.m < 0 ? ', upside down' : ''), img: r.m > 0 ? 'Erect and enlarged' : 'Inverted (upside down)' };
     }
     function inset(c, mi) {
       const x0 = 920, y0 = 30, w = 320, h = 640;
@@ -2886,7 +2597,7 @@ LL.add({
 LL.add({
   id: 'lens-3d', title: 'Convex and concave lenses in 3D', section: 'Lenses',
   build(root) {
-    const L = labLayout(root, { kicker: 'Scene 8 · Figs 10.15 & 10.16', title: 'Thick in the middle, or thin in the middle?' });
+    const L = labLayout(root, { kicker: 'Figs 10.15 & 10.16', title: 'Thick in the middle, or thin in the middle?' });
     const o = L.cv, cam = Cam3D(630, 380, 120);
     cam.yaw = -.7; cam.pitch = .3;
     let auto = true, cut = false, rays = true, t = 0, target = null;
@@ -2905,7 +2616,7 @@ LL.add({
       predict: { q: 'Which lens is used in a magnifying glass?', opts: ['The one thicker at the centre (convex)', 'The one thinner at the centre (concave)'], ans: 0, why: 'A convex lens converges light and can make things look bigger.' },
       experiment: ['Drag to turn the lenses. Try <b>Side (profile)</b> and <b>Face-on</b>.', 'Turn on <b>Cut in half</b> to see the thickness.', 'Turn on <b>Light rays</b>.'],
       observe: ['Face-on, both lenses look like plain glass discs.', 'From the side, the <b>convex</b> lens bulges out and is <b>thicker at the centre</b>; the <b>concave</b> lens is <b>thinner at the centre</b> and thicker at the edges.', 'Parallel rays come together after a convex lens and spread apart after a concave lens.'],
-      explain: '<p>A <b>convex lens</b> (converging lens) is thicker at the middle than at the edges. A <b>concave lens</b> (diverging lens) is thinner at the middle than at the edges.</p><p>A simple test: a convex lens makes nearby print look bigger; a concave lens always makes it look smaller.</p><p class="note">The rays here are the simple thin-lens picture; Scene 10 traces them exactly with Snell’s law.</p>'
+      explain: '<p>A <b>convex lens</b> (converging lens) is thicker at the middle than at the edges. A <b>concave lens</b> (diverging lens) is thinner at the middle than at the edges.</p><p>A simple test: a convex lens makes nearby print look bigger; a concave lens always makes it look smaller.</p>'
     }));
     const A = 1.5, NR = 7, NS = 28;
     const prof = (type, r) => type === 'convex' ? .05 + .32 * (1 - (r / A) ** 2) : .06 + .3 * (r / A) ** 2;   // half-thickness along the axis
@@ -2956,93 +2667,13 @@ LL.add({
             D.ray(c, [a0, a1, a2], COL.cyan, 2.2, { alpha: .95 });
             const b0 = cam.proj([cxs.concave - 2.2 + 1.0, y, 0]), b1 = cam.proj([cxs.concave, y, 0]), b2 = cam.proj([cxs.concave + 1.6, y + y * 1.6 / 1.9, 0]);
             D.ray(c, [b0, b1, b2], COL.magenta, 2.2, { alpha: .95 });
-            D.line(c, b1, cam.proj([cxs.concave - 1.9, 0, 0]), COL.magenta, 1.4, [5, 6], .6);
           }
-          const Fc = cam.proj([cxs.convex + 1.9, 0, 0]); D.dot(c, Fc.x, Fc.y, 6, COL.amber); D.text(c, 'F', Fc.x, Fc.y + 24, { size: 20, col: COL.amber, font: 'mono' });
-          const Fv = cam.proj([cxs.concave - 1.9, 0, 0]); D.text(c, 'F', Fv.x, Fv.y + 24, { size: 20, col: COL.magenta, font: 'mono' });
         }
         const l1 = cam.proj([cxs.convex, A + .7, 0]), l2 = cam.proj([cxs.concave, A + .7, 0]);
         D.text(c, 'Convex lens', l1.x, l1.y - 18, { size: 26, col: COL.cyan, font: 'disp' });
         D.text(c, 'thicker at the centre', l1.x, l1.y + 14, { size: 19, col: COL.white, weight: 400 });
         D.text(c, 'Concave lens', l2.x, l2.y - 18, { size: 26, col: COL.magenta, font: 'disp' });
         D.text(c, 'thinner at the centre', l2.x, l2.y + 14, { size: 19, col: COL.white, weight: 400 });
-      }
-    };
-  }
-});
-
-/* ---------- refraction ---------- */
-const MEDIA = { air: { n: 1.0, name: 'Air', col: 'rgba(30,50,110,.0)' }, water: { n: 1.33, name: 'Water', col: 'rgba(40,120,220,.22)' }, glass: { n: 1.5, name: 'Glass', col: 'rgba(120,220,255,.24)' } };
-LL.add({
-  id: 'refraction', title: 'Refraction: why light bends', section: 'Lenses',
-  build(root) {
-    const L = labLayout(root, { kicker: 'Scene 9 · Refraction (extension)', title: 'Light changes speed, and so it changes direction' });
-    const o = L.cv, O = P(630, 360), LS = 420;
-    let m1 = 'air', m2 = 'glass', iDeg = 40, waves = true, t = 0;
-    const s1 = UI.seg('From', ['air', 'water', 'glass'].map(v => ({ v, t: MEDIA[v].name })), m1, v => { m1 = v; });
-    const s2 = UI.seg('Into', ['air', 'water', 'glass'].map(v => ({ v, t: MEDIA[v].name })), m2, v => { m2 = v; });
-    const sI = UI.slider('Angle of incidence', 0, 80, 1, iDeg, v => v + '°', v => { iDeg = v; });
-    const tW = UI.toggle('Wavefronts (crests of the light wave)', waves, v => { waves = v; }, COL.amber);
-    L.controls.append(s1.el, s2.el, el('div', { class: 'break' }), sI.el, tW.el);
-    o.cv.parentElement.append(el('div', { class: 'cv-hint' }, 'Drag the light source'));
-    const ro = UI.readout([['sp', 'Speed of light'], ['i', 'Angle of incidence'], ['r', 'Angle of refraction'], ['b', 'Bends']]);
-    L.setPanel(UI.panel({
-      predict: { q: 'A ray of light goes from air into glass at an angle. What happens to it?', opts: ['It goes straight on', 'It bends towards the normal', 'It bends away from the normal'], ans: 1, why: 'Light slows down in glass, so it bends towards the normal.' },
-      experiment: ['Drag the source or use the slider to change the angle.', 'Try <b>0°</b>: straight down the normal.', 'Swap the materials: <b>Glass → Air</b>.', 'Watch the wavefronts squeeze together in the slower material.'],
-      live: UI.card('live', 'Measurements', null, ro.el),
-      observe: ['Entering a slower (denser) material, light bends <b>towards</b> the normal.', 'Leaving it, light bends <b>away</b> from the normal.', 'Along the normal (0°) light does not bend, it only slows down.', 'A little light is always reflected too.'],
-      explain: '<p><b>Refraction</b> is the change in direction of light when it passes at an angle from one transparent material into another. It happens because light travels at different speeds in different materials: fastest in air, slower in water, slower still in glass.</p><p>Look at the wavefronts: the side of the beam that enters glass first slows down first, so the whole beam swings round, like a toy car whose front wheel runs from a smooth floor onto a carpet.</p><p><b>Mirrors reflect</b> light back. <b>Lenses refract</b> light as it passes through their curved surfaces.</p><p class="note">This scene extends the chapter’s lens introduction. Angles follow Snell’s law, n₁ sin i = n₂ sin r, which you will meet in higher classes.</p>'
-    }));
-    dragOn(o, { hit: p => p.y < O.y && V.dist(p, src()) < 60 ? 's' : null, move: (h, p) => { iDeg = clamp(Math.round(Math.atan2(O.x - p.x, O.y - p.y) / DEG), 0, 80); sI.set(iDeg); } });
-    function src() { const a = iDeg * DEG; return P(O.x - Math.sin(a) * LS, O.y - Math.cos(a) * LS); }
-    return {
-      reset() { m1 = 'air'; m2 = 'glass'; s1.set(m1); s2.set(m2); iDeg = 40; sI.set(40); waves = true; tW.set(true); },
-      replay() { t = 0; },
-      frame(dt, now) {
-        t += dt; const c = o.ctx; o.begin(); D.bg(o);
-        const n1 = MEDIA[m1].n, n2 = MEDIA[m2].n, a = iDeg * DEG;
-        c.save(); c.fillStyle = MEDIA[m1].col; c.fillRect(0, 0, o.w, O.y); c.fillStyle = MEDIA[m2].col; c.fillRect(0, O.y, o.w, o.h - O.y); c.restore();
-        D.line(c, P(0, O.y), P(o.w, O.y), '#6f9fe0', 2);
-        D.text(c, MEDIA[m1].name + '  (n = ' + n1.toFixed(2) + ')', 24, 30, { size: 22, col: COL.white, align: 'left' });
-        D.text(c, MEDIA[m2].name + '  (n = ' + n2.toFixed(2) + ')', 24, O.y + 34, { size: 22, col: COL.white, align: 'left' });
-        D.line(c, P(O.x, O.y - 330), P(O.x, O.y + 330), COL.amber, 2, [10, 7]);
-        D.text(c, 'normal', O.x + 12, O.y - 316, { size: 17, col: COL.amber, align: 'left' });
-        const S = src(), din = V.norm(V.sub(O, S));
-        const s2r = n1 * Math.sin(a) / n2, tir = s2r > 1;
-        const rr = tir ? null : Math.asin(s2r);
-        const E = tir ? null : P(O.x + Math.sin(rr) * LS, O.y + Math.cos(rr) * LS);
-        const Rf = P(O.x + Math.sin(a) * LS, O.y - Math.cos(a) * LS);
-        D.ray(c, [O, Rf], COL.cyan, 2, { alpha: tir ? 1 : .22, glow: tir });
-        // wavefronts: three parallel rays, pulses travel at speed 1/n
-        if (waves) {
-          const perp = P(-din.y, din.x), offs = [-46, -23, 0, 23, 46];
-          const dout = tir ? null : V.norm(V.sub(E, O));
-          const v1 = 150 / n1, v2 = 150 / n2, period = .55;
-          const paths = offs.map(k => {
-            const s = V.add(S, V.mul(perp, k));
-            const tt = (O.y - s.y) / din.y, hit = V.add(s, V.mul(din, tt));
-            return { s, hit, L1: tt };
-          });
-          for (let j = 0; j < 14; j++) {
-            const tau = ((t / period) % 1 + j) * period;
-            const pts = paths.map(p => {
-              const d = tau * v1;
-              if (d <= p.L1 || tir) return V.add(p.s, V.mul(din, Math.min(d, p.L1 + (tir ? 0 : 0))));
-              const rem = (tau - p.L1 / v1) * v2; return V.add(p.hit, V.mul(dout, rem));
-            });
-            if (pts.some(q => q.y > O.y + 340 || q.x > o.w || q.x < 0)) continue;
-            c.save(); c.strokeStyle = 'rgba(255,184,77,.75)'; c.lineWidth = 2.5; D.path(c, pts); c.stroke(); c.restore();
-          }
-        }
-        D.ray(c, [S, O], COL.cyan, 3.2); D.arrowOn(c, S, O, COL.cyan, 15, .55);
-        if (!tir) { D.ray(c, [O, E], COL.magenta, 3.2); D.arrowOn(c, O, E, COL.magenta, 15, .55); D.line(c, O, V.add(O, V.mul(din, 300)), 'rgba(30,35,60,.35)', 1.5, [4, 6]); D.text(c, 'if it did not bend', O.x + din.x * 300 + 8, O.y + din.y * 300, { size: 15, col: COL.muted, align: 'left', weight: 400 }); }
-        D.dot(c, S.x, S.y, 12, '#fff6c8');
-        if (iDeg > 0) D.angleArc(c, O, 90, -Math.PI / 2 - a, -Math.PI / 2, COL.cyan, 'i = ' + iDeg + '°', 128);
-        if (!tir && rr > .002) D.angleArc(c, O, 90, Math.PI / 2 - rr, Math.PI / 2, COL.magenta, 'r = ' + (rr / DEG).toFixed(1) + '°', 128);
-        if (tir) D.text(c, 'No light gets out: total internal reflection (higher classes)', O.x, O.y + 120, { size: 21, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
-        ro.set('sp', `${MEDIA[m1].name}: ${(300 / n1).toFixed(0)}k → ${MEDIA[m2].name}: ${(300 / n2).toFixed(0)}k km/s`);
-        ro.set('i', iDeg + '°'); ro.set('r', tir ? '— (no refracted ray)' : (rr / DEG).toFixed(1) + '°', true);
-        ro.set('b', tir ? 'All reflected back' : iDeg === 0 || n1 === n2 ? 'Not at all' : n2 > n1 ? 'Towards the normal' : 'Away from the normal');
       }
     };
   }
@@ -3081,25 +2712,21 @@ function drawLensBeam(c, o, Lg, opt, now) {
 LL.add({
   id: 'lens-beams', title: 'Parallel rays through glass shapes', section: 'Lenses',
   build(root) {
-    const L = labLayout(root, { kicker: 'Scene 10 · Activity 10.10', title: 'Flat glass, convex lens, concave lens' });
+    const L = labLayout(root, { kicker: 'Activity 10.10', title: 'Flat glass, convex lens, concave lens' });
     const o = L.cv;
-    const st = { type: 'convex', n: 9, spacing: 34, tilt: 0, showF: true, showNormals: false, showBack: true, tt: 0 };
+    const st = { type: 'convex', n: 9, spacing: 34, tilt: 0, showF: false, showNormals: false, showBack: false, tt: 0 };
     const sT = UI.seg('Shape', [{ v: 'plate', t: 'Flat plate' }, { v: 'convex', t: 'Convex' }, { v: 'concave', t: 'Concave' }, { v: 'all', t: 'Compare all 3' }], st.type, v => { st.type = v; st.tt = 0; });
     const sN = UI.slider('Rays', 3, 15, 1, st.n, v => String(v), v => { st.n = v; });
     const sS = UI.slider('Spacing', 12, 44, 2, st.spacing, v => v + ' px', v => { st.spacing = v; });
-    const sTl = UI.slider('Tilt the beam', -20, 20, 1, 0, v => v + '°', v => { st.tilt = v * DEG; });
-    const tF = UI.toggle('Focus F', true, v => { st.showF = v; }, COL.amber);
-    const tN = UI.toggle('Normals', false, v => { st.showNormals = v; }, COL.amber);
-    const tB = UI.toggle('Dashed back-lines', true, v => { st.showBack = v; }, COL.magenta);
-    L.controls.append(sT.el, sN.el, el('div', { class: 'break' }), sS.el, sTl.el, tF.el, tN.el, tB.el);
+    L.controls.append(sT.el, el('div', { class: 'break' }), sN.el, sS.el);
     L.setPanel(UI.panel({
-      predict: { q: 'Why do parallel rays come together after a <b>convex</b> lens but spread apart after a <b>concave</b> lens?', opts: ['Because the glass is a different colour', 'Because the curved surfaces meet each ray at a different angle, so each ray bends by a different amount', 'Because light speeds up inside glass'], ans: 1, why: 'Turn on the normals: they tilt more and more towards the edges of the lens.' },
-      experiment: ['Compare the flat plate, the convex lens and the concave lens.', 'Turn on <b>Normals</b> at both surfaces.', '<b>Tilt the beam</b> through the flat plate.'],
-      observe: ['<b>Flat plate:</b> rays come out parallel to how they went in. When tilted, they are shifted sideways a little.', '<b>Convex lens:</b> rays converge and really meet near F: a <b>converging lens</b>.', '<b>Concave lens:</b> rays diverge, as if from F on the same side as the light (virtual focus): a <b>diverging lens</b>.', 'Edge rays of a strongly curved lens cross slightly nearer the lens.'],
-      explain: '<p>At each surface, light obeys the rule of refraction: it bends towards the normal entering glass and away from it leaving. In a flat plate both surfaces are parallel, so the two bends cancel.</p><p>In a convex lens, the surfaces tilt so that rays near the edge are bent more towards the axis, so all rays head for one point. In a concave lens the tilt is the other way, so rays are bent away from the axis.</p><p class="note">Exact ray tracing with Snell’s law for glass (n = 1.5) and real spherical surfaces; F is found by tracing a ray very close to the axis.</p>'
+      predict: { q: 'Multiple parallel beams of light fall on a thin glass plate, a convex lens and a concave lens. Does the beam pass through as it is in all three cases?', opts: ['Yes, in all three', 'Only through the glass plate; the convex lens converges it and the concave lens diverges it', 'No, none of them lets light through'], ans: 1, why: 'The thin glass plate lets the beam pass as it is, but the curved lenses change it.' },
+      experiment: ['Compare the thin glass plate, the convex lens and the concave lens one by one.', 'Press <b>Compare all 3</b>.', 'Change the number of rays.'],
+      observe: ['<b>Thin glass plate:</b> the light beam passes through as it is.', '<b>Convex lens:</b> the light beams come closer: it <b>converges</b> the light.', '<b>Concave lens:</b> the light beams spread out: it <b>diverges</b> the light.'],
+      explain: '<p>A convex lens converges the light falling on it, so it is also called a <b>converging lens</b>. A concave lens diverges the light, so it is called a <b>diverging lens</b>.</p><p>Since a convex lens converges a light beam, it can also focus sunlight and burn a paper (Activity 10.11).</p>'
     }));
     return {
-      reset() { Object.assign(st, { type: 'convex', n: 9, spacing: 34, tilt: 0, showF: true, showNormals: false, showBack: true, tt: 0 }); sT.set('convex'); sN.set(9); sS.set(34); sTl.set(0); tF.set(true); tN.set(false); tB.set(true); },
+      reset() { Object.assign(st, { type: 'convex', n: 9, spacing: 34, tilt: 0, showF: false, showNormals: false, showBack: false, tt: 0 }); sT.set('convex'); sN.set(9); sS.set(34); },
       replay() { st.tt = 0; },
       onShow() { st.tt = 0; },
       frame(dt, now) {
@@ -3109,7 +2736,7 @@ LL.add({
         if (st.type !== 'all') {
           D.axis(c, 350, 0, o.w, null);
           drawLensBeam(c, o, lensGeom(st.type, 560, 350, 420, 170), { ...base, n: st.n, spacing: st.spacing }, now);
-          const msg = { plate: 'Flat plate: rays stay parallel', convex: 'Convex lens: rays converge (converging lens)', concave: 'Concave lens: rays diverge (diverging lens)' }[st.type];
+          const msg = { plate: 'Thin glass plate: the light passes as it is', convex: 'Convex lens: the light converges', concave: 'Concave lens: the light diverges' }[st.type];
           D.text(c, msg, 630, 34, { size: 24, col: st.type === 'concave' ? COL.magenta : st.type === 'convex' ? COL.amber : COL.cyan, bg: 'rgba(255,255,255,.9)' });
         } else {
           ['plate', 'convex', 'concave'].forEach((tp, i) => {
@@ -3130,30 +2757,23 @@ LL.add({
 </script>
 <script>
 'use strict';
-/* Scene 11: the live lens lab (shares ImageLab with the mirror lab) */
+/* Activity 10.9: an object seen through a convex and a concave lens (shares ImageLab with the mirror lab) */
 LL.add({
   id: 'lens-lab', title: 'Lens lab', section: 'Lenses',
   build(root) {
     return ImageLab(root, {
-      kind: 'lens', kicker: 'Scene 11 · Activity 10.9 · Live lens lab', title: 'Move the candle: what does a lens do?',
-      X: 640, uMax: 34, types: ['convex', 'concave'], defType: 'convex', defU: 25,
-      places: {
-        convex: [['Far away', 34], ['Beyond 2F₁', 26], ['At 2F₁', 20], ['Between 2F₁ and F₁', 15], ['At F₁', 10], ['Between F₁ and O', 6]],
-        concave: [['Far away', 32], ['Middle', 15], ['Near', 5]]
-      },
-      footer: 'Thin-lens (school ray-diagram) model · f = 10 cm · rays drawn bending once at the lens centre line',
-      modelNote: 'Images are calculated with the lens formula <b>1/v − 1/u = 1/f</b> and <b>m = v/u</b> (higher classes). Sign convention: distances are measured from the optical centre O, <b>+</b> in the direction the light travels (to the right) and <b>−</b> against it; heights above the axis are <b>+</b>. A real lens bends light at both of its surfaces; the thin-lens picture shows one bend at the centre line.',
+      kind: 'lens', kicker: 'Activity 10.9', title: 'Look through the lens: how does the object appear?',
+      X: 560, uMax: 34, types: ['convex', 'concave'], defType: 'convex', defU: 4,
       noteFor(st, img) {
-        if (st.type === 'concave') return 'A concave lens always gives an upright, smaller, virtual image. Spectacles for short sight use concave lenses.';
-        if (img.inf) return 'At F₁ the rays leave parallel and never meet: no image. Turn on the screen and try to catch one!';
-        if (img.v < 0) return 'Object between F₁ and O: upright, enlarged, virtual image. This is a <b>magnifying glass</b>.';
-        return 'Real, inverted image on the other side of the lens. Turn on the <b>Screen</b> and move it until the image is sharp, as in a camera or a projector.';
+        if (st.type === 'concave') return 'Through a concave lens the object always appears erect and diminished.';
+        if (img.m > 0) return 'Object close to a convex lens: it appears erect and enlarged. This is how a magnifying glass works.';
+        return 'Object farther from a convex lens: it appears inverted. It is first enlarged, then gets smaller.';
       },
       panel: {
-        predict: { q: 'Can a convex lens make an upright, enlarged image, and also an upside-down one?', opts: ['Only upright images', 'Only upside-down images', 'Both, depending on how far the object is', 'Neither: it only makes things smaller'], ans: 2, why: 'Close to the lens (inside F₁) the image is upright and enlarged; farther away it becomes inverted.' },
-        experiment: ['Drag the candle from far away towards the convex lens.', 'Turn on the <b>Screen</b> and drag it to catch the real image.', 'Switch to the <b>concave</b> lens and repeat.', 'Toggle the three rays.'],
-        observe: ['<b>Convex:</b> far away → small, inverted, real image near F₂; at 2F₁ → same size at 2F₂; between 2F₁ and F₁ → enlarged and inverted; at F₁ → no image; inside F₁ → upright, enlarged, virtual.', 'Only real images can be caught on the screen.', '<b>Concave:</b> always upright, diminished and virtual, on the same side as the object.'],
-        explain: '<p>A ray through the optical centre goes straight on. A ray parallel to the axis bends through F₂ (convex) or bends away as if it came from F₁ (concave).</p><p>A convex lens <b>converges</b> light, so rays from the candle can really meet and make a <b>real</b> image. A concave lens <b>diverges</b> light, so the rays only seem to come from a smaller, upright <b>virtual</b> image.</p>'
+        predict: { q: 'An object is placed behind a convex lens and slowly moved away. How does it look through the lens?', opts: ['Always erect and the same size', 'Erect and enlarged at first, then inverted', 'Always erect and smaller', 'It cannot be seen'], ans: 1, why: 'Close to a convex lens the object looks erect and enlarged; farther away it looks inverted.' },
+        experiment: ['Place the candle <b>close</b> behind the convex lens.', 'Look through the lens and slowly move the candle <b>farther</b> away.', 'Note: erect or inverted? Bigger or smaller?', 'Repeat with the <b>concave</b> lens.'],
+        observe: ['<b>Convex lens:</b> at a small distance the object appears <b>erect and enlarged</b>. As the distance increases it appears <b>inverted</b>: first enlarged, then diminished.', '<b>Concave lens:</b> the object always appears <b>erect and diminished</b>; its size changes as its distance increases.'],
+        explain: '<p>Unlike mirrors, lenses let light <b>pass through</b> them, so we see things <b>through</b> a lens, not in it.</p><p>A convex lens can make things look bigger, which is why a <b>magnifying glass</b> is a convex lens.</p>'
       }
     });
   }
@@ -3162,22 +2782,19 @@ LL.add({
 </script>
 <script>
 'use strict';
-/* Scene 12: lenses around us — magnifier, eyeglasses, phone camera, microscope, telescope, human eye.
-   All paths use the thin-lens model (paraxial ray transfer), in pixels; diagrams are not to scale. */
+/* Lenses around us — magnifier, phone camera, microscope, telescope, human eye. Simple illustrations; not to scale. */
 
 const LAPPS = {
-  magnifier: { name: 'Magnifying glass', lens: 'Convex lens', img: 'Virtual, erect, enlarged',
-    how: 'The object is placed closer to the lens than its focus F. The rays leaving the lens spread out as if they came from a larger, upright image behind the object. Activity 10.8 and Exercise 8.' },
-  glasses: { name: 'Eyeglasses', lens: 'Concave or convex lens', img: 'Helps the eye form a sharp image on the retina',
-    how: '<b>Short sight:</b> the eye focuses far-away objects in front of the retina; a <b>concave</b> lens spreads the rays a little so they focus on the retina. <b>Long sight:</b> near objects focus behind the retina; a <b>convex</b> lens converges the rays a little. The curved line on some reading glasses separates two lenses (bifocals): one part for far, one for near.' },
-  camera: { name: 'Smartphone camera', lens: 'Convex lens (a stack of tiny lenses)', img: 'Real, inverted, diminished on the sensor',
-    how: 'The lens forms a small, upside-down real image on the light sensor. To focus on near or far objects, the lens moves slightly (autofocus) so the image stays sharp on the sensor. The phone flips the picture upright for you.' },
-  microscope: { name: 'Microscope', lens: 'Two convex lenses', img: 'Virtual, inverted, highly enlarged',
-    how: 'The <b>objective</b> lens, very close to the tiny specimen, forms a real, enlarged, inverted image inside the tube. The <b>eyepiece</b> works like a magnifying glass on that image and enlarges it again.' },
-  telescope: { name: 'Telescope (refracting)', lens: 'Two convex lenses', img: 'Far objects look bigger and brighter',
-    how: 'Light from a distant star arrives as parallel rays. The big <b>objective</b> lens collects it and brings it to a focus; the <b>eyepiece</b> sends it to the eye at a larger angle, so the star or planet looks bigger. Large modern telescopes use a concave mirror instead (Scene 7).' },
-  eye: { name: 'Human eye', lens: 'Convex lens (plus the curved cornea)', img: 'Real, inverted, diminished on the retina',
-    how: 'The eye lens forms a tiny upside-down image on the retina; the brain makes us see it upright. Eye muscles change the lens shape: <b>thicker</b> for near objects, <b>thinner</b> for far ones. This is how we can read a book and then look far away.' }
+  magnifier: { name: 'Magnifying glass', lens: 'Convex lens', img: 'Small print looks bigger and erect',
+    how: 'Held close to small print, a convex lens makes the letters appear <b>bigger</b> and erect. Move it farther away and the letters blur, then appear upside down (Activity 10.8, Exercise 8).' },
+  camera: { name: 'Smartphone camera', lens: 'Convex lenses', img: 'A small, upside-down picture on the sensor',
+    how: 'Smartphone cameras use small convex lenses. They form a small, upside-down picture on the light sensor, and the phone shows it the right way up. The lens moves a little so that near and far objects both look sharp.' },
+  microscope: { name: 'Microscope', lens: 'Convex lenses', img: 'Tiny things look very large',
+    how: 'A microscope uses <b>lenses</b> to make very small things, such as cells, look much bigger so that we can study them.' },
+  telescope: { name: 'Telescope', lens: 'Lenses (or a large concave mirror)', img: 'Far-away objects look bigger',
+    how: 'A telescope uses lenses to make distant stars and planets look bigger and clearer. Most modern telescopes use a large concave mirror instead (see Mirrors in the real world).' },
+  eye: { name: 'Human eye', lens: 'Convex lens', img: 'A tiny picture forms at the back of the eye',
+    how: 'Even our eye has a <b>convex lens</b> inside it. It is an amazing lens that can <b>change its shape</b>, which is what allows us to read a book or see something far away.' }
 };
 
 LL.add({
@@ -3188,12 +2805,10 @@ LL.add({
     const st = { tab: 'magnifier', mu: 5, cond: 'myopia', wear: false, camU: 600, starA: 2, eyeD: 60, camV: 160, eyeF: 180, t: 0 };
     const sTab = UI.seg(null, Object.keys(LAPPS).map(k => ({ v: k, t: LAPPS[k].name.replace(' (refracting)', '') })), st.tab, v => { st.tab = v; show(); });
     const cMu = UI.slider('Lens distance from object', 2, 7.5, .25, st.mu, v => v.toFixed(2) + ' cm', v => { st.mu = v; });
-    const cCond = UI.seg('Eye', [{ v: 'myopia', t: 'Short sight' }, { v: 'hyper', t: 'Long sight' }], st.cond, v => { st.cond = v; });
-    const cWear = UI.toggle('Wear the correct glasses', false, v => { st.wear = v; }, COL.green);
     const cCam = UI.slider('Object distance', 300, 2000, 10, st.camU, v => (v / 10).toFixed(0) + ' cm', v => { st.camU = v; });
     const cStar = UI.slider('Star direction', 0, 4, .1, st.starA, v => v.toFixed(1) + '°', v => { st.starA = v; });
     const cEye = UI.slider('Object distance', 25, 300, 5, st.eyeD, v => v + ' cm', v => { st.eyeD = v; });
-    L.controls.append(sTab.el, el('div', { class: 'break' }), cMu.el, cCond.el, cWear.el, cCam.el, cStar.el, cEye.el);
+    L.controls.append(sTab.el, el('div', { class: 'break' }), cMu.el, cCam.el, cStar.el, cEye.el);
     const nm = el('div', { class: 'q', style: 'display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0' });
     const how = el('p');
     const live = UI.card('live', 'This device', null, nm, el('p', { class: 'note', id: 'll-lapps-img' }), how);
@@ -3201,10 +2816,10 @@ LL.add({
       predict: { q: 'Our eye has a lens inside it. What kind of lens is it?', opts: ['Convex lens', 'Concave lens', 'A flat glass plate'], ans: 0, why: 'The eye lens is convex, and it can change its shape to see near and far objects.' },
       live,
       experiment: ['Choose a device from the tabs.', 'Use the slider or toggle under each one.', 'Follow the light from the object to the image.'],
-      explain: '<p>Every device here bends light with lenses to form an image where we need it: on a sensor (camera), on the retina (eye), or as an enlarged virtual image for our eye (magnifier, microscope, telescope).</p><p class="note">Diagrams use the thin-lens model and are not to scale.</p>'
+      explain: '<p>Lenses are important and are used everywhere around us: in <b>eyeglasses</b>, <b>cameras</b>, <b>telescopes</b> and <b>microscopes</b>. Even our <b>eye</b> has a convex lens inside it.</p><p class="note">The diagrams are simple illustrations, not to scale.</p>'
     }));
     function show() {
-      cMu.el.hidden = st.tab !== 'magnifier'; cCond.el.hidden = cWear.el.hidden = st.tab !== 'glasses'; cCam.el.hidden = st.tab !== 'camera'; cStar.el.hidden = st.tab !== 'telescope'; cEye.el.hidden = st.tab !== 'eye';
+      cMu.el.hidden = st.tab !== 'magnifier'; cCam.el.hidden = st.tab !== 'camera'; cStar.el.hidden = st.tab !== 'telescope'; cEye.el.hidden = st.tab !== 'eye';
       const a = LAPPS[st.tab];
       nm.innerHTML = ''; nm.append(el('span', null, a.name), el('span', { class: 'badge lens' }, a.lens));
       $('#ll-lapps-img', live).innerHTML = '<b>Image:</b> ' + a.img; how.innerHTML = a.how;
@@ -3238,42 +2853,12 @@ LL.add({
       magnifier(c, now) {
         const X = 760, f = 200, uPx = st.mu * 20, T = P(X - uPx, Y - 34);
         const img = OPT.lensImage(-uPx, f);
-        D.axis(c, Y, 0, o.w, null); D.mark(c, X - f, Y, 'F₁'); D.mark(c, X + f, Y, 'F₂');
+        D.axis(c, Y, 0, o.w, null);
         lensRays(X, f, T, img);
         D.lens(c, X, Y, 230, 'convex'); D.arrowObj(c, T.x, Y, 34, COL.amber); D.text(c, 'tiny print', T.x, Y + 56, { size: 18, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
         const I = P(X + img.v, Y - img.m * 34);
-        if (I.x > 0) { D.arrowObj(c, I.x, Y, Y - I.y, COL.magenta, { dashed: true }); D.text(c, 'enlarged image ×' + img.m.toFixed(1), I.x, I.y - 26, { size: 19, col: COL.magenta, bg: 'rgba(255,255,255,.9)' }); }
+        if (I.x > 0) { D.arrowObj(c, I.x, Y, Y - I.y, COL.magenta, { dashed: true }); D.text(c, 'the letters look bigger', I.x, I.y - 26, { size: 19, col: COL.magenta, bg: 'rgba(255,255,255,.9)' }); }
         D.eye(c, 1130, Y - 20, 1.2, 1); D.text(c, 'eye', 1130, Y - 60, { size: 17, col: COL.white });
-        void now;
-      },
-      glasses(c, now) {
-        const ex = 820, Dr = 220, my = st.cond === 'myopia';
-        const fe = my ? 190 : 240;                                   // eye too strong (short sight) / too weak (long sight)
-        const gx = 700, objX = 170;
-        const U = 1 / (1 / Dr - 1 / fe);                                // where the eye needs its object to be (cartesian, from eye lens)
-        const v1 = ex + U - gx, u1 = my ? -Infinity : -(gx - objX);
-        const fg = my ? v1 : 1 / (1 / v1 - 1 / u1);              // lens formula 1/f = 1/v - 1/u
-        const retX = eyeball(c, ex, Dr, fe);
-        D.axis(c, Y, 0, o.w, null);
-        const lenses = (st.wear ? [{ x: gx, f: fg }] : []).concat([{ x: ex, f: fe }]);
-        const heights = [-42, -20, 20, 42];
-        let focusX = null;
-        for (const hh of heights) {
-          let x0, y0, s;
-          if (my) { x0 = 20; y0 = hh; s = 0; } else { x0 = objX; y0 = 0; s = hh / ((st.wear ? gx : ex) - objX); }
-          const tr = OPT.thinTrace(x0, y0, s, lenses, retX);
-          drawTrace(tr, COL.cyan, 2.2);
-          const last = tr.pts[tr.pts.length - 2], sl = tr.slope;
-          focusX = last[0] - last[1] / sl;
-          if (focusX > retX) D.line(c, P(retX, sy(tr.pts[tr.pts.length - 1][1])), P(focusX, Y), COL.cyan, 1.5, [5, 6], .6);
-        }
-        if (my) D.text(c, 'light from a far-away object (parallel rays)', 30, Y - 80, { size: 17, col: COL.cyan, align: 'left' });
-        else { D.arrowObj(c, objX, Y, 40, COL.amber); D.text(c, 'book held close', objX, Y + 28, { size: 17, col: COL.amber }); }
-        if (st.wear) { D.lens(c, gx, Y, 90, fg > 0 ? 'convex' : 'concave', { bulge: 14 }); D.text(c, (fg > 0 ? 'convex' : 'concave') + ' spectacle lens', gx, Y - 112, { size: 17, col: COL.green }); }
-        const sharp = Math.abs(focusX - retX) < 8;
-        D.dot(c, focusX, Y, 6, sharp ? COL.green : COL.amber);
-        D.text(c, sharp ? 'Sharp image on the retina' : focusX < retX ? 'Focus falls in front of the retina: blurred' : 'Focus falls behind the retina: blurred', 630, 40, { size: 22, col: sharp ? COL.green : COL.amber, bg: 'rgba(255,255,255,.9)' });
-        D.text(c, my ? 'Short sight (myopia): far things look blurred' : 'Long sight (hypermetropia): near things look blurred', 630, 74, { size: 19, col: COL.white, weight: 400, bg: 'rgba(255,255,255,.9)' });
         void now;
       },
       camera(c, now) {
@@ -3291,7 +2876,7 @@ LL.add({
         D.text(c, 'sensor', sx + 5, Y + 140, { size: 17, col: COL.green });
         D.arrowObj(c, X + img.v, Y, img.m * h, COL.cyan, { w: 4 });
         if (T.x > 0) D.arrowObj(c, T.x, Y, h, COL.amber, { label: 'object' }); else D.text(c, '← object far away (off screen)', 20, Y - h - 20, { size: 18, col: COL.amber, align: 'left' });
-        D.text(c, `image ×${Math.abs(img.m).toFixed(2)}, upside down`, X + img.v + 30, Y + 70, { size: 18, col: COL.cyan, align: 'left', bg: 'rgba(255,255,255,.9)' });
+        D.text(c, 'small, upside-down picture', X + img.v + 30, Y + 70, { size: 18, col: COL.cyan, align: 'left', bg: 'rgba(255,255,255,.9)' });
         D.text(c, 'Autofocus: the lens–sensor gap changes so the image stays sharp', 630, 34, { size: 19, col: COL.white, bg: 'rgba(255,255,255,.9)' });
         void now;
       },
@@ -3312,8 +2897,8 @@ LL.add({
         }
         D.lens(c, xo, Y, 90, 'convex', { bulge: 22 }); D.lens(c, xe, Y, 110, 'convex', { bulge: 14 });
         D.arrowObj(c, objX, Y, h, COL.amber, { label: 'specimen' });
-        D.arrowObj(c, I1x, Y, h * m1, COL.cyan, { w: 4 }); D.text(c, 'first image (real)', I1x, sy(h * m1) + 22, { size: 16, col: COL.cyan, bg: 'rgba(255,255,255,.9)' });
-        D.arrowObj(c, Fx, Y, h * m1 * m2, COL.magenta, { dashed: true }); D.text(c, `final image ×${Math.abs(m1 * m2).toFixed(0)}`, Fx, sy(h * m1 * m2) + 24, { size: 18, col: COL.magenta, bg: 'rgba(255,255,255,.9)' });
+        D.arrowObj(c, I1x, Y, h * m1, COL.cyan, { w: 4 }); D.text(c, 'first image', I1x, sy(h * m1) + 22, { size: 16, col: COL.cyan, bg: 'rgba(255,255,255,.9)' });
+        D.arrowObj(c, Fx, Y, h * m1 * m2, COL.magenta, { dashed: true }); D.text(c, 'final image: much bigger', Fx, sy(h * m1 * m2) + 24, { size: 18, col: COL.magenta, bg: 'rgba(255,255,255,.9)' });
         D.text(c, 'objective', xo, Y - 140, { size: 17, col: COL.white }); D.text(c, 'eyepiece', xe, Y - 140, { size: 17, col: COL.white });
         D.eye(c, 1200, Y, 1.1, 1);
         void now; void xe0;
@@ -3327,11 +2912,10 @@ LL.add({
           drawTrace(tr, COL.cyan, 2.1);
         }
         D.lens(c, xo, Y, 95, 'convex', { bulge: 10 }); D.lens(c, xe, Y, 60, 'convex', { bulge: 16 });
-        D.mark(c, xo + fo, Y, 'F', COL.amber);
         D.text(c, 'objective lens (collects light)', xo + 40, Y - 120, { size: 17, col: COL.white, align: 'left' });
         D.text(c, 'eyepiece', xe, Y - 82, { size: 17, col: COL.white });
         D.eye(c, 1180, Y, 1.1, 1);
-        D.text(c, `star at ${st.starA.toFixed(1)}° → seen at ${(Math.atan(Math.tan(a) * fo / fe) / DEG).toFixed(1)}° (${(fo / fe).toFixed(0)}× bigger angle)`, 630, 40, { size: 20, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
+        D.text(c, 'Through the telescope the star looks bigger and clearer', 630, 40, { size: 20, col: COL.amber, bg: COL.pill });
         void now;
       },
       eye(c, now) {
@@ -3351,7 +2935,7 @@ LL.add({
       }
     };
     return {
-      reset() { Object.assign(st, { tab: 'magnifier', mu: 5, cond: 'myopia', wear: false, camU: 600, starA: 2, eyeD: 60 }); sTab.set('magnifier'); cMu.set(5); cCond.set('myopia'); cWear.set(false); cCam.set(600); cStar.set(2); cEye.set(60); show(); },
+      reset() { Object.assign(st, { tab: 'magnifier', mu: 5, cond: 'myopia', wear: false, camU: 600, starA: 2, eyeD: 60 }); sTab.set('magnifier'); cMu.set(5); cCam.set(600); cStar.set(2); cEye.set(60); show(); },
       frame(dt, now) { st.t += dt; C = o.ctx; o.begin(); D.bg(o); tabs[st.tab](C, now); }
     };
   }
@@ -3382,13 +2966,13 @@ LL.add({
   full: true,
   build(root) {
     const wrap = el('div', { class: 'recap-wrap' });
-    wrap.append(el('div', { class: 'scene-head' }, el('span', { class: 'kicker' }, 'Scene 13 · Snapshots'), el('h1', null, 'Mirrors reflect, lenses refract')));
+    wrap.append(el('div', { class: 'scene-head' }, el('span', { class: 'kicker' }, 'Snapshots'), el('h1', null, 'Mirrors and lenses compared')));
     const rows = [
-      ['Plane mirror', 'plane', 'Flat reflecting surface', 'Stay parallel', 'Always erect, same size, virtual, laterally inverted', 'Looking glass, dressing mirror, periscope'],
-      ['Concave mirror', 'concave', 'Curves inwards', 'Converge (converging mirror)', 'Enlarged, same size or diminished; erect or inverted, depending on distance', 'Torch & headlight reflectors, dentist’s mirror, solar concentrators, telescopes'],
+      ['Plane mirror', 'plane', 'Flat reflecting surface', 'Stay parallel', 'Always erect and of the same size; laterally inverted', 'Looking at ourselves (dressing mirror)'],
+      ['Concave mirror', 'concave', 'Curves inwards', 'Converge (converging mirror)', 'Close: erect and enlarged. Farther: inverted, first enlarged then diminished', 'Reflectors of torches and headlights, dental mirror, solar concentrators, reflecting telescopes'],
       ['Convex mirror', 'convex', 'Bulges outwards', 'Diverge (diverging mirror)', 'Always erect and diminished', 'Side-view mirrors, road-safety mirrors, shop surveillance mirrors'],
-      ['Convex lens', 'convex-l', 'Thicker in the middle', 'Converge (converging lens)', 'Enlarged, same size or diminished; erect or inverted, depending on distance', 'Magnifying glass, camera, microscope, telescope, eye lens'],
-      ['Concave lens', 'concave-l', 'Thinner in the middle', 'Diverge (diverging lens)', 'Always erect and diminished', 'Spectacles for short sight']
+      ['Convex lens', 'convex-l', 'Thicker in the middle', 'Converge (converging lens)', 'Close: erect and enlarged. Farther: inverted, first enlarged then diminished', 'Magnifying glass, cameras, microscopes, telescopes; our eye lens'],
+      ['Concave lens', 'concave-l', 'Thinner in the middle', 'Diverge (diverging lens)', 'Always erect and diminished', 'Eyeglasses']
     ];
     const tb = el('tbody');
     const cvs = [];
@@ -3399,13 +2983,13 @@ LL.add({
     wrap.append(el('table', { class: 'big-table' }, el('thead', null, el('tr', null, ['', 'Parallel light', 'Shape', 'Parallel rays', 'Image', 'Used in'].map(h => el('th', null, h)))), tb));
     const cards = el('div', { class: 'recap-cards' },
       UI.card('experiment', 'Two laws of reflection', null, el('p', { html: '1. <b>∠i = ∠r</b>: the angle of incidence equals the angle of reflection.<br>2. The incident ray, the normal at the point of incidence and the reflected ray all lie in the <b>same plane</b>.<br>They hold for plane, concave and convex mirrors.' })),
-      UI.card('observe', 'Real or virtual?', null, el('p', { html: '<b>Real</b> images form where light rays actually meet; they can be caught on a screen and are inverted. <b>Virtual</b> images form where rays only seem to come from; they cannot be caught on a screen.' })),
+      UI.card('observe', 'Converge or diverge?', null, el('p', { html: 'A <b>concave mirror</b> and a <b>convex lens</b> converge a beam of light. A <b>convex mirror</b> and a <b>concave lens</b> diverge it. A plane mirror and a thin glass plate leave it as it is.' })),
       UI.card('predict', 'Identify the mirror', null, el('p', { html: 'Look at your image: same size every time → <b>plane</b>. Always smaller → <b>convex</b>. Large up close, upside down far away → <b>concave</b>. Or look at it from the side (Activity 10.2).' })),
       UI.card('explain', 'Our scientific heritage', null, el('p', { html: 'More than 800 years ago, in the time of <b>Bhāskara II</b>, astronomers watched the reflections of stars and planets in shallow bowls of water through tubes set at the right angles, and measured their positions in the sky.' }))
     );
     wrap.append(cards);
     root.append(wrap);
-    root._panel = { _narrate: () => 'Mirrors reflect light; lenses refract it. Concave mirrors and convex lenses converge parallel light; convex mirrors and concave lenses diverge it. The angle of incidence equals the angle of reflection, and the incident ray, the normal and the reflected ray lie in the same plane.' };
+    root._panel = { _narrate: () => 'Mirrors reflect light; lenses let light pass through them. Concave mirrors and convex lenses converge parallel light; convex mirrors and concave lenses diverge it. The angle of incidence equals the angle of reflection, and the incident ray, the normal and the reflected ray lie in the same plane.' };
     return { frame() { for (const [cv, k] of cvs) { cv.begin(); miniRays(cv.ctx, cv.w, cv.h, k); } } };
   }
 });
@@ -3441,7 +3025,7 @@ LL.add({
   build(root) {
     const wrap = el('div', { class: 'recap-wrap' });
     const score = el('span', { class: 'score' });
-    wrap.append(el('div', { class: 'scene-head', style: 'justify-content:space-between' }, el('div', { style: 'display:flex;gap:16px;align-items:baseline' }, el('span', { class: 'kicker' }, 'Scene 14 · NCERT exercises'), el('h1', null, 'Keep the curiosity alive')), score));
+    wrap.append(el('div', { class: 'scene-head', style: 'justify-content:space-between' }, el('div', { style: 'display:flex;gap:16px;align-items:baseline' }, el('span', { class: 'kicker' }, 'NCERT exercises'), el('h1', null, 'Keep the curiosity alive')), score));
     const grid = el('div', { class: 'quiz-grid' }); wrap.append(grid); root.append(wrap);
     let right = 0, tried = 0, total = 0;
     const upd = () => { score.textContent = `Score: ${right} / ${total}  (attempted ${tried})`; };
@@ -3490,16 +3074,16 @@ LL.add({
       return sels;
     }
     mcq(1, 'A light ray strikes a mirror. The incident ray makes 40° with the <b>normal</b>. What angle does the reflected ray make with the <b>mirror</b>?', ['40°', '50°', '45°', '60°'], 1, 'Angle of reflection = 40° (from the normal). The normal is at 90° to the mirror, so the reflected ray makes 90° − 40° = <b>50°</b> with the mirror surface.');
-    short(2, 'A ray falls on a mirror (i) along the normal; (ii) along the normal of a tilted mirror; (iii) at 20° from the normal of a tilted mirror. What is the angle of reflection in each case?', '(i) <b>0°</b>: the ray goes back along the normal. (ii) <b>0°</b>: tilting the mirror tilts its normal too; the ray still retraces its path. (iii) <b>20°</b>, on the other side of the normal. Try it on the Scene 4 bench.');
+    short(2, 'A ray falls on a mirror (i) along the normal; (ii) along the normal of a tilted mirror; (iii) at 20° from the normal of a tilted mirror. What is the angle of reflection in each case?', '(i) <b>0°</b>: the ray goes back along the normal. (ii) <b>0°</b>: tilting the mirror tilts its normal too; the ray still retraces its path. (iii) <b>20°</b>, on the other side of the normal. Try it on the optical bench in Part 1.');
     const capAt = (s, flip) => c => drawCap(c, 75, 75, s, flip);
     match(3, 'The cap of a sketch pen is placed in front of three mirrors. Match each image with the mirror.', [capAt(.75, 1), capAt(1.5, 1), capAt(1, 1)], ['Plane mirror', 'Convex mirror', 'Concave mirror'], ['Convex mirror', 'Concave mirror', 'Plane mirror']);
     match(4, 'The cap is placed behind a convex lens, a concave lens and a flat glass piece, all at the same distance. Match each view.', [capAt(1, 1), capAt(.6, 1), capAt(1.6, 1)], ['Flat transparent glass', 'Convex lens', 'Concave lens'], ['Flat transparent glass', 'Concave lens', 'Convex lens']);
     mcq(5, 'Light falls on a mirror along the normal. Which statement is true?', ['Angle of incidence is 90°', 'Angle of incidence is 0°', 'Angle of reflection is 90°', 'No reflection takes place'], 1, 'Angles are measured from the normal, so a ray along the normal has <b>i = 0°</b> and r = 0°. It is reflected straight back.');
     match(6, 'A graph sheet seen in three mirrors. Identify each mirror.', [c => drawGrid(c, 75, 75, 66, 1, 0), c => drawGrid(c, 75, 75, 66, .55, 1.4), c => drawGrid(c, 75, 75, 66, 1.9, 0)], ['Plane', 'Concave', 'Convex'], ['Plane', 'Convex', 'Concave']);
     mcq(7, 'In a museum, a woman walks <b>towards</b> a large concave mirror. She will see that:', ['her erect image keeps decreasing in size', 'her inverted image keeps decreasing in size', 'her inverted image keeps increasing in size and eventually becomes erect and magnified', 'her erect image keeps increasing in size'], 2, 'Far away the image is inverted and small; as she approaches F it grows; inside F it becomes erect and enlarged. Check it in the mirror lab.');
-    short(8, 'Hold a magnifying glass over text. At what distance do the letters look bigger? Move it away: what do you notice? Which lens is a magnifying glass?', 'Close to the text (nearer than its focus) the letters look <b>bigger and upright</b>. Moving it away, they grow, blur, and then appear <b>upside down</b> and smaller. A magnifying glass is a <b>convex lens</b>. Try it in Scene 8.');
+    short(8, 'Hold a magnifying glass over text. At what distance do the letters look bigger? Move it away: what do you notice? Which lens is a magnifying glass?', 'Close to the text the letters look <b>bigger and upright</b>. Moving it away, they grow, blur, and then appear <b>upside down</b> and smaller. A magnifying glass is a <b>convex lens</b>. Try it on the water-drop slide.');
     mcq(9, 'Match: (i) concave mirror, (ii) convex mirror, (iii) convex lens, (iv) concave lens with — (a) reflecting surface curves inwards, (b) image always erect and diminished, (c) object behind it may appear inverted at some distance, (d) object behind it always appears diminished.', ['i–a, ii–b, iii–c, iv–d', 'i–b, ii–a, iii–d, iv–c', 'i–c, ii–b, iii–a, iv–d', 'i–a, ii–d, iii–b, iv–c'], 0, '<b>i–a, ii–b, iii–c, iv–d.</b>');
-    mcq(10, '<b>Assertion:</b> Convex mirrors are preferred for observing the traffic behind us. <b>Reason:</b> Convex mirrors provide a significantly larger view area than plane mirrors.', ['Both correct, and the Reason explains the Assertion', 'Both correct, but the Reason does not explain the Assertion', 'Assertion correct, Reason incorrect', 'Both incorrect'], 0, 'Both are correct, and the wider field of view is exactly why convex mirrors are used (see the field-of-view diagram in Scene 7).');
+    mcq(10, '<b>Assertion:</b> Convex mirrors are preferred for observing the traffic behind us. <b>Reason:</b> Convex mirrors provide a significantly larger view area than plane mirrors.', ['Both correct, and the Reason explains the Assertion', 'Both correct, but the Reason does not explain the Assertion', 'Assertion correct, Reason incorrect', 'Both incorrect'], 0, 'Both are correct, and the wider field of view is exactly why convex mirrors are used (see the side-view mirror in Mirrors in the real world).');
     const fig11 = makeCanvas(520, 130);
     statics.push(function () {
       const c = fig11.ctx; fig11.begin(); c.fillStyle = '#f6f7fb'; c.fillRect(0, 0, 520, 130);
@@ -3507,7 +3091,7 @@ LL.add({
       rowF(28, 450, '(a)'); rowF(92, 320, '(b)');
     });
     mcq(11, 'O = object, M = mirror, I = image. Which statement is true?', ['(a) plane, (b) concave', '(a) convex, (b) concave', '(a) concave, (b) convex', '(a) plane, (b) convex'], 3, 'In (a) the image is the same size and as far behind as the object is in front: <b>plane</b>. In (b) it is smaller and closer behind the mirror: <b>convex</b>.', el('div', { class: 'cvwrap', style: 'margin-bottom:8px' }, fig11.cv));
-    short(12, 'Place a pencil behind a glass tumbler, then fill it halfway with water. How does the pencil look through the water? Why?', 'Through the water the pencil looks <b>broken or shifted</b>, and <b>wider</b>. The curved water-filled glass acts like a convex lens, and light <b>refracts</b> (bends) as it passes from water and glass into air (Scene 9).');
+    short(12, 'Place a pencil behind a glass tumbler, then fill it halfway with water. How does the pencil look through the water? Why?', 'Through the water the pencil looks <b>broken or shifted</b>, and <b>wider</b>. The curved glass filled with water acts like a <b>lens</b>, just as the curved water drop did in Activity 10.8, so it changes how the pencil looks.');
     short('★', '<b>Probe and ponder:</b> Why is there a curved line on some reading glasses?', 'Those are <b>bifocal</b> glasses: two lenses of different strength joined together. The upper part helps to see far away, the lower part to read up close. The curved line is where the two parts meet.');
     upd();
     return {
@@ -3525,27 +3109,29 @@ LL.add({
 
 const blanks = s => s.replace(/\[\[(.+?)\]\]/g, '<span class="blank" tabindex="0" role="button" title="Click to reveal">$1</span>');
 
-/* animated object stepping through standard positions; the matching table row is highlighted */
-function positionDiagram(c, w, h, t, { kind, type, X, f, s, us, names }) {
-  const Y = h / 2 + 10, idx = Math.floor(t / 2.6) % us.length, u = us[idx];
+/* object moved away step by step; the right-hand window shows how the image looks (no rays, no foci) */
+function viewDiagram(c, w, h, t, { kind, type, us, names }) {
+  const idx = Math.floor(t / 2.6) % us.length, u = us[idx], S = 7.5, Y = h * .62, X = 400;
+  const f = kind === 'mirror' ? (type === 'concave' ? -10 : 10) : (type === 'convex' ? 10 : -10);
   const img = kind === 'mirror' ? OPT.mirrorImage(-u, f) : OPT.lensImage(-u, f);
-  const T = P(X - u * s, Y - 3 * s);
-  const box = { x0: 0, y0: 0, x1: w, y1: h };
-  if (kind === 'mirror') { c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(X, 0, w - X, h); c.restore(); }
-  D.axis(c, Y, 0, w, null);
-  const m = { type, P: P(X, Y), R: 2 * Math.abs(f) * s, a: 150, rot: 0 };
-  const R = OPT.labRays({ kind, type, X, Y, s, f, T, img, mirror: m, a: 160, on: { r1: true, r2: false, r3: true, r4: kind === 'mirror' }, box });
-  for (const r of R.rays) if (r.inc) { D.ray(c, [r.inc[0], r.inc[1], r.out[1]], r.col, 2.2); D.arrowOn(c, r.inc[0], r.inc[1], r.col, 11); if (r.back) D.line(c, r.back[0], r.back[1], r.col, 1.8, [7, 6], .8); }
-  if (kind === 'mirror') { D.mirror(c, m); D.mark(c, X + f * s, Y, 'F'); D.mark(c, X + 2 * f * s, Y, 'C', COL.amber); }
-  else { D.lens(c, X, Y, 160, type, { bulge: 18 }); D.mark(c, X - f * s, Y, 'F₁'); D.mark(c, X + f * s, Y, 'F₂'); D.mark(c, X - 2 * f * s, Y, '2F₁', COL.amber); D.mark(c, X + 2 * f * s, Y, '2F₂', COL.amber); }
-  D.arrowObj(c, T.x, Y, 3 * s, COL.amber, { w: 5 });
-  if (!img.inf) {
-    const I = R.I, real = kind === 'mirror' ? img.v < 0 : img.v > 0;
-    if (I.x > 0 && I.x < w && Math.abs(Y - I.y) < Y - 8) D.arrowObj(c, I.x, Y, Y - I.y, real ? COL.cyan : COL.magenta, { dashed: !real, w: 4 });
-    else D.offscreen(c, { w, h }, I.x, I.y, 'image off screen');
-  }
-  D.text(c, 'Object: ' + names[idx], w / 2, 26, { size: 22, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
-  return { row: idx };
+  const blurred = img.inf || Math.abs(img.m) > 4, m = img.inf ? 4 : img.m;
+  D.line(c, P(20, Y), P(450, Y), 'rgba(60,70,110,.35)', 3);
+  D.candle(c, X - u * S, Y, 70, { t });
+  if (kind === 'mirror') D.mirror(c, { type, P: P(X, Y - 80), R: 200, a: 90, rot: 0 }, { realistic: true });
+  else D.lens(c, X, Y - 80, 90, type, { bulge: 14 });
+  D.text(c, 'Object ' + names[idx], 230, 28, { size: 21, col: COL.amber, bg: COL.pill });
+  const vx = 480, vy = 50, vw = 260, vh = h - 110, cx = vx + vw / 2, cy = vy + vh / 2;
+  c.save(); c.beginPath(); c.ellipse(cx, cy, vw / 2, vh / 2, 0, 0, Math.PI * 2);
+  c.fillStyle = kind === 'mirror' ? '#d9e1f0' : '#e8f5ff'; c.fill(); c.save(); c.clip();
+  if (blurred && 'filter' in c) c.filter = 'blur(8px)';
+  const am = Math.min(Math.abs(m), 2.6), base = 80;
+  D.candle(c, cx, cy + (m < 0 ? -1 : 1) * base * am / 2, (m < 0 ? -1 : 1) * base * am, { t });
+  c.restore(); c.lineWidth = 6; c.strokeStyle = kind === 'mirror' ? '#8792aa' : '#1f8fff'; c.stroke(); c.restore();
+  D.text(c, 'What you see', cx, vy - 18, { size: 18, col: COL.white });
+  let txt;
+  if (blurred) txt = 'Very blurred';
+  else { const a = Math.abs(img.m); txt = (img.m > 0 ? 'Erect' : 'Inverted') + ', ' + (a > 1.03 ? 'enlarged' : a < .97 ? 'diminished' : 'same size'); }
+  D.text(c, txt, cx, h - 26, { size: 22, col: blurred ? COL.amber : img.m > 0 ? COL.cyan : COL.magenta, bg: COL.pill });
 }
 
 const DIAGRAMS = {
@@ -3579,19 +3165,6 @@ const DIAGRAMS = {
     }
     D.text(c, 'Hatched side = coated, non-reflecting', w / 2, h - 18, { size: 18, col: COL.muted });
   },
-  parts(c, w, h, t) {
-    const Y = h / 2 - 20, m = { type: 'concave', P: P(650, Y), R: 460, a: 200, rot: 0 }, C = OPT.mirrorCenter(m), F = OPT.mirrorFocus(m);
-    D.line(c, P(0, Y), P(w, Y), COL.axis, 1.5, [10, 7]); D.text(c, 'Principal axis', 90, Y - 18, { size: 17, col: COL.muted });
-    for (const dy of [-150, -90, -40, 40, 90, 150]) { const r = OPT.traceMirror(m, P(10, Y + dy), P(1, 0), 330); D.ray(c, r.pts, COL.cyan, 1.8, { alpha: .8 }); D.pulses(c, r.pts, t, '#fff', { speed: 200, gap: 160, r: 2.5 }); }
-    D.mirror(c, m);
-    D.dot(c, F.x, F.y, 7, COL.amber); D.text(c, 'F', F.x, Y + 30, { size: 24, col: COL.amber, font: 'mono' });
-    D.dot(c, C.x, C.y, 6, COL.white, false); D.text(c, 'C', C.x, Y + 30, { size: 24, col: COL.white, font: 'mono' });
-    D.text(c, 'P', m.P.x + 22, Y + 30, { size: 24, col: COL.cyan, font: 'mono' });
-    const br = (x0, x1, y, lab, col) => { D.line(c, P(x0, y), P(x1, y), col, 2.5); D.line(c, P(x0, y - 8), P(x0, y + 8), col, 2); D.line(c, P(x1, y - 8), P(x1, y + 8), col, 2); D.text(c, lab, (x0 + x1) / 2, y + 22, { size: 20, col, font: 'mono', bg: 'rgba(255,255,255,.9)' }); };
-    br(F.x, m.P.x, Y + 230, 'f = PF', COL.amber); br(C.x, m.P.x, Y + 280, 'R = PC = 2f', COL.white);
-    const pts = OPT.mirrorPoints(m, 2); D.text(c, 'A', pts[2].x - 16, pts[2].y - 16, { size: 20, col: COL.white, font: 'mono' }); D.text(c, 'B', pts[0].x - 16, pts[0].y + 18, { size: 20, col: COL.white, font: 'mono' });
-    D.text(c, 'Aperture APB', pts[2].x + 20, pts[2].y - 30, { size: 17, col: COL.muted });
-  },
   plane(c, w, h, t) {
     const MX = 380, floor = h - 150, oh = 140, xo = 210, xi = 2 * MX - xo, eye = P(80, 150);
     c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(MX, 0, w - MX, h); c.restore();
@@ -3601,12 +3174,11 @@ const DIAGRAMS = {
     const IT = P(xi, floor - oh), Hy = eye.y + (IT.y - eye.y) * (MX - eye.x) / (IT.x - eye.x), H = P(MX, Hy);
     D.ray(c, [P(xo, floor - oh), H, eye], COL.cyan, 2.6); D.arrowOn(c, P(xo, floor - oh), H, COL.cyan); D.arrowOn(c, H, eye, COL.cyan);
     D.line(c, H, IT, COL.magenta, 2, [8, 7]); D.eye(c, eye.x, eye.y, 1, -1);
-    for (const [a, b] of [[xo, MX], [MX, xi]]) { const y = floor + 40; D.line(c, P(a, y), P(b, y), COL.white, 2); D.line(c, P(a, y - 8), P(a, y + 8), COL.white, 2); D.line(c, P(b, y - 8), P(b, y + 8), COL.white, 2); D.text(c, 'same distance', (a + b) / 2, y + 24, { size: 17, col: COL.white }); }
-    D.text(c, 'Object', xo, floor - oh - 70, { size: 19, col: COL.amber }); D.text(c, 'Virtual image', xi, floor - oh - 70, { size: 19, col: COL.magenta });
+    D.text(c, 'Object', xo, floor - oh - 70, { size: 19, col: COL.amber }); D.text(c, 'Image', xi, floor - oh - 70, { size: 19, col: COL.magenta });
     c.save(); c.translate(w / 2, h - 30); c.scale(-1, 1); D.text(c, 'AMBULANCE', 0, 0, { size: 30, col: '#ff6b7a', font: 'disp' }); c.restore();
   },
   sphImages(c, w, h, t) {
-    return positionDiagram(c, w, h, t, { kind: 'mirror', type: 'concave', X: 560, f: -10, s: 10, us: [50, 28, 20, 14, 10, 6], names: ['far away', 'beyond C', 'at C', 'between C and F', 'at F', 'between F and P'] });
+    viewDiagram(c, w, h, t, { kind: 'mirror', type: 'concave', us: [3, 6, 15, 25, 45], names: ['very close', 'close', 'a little farther', 'far', 'very far'] });
   },
   laws(c, w, h, t) {
     const O = P(w / 2, h - 110), deg = Math.round(40 + 22 * Math.sin(t * .7)), a = deg * DEG, L = 290;
@@ -3621,17 +3193,15 @@ const DIAGRAMS = {
     D.text(c, `∠i = ∠AON = ${deg}°    ∠r = ∠NOB = ${deg}°`, w / 2, 30, { size: 22, col: COL.white, font: 'mono', bg: 'rgba(255,255,255,.9)' });
   },
   converge(c, w, h, t) {
-    const halves = [{ type: 'concave', y: h * .27, txt: 'Concave: rays converge at F (real focus)', col: COL.amber }, { type: 'convex', y: h * .75, txt: 'Convex: rays diverge from F (virtual focus)', col: COL.magenta }];
+    const halves = [{ type: 'concave', y: h * .27, txt: 'Concave mirror: the reflected rays converge', col: COL.amber }, { type: 'convex', y: h * .75, txt: 'Convex mirror: the reflected rays diverge', col: COL.magenta }];
     for (const hf of halves) {
       const m = { type: hf.type, P: P(640, hf.y), R: 440, a: 110, rot: 0 }, F = OPT.mirrorFocus(m);
       D.line(c, P(0, hf.y), P(w, hf.y), COL.axis, 1.2, [9, 7]);
       for (let k = -3; k <= 3; k++) {
         const r = OPT.traceMirror(m, P(20, hf.y + k * 30), P(1, 0), hf.type === 'concave' ? 520 : 300);
         D.ray(c, r.pts, COL.cyan, 2); D.pulses(c, r.pts, t + k * .05, '#fff', { speed: 200, gap: 150, r: 2.5 });
-        if (hf.type === 'convex' && r.hit) D.line(c, r.hit, F, COL.magenta, 1.4, [6, 6], .7);
       }
       D.mirror(c, m);
-      D.dot(c, F.x, F.y, 6, hf.col); D.text(c, 'F', F.x, F.y + 26, { size: 21, col: hf.col, font: 'mono' });
       D.text(c, hf.txt, w / 2 - 40, hf.y - 135, { size: 20, col: hf.col, bg: 'rgba(255,255,255,.9)' });
     }
     D.line(c, P(0, h / 2 + 10), P(w, h / 2 + 10), COL.line, 2);
@@ -3648,36 +3218,14 @@ const DIAGRAMS = {
       for (let k = -3; k <= 3; k++) {
         const r = OPT.traceLens(Lg, P(10, y + k * 28), P(1, 0), 1.5, 400);
         D.ray(c, r.pts, COL.cyan, 2); D.pulses(c, r.pts, t + k * .05, '#fff', { speed: 200, gap: 150, r: 2.5 });
-        if (type === 'concave' && r.out) D.line(c, r.exit, V.sub(r.exit, V.mul(r.out, 300)), COL.magenta, 1.4, [6, 6], .65);
       }
       const ol = OPT.lensOutline(Lg); c.save(); D.path(c, ol); c.closePath(); c.fillStyle = 'rgba(120,225,255,.2)'; c.fill(); c.strokeStyle = '#1f8fff'; c.lineWidth = 2.5; c.stroke(); c.restore();
-      const fx = OPT.lensFocusX(Lg); if (fx > 0 && fx < w) { D.dot(c, fx, y, 6, col); D.text(c, 'F', fx, y + 26, { size: 21, col, font: 'mono' }); }
       D.text(c, txt, w / 2, y - 132, { size: 20, col, bg: 'rgba(255,255,255,.9)' });
     }
     D.line(c, P(0, h / 2 + 10), P(w, h / 2 + 10), COL.line, 2);
   },
-  refraction(c, w, h, t) {
-    const O = P(220, h / 2), a = 45 * DEG, r = Math.asin(Math.sin(a) / 1.33), L = 230;
-    c.save(); c.fillStyle = 'rgba(40,120,220,.25)'; c.fillRect(0, O.y, 440, h - O.y); c.restore();
-    D.line(c, P(0, O.y), P(440, O.y), '#6f9fe0', 2);
-    D.text(c, 'Air', 30, 40, { size: 22, col: COL.white, align: 'left' }); D.text(c, 'Water', 30, O.y + 34, { size: 22, col: COL.white, align: 'left' });
-    D.line(c, P(O.x, O.y - 250), P(O.x, O.y + 250), COL.amber, 2, [9, 7]); D.text(c, 'normal', O.x + 10, O.y - 236, { size: 17, col: COL.amber, align: 'left' });
-    const S = P(O.x - Math.sin(a) * L, O.y - Math.cos(a) * L), E = P(O.x + Math.sin(r) * L, O.y + Math.cos(r) * L);
-    D.ray(c, [S, O], COL.cyan, 3); D.arrowOn(c, S, O, COL.cyan, 14); D.ray(c, [O, E], COL.magenta, 3); D.arrowOn(c, O, E, COL.magenta, 14);
-    D.line(c, O, P(O.x + Math.sin(a) * L, O.y + Math.cos(a) * L), 'rgba(30,35,60,.35)', 1.5, [4, 6]);
-    D.pulses(c, [S, O], t, '#fff', { speed: 160, gap: 90 }); D.pulses(c, [O, E], t, '#fff', { speed: 120, gap: 68 });
-    D.angleArc(c, O, 70, -Math.PI / 2 - a, -Math.PI / 2, COL.cyan, 'i', 98); D.angleArc(c, O, 70, Math.PI / 2 - r, Math.PI / 2, COL.magenta, 'r', 98);
-    D.text(c, 'bends towards the normal', O.x + 40, h - 30, { size: 18, col: COL.magenta });
-    // pencil in a tumbler of water (Exercise 12)
-    const gx0 = 500, gx1 = 700, gt = 150, gb = h - 80, wl = h / 2 - 10;
-    c.save(); c.fillStyle = 'rgba(40,120,220,.30)'; c.fillRect(gx0, wl, gx1 - gx0, gb - wl); c.restore();
-    c.save(); c.strokeStyle = '#7f8aa6'; c.lineWidth = 3; c.beginPath(); c.moveTo(gx0, gt); c.lineTo(gx0 + 8, gb); c.lineTo(gx1 - 8, gb); c.lineTo(gx1, gt); c.stroke(); c.restore();
-    const pen = (x0, y0, x1, y1, wdt) => { c.save(); c.strokeStyle = '#f2b632'; c.lineWidth = wdt; c.lineCap = 'butt'; c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1); c.stroke(); c.restore(); };
-    pen(560, 90, 610, wl, 14); pen(632, wl, 672, gb - 20, 20);
-    D.text(c, 'Pencil looks broken', 600, gb + 30, { size: 18, col: COL.white });
-  },
   lensImages(c, w, h, t) {
-    return positionDiagram(c, w, h, t, { kind: 'lens', type: 'convex', X: 380, f: 10, s: 9, us: [40, 28, 20, 14, 10, 6], names: ['far away', 'beyond 2F₁', 'at 2F₁', 'between 2F₁ and F₁', 'at F₁', 'between F₁ and O'] });
+    viewDiagram(c, w, h, t, { kind: 'lens', type: 'convex', us: [3, 6, 15, 25, 45], names: ['very close', 'close', 'a little farther', 'far', 'very far'] });
   }
 };
 
@@ -3764,7 +3312,7 @@ conceptScene('sphere', {
     { term: 'Ray of light', text: 'A [[straight line with an arrow]] that shows the path and direction in which light travels.' }
   ],
   points: ['Light travels in a <b>straight line</b>.', 'The picture of an object seen in a mirror is called its <b>image</b>.', 'A mirror need not be flat: the two sides of a shiny steel spoon also act as mirrors.', 'A <b>plane mirror</b> always forms an erect image of the <b>same size</b> as the object.'],
-  remember: 'Mirrors <b>reflect</b> light. Lenses (later in the chapter) let light <b>pass through</b> and bend it.',
+  remember: 'Mirrors <b>reflect</b> light. Lenses (later in the chapter) let light <b>pass through</b> them.',
   caption: 'Reflection of a ray of light from a plane mirror'
 });
 
@@ -3780,32 +3328,17 @@ conceptScene('sphere', {
   caption: 'Schematic representation of concave and convex mirrors'
 });
 
-conceptScene('terms', {
-  id: 'c-parts', section: 'Mirrors', kicker: 'Extension · Define (reference book p. 204)', title: 'Parts of a spherical mirror', diagram: 'parts',
-  deflist: [
-    ['Pole (P)', 'The geometric [[centre]] of the reflecting surface of the mirror.'],
-    ['Centre of curvature (C)', 'The centre of the [[sphere]] of which the mirror is a part.'],
-    ['Radius of curvature (R)', 'The [[radius]] of that sphere; the distance PC.'],
-    ['Principal axis', 'The straight line passing through [[C and P]].'],
-    ['Principal focus (F)', 'The point where rays parallel to the axis [[meet]] after reflection from a concave mirror (or seem to come from, for a convex mirror).'],
-    ['Focal length (f)', 'The distance between the [[pole and the focus]], PF.'],
-    ['Aperture', 'The part of the mirror [[available for reflection]] (APB).']
-  ],
-  remember: 'Focal length = Radius of curvature ÷ 2, that is <b>f = R / 2</b>. If R = 20 cm, then f = 10 cm.',
-  caption: 'Concave mirror with its pole, focus, centre of curvature and aperture'
-});
 
 conceptScene('plane-lab', {
-  id: 'c-plane', section: 'Mirrors', kicker: 'Define · Plane mirror', title: 'Real and virtual images', diagram: 'plane',
+  id: 'c-plane', section: 'Mirrors', kicker: 'Define · Plane mirror (recap of Grade 7)', title: 'The image in a plane mirror', diagram: 'plane',
   defs: [
-    { term: 'Real image', text: 'An image formed where light rays [[actually meet]]. It can be obtained on a [[screen]].' },
-    { term: 'Virtual image', text: 'An image formed where light rays only [[appear to meet]] when traced backwards. It [[cannot]] be obtained on a screen.' },
+    { term: 'Image', text: 'The picture of an object that we [[see in a mirror]] is called its image.' },
     { term: 'Lateral inversion', text: 'The [[left–right]] reversal of an image formed by a mirror. "b" looks like "d".' }
   ],
-  pointsLabel: 'CHARACTERISTICS OF THE IMAGE IN A PLANE MIRROR',
-  points: ['It is <b>virtual</b> and <b>erect</b>.', 'It is of the <b>same size and shape</b> as the object.', 'It is as far <b>behind</b> the mirror as the object is <b>in front</b> of it.', 'It is <b>laterally inverted</b>: that is why AMBULANCE is written in mirror writing.'],
-  remember: 'To see your full image, the mirror needs to be only <b>half your height</b>.',
-  caption: 'Image distance = object distance; the dashed line shows where light only seems to come from'
+  pointsLabel: 'THE IMAGE IN A PLANE MIRROR',
+  points: ['It is <b>erect</b> (upright).', 'It is of the <b>same size</b> as the object.', 'It is <b>laterally inverted</b>: that is why AMBULANCE is written in mirror writing on the front of an ambulance.', 'Lateral inversion is also seen in concave and convex mirrors.'],
+  remember: 'A plane mirror always forms an <b>erect</b> image of the <b>same size</b>. Spherical mirrors, coming next, can make images bigger, smaller or upside down.',
+  caption: 'Image in a plane mirror: erect, same size, laterally inverted'
 });
 
 conceptScene('mirror-lab', {
@@ -3816,10 +3349,10 @@ conceptScene('mirror-lab', {
   ],
   points: ['<b>Concave mirror, object close:</b> image is erect and enlarged.', '<b>Concave mirror, object moved away:</b> image becomes inverted, first enlarged, then smaller and smaller.', '<b>Convex mirror:</b> image is <b>always erect and diminished</b>; it gets slightly smaller as the object moves away.', '<b>Plane mirror:</b> always erect and of the same size.', 'Lateral inversion is seen in <b>all three</b> mirrors.'],
   remember: 'We can identify a mirror from its images: same size → plane; always smaller → convex; large and upright up close, upside down far away → concave.',
-  table: { title: 'CONCAVE MIRROR: OBJECT POSITION AND IMAGE', cols: ['Object', 'Image position', 'Nature and size'], rows: [
-    ['Far away', 'Near F', 'Real, inverted, highly diminished'], ['Beyond C', 'Between F and C', 'Real, inverted, diminished'], ['At C', 'At C', 'Real, inverted, same size'],
-    ['Between C and F', 'Beyond C', 'Real, inverted, enlarged'], ['At F', 'At infinity', 'No clear image (highly enlarged)'], ['Between F and P', 'Behind the mirror', 'Virtual, erect, enlarged']],
-    note: '<b>Convex mirror:</b> image always behind the mirror, between P and F: virtual, erect, diminished.' }
+  caption: 'A candle moved away from a concave mirror, and what you see in the mirror',
+  table: { title: 'WHAT THE IMAGE LOOKS LIKE (ACTIVITY 10.3)', cols: ['Mirror', 'Object', 'Image'], rows: [
+    ['Concave', 'Close to the mirror', 'Erect and enlarged'], ['Concave', 'Moved farther away', 'Inverted; first enlarged, then smaller'],
+    ['Convex', 'Any distance', 'Always erect and diminished'], ['Plane', 'Any distance', 'Always erect and same size']] }
 });
 
 conceptScene('laws', {
@@ -3849,13 +3382,13 @@ conceptScene('parallel', {
   ],
   points: ['A <b>plane</b> mirror keeps parallel rays parallel.', 'Each ray still obeys the laws of reflection; the <b>curved surface</b> makes the rays converge or diverge.', 'A concave mirror facing the Sun concentrates light into a bright spot that can <b>burn paper</b> (Activity 10.7).', 'Solar concentrators heat liquids to make steam for electricity, cook food on a large scale, and power solar furnaces that can even <b>melt steel</b>.'],
   remember: '<b>Safety first:</b> never look at the Sun or at sunlight reflected by a mirror. Do Activity 10.7 only with a teacher.',
-  caption: 'Exact law-of-reflection tracing for parallel rays'
+  caption: 'Parallel rays falling on a concave and a convex mirror'
 });
 
 conceptScene('mirror-apps', {
   id: 'c-uses', section: 'Reflection', kicker: '10.2 · Key points', title: 'Uses of spherical mirrors', diagram: 'uses',
   defs: [
-    { label: 'USES', term: 'Concave mirror', list: true, text: '<ul><li>Reflectors in <b>torches</b>, vehicle <b>headlights</b> and searchlights</li><li><b>Dentist’s mirror</b> and shaving mirror: enlarged view</li><li><b>Solar furnaces</b> and solar cookers</li><li>Main mirror of <b>reflecting telescopes</b></li></ul>' },
+    { label: 'USES', term: 'Concave mirror', list: true, text: '<ul><li>Reflectors in <b>torches</b> and in <b>headlights</b> of cars and scooters</li><li><b>Dental mirror</b>: an enlarged view of the teeth</li><li><b>Solar furnaces</b> and solar cookers</li><li>Main mirror of <b>reflecting telescopes</b></li></ul>' },
     { label: 'USES', term: 'Convex mirror', list: true, text: '<ul><li><b>Side-view and rear-view mirrors</b> of vehicles</li><li><b>Road-safety mirrors</b> at sharp bends and intersections</li><li><b>Surveillance mirrors</b> in big stores</li></ul>' }
   ],
   points: ['Concave mirrors are chosen where we need an <b>enlarged</b> image or a <b>concentrated</b> beam.', 'Convex mirrors are chosen because they show a much <b>wider area</b> in an erect, diminished image.', 'Because images in a convex mirror are smaller, vehicles look <b>farther away</b> than they are: "Objects in mirror are closer than they appear".'],
@@ -3871,309 +3404,22 @@ conceptScene('lens-intro', {
   ],
   points: ['Unlike mirrors, lenses let light <b>pass through</b>: we see things <b>through</b> a lens, not <b>in</b> it.', 'A curved <b>water drop</b> acts like a simple lens and makes letters look larger (Activity 10.8).', 'A <b>magnifying glass</b> is a convex lens.', 'A flat glass plate does not change the size of objects seen through it.'],
   remember: 'Convex lens → thick middle → converges light. Concave lens → thin middle → diverges light.',
-  caption: 'Parallel rays through a convex and a concave lens (exact Snell’s-law tracing)'
+  caption: 'Parallel rays through a convex and a concave lens'
 });
 
-conceptScene('refraction', {
-  id: 'c-refraction', section: 'Lenses', kicker: 'Extension · Define', title: 'Refraction of light', diagram: 'refraction',
-  defs: [
-    { term: 'Refraction', text: 'The [[bending]] of light when it passes at an angle from one transparent material into another is called refraction.' },
-    { term: 'Angle of refraction', text: 'The angle between the refracted ray and the [[normal]] at the point where light enters the new material.' }
-  ],
-  points: ['Light travels at different <b>speeds</b> in different materials: fastest in air, slower in water, slower still in glass.', 'Going from air into water or glass, light bends <b>towards</b> the normal; coming out, it bends <b>away</b> from the normal.', 'Light falling <b>along the normal</b> does not bend.', 'A pencil in a glass of water looks <b>broken</b> because of refraction (Exercise 12).', '<b>Mirrors</b> form images by reflection; <b>lenses</b> form images by refraction.'],
-  remember: 'Reflection: light <b>bounces back</b>. Refraction: light <b>goes through and bends</b>.',
-  caption: 'A ray bending at an air–water surface, and a pencil in a tumbler of water'
-});
 
 conceptScene('lens-lab', {
   id: 'c-lens-images', section: 'Lenses', kicker: '10.4 · Key points', title: 'Images formed by lenses', diagram: 'lensImages',
   defs: [
-    { term: 'Optical centre (O)', text: 'The centre point of a lens. A ray passing through it goes [[straight]] without bending.' },
-    { term: 'Focus of a lens (F)', text: 'The point where parallel rays [[meet]] after passing through a convex lens, or [[seem to come from]] after a concave lens.' }
+    { term: 'Converging lens', text: 'A convex lens [[converges]] the light falling on it, so it is called a converging lens.' },
+    { term: 'Diverging lens', text: 'A concave lens [[diverges]] the light falling on it, so it is called a diverging lens.' }
   ],
-  points: ['<b>Convex lens, object close:</b> it looks erect and enlarged (magnifying glass).', '<b>Convex lens, object farther:</b> it appears inverted, first enlarged, then diminished.', '<b>Concave lens:</b> the object always appears <b>erect and diminished</b>.', 'A convex lens converges sunlight and can burn paper (Activity 10.11).', 'Lenses are used in <b>spectacles, cameras, microscopes, telescopes</b>; our <b>eye</b> has a convex lens that changes shape.'],
-  table: { title: 'CONVEX LENS: OBJECT POSITION AND IMAGE', cols: ['Object', 'Image position', 'Nature and size'], rows: [
-    ['Far away', 'Near F₂ (other side)', 'Real, inverted, highly diminished'], ['Beyond 2F₁', 'Between F₂ and 2F₂', 'Real, inverted, diminished'], ['At 2F₁', 'At 2F₂', 'Real, inverted, same size'],
-    ['Between 2F₁ and F₁', 'Beyond 2F₂', 'Real, inverted, enlarged'], ['At F₁', 'At infinity', 'No clear image'], ['Between F₁ and O', 'Same side as the object', 'Virtual, erect, enlarged']],
-    note: '<b>Concave lens:</b> image always on the same side as the object: virtual, erect, diminished.' }
+  points: ['<b>Convex lens, object close:</b> it looks erect and enlarged (magnifying glass).', '<b>Convex lens, object farther:</b> it appears inverted, first enlarged, then diminished.', '<b>Concave lens:</b> the object always appears <b>erect and diminished</b>.', 'A convex lens converges sunlight and can burn paper (Activity 10.11).', 'Lenses are used in <b>eyeglasses, cameras, telescopes and microscopes</b>. Our <b>eye</b> has a convex lens that can change its shape.'],
+  caption: 'A candle moved away behind a convex lens, and how it looks through the lens',
+  table: { title: 'HOW THE OBJECT LOOKS (ACTIVITY 10.9)', cols: ['Lens', 'Object', 'Seen through the lens'], rows: [
+    ['Convex', 'Close to the lens', 'Erect and enlarged'], ['Convex', 'Moved farther away', 'Inverted; first enlarged, then diminished'],
+    ['Concave', 'Any distance', 'Always erect and diminished'], ['Flat glass', 'Any distance', 'Same size and shape']] }
 });
-
-</script>
-<script>
-'use strict';
-/* Part 4 groundwork: (1) the four special rays of a spherical mirror, each built up slowly with its normal and angles;
-   (2) step-by-step construction of the image for each object position. Next ▶ steps through both. */
-
-/* arc from direction a0 to a1 the short way round */
-function shortArc(c, O, r, a0, a1, col, label) {
-  let d = a1 - a0; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
-  c.save(); c.strokeStyle = col; c.lineWidth = 3; c.beginPath(); c.arc(O.x, O.y, r, a0, a0 + d, d < 0); c.stroke();
-  c.globalAlpha = .14; c.fillStyle = col; c.beginPath(); c.moveTo(O.x, O.y); c.arc(O.x, O.y, r, a0, a0 + d, d < 0); c.closePath(); c.fill(); c.restore();
-  if (label) { const m = a0 + d / 2; D.text(c, label, O.x + Math.cos(m) * (r + 24), O.y + Math.sin(m) * (r + 24), { size: 22, col, font: 'mono', bg: COL.pill, pad: 4 }); }
-}
-
-const RULES = {
-  1: { tab: 'Rule 1: Parallel ray', short: { concave: 'Parallel to the axis → reflects through F', convex: 'Parallel to the axis → reflects as if coming from F' },
-       text: { concave: 'A ray <b>parallel to the principal axis</b>, after reflection, <b>passes through the principal focus F</b>.',
-               convex: 'A ray <b>parallel to the principal axis</b>, after reflection, <b>appears to come from the principal focus F</b> behind the mirror.' },
-       why: 'At the point where the ray strikes, the <b>normal</b> is the line joining that point to <b>C</b> (a radius of the sphere). The ray reflects so that <b>∠i = ∠r</b> about this normal. For rays close to the axis, this sends every parallel ray through the same point: that point is what we call the focus F.' },
-  2: { tab: 'Rule 2: Ray through F', short: { concave: 'Through F → reflects parallel to the axis', convex: 'Aimed at F → reflects parallel to the axis' },
-       text: { concave: 'A ray <b>passing through the focus F</b>, after reflection, <b>becomes parallel to the principal axis</b>.',
-               convex: 'A ray <b>directed towards the focus F</b> (behind the mirror), after reflection, <b>becomes parallel to the principal axis</b>.' },
-       why: 'This is Rule 1 <b>run backwards</b>. If light is sent back along its own path it retraces it, so a ray arriving along the "F line" leaves along the "parallel line".' },
-  3: { tab: 'Rule 3: Ray through C', short: { concave: 'Through C → reflects back along the same path', convex: 'Aimed at C → reflects back along the same path' },
-       text: { concave: 'A ray <b>passing through the centre of curvature C</b> is <b>reflected back along the same path</b>.',
-               convex: 'A ray <b>directed towards the centre of curvature C</b> is <b>reflected back along the same path</b>.' },
-       why: 'Any line from C to the mirror is a <b>radius</b>, and a radius is always <b>perpendicular (normal)</b> to the mirror. This ray travels along the normal itself, so <b>∠i = 0°</b> and therefore <b>∠r = 0°</b>: it goes straight back.' },
-  4: { tab: 'Rule 4: Ray at the pole', short: { concave: 'Strikes P → reflects at an equal angle to the axis', convex: 'Strikes P → reflects at an equal angle to the axis' },
-       text: { concave: 'A ray striking the <b>pole P</b> is reflected making an <b>equal angle with the principal axis</b>.',
-               convex: 'A ray striking the <b>pole P</b> is reflected making an <b>equal angle with the principal axis</b>.' },
-       why: 'At the pole, the line to C <b>is the principal axis</b>, so the principal axis is the normal at P. The law ∠i = ∠r is therefore measured from the principal axis.' }
-};
-
-const RULE_TITLES = { 1: 'Rule 1: a ray parallel to the principal axis', 2: 'Rule 2: a ray through the focus F', 3: 'Rule 3: a ray through the centre of curvature C', 4: 'Rule 4: a ray striking the pole P' };
-[1, 2, 3, 4].forEach(RULE => LL.add({
-  id: 'ray-rule-' + RULE, title: RULE_TITLES[RULE], section: 'Mirrors',
-  build(root) {
-    const L = labLayout(root, { kicker: 'Special ray ' + RULE + ' of 4', title: RULE_TITLES[RULE] });
-    const o = L.cv, Y = 350;
-    const rule = RULE; let type = 'concave', tt = 0;
-    const sType = UI.seg('Mirror', [{ v: 'concave', t: 'Concave' }, { v: 'convex', t: 'Convex' }], type, v => { type = v; tt = 0; upd(); });
-    L.controls.append(sType.el, UI.btn('Replay this ray ↺', () => { tt = 0; }, 'btn go'),
-      el('span', { class: 'lbl', style: 'font-size:17px;color:var(--muted)' }, 'Next ▶ shows the same rule for a convex mirror, then moves on.'));
-    const ruleTitle = el('div', { class: 'q', style: 'margin:0 0 6px' }), ruleText = el('p', { style: 'font-size:23px' });
-    const why = el('p');
-    const stage = el('p', { class: 'note' });
-    const panel = el('aside', { class: 'panel' },
-      UI.card('predict', 'The rule', null, ruleTitle, ruleText),
-      UI.card('explain', 'Why?', null, why),
-      UI.card('live', 'Watch the drawing', null, el('ol', null,
-        el('li', null, 'The ray travels to the mirror.'), el('li', null, 'The normal appears (it always passes through C).'),
-        el('li', null, 'Angle of incidence i is marked from the normal.'), el('li', null, 'The reflected ray leaves with ∠r = ∠i.')), stage),
-      UI.card('observe', 'Remember', null, el('p', { html: 'To find an image we need only <b>two</b> of these rays from the top of the object. Where they meet, or seem to meet, is the top of the image.' })));
-    panel._narrate = () => ruleTitle.textContent + '. ' + ruleText.textContent + ' Why? ' + why.textContent;
-    L.setPanel(panel);
-    function upd() {
-      sType.set(type);
-      ruleTitle.textContent = 'Rule ' + rule + ' (' + type + ' mirror)';
-      ruleText.innerHTML = RULES[rule].text[type]; why.innerHTML = RULES[rule].why;
-    }
-    upd();
-    function setup() {
-      const m = type === 'concave' ? { type, P: P(1040, Y), R: 640, a: 240, rot: 0 } : { type, P: P(760, Y), R: 640, a: 240, rot: 0 };
-      const C = OPT.mirrorCenter(m), F = OPT.mirrorFocus(m);
-      let S, d;
-      const toward = (s, q) => { S = s; d = V.norm(V.sub(q, s)); };
-      if (type === 'concave') {
-        if (rule === 1) { S = P(40, Y - 120); d = P(1, 0); }
-        if (rule === 2) toward(P(250, Y - 170), F);
-        if (rule === 3) toward(P(60, Y - 64), C);
-        if (rule === 4) toward(P(240, Y - 200), m.P);
-      } else {
-        if (rule === 1) { S = P(40, Y - 120); d = P(1, 0); }
-        if (rule === 2) toward(P(40, Y - 300), F);
-        if (rule === 3) toward(P(40, Y - 220), C);
-        if (rule === 4) toward(P(220, Y - 190), m.P);
-      }
-      const hit = OPT.hitMirror(m, S, d);
-      return { m, C, F, S, d, hit };
-    }
-    return {
-      advance() {
-        if (type === 'concave') { type = 'convex'; tt = 0; upd(); return true; }
-        return false;
-      },
-      reset() { type = 'concave'; tt = 0; upd(); },
-      replay() { tt = 0; },
-      onShow() { tt = 0; },
-      frame(dt, now) {
-        tt += dt;
-        const c = o.ctx; o.begin(); D.bg(o);
-        const { m, C, F, S, d, hit } = setup();
-        if (type === 'convex') { c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(m.P.x, 0, o.w - m.P.x, o.h); c.restore(); D.text(c, 'BEHIND THE MIRROR', o.w - 18, 24, { size: 15, col: COL.muted, align: 'right', font: 'mono' }); }
-        D.axis(c, Y, 0, o.w, 'Principal axis');
-        D.mirror(c, m);
-        D.mark(c, C.x, Y, 'C', COL.amber); D.mark(c, F.x, Y, 'F', COL.white); D.text(c, 'P', m.P.x + (type === 'concave' ? 22 : -22), Y + 26, { size: 21, col: COL.cyan, font: 'mono', bg: COL.pill, pad: 4 });
-        D.text(c, 'Rule ' + rule + ': ' + RULES[rule].short[type], o.w / 2, 30, { size: 24, col: COL.white, bg: COL.pill });
-        if (!hit) return;
-        const H = hit.pt, out = OPT.reflect(d, hit.n);
-        // stage 1: incident ray
-        const inc = [S, H], pIn = clamp(tt / 1.5, 0, 1);
-        D.ray(c, D.upTo(inc, V.dist(S, H) * pIn), COL.cyan, 3.4); if (pIn > .5) D.arrowOn(c, S, H, COL.cyan, 16, .5);
-        if (rule === 2 && pIn > .3 && type === 'concave') D.dot(c, F.x, F.y, 7, COL.amber);
-        if (rule === 3 && pIn > .3 && type === 'concave') D.dot(c, C.x, C.y, 7, COL.amber);
-        if (type === 'convex' && (rule === 2 || rule === 3) && pIn >= 1) { D.line(c, H, rule === 2 ? F : C, COL.cyan, 2, [7, 7], .7); D.text(c, rule === 2 ? 'aimed at F' : 'aimed at C', (H.x + (rule === 2 ? F : C).x) / 2, H.y - 18, { size: 17, col: COL.cyan, bg: COL.pill }); }
-        let stageTxt = 'Stage 1: the ray travels to the mirror.';
-        // stage 2: the normal at the point of incidence (a radius, through C)
-        const front = type === 'concave' ? V.norm(V.sub(C, H)) : V.norm(V.sub(H, C));
-        if (tt > 1.7) {
-          stageTxt = 'Stage 2: the normal at this point is the line through C.';
-          if (type === 'concave') D.line(c, C, H, COL.amber, 2.5, [9, 7]);
-          else { D.line(c, H, V.add(H, V.mul(front, 260)), COL.amber, 2.5, [9, 7]); D.line(c, H, C, COL.amber, 1.5, [4, 7], .5); }
-          const lp = V.add(H, V.mul(front, 170));
-          D.text(c, rule === 4 ? 'normal = principal axis' : 'normal (radius from C)', lp.x, lp.y - 22, { size: 18, col: COL.amber, bg: COL.pill });
-          D.dot(c, H.x, H.y, 6, COL.white, false);
-        }
-        // stage 3: angle of incidence
-        const aN = Math.atan2(front.y, front.x), aI = Math.atan2(-d.y, -d.x), aR = Math.atan2(out.y, out.x);
-        const zero = Math.abs(V.dot(front, V.mul(d, -1)) - 1) < 1e-3;
-        if (tt > 2.6) {
-          stageTxt = 'Stage 3: the angle of incidence i is measured from the normal.';
-          if (!zero) shortArc(c, H, 64, aN, aI, COL.cyan, 'i');
-          else D.text(c, 'i = 0° (the ray is along the normal)', H.x - 200, H.y + 40, { size: 20, col: COL.cyan, bg: COL.pill });
-        }
-        // stage 4: reflected ray
-        if (tt > 3.4) {
-          stageTxt = 'Stage 4: the reflected ray leaves with ∠r = ∠i.';
-          const len = type === 'concave' ? (rule === 1 ? 760 : 900) : 700;
-          let o0 = H; if (zero) o0 = V.add(H, P(-out.y * 7, out.x * 7));
-          const outPts = [o0, V.add(o0, V.mul(out, len))], pOut = clamp((tt - 3.4) / 1.6, 0, 1);
-          D.ray(c, D.upTo(outPts, len * pOut), COL.magenta, 3.4); if (pOut > .4) D.arrowOn(c, outPts[0], outPts[1], COL.magenta, 16, .3);
-          if (type === 'convex' && rule === 1 && pOut >= 1) { D.line(c, H, F, COL.magenta, 2, [7, 7], .8); D.text(c, 'seems to come from F', F.x + 10, F.y - 30, { size: 18, col: COL.magenta, align: 'left', bg: COL.pill }); }
-          if (pOut >= 1) {
-            if (!zero) shortArc(c, H, 64, aN, aR, COL.magenta, 'r');
-            D.text(c, zero ? '∠i = ∠r = 0°: the ray goes straight back' : '∠i = ∠r', type === 'concave' ? 300 : 260, o.h - 40, { size: 24, col: COL.magenta, bg: COL.pill });
-            D.pulses(c, [S, H, outPts[1]], now, COL.cyan, { speed: 260, gap: 150, r: 4 });
-            if (type === 'concave' && rule === 1) { const g = .5 + .5 * Math.sin(now * 5); D.dot(c, F.x, F.y, 6 + g * 4, COL.amber); D.text(c, 'passes through F', F.x, F.y - 34, { size: 19, col: COL.amber, bg: COL.pill }); }
-            if (rule === 2) D.text(c, 'parallel to the axis', outPts[1].x + 150, outPts[1].y - 22, { size: 19, col: COL.magenta, bg: COL.pill });
-          }
-        }
-        if (stage.textContent !== stageTxt) stage.textContent = stageTxt;
-      }
-    };
-  }
-}));
-
-/* ---------------- image construction, step by step ---------------- */
-const IMG_CASES = [
-  { key: 'beyondC', tab: 'Beyond C', type: 'concave', u: 30, ray2: 'r3', where: 'beyond the centre of curvature C',
-    res: ['Between F and C', 'Smaller (diminished)', 'Real and inverted'],
-    why: 'The two reflected rays <b>really cross</b> between F and C, below the axis. Because the object is far away, they cross close to F, so the image is <b>small</b>. Rays really meet, so the image is <b>real</b> (it can be caught on a screen) and it is <b>upside down</b>.' },
-  { key: 'atC', tab: 'At C', type: 'concave', u: 20, ray2: 'r2', where: 'at the centre of curvature C',
-    res: ['At C', 'Same size', 'Real and inverted'],
-    why: 'Here Ray 2 is the ray through F (a ray through C would go straight up the object). The rays meet exactly <b>at C</b>, below the axis. Object and image are at the same distance from the mirror, so they are the <b>same size</b>: real and inverted.' },
-  { key: 'CF', tab: 'Between C and F', type: 'concave', u: 15, ray2: 'r3', where: 'between C and F',
-    res: ['Beyond C', 'Bigger (enlarged)', 'Real and inverted'],
-    why: 'Now the reflected rays cross <b>beyond C</b>, farther from the mirror than the object. The farther the image, the bigger it is: <b>enlarged</b>, real and inverted. (This is the reverse of the "beyond C" case.)' },
-  { key: 'atF', tab: 'At F', type: 'concave', u: 10, ray2: 'r3', where: 'at the focus F',
-    res: ['At infinity (no image)', 'Highly enlarged', 'Real and inverted (at infinity)'],
-    why: 'Ray 1 goes through F and Ray 2 comes back from C, and after reflection the two rays are <b>parallel</b>. Parallel rays never meet, so <b>no image forms</b> (we say it is "at infinity"). A torch uses this: its bulb is at F, giving a parallel beam.' },
-  { key: 'FP', tab: 'Between F and P', type: 'concave', u: 6, ray2: 'r3', where: 'between F and the pole P',
-    res: ['Behind the mirror', 'Bigger (enlarged)', 'Virtual and erect'],
-    why: 'The reflected rays <b>spread out</b>; they never meet in front of the mirror. Our eye traces them <b>backwards</b> in straight lines (dashed), and they seem to meet <b>behind the mirror</b>. Light does not really go there, so the image is <b>virtual</b>, upright and enlarged, like a dentist’s or shaving mirror.' },
-  { key: 'convex', tab: 'Convex mirror', type: 'convex', u: 25, ray2: 'r3', where: 'anywhere in front of a convex mirror',
-    res: ['Behind the mirror, between P and F', 'Smaller (diminished)', 'Virtual and erect'],
-    why: 'A convex mirror always <b>spreads</b> the reflected rays apart. Traced backwards, they meet <b>behind the mirror between P and F</b>. So for every object position the image is <b>virtual, upright and smaller</b>. That is why it shows a wide area in a vehicle’s side mirror.' }
-];
-
-const CASE_TITLES = ['Object beyond C', 'Object at C', 'Object between C and F', 'Object at F', 'Object between F and P', 'Convex mirror: object anywhere'];
-IMG_CASES.forEach((KASE, CI) => LL.add({
-  id: 'image-case-' + (CI + 1), title: 'Case ' + (CI + 1) + ': ' + CASE_TITLES[CI], section: 'Mirrors',
-  build(root) {
-    const L = labLayout(root, { kicker: 'Image formation · case ' + (CI + 1) + ' of 6', title: 'Case ' + (CI + 1) + ': ' + CASE_TITLES[CI] });
-    const o = L.cv, X = 1000, Y = 340, S = 16, H0 = 3;
-    const ci = CI; let step = 1, ts = 0;
-    L.controls.append(
-      UI.btn('◀ Previous step', () => { if (step > 1) { step--; ts = 9; upd(); } }, 'btn'),
-      UI.btn('Next step ▶', () => { if (step < 5) { step++; ts = 0; upd(); } }, 'btn go'),
-      UI.btn('Show all steps', () => { step = 5; ts = 9; upd(); }, 'btn'),
-      UI.btn('Start again', () => { step = 1; ts = 0; upd(); }, 'btn'));
-    const steps = el('ol', { class: 'step-list' });
-    const res = el('dl', { class: 'readout' }), why = el('p');
-    const resCard = UI.card('explain', 'Result and why', null, res, why);
-    const panel = el('aside', { class: 'panel' }, UI.card('experiment', 'Steps', null, steps), resCard);
-    panel._narrate = () => steps.textContent + ' ' + (step >= 5 ? why.textContent : '');
-    L.setPanel(panel);
-    function stepTexts(k) {
-      const cv = k.type === 'concave';
-      const r2 = k.ray2 === 'r2' ? '<b>Ray 2:</b> from A through <b>F</b>. After reflection it comes out <b>parallel</b> to the principal axis (Rule 2).'
-        : cv ? '<b>Ray 2:</b> from A along the line through <b>C</b>. It strikes the mirror along the normal and <b>comes straight back</b> (Rule 3).'
-          : '<b>Ray 2:</b> from A <b>aimed at C</b>. It strikes along the normal and <b>comes straight back</b> (Rule 3).';
-      const meet = k.key === 'atF' ? 'The two reflected rays are <b>parallel</b>. They never meet, so <b>no image</b> forms.'
-        : (k.key === 'FP' || !cv) ? 'The reflected rays <b>spread out</b>. Extend them <b>backwards</b> (dashed) behind the mirror: they seem to meet at <b>A′</b>. Draw A′B′ to the axis: that is the image.'
-          : 'The reflected rays <b>actually meet</b> at <b>A′</b>, the image of the top A. Draw A′B′ down to the axis: that is the image.';
-      return ['Draw the object <b>AB</b> standing on the principal axis, ' + k.where + '.',
-        '<b>Ray 1:</b> from A, <b>parallel</b> to the principal axis. After reflection it ' + (cv ? 'passes <b>through F</b>' : 'seems to come <b>from F</b>') + ' (Rule 1).',
-        r2, meet, 'Read the result: <b>where</b> is the image, how <b>big</b> is it, and is it <b>real or virtual</b>?'];
-    }
-    function upd() {
-      const k = IMG_CASES[ci];
-      steps.innerHTML = '';
-      stepTexts(k).forEach((t, i) => steps.append(el('li', { class: i + 1 < step ? 'done' : i + 1 === step ? 'on' : '', html: '<span>Step ' + (i + 1) + '</span> ' + t })));
-      res.innerHTML = '';
-      [['Image position', k.res[0]], ['Size', k.res[1]], ['Nature', k.res[2]]].forEach(([a, b]) => res.append(el('dt', null, a), el('dd', null, b)));
-      why.innerHTML = k.why;
-      resCard.style.opacity = step >= 5 ? 1 : .35;
-    }
-    upd();
-    return {
-      advance() {
-        if (step < 5) { step++; ts = 0; upd(); return true; }
-        return false;
-      },
-      reset() { step = 1; ts = 0; upd(); },
-      onShowStep() {},
-      replay() { ts = 0; },
-      onShow() { ts = 0; },
-      frame(dt, now) {
-        ts += dt;
-        const c = o.ctx; o.begin(); D.bg(o);
-        const k = IMG_CASES[ci], cv = k.type === 'concave', f = cv ? -10 : 10;
-        const m = { type: k.type, P: P(X, Y), R: 2 * 10 * S, a: 220, rot: 0 };
-        const C = OPT.mirrorCenter(m), F = OPT.mirrorFocus(m);
-        c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(X, 0, o.w - X, o.h); c.restore();
-        D.text(c, 'BEHIND THE MIRROR', o.w - 18, 24, { size: 15, col: COL.muted, align: 'right', font: 'mono' });
-        D.axis(c, Y, 0, o.w, 'Principal axis');
-        D.mirror(c, m); D.mark(c, C.x, Y, 'C', COL.amber); D.mark(c, F.x, Y, 'F', COL.white);
-        D.text(c, 'P', X + (cv ? 20 : -20), Y + 26, { size: 21, col: COL.cyan, font: 'mono', bg: COL.pill, pad: 4 });
-        const T = P(X - k.u * S, Y - H0 * S);
-        const img = OPT.mirrorImage(-k.u, f);
-        const on = { r1: true, r2: k.ray2 === 'r2', r3: k.ray2 === 'r3', r4: false };
-        const R = OPT.labRays({ kind: 'mirror', type: k.type, X, Y, s: S, f, T, img, mirror: m, on, box: { x0: -10, y0: -10, x1: o.w + 10, y1: o.h + 10 } });
-        // step 1: object
-        D.arrowObj(c, T.x, Y, H0 * S, COL.amber, { w: 6 });
-        D.text(c, 'A', T.x - 20, T.y - 6, { size: 22, col: COL.amber, font: 'mono' }); D.text(c, 'B', T.x - 20, Y + 22, { size: 22, col: COL.amber, font: 'mono' });
-        const draw = (r, idx) => {
-          if (!r || !r.inc) return;
-          const full = [r.inc[0], r.inc[1], r.out[1]], Lt = D.polyLen(full);
-          const p = step === idx + 1 ? clamp(ts / 2.2, 0, 1) : 1;
-          D.ray(c, D.upTo(full, Lt * p), idx === 1 ? COL.r1 : COL.r3, 3);
-          if (p > .4) D.arrowOn(c, full[0], full[1], idx === 1 ? COL.r1 : COL.r3, 15, .5);
-          if (p >= 1) D.arrowOn(c, full[1], full[2], idx === 1 ? COL.r1 : COL.r3, 15, .25);
-          const lab = V.add(r.inc[0], V.mul(V.sub(r.inc[1], r.inc[0]), .35));
-          D.text(c, 'Ray ' + idx, lab.x, lab.y - 20, { size: 19, col: idx === 1 ? COL.r1 : COL.r3, bg: COL.pill });
-        };
-        const r1 = R.rays.find(r => r.id === 'r1'), r2 = R.rays.find(r => r.id === k.ray2);
-        if (step >= 2) draw(r1, 1);
-        if (step >= 3) draw(r2, 2);
-        if (step === 2 || step === 3) {
-          const t = step === 2 ? (cv ? 'Rule 1: parallel ray → reflects through F' : 'Rule 1: parallel ray → seems to come from F')
-            : (k.ray2 === 'r2' ? 'Rule 2: ray through F → reflects parallel' : 'Rule 3: ray along C → comes straight back');
-          D.text(c, t, o.w / 2, 30, { size: 23, col: COL.white, bg: COL.pill });
-        }
-        if (step >= 4) {
-          if (img.inf) {
-            D.text(c, 'The reflected rays are parallel: they never meet, so no image is formed', o.w / 2, 30, { size: 22, col: COL.amber, bg: COL.pill });
-          } else {
-            const I = R.I, real = img.v < 0, g = .5 + .5 * Math.sin(now * 5);
-            for (const r of [r1, r2]) if (r && r.back) D.line(c, r.back[0], r.back[1], r === r1 ? COL.r1 : COL.r3, 2.2, [8, 7], .9);
-            const pI = clamp(ts / 1.2, 0, 1) * (step === 4 ? 1 : 1);
-            D.dot(c, I.x, I.y, 7 + g * 4, COL.magenta);
-            if (pI > .5 || step > 4) {
-              D.arrowObj(c, I.x, Y, Y - I.y, COL.magenta, { dashed: !real, w: 5 });
-              D.text(c, 'A′', I.x + 22, I.y + (I.y > Y ? 14 : -6), { size: 22, col: COL.magenta, font: 'mono' }); D.text(c, 'B′', I.x + 22, Y - 16, { size: 22, col: COL.magenta, font: 'mono' });
-            }
-            D.text(c, real ? 'The rays really meet at A′' : 'The rays only seem to meet at A′ (behind the mirror)', o.w / 2, 30, { size: 22, col: COL.magenta, bg: COL.pill });
-          }
-        }
-        if (step >= 5) {
-          D.text(c, 'Image: ' + k.res.join(' · '), o.w / 2, o.h - 34, { size: 23, col: COL.green, bg: COL.pill });
-        }
-        if (step >= 2 && !LL.reduced) { for (const r of [r1, r2]) if (r && r.inc && step >= (r === r1 ? 3 : 4)) D.pulses(c, [r.inc[0], r.inc[1], r.out[1]], now, COL.cyan, { speed: 220, gap: 160, r: 3.5, limit: 1600 }); }
-      }
-    };
-  }
-}));
 
 </script>
 <script>
@@ -4182,26 +3428,26 @@ IMG_CASES.forEach((KASE, CI) => LL.add({
    Scenes register themselves in load order; here they are rearranged into the parts,
    and a short title slide opens each part. */
 const PARTS = [
-  { tab: 'Part 1', name: 'Plane mirrors: reflection and its laws', short: 'Laws of reflection',
-    about: 'What reflection is, the words we use (incident ray, normal, angles) and the two laws of reflection.',
+  { tab: 'Part 1', name: 'Reflection and the laws of reflection', short: 'Laws of reflection',
+    about: 'What reflection is, the words we use (incident ray, reflected ray, normal, angles) and the two laws of reflection.',
     ids: ['c-reflection', 'c-laws', 'laws', 'first-law'] },
-  { tab: 'Part 2', name: 'Image formation in plane mirrors', short: 'Plane mirror images',
-    about: 'Where the image in a plane mirror forms, why it is virtual, and its characteristics.',
+  { tab: 'Part 2', name: 'The image in a plane mirror', short: 'Plane mirror',
+    about: 'The image in a plane mirror is erect, of the same size as the object, and laterally inverted.',
     ids: ['c-plane', 'plane-lab'] },
   { tab: 'Part 3', name: 'Spherical mirrors', short: 'Spherical mirrors',
-    about: 'Concave and convex mirrors, their parts (pole, centre of curvature, principal axis, focus) and what they do to parallel light.',
-    ids: ['mystery', 'c-spherical', 'sphere', 'c-parts', 'terms', 'c-converge', 'parallel', 'sunlight'] },
-  { tab: 'Part 4', name: 'Image formation by spherical mirrors', short: 'Mirror images',
-    about: 'First the four special rays (parallel ray, ray through F, ray through C, ray at the pole) and why each behaves that way; then the image drawn step by step for every object position.',
-    ids: ['ray-rule-1', 'ray-rule-2', 'ray-rule-3', 'ray-rule-4', 'image-case-1', 'image-case-2', 'image-case-3', 'image-case-4', 'image-case-5', 'image-case-6', 'c-sph-images', 'mirror-lab'] },
+    about: 'Concave and convex mirrors, how to tell them apart, and how they converge or diverge a beam of light.',
+    ids: ['mystery', 'c-spherical', 'sphere', 'c-converge', 'parallel', 'sunlight'] },
+  { tab: 'Part 4', name: 'Images formed by spherical mirrors', short: 'Mirror images',
+    about: 'How the image in concave and convex mirrors changes as the object is moved away (Activity 10.3).',
+    ids: ['c-sph-images', 'mirror-lab'] },
   { tab: 'Part 5', name: 'Lenses', short: 'Lenses',
-    about: 'Convex and concave lenses, their shapes, refraction (why lenses bend light) and how lenses converge or diverge light.',
-    ids: ['c-lens', 'lens-intro', 'lens-3d', 'c-refraction', 'refraction', 'lens-beams'] },
-  { tab: 'Part 6', name: 'Image formation by lenses', short: 'Lens images',
-    about: 'Ray diagrams through convex and concave lenses for different object positions, and the image formed.',
+    about: 'What a lens is, convex and concave lenses, and how they converge or diverge a beam of light.',
+    ids: ['c-lens', 'lens-intro', 'lens-3d', 'lens-beams'] },
+  { tab: 'Part 6', name: 'How objects look through lenses', short: 'Lens images',
+    about: 'How an object looks through convex and concave lenses at different distances (Activity 10.9).',
     ids: ['c-lens-images', 'lens-lab'] },
-  { tab: 'Part 7', name: 'Applications and comparison', short: 'Uses & recap',
-    about: 'Mirrors and lenses in daily life, a final comparison of mirrors and lenses, and the chapter questions.',
+  { tab: 'Part 7', name: 'Uses of mirrors and lenses, and revision', short: 'Uses & recap',
+    about: 'Mirrors and lenses in daily life, a comparison of mirrors and lenses, and the chapter questions.',
     ids: ['c-uses', 'mirror-apps', 'lens-apps', 'recap', 'quiz'] }
 ];
 
@@ -4240,7 +3486,6 @@ function partSlide(p, n) {
     p.scenes.forEach(s => { s.section = p.tab; s.part = i + 1; used.add(s.id); });
     ordered.push(partSlide(p, i + 1), ...p.scenes);
   });
-  LL.scenes.forEach(s => { if (!used.has(s.id)) ordered.push(s); });   // anything not listed stays at the end
   LL.scenes = ordered;
 })();
 

@@ -34,8 +34,8 @@ function fovDiagram(c, x0, w, h, type, label, now) {
 const APPS = [
   {
     id: 'dentist', name: 'Dentist’s mirror', type: 'concave',
-    why: 'A small <b>concave</b> mirror held close to a tooth (between P and F) gives an <b>erect, enlarged, virtual</b> image, so the dentist sees the tooth bigger. Shaving and make-up mirrors use the same idea.',
-    prop: 'Object between P and F → virtual, erect, enlarged image',
+    why: 'A dentist uses a <b>concave</b> mirror. Held close to the teeth inside the mouth, it gives an <b>erect, enlarged</b> view of the teeth.',
+    prop: 'Object close to a concave mirror → erect, enlarged image',
     tile(c, w, h, t) {
       c.fillStyle = '#3a0f18'; c.fillRect(0, 0, w, h);
       c.fillStyle = '#7a2434'; c.beginPath(); c.ellipse(w / 2, h * .95, w * .55, h * .5, 0, Math.PI, 0); c.fill();
@@ -51,17 +51,17 @@ const APPS = [
       const img = OPT.mirrorImage(u, f), T = P(X + u * S, Y - 40);
       const m = { type: 'concave', P: P(X, Y), R: 240, a: 130, rot: 0 };
       const R = OPT.labRays({ kind: 'mirror', type: 'concave', X, Y, s: S, f, T, img, mirror: m, on: { r1: true, r2: false, r3: true, r4: false }, box: { x0: 0, y0: 0, x1: w, y1: h } });
-      D.axis(c, Y, 0, w, null); D.mark(c, X + f * S, Y, 'F', COL.white); D.mark(c, X + 2 * f * S, Y, 'C', COL.amber);
+      D.axis(c, Y, 0, w, null);
       for (const r of R.rays) if (r.inc) { D.ray(c, [r.inc[0], r.inc[1], r.out[1]], r.col, 2.4); D.arrowOn(c, r.inc[0], r.inc[1], r.col); if (r.back) D.line(c, r.back[0], r.back[1], r.col, 2, [7, 6]); }
       D.mirror(c, m); D.arrowObj(c, T.x, Y, 40, COL.amber, { label: 'tooth' });
-      D.arrowObj(c, R.I.x, Y, Y - R.I.y, COL.magenta, { dashed: true, label: 'image ×' + img.m.toFixed(1) });
+      D.arrowObj(c, R.I.x, Y, Y - R.I.y, COL.magenta, { dashed: true, label: 'enlarged image' });
       void t;
     }
   },
   {
     id: 'headlight', name: 'Torch & headlight', type: 'concave',
-    why: 'The bulb sits at the <b>focus</b> of a concave reflector. Light from F reflects off the mirror as a strong, nearly <b>parallel beam</b>, the reverse of parallel rays meeting at F. Searchlights work the same way.',
-    prop: 'Light from F → reflected parallel',
+    why: 'The reflectors of torches and of the headlights of cars and scooters are <b>concave</b> in shape. The bulb sits in front of the curved reflector, which reflects its light forward as a strong beam.',
+    prop: 'Concave reflector → strong beam of light',
     tile(c, w, h, t) {
       c.fillStyle = '#0a1224'; c.fillRect(0, 0, w, h);
       const g = c.createLinearGradient(w * .7, 0, 0, 0); g.addColorStop(0, 'rgba(255,240,180,.55)'); g.addColorStop(1, 'rgba(255,240,180,0)');
@@ -80,7 +80,7 @@ const APPS = [
         D.ray(c, r.pts, '#ff9500', 2.2); D.arrowOn(c, r.pts[1], r.pts[2], '#ff9500', 12, .5);
         D.pulses(c, r.pts, t, '#fff', { speed: 200, gap: 150, r: 2.6 });
       }
-      D.mirror(c, m); D.dot(c, Fp.x, Fp.y, 9, '#fff3b0'); D.text(c, 'bulb at F', Fp.x, Fp.y + 32, { size: 17, col: COL.amber });
+      D.mirror(c, m); D.dot(c, Fp.x, Fp.y, 9, '#fff3b0'); D.text(c, 'bulb', Fp.x, Fp.y + 32, { size: 17, col: COL.amber });
       D.text(c, 'parallel beam', 90, 40, { size: 18, col: '#ff9500' });
     }
   },
@@ -159,18 +159,18 @@ const APPS = [
       const m = { type: 'convex', P: P(X, Y), R: 160, a: 120, rot: 0 };
       const R = OPT.labRays({ kind: 'mirror', type: 'convex', X, Y, s: S, f, T, img, mirror: m, on: { r1: true, r2: false, r3: true, r4: false }, box: { x0: 0, y0: 0, x1: w, y1: h } });
       c.save(); c.fillStyle = 'rgba(60,75,130,.07)'; c.fillRect(X, 0, w - X, h); c.restore();
-      D.axis(c, Y, 0, w, null); D.mark(c, X + f * S, Y, 'F'); D.mark(c, X + 2 * f * S, Y, 'C', COL.amber);
+      D.axis(c, Y, 0, w, null);
       for (const r of R.rays) if (r.inc) { D.ray(c, [r.inc[0], r.inc[1], r.out[1]], r.col, 2.4); D.arrowOn(c, r.inc[0], r.inc[1], r.col); if (r.back) D.line(c, r.back[0], r.back[1], r.col, 2, [7, 6]); }
       D.mirror(c, m); D.arrowObj(c, T.x, Y, 72, COL.amber, { label: 'shopper' });
       D.arrowObj(c, R.I.x, Y, Y - R.I.y, COL.magenta, { dashed: true, w: 4 });
-      D.text(c, 'image ×' + img.m.toFixed(2), R.I.x + 10, R.I.y - 30, { size: 17, col: COL.magenta, align: 'left', bg: 'rgba(255,255,255,.9)' });
+      D.text(c, 'small image', R.I.x + 10, R.I.y - 30, { size: 17, col: COL.magenta, align: 'left', bg: 'rgba(255,255,255,.9)' });
       void t;
     }
   },
   {
     id: 'telescope', name: 'Reflecting telescope', type: 'concave',
-    why: 'A large <b>concave</b> mirror collects light from a faraway star (parallel rays) and brings it to a focus. A small <b>plane</b> mirror turns the light sideways to the eyepiece. Big mirrors gather more light, so faint stars become visible.',
-    prop: 'Parallel rays → converge at F (plus a plane mirror)',
+    why: 'Most modern telescopes are <b>reflecting telescopes</b>. Their main mirror is a large <b>concave</b> mirror that collects and converges the light from faraway stars. A small <b>plane</b> mirror turns the light sideways to the eyepiece. Big mirrors gather more light, so faint stars become visible.',
+    prop: 'Concave mirror → converges the light from stars',
     tile(c, w, h, t) {
       c.fillStyle = '#050a1c'; c.fillRect(0, 0, w, h);
       for (let i = 0; i < 40; i++) { c.fillStyle = 'rgba(220,235,255,' + (.3 + .5 * Math.abs(Math.sin(t + i))) + ')'; c.fillRect((i * 97) % w, (i * 53) % (h * .6), 2, 2); }
@@ -214,7 +214,7 @@ LL.add({
       b.addEventListener('click', () => select(a.id));
       grid.append(b); return { a, cv, b };
     });
-    bench.append(el('p', { class: 'note', style: 'margin:0;font-size:19px' }, 'Each diagram uses exact reflection or the school ray-diagram model, as in the labs.'));
+    bench.append(el('p', { class: 'note', style: 'margin:0;font-size:19px' }, 'Click a scene to see which mirror is used and why.'));
     const dcv = makeCanvas(560, 320);
     const name = el('div', { class: 'q', style: 'display:flex;gap:12px;align-items:center;margin:0' });
     const why = el('p'), prop = el('p', { class: 'note' });

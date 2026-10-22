@@ -14,9 +14,9 @@ LL.add({
     const copy = el('div', { class: 'opening-copy' },
       el('div', { class: 'eyebrow fade', style: 'animation-delay:.1s' }, 'CLASS 8 SCIENCE · CHAPTER 10'),
       el('h1', { class: 'fade', style: 'animation-delay:.35s' }, 'Light:', el('span', null, 'Mirrors'), el('em', null, '& Lenses')),
-      el('p', { class: 'fade', style: 'animation-delay:.7s' }, 'Light travels in straight lines. When it meets a mirror, it bounces back. When it passes through glass or water, it can bend.'),
+      el('p', { class: 'fade', style: 'animation-delay:.7s' }, 'Light travels in straight lines. When it meets a mirror, it bounces back. Lenses let light pass through them and change how things look.'),
       el('p', { class: 'fade', style: 'animation-delay:.9s' }, 'In this lab you will predict, experiment, observe and explain how mirrors and lenses form images.'),
-      el('div', { class: 'topics fade', style: 'animation-delay:1.1s' }, ['1 · Laws of reflection', '2 · Plane mirror images', '3 · Spherical mirrors', '4 · Mirror images', '5 · Lenses', '6 · Lens images', '7 · Uses & recap'].map(t => el('span', null, t))),
+      el('div', { class: 'topics fade', style: 'animation-delay:1.1s' }, ['1 · Laws of reflection', '2 · Plane mirror', '3 · Spherical mirrors', '4 · Mirror images', '5 · Lenses', '6 · Lens images', '7 · Uses & recap'].map(t => el('span', null, t))),
       el('div', { class: 'cta fade', style: 'animation-delay:1.3s' },
         UI.btn('Begin the lab  ▶', () => LL.go(1), 'big-btn'),
         UI.btn('How to use', () => { $('#help').hidden = false; }, 'big-btn ghost'))
@@ -50,15 +50,15 @@ LL.add({
         c.fillStyle = 'rgba(10,124,255,.035)'; D.rrect(c, 960, 140, 920, 380, 30); c.fill(); D.rrect(c, 960, 590, 920, 400, 30); c.fill();
         D.text(c, 'REFLECTION', 990, 166, { size: 20, col: COL.amber, align: 'left', font: 'mono', alpha: fade });
         D.text(c, 'a concave mirror brings parallel light together', 990, 192, { size: 19, col: COL.muted, align: 'left', weight: 400, alpha: fade });
-        D.text(c, 'REFRACTION', 990, 625, { size: 20, col: COL.amber, align: 'left', font: 'mono', alpha: fade });
-        D.text(c, 'a convex lens bends parallel light together', 990, 655, { size: 19, col: COL.muted, align: 'left', weight: 400, alpha: fade });
+        D.text(c, 'LENSES', 990, 625, { size: 20, col: COL.amber, align: 'left', font: 'mono', alpha: fade });
+        D.text(c, 'a convex lens brings parallel light together', 990, 655, { size: 19, col: COL.muted, align: 'left', weight: 400, alpha: fade });
         D.axis(c, 340, 990, 1860, null); D.axis(c, 790, 990, 1860, null);
         for (const pts of beamM) { const L = D.polyLen(pts); D.ray(c, D.upTo(pts, L * p1), COL.cyan, 2.2, { alpha: fade * .9 }); }
         for (const pts of beamL) { const L = D.polyLen(pts); D.ray(c, D.upTo(pts, L * p2), COL.cyan, 2.2, { alpha: fade * .9 }); }
         D.mirror(c, mir);
         const LG = OPT.lensOutline(lensG); c.save(); D.path(c, LG); c.closePath(); c.fillStyle = 'rgba(120,230,255,.18)'; c.fill(); c.strokeStyle = 'rgba(160,240,255,.9)'; c.lineWidth = 2.5; c.stroke(); c.restore();
-        if (p1 >= 1) { const g = .6 + .4 * Math.sin(now * 4); D.dot(c, fM.x, fM.y, 7 + g * 4, COL.amber); D.text(c, 'F', fM.x, fM.y + 34, { size: 22, col: COL.amber, font: 'mono', alpha: fade }); }
-        if (p2 >= 1 && fLx) { const g = .6 + .4 * Math.sin(now * 4 + 1); D.dot(c, fLx, 790, 7 + g * 4, COL.amber); D.text(c, 'F', fLx, 824, { size: 22, col: COL.amber, font: 'mono', alpha: fade }); }
+        if (p1 >= 1) { const g = .6 + .4 * Math.sin(now * 4); D.dot(c, fM.x, fM.y, 7 + g * 4, COL.amber);  }
+        if (p2 >= 1 && fLx) { const g = .6 + .4 * Math.sin(now * 4 + 1); D.dot(c, fLx, 790, 7 + g * 4, COL.amber);  }
         if (p1 >= 1) for (const pts of beamM) D.pulses(c, pts, now, COL.white, { speed: 300, gap: 160, r: 3 });
         if (p2 >= 1) for (const pts of beamL) D.pulses(c, pts, now, COL.white, { speed: 300, gap: 160, r: 3 });
       }
@@ -177,7 +177,7 @@ LL.add({
           c.restore();
         }
         D.text(c, 'Distance: ' + dcm + ' cm', 1240, 640, { size: 20, col: COL.amber, align: 'right', font: 'mono', bg: 'rgba(255,255,255,.9)' });
-        D.text(c, 'Model: f = 20 cm for the curved mirrors · click a mirror to investigate it', 20, 16, { size: 16, col: COL.muted, align: 'left', weight: 400 });
+        D.text(c, 'Click a mirror to investigate it', 20, 16, { size: 16, col: COL.muted, align: 'left', weight: 400 });
       }
     };
   }

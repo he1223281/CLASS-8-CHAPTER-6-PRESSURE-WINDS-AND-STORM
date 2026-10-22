@@ -21,13 +21,13 @@ LL.add({
   full: true,
   build(root) {
     const wrap = el('div', { class: 'recap-wrap' });
-    wrap.append(el('div', { class: 'scene-head' }, el('span', { class: 'kicker' }, 'Scene 13 · Snapshots'), el('h1', null, 'Mirrors reflect, lenses refract')));
+    wrap.append(el('div', { class: 'scene-head' }, el('span', { class: 'kicker' }, 'Snapshots'), el('h1', null, 'Mirrors and lenses compared')));
     const rows = [
-      ['Plane mirror', 'plane', 'Flat reflecting surface', 'Stay parallel', 'Always erect, same size, virtual, laterally inverted', 'Looking glass, dressing mirror, periscope'],
-      ['Concave mirror', 'concave', 'Curves inwards', 'Converge (converging mirror)', 'Enlarged, same size or diminished; erect or inverted, depending on distance', 'Torch & headlight reflectors, dentist’s mirror, solar concentrators, telescopes'],
+      ['Plane mirror', 'plane', 'Flat reflecting surface', 'Stay parallel', 'Always erect and of the same size; laterally inverted', 'Looking at ourselves (dressing mirror)'],
+      ['Concave mirror', 'concave', 'Curves inwards', 'Converge (converging mirror)', 'Close: erect and enlarged. Farther: inverted, first enlarged then diminished', 'Reflectors of torches and headlights, dental mirror, solar concentrators, reflecting telescopes'],
       ['Convex mirror', 'convex', 'Bulges outwards', 'Diverge (diverging mirror)', 'Always erect and diminished', 'Side-view mirrors, road-safety mirrors, shop surveillance mirrors'],
-      ['Convex lens', 'convex-l', 'Thicker in the middle', 'Converge (converging lens)', 'Enlarged, same size or diminished; erect or inverted, depending on distance', 'Magnifying glass, camera, microscope, telescope, eye lens'],
-      ['Concave lens', 'concave-l', 'Thinner in the middle', 'Diverge (diverging lens)', 'Always erect and diminished', 'Spectacles for short sight']
+      ['Convex lens', 'convex-l', 'Thicker in the middle', 'Converge (converging lens)', 'Close: erect and enlarged. Farther: inverted, first enlarged then diminished', 'Magnifying glass, cameras, microscopes, telescopes; our eye lens'],
+      ['Concave lens', 'concave-l', 'Thinner in the middle', 'Diverge (diverging lens)', 'Always erect and diminished', 'Eyeglasses']
     ];
     const tb = el('tbody');
     const cvs = [];
@@ -38,13 +38,13 @@ LL.add({
     wrap.append(el('table', { class: 'big-table' }, el('thead', null, el('tr', null, ['', 'Parallel light', 'Shape', 'Parallel rays', 'Image', 'Used in'].map(h => el('th', null, h)))), tb));
     const cards = el('div', { class: 'recap-cards' },
       UI.card('experiment', 'Two laws of reflection', null, el('p', { html: '1. <b>∠i = ∠r</b>: the angle of incidence equals the angle of reflection.<br>2. The incident ray, the normal at the point of incidence and the reflected ray all lie in the <b>same plane</b>.<br>They hold for plane, concave and convex mirrors.' })),
-      UI.card('observe', 'Real or virtual?', null, el('p', { html: '<b>Real</b> images form where light rays actually meet; they can be caught on a screen and are inverted. <b>Virtual</b> images form where rays only seem to come from; they cannot be caught on a screen.' })),
+      UI.card('observe', 'Converge or diverge?', null, el('p', { html: 'A <b>concave mirror</b> and a <b>convex lens</b> converge a beam of light. A <b>convex mirror</b> and a <b>concave lens</b> diverge it. A plane mirror and a thin glass plate leave it as it is.' })),
       UI.card('predict', 'Identify the mirror', null, el('p', { html: 'Look at your image: same size every time → <b>plane</b>. Always smaller → <b>convex</b>. Large up close, upside down far away → <b>concave</b>. Or look at it from the side (Activity 10.2).' })),
       UI.card('explain', 'Our scientific heritage', null, el('p', { html: 'More than 800 years ago, in the time of <b>Bhāskara II</b>, astronomers watched the reflections of stars and planets in shallow bowls of water through tubes set at the right angles, and measured their positions in the sky.' }))
     );
     wrap.append(cards);
     root.append(wrap);
-    root._panel = { _narrate: () => 'Mirrors reflect light; lenses refract it. Concave mirrors and convex lenses converge parallel light; convex mirrors and concave lenses diverge it. The angle of incidence equals the angle of reflection, and the incident ray, the normal and the reflected ray lie in the same plane.' };
+    root._panel = { _narrate: () => 'Mirrors reflect light; lenses let light pass through them. Concave mirrors and convex lenses converge parallel light; convex mirrors and concave lenses diverge it. The angle of incidence equals the angle of reflection, and the incident ray, the normal and the reflected ray lie in the same plane.' };
     return { frame() { for (const [cv, k] of cvs) { cv.begin(); miniRays(cv.ctx, cv.w, cv.h, k); } } };
   }
 });
@@ -80,7 +80,7 @@ LL.add({
   build(root) {
     const wrap = el('div', { class: 'recap-wrap' });
     const score = el('span', { class: 'score' });
-    wrap.append(el('div', { class: 'scene-head', style: 'justify-content:space-between' }, el('div', { style: 'display:flex;gap:16px;align-items:baseline' }, el('span', { class: 'kicker' }, 'Scene 14 · NCERT exercises'), el('h1', null, 'Keep the curiosity alive')), score));
+    wrap.append(el('div', { class: 'scene-head', style: 'justify-content:space-between' }, el('div', { style: 'display:flex;gap:16px;align-items:baseline' }, el('span', { class: 'kicker' }, 'NCERT exercises'), el('h1', null, 'Keep the curiosity alive')), score));
     const grid = el('div', { class: 'quiz-grid' }); wrap.append(grid); root.append(wrap);
     let right = 0, tried = 0, total = 0;
     const upd = () => { score.textContent = `Score: ${right} / ${total}  (attempted ${tried})`; };
@@ -129,16 +129,16 @@ LL.add({
       return sels;
     }
     mcq(1, 'A light ray strikes a mirror. The incident ray makes 40° with the <b>normal</b>. What angle does the reflected ray make with the <b>mirror</b>?', ['40°', '50°', '45°', '60°'], 1, 'Angle of reflection = 40° (from the normal). The normal is at 90° to the mirror, so the reflected ray makes 90° − 40° = <b>50°</b> with the mirror surface.');
-    short(2, 'A ray falls on a mirror (i) along the normal; (ii) along the normal of a tilted mirror; (iii) at 20° from the normal of a tilted mirror. What is the angle of reflection in each case?', '(i) <b>0°</b>: the ray goes back along the normal. (ii) <b>0°</b>: tilting the mirror tilts its normal too; the ray still retraces its path. (iii) <b>20°</b>, on the other side of the normal. Try it on the Scene 4 bench.');
+    short(2, 'A ray falls on a mirror (i) along the normal; (ii) along the normal of a tilted mirror; (iii) at 20° from the normal of a tilted mirror. What is the angle of reflection in each case?', '(i) <b>0°</b>: the ray goes back along the normal. (ii) <b>0°</b>: tilting the mirror tilts its normal too; the ray still retraces its path. (iii) <b>20°</b>, on the other side of the normal. Try it on the optical bench in Part 1.');
     const capAt = (s, flip) => c => drawCap(c, 75, 75, s, flip);
     match(3, 'The cap of a sketch pen is placed in front of three mirrors. Match each image with the mirror.', [capAt(.75, 1), capAt(1.5, 1), capAt(1, 1)], ['Plane mirror', 'Convex mirror', 'Concave mirror'], ['Convex mirror', 'Concave mirror', 'Plane mirror']);
     match(4, 'The cap is placed behind a convex lens, a concave lens and a flat glass piece, all at the same distance. Match each view.', [capAt(1, 1), capAt(.6, 1), capAt(1.6, 1)], ['Flat transparent glass', 'Convex lens', 'Concave lens'], ['Flat transparent glass', 'Concave lens', 'Convex lens']);
     mcq(5, 'Light falls on a mirror along the normal. Which statement is true?', ['Angle of incidence is 90°', 'Angle of incidence is 0°', 'Angle of reflection is 90°', 'No reflection takes place'], 1, 'Angles are measured from the normal, so a ray along the normal has <b>i = 0°</b> and r = 0°. It is reflected straight back.');
     match(6, 'A graph sheet seen in three mirrors. Identify each mirror.', [c => drawGrid(c, 75, 75, 66, 1, 0), c => drawGrid(c, 75, 75, 66, .55, 1.4), c => drawGrid(c, 75, 75, 66, 1.9, 0)], ['Plane', 'Concave', 'Convex'], ['Plane', 'Convex', 'Concave']);
     mcq(7, 'In a museum, a woman walks <b>towards</b> a large concave mirror. She will see that:', ['her erect image keeps decreasing in size', 'her inverted image keeps decreasing in size', 'her inverted image keeps increasing in size and eventually becomes erect and magnified', 'her erect image keeps increasing in size'], 2, 'Far away the image is inverted and small; as she approaches F it grows; inside F it becomes erect and enlarged. Check it in the mirror lab.');
-    short(8, 'Hold a magnifying glass over text. At what distance do the letters look bigger? Move it away: what do you notice? Which lens is a magnifying glass?', 'Close to the text (nearer than its focus) the letters look <b>bigger and upright</b>. Moving it away, they grow, blur, and then appear <b>upside down</b> and smaller. A magnifying glass is a <b>convex lens</b>. Try it in Scene 8.');
+    short(8, 'Hold a magnifying glass over text. At what distance do the letters look bigger? Move it away: what do you notice? Which lens is a magnifying glass?', 'Close to the text the letters look <b>bigger and upright</b>. Moving it away, they grow, blur, and then appear <b>upside down</b> and smaller. A magnifying glass is a <b>convex lens</b>. Try it on the water-drop slide.');
     mcq(9, 'Match: (i) concave mirror, (ii) convex mirror, (iii) convex lens, (iv) concave lens with — (a) reflecting surface curves inwards, (b) image always erect and diminished, (c) object behind it may appear inverted at some distance, (d) object behind it always appears diminished.', ['i–a, ii–b, iii–c, iv–d', 'i–b, ii–a, iii–d, iv–c', 'i–c, ii–b, iii–a, iv–d', 'i–a, ii–d, iii–b, iv–c'], 0, '<b>i–a, ii–b, iii–c, iv–d.</b>');
-    mcq(10, '<b>Assertion:</b> Convex mirrors are preferred for observing the traffic behind us. <b>Reason:</b> Convex mirrors provide a significantly larger view area than plane mirrors.', ['Both correct, and the Reason explains the Assertion', 'Both correct, but the Reason does not explain the Assertion', 'Assertion correct, Reason incorrect', 'Both incorrect'], 0, 'Both are correct, and the wider field of view is exactly why convex mirrors are used (see the field-of-view diagram in Scene 7).');
+    mcq(10, '<b>Assertion:</b> Convex mirrors are preferred for observing the traffic behind us. <b>Reason:</b> Convex mirrors provide a significantly larger view area than plane mirrors.', ['Both correct, and the Reason explains the Assertion', 'Both correct, but the Reason does not explain the Assertion', 'Assertion correct, Reason incorrect', 'Both incorrect'], 0, 'Both are correct, and the wider field of view is exactly why convex mirrors are used (see the side-view mirror in Mirrors in the real world).');
     const fig11 = makeCanvas(520, 130);
     statics.push(function () {
       const c = fig11.ctx; fig11.begin(); c.fillStyle = '#f6f7fb'; c.fillRect(0, 0, 520, 130);
@@ -146,7 +146,7 @@ LL.add({
       rowF(28, 450, '(a)'); rowF(92, 320, '(b)');
     });
     mcq(11, 'O = object, M = mirror, I = image. Which statement is true?', ['(a) plane, (b) concave', '(a) convex, (b) concave', '(a) concave, (b) convex', '(a) plane, (b) convex'], 3, 'In (a) the image is the same size and as far behind as the object is in front: <b>plane</b>. In (b) it is smaller and closer behind the mirror: <b>convex</b>.', el('div', { class: 'cvwrap', style: 'margin-bottom:8px' }, fig11.cv));
-    short(12, 'Place a pencil behind a glass tumbler, then fill it halfway with water. How does the pencil look through the water? Why?', 'Through the water the pencil looks <b>broken or shifted</b>, and <b>wider</b>. The curved water-filled glass acts like a convex lens, and light <b>refracts</b> (bends) as it passes from water and glass into air (Scene 9).');
+    short(12, 'Place a pencil behind a glass tumbler, then fill it halfway with water. How does the pencil look through the water? Why?', 'Through the water the pencil looks <b>broken or shifted</b>, and <b>wider</b>. The curved glass filled with water acts like a <b>lens</b>, just as the curved water drop did in Activity 10.8, so it changes how the pencil looks.');
     short('★', '<b>Probe and ponder:</b> Why is there a curved line on some reading glasses?', 'Those are <b>bifocal</b> glasses: two lenses of different strength joined together. The upper part helps to see far away, the lower part to read up close. The curved line is where the two parts meet.');
     upd();
     return {

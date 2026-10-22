@@ -1,20 +1,17 @@
 'use strict';
-/* Scene 12: lenses around us — magnifier, eyeglasses, phone camera, microscope, telescope, human eye.
-   All paths use the thin-lens model (paraxial ray transfer), in pixels; diagrams are not to scale. */
+/* Lenses around us — magnifier, phone camera, microscope, telescope, human eye. Simple illustrations; not to scale. */
 
 const LAPPS = {
-  magnifier: { name: 'Magnifying glass', lens: 'Convex lens', img: 'Virtual, erect, enlarged',
-    how: 'The object is placed closer to the lens than its focus F. The rays leaving the lens spread out as if they came from a larger, upright image behind the object. Activity 10.8 and Exercise 8.' },
-  glasses: { name: 'Eyeglasses', lens: 'Concave or convex lens', img: 'Helps the eye form a sharp image on the retina',
-    how: '<b>Short sight:</b> the eye focuses far-away objects in front of the retina; a <b>concave</b> lens spreads the rays a little so they focus on the retina. <b>Long sight:</b> near objects focus behind the retina; a <b>convex</b> lens converges the rays a little. The curved line on some reading glasses separates two lenses (bifocals): one part for far, one for near.' },
-  camera: { name: 'Smartphone camera', lens: 'Convex lens (a stack of tiny lenses)', img: 'Real, inverted, diminished on the sensor',
-    how: 'The lens forms a small, upside-down real image on the light sensor. To focus on near or far objects, the lens moves slightly (autofocus) so the image stays sharp on the sensor. The phone flips the picture upright for you.' },
-  microscope: { name: 'Microscope', lens: 'Two convex lenses', img: 'Virtual, inverted, highly enlarged',
-    how: 'The <b>objective</b> lens, very close to the tiny specimen, forms a real, enlarged, inverted image inside the tube. The <b>eyepiece</b> works like a magnifying glass on that image and enlarges it again.' },
-  telescope: { name: 'Telescope (refracting)', lens: 'Two convex lenses', img: 'Far objects look bigger and brighter',
-    how: 'Light from a distant star arrives as parallel rays. The big <b>objective</b> lens collects it and brings it to a focus; the <b>eyepiece</b> sends it to the eye at a larger angle, so the star or planet looks bigger. Large modern telescopes use a concave mirror instead (Scene 7).' },
-  eye: { name: 'Human eye', lens: 'Convex lens (plus the curved cornea)', img: 'Real, inverted, diminished on the retina',
-    how: 'The eye lens forms a tiny upside-down image on the retina; the brain makes us see it upright. Eye muscles change the lens shape: <b>thicker</b> for near objects, <b>thinner</b> for far ones. This is how we can read a book and then look far away.' }
+  magnifier: { name: 'Magnifying glass', lens: 'Convex lens', img: 'Small print looks bigger and erect',
+    how: 'Held close to small print, a convex lens makes the letters appear <b>bigger</b> and erect. Move it farther away and the letters blur, then appear upside down (Activity 10.8, Exercise 8).' },
+  camera: { name: 'Smartphone camera', lens: 'Convex lenses', img: 'A small, upside-down picture on the sensor',
+    how: 'Smartphone cameras use small convex lenses. They form a small, upside-down picture on the light sensor, and the phone shows it the right way up. The lens moves a little so that near and far objects both look sharp.' },
+  microscope: { name: 'Microscope', lens: 'Convex lenses', img: 'Tiny things look very large',
+    how: 'A microscope uses <b>lenses</b> to make very small things, such as cells, look much bigger so that we can study them.' },
+  telescope: { name: 'Telescope', lens: 'Lenses (or a large concave mirror)', img: 'Far-away objects look bigger',
+    how: 'A telescope uses lenses to make distant stars and planets look bigger and clearer. Most modern telescopes use a large concave mirror instead (see Mirrors in the real world).' },
+  eye: { name: 'Human eye', lens: 'Convex lens', img: 'A tiny picture forms at the back of the eye',
+    how: 'Even our eye has a <b>convex lens</b> inside it. It is an amazing lens that can <b>change its shape</b>, which is what allows us to read a book or see something far away.' }
 };
 
 LL.add({
@@ -25,12 +22,10 @@ LL.add({
     const st = { tab: 'magnifier', mu: 5, cond: 'myopia', wear: false, camU: 600, starA: 2, eyeD: 60, camV: 160, eyeF: 180, t: 0 };
     const sTab = UI.seg(null, Object.keys(LAPPS).map(k => ({ v: k, t: LAPPS[k].name.replace(' (refracting)', '') })), st.tab, v => { st.tab = v; show(); });
     const cMu = UI.slider('Lens distance from object', 2, 7.5, .25, st.mu, v => v.toFixed(2) + ' cm', v => { st.mu = v; });
-    const cCond = UI.seg('Eye', [{ v: 'myopia', t: 'Short sight' }, { v: 'hyper', t: 'Long sight' }], st.cond, v => { st.cond = v; });
-    const cWear = UI.toggle('Wear the correct glasses', false, v => { st.wear = v; }, COL.green);
     const cCam = UI.slider('Object distance', 300, 2000, 10, st.camU, v => (v / 10).toFixed(0) + ' cm', v => { st.camU = v; });
     const cStar = UI.slider('Star direction', 0, 4, .1, st.starA, v => v.toFixed(1) + '°', v => { st.starA = v; });
     const cEye = UI.slider('Object distance', 25, 300, 5, st.eyeD, v => v + ' cm', v => { st.eyeD = v; });
-    L.controls.append(sTab.el, el('div', { class: 'break' }), cMu.el, cCond.el, cWear.el, cCam.el, cStar.el, cEye.el);
+    L.controls.append(sTab.el, el('div', { class: 'break' }), cMu.el, cCam.el, cStar.el, cEye.el);
     const nm = el('div', { class: 'q', style: 'display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0' });
     const how = el('p');
     const live = UI.card('live', 'This device', null, nm, el('p', { class: 'note', id: 'll-lapps-img' }), how);
@@ -38,10 +33,10 @@ LL.add({
       predict: { q: 'Our eye has a lens inside it. What kind of lens is it?', opts: ['Convex lens', 'Concave lens', 'A flat glass plate'], ans: 0, why: 'The eye lens is convex, and it can change its shape to see near and far objects.' },
       live,
       experiment: ['Choose a device from the tabs.', 'Use the slider or toggle under each one.', 'Follow the light from the object to the image.'],
-      explain: '<p>Every device here bends light with lenses to form an image where we need it: on a sensor (camera), on the retina (eye), or as an enlarged virtual image for our eye (magnifier, microscope, telescope).</p><p class="note">Diagrams use the thin-lens model and are not to scale.</p>'
+      explain: '<p>Lenses are important and are used everywhere around us: in <b>eyeglasses</b>, <b>cameras</b>, <b>telescopes</b> and <b>microscopes</b>. Even our <b>eye</b> has a convex lens inside it.</p><p class="note">The diagrams are simple illustrations, not to scale.</p>'
     }));
     function show() {
-      cMu.el.hidden = st.tab !== 'magnifier'; cCond.el.hidden = cWear.el.hidden = st.tab !== 'glasses'; cCam.el.hidden = st.tab !== 'camera'; cStar.el.hidden = st.tab !== 'telescope'; cEye.el.hidden = st.tab !== 'eye';
+      cMu.el.hidden = st.tab !== 'magnifier'; cCam.el.hidden = st.tab !== 'camera'; cStar.el.hidden = st.tab !== 'telescope'; cEye.el.hidden = st.tab !== 'eye';
       const a = LAPPS[st.tab];
       nm.innerHTML = ''; nm.append(el('span', null, a.name), el('span', { class: 'badge lens' }, a.lens));
       $('#ll-lapps-img', live).innerHTML = '<b>Image:</b> ' + a.img; how.innerHTML = a.how;
@@ -75,42 +70,12 @@ LL.add({
       magnifier(c, now) {
         const X = 760, f = 200, uPx = st.mu * 20, T = P(X - uPx, Y - 34);
         const img = OPT.lensImage(-uPx, f);
-        D.axis(c, Y, 0, o.w, null); D.mark(c, X - f, Y, 'F₁'); D.mark(c, X + f, Y, 'F₂');
+        D.axis(c, Y, 0, o.w, null);
         lensRays(X, f, T, img);
         D.lens(c, X, Y, 230, 'convex'); D.arrowObj(c, T.x, Y, 34, COL.amber); D.text(c, 'tiny print', T.x, Y + 56, { size: 18, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
         const I = P(X + img.v, Y - img.m * 34);
-        if (I.x > 0) { D.arrowObj(c, I.x, Y, Y - I.y, COL.magenta, { dashed: true }); D.text(c, 'enlarged image ×' + img.m.toFixed(1), I.x, I.y - 26, { size: 19, col: COL.magenta, bg: 'rgba(255,255,255,.9)' }); }
+        if (I.x > 0) { D.arrowObj(c, I.x, Y, Y - I.y, COL.magenta, { dashed: true }); D.text(c, 'the letters look bigger', I.x, I.y - 26, { size: 19, col: COL.magenta, bg: 'rgba(255,255,255,.9)' }); }
         D.eye(c, 1130, Y - 20, 1.2, 1); D.text(c, 'eye', 1130, Y - 60, { size: 17, col: COL.white });
-        void now;
-      },
-      glasses(c, now) {
-        const ex = 820, Dr = 220, my = st.cond === 'myopia';
-        const fe = my ? 190 : 240;                                   // eye too strong (short sight) / too weak (long sight)
-        const gx = 700, objX = 170;
-        const U = 1 / (1 / Dr - 1 / fe);                                // where the eye needs its object to be (cartesian, from eye lens)
-        const v1 = ex + U - gx, u1 = my ? -Infinity : -(gx - objX);
-        const fg = my ? v1 : 1 / (1 / v1 - 1 / u1);              // lens formula 1/f = 1/v - 1/u
-        const retX = eyeball(c, ex, Dr, fe);
-        D.axis(c, Y, 0, o.w, null);
-        const lenses = (st.wear ? [{ x: gx, f: fg }] : []).concat([{ x: ex, f: fe }]);
-        const heights = [-42, -20, 20, 42];
-        let focusX = null;
-        for (const hh of heights) {
-          let x0, y0, s;
-          if (my) { x0 = 20; y0 = hh; s = 0; } else { x0 = objX; y0 = 0; s = hh / ((st.wear ? gx : ex) - objX); }
-          const tr = OPT.thinTrace(x0, y0, s, lenses, retX);
-          drawTrace(tr, COL.cyan, 2.2);
-          const last = tr.pts[tr.pts.length - 2], sl = tr.slope;
-          focusX = last[0] - last[1] / sl;
-          if (focusX > retX) D.line(c, P(retX, sy(tr.pts[tr.pts.length - 1][1])), P(focusX, Y), COL.cyan, 1.5, [5, 6], .6);
-        }
-        if (my) D.text(c, 'light from a far-away object (parallel rays)', 30, Y - 80, { size: 17, col: COL.cyan, align: 'left' });
-        else { D.arrowObj(c, objX, Y, 40, COL.amber); D.text(c, 'book held close', objX, Y + 28, { size: 17, col: COL.amber }); }
-        if (st.wear) { D.lens(c, gx, Y, 90, fg > 0 ? 'convex' : 'concave', { bulge: 14 }); D.text(c, (fg > 0 ? 'convex' : 'concave') + ' spectacle lens', gx, Y - 112, { size: 17, col: COL.green }); }
-        const sharp = Math.abs(focusX - retX) < 8;
-        D.dot(c, focusX, Y, 6, sharp ? COL.green : COL.amber);
-        D.text(c, sharp ? 'Sharp image on the retina' : focusX < retX ? 'Focus falls in front of the retina: blurred' : 'Focus falls behind the retina: blurred', 630, 40, { size: 22, col: sharp ? COL.green : COL.amber, bg: 'rgba(255,255,255,.9)' });
-        D.text(c, my ? 'Short sight (myopia): far things look blurred' : 'Long sight (hypermetropia): near things look blurred', 630, 74, { size: 19, col: COL.white, weight: 400, bg: 'rgba(255,255,255,.9)' });
         void now;
       },
       camera(c, now) {
@@ -128,7 +93,7 @@ LL.add({
         D.text(c, 'sensor', sx + 5, Y + 140, { size: 17, col: COL.green });
         D.arrowObj(c, X + img.v, Y, img.m * h, COL.cyan, { w: 4 });
         if (T.x > 0) D.arrowObj(c, T.x, Y, h, COL.amber, { label: 'object' }); else D.text(c, '← object far away (off screen)', 20, Y - h - 20, { size: 18, col: COL.amber, align: 'left' });
-        D.text(c, `image ×${Math.abs(img.m).toFixed(2)}, upside down`, X + img.v + 30, Y + 70, { size: 18, col: COL.cyan, align: 'left', bg: 'rgba(255,255,255,.9)' });
+        D.text(c, 'small, upside-down picture', X + img.v + 30, Y + 70, { size: 18, col: COL.cyan, align: 'left', bg: 'rgba(255,255,255,.9)' });
         D.text(c, 'Autofocus: the lens–sensor gap changes so the image stays sharp', 630, 34, { size: 19, col: COL.white, bg: 'rgba(255,255,255,.9)' });
         void now;
       },
@@ -149,8 +114,8 @@ LL.add({
         }
         D.lens(c, xo, Y, 90, 'convex', { bulge: 22 }); D.lens(c, xe, Y, 110, 'convex', { bulge: 14 });
         D.arrowObj(c, objX, Y, h, COL.amber, { label: 'specimen' });
-        D.arrowObj(c, I1x, Y, h * m1, COL.cyan, { w: 4 }); D.text(c, 'first image (real)', I1x, sy(h * m1) + 22, { size: 16, col: COL.cyan, bg: 'rgba(255,255,255,.9)' });
-        D.arrowObj(c, Fx, Y, h * m1 * m2, COL.magenta, { dashed: true }); D.text(c, `final image ×${Math.abs(m1 * m2).toFixed(0)}`, Fx, sy(h * m1 * m2) + 24, { size: 18, col: COL.magenta, bg: 'rgba(255,255,255,.9)' });
+        D.arrowObj(c, I1x, Y, h * m1, COL.cyan, { w: 4 }); D.text(c, 'first image', I1x, sy(h * m1) + 22, { size: 16, col: COL.cyan, bg: 'rgba(255,255,255,.9)' });
+        D.arrowObj(c, Fx, Y, h * m1 * m2, COL.magenta, { dashed: true }); D.text(c, 'final image: much bigger', Fx, sy(h * m1 * m2) + 24, { size: 18, col: COL.magenta, bg: 'rgba(255,255,255,.9)' });
         D.text(c, 'objective', xo, Y - 140, { size: 17, col: COL.white }); D.text(c, 'eyepiece', xe, Y - 140, { size: 17, col: COL.white });
         D.eye(c, 1200, Y, 1.1, 1);
         void now; void xe0;
@@ -164,11 +129,10 @@ LL.add({
           drawTrace(tr, COL.cyan, 2.1);
         }
         D.lens(c, xo, Y, 95, 'convex', { bulge: 10 }); D.lens(c, xe, Y, 60, 'convex', { bulge: 16 });
-        D.mark(c, xo + fo, Y, 'F', COL.amber);
         D.text(c, 'objective lens (collects light)', xo + 40, Y - 120, { size: 17, col: COL.white, align: 'left' });
         D.text(c, 'eyepiece', xe, Y - 82, { size: 17, col: COL.white });
         D.eye(c, 1180, Y, 1.1, 1);
-        D.text(c, `star at ${st.starA.toFixed(1)}° → seen at ${(Math.atan(Math.tan(a) * fo / fe) / DEG).toFixed(1)}° (${(fo / fe).toFixed(0)}× bigger angle)`, 630, 40, { size: 20, col: COL.amber, bg: 'rgba(255,255,255,.9)' });
+        D.text(c, 'Through the telescope the star looks bigger and clearer', 630, 40, { size: 20, col: COL.amber, bg: COL.pill });
         void now;
       },
       eye(c, now) {
@@ -188,7 +152,7 @@ LL.add({
       }
     };
     return {
-      reset() { Object.assign(st, { tab: 'magnifier', mu: 5, cond: 'myopia', wear: false, camU: 600, starA: 2, eyeD: 60 }); sTab.set('magnifier'); cMu.set(5); cCond.set('myopia'); cWear.set(false); cCam.set(600); cStar.set(2); cEye.set(60); show(); },
+      reset() { Object.assign(st, { tab: 'magnifier', mu: 5, cond: 'myopia', wear: false, camU: 600, starA: 2, eyeD: 60 }); sTab.set('magnifier'); cMu.set(5); cCam.set(600); cStar.set(2); cEye.set(60); show(); },
       frame(dt, now) { st.t += dt; C = o.ctx; o.begin(); D.bg(o); tabs[st.tab](C, now); }
     };
   }

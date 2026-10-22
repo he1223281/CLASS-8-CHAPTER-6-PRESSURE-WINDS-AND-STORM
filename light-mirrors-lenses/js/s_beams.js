@@ -42,25 +42,22 @@ LL.add({
   build(root) {
     const L = labLayout(root, { kicker: 'Scene 5 · Activity 10.6', title: 'What happens to a beam of parallel rays?' });
     const o = L.cv;
-    const st = { type: 'concave', n: 9, spacing: 44, rot: 0, showF: true, showAxis: true, showNormals: false, showBack: true, trace: false, tt: 0 };
+    const st = { type: 'concave', n: 9, spacing: 44, rot: 0, showF: false, showAxis: false, showNormals: false, showBack: false, trace: false, tt: 0 };
     const sT = UI.seg('Mirror', [{ v: 'plane', t: 'Plane' }, { v: 'concave', t: 'Concave' }, { v: 'convex', t: 'Convex' }, { v: 'all', t: 'Compare all 3' }], st.type, v => { st.type = v; st.tt = 0; });
     const sN = UI.slider('Rays', 3, 15, 1, st.n, v => String(v), v => { st.n = v; });
     const sS = UI.slider('Spacing', 16, 60, 2, st.spacing, v => v + ' px', v => { st.spacing = v; });
     const sR = UI.slider('Rotate mirror', -25, 25, 1, st.rot, v => v + '°', v => { st.rot = v; });
-    const tF = UI.toggle('Focus F', true, v => { st.showF = v; }, COL.amber);
-    const tA = UI.toggle('Principal axis', true, v => { st.showAxis = v; });
     const tNm = UI.toggle('Normals', false, v => { st.showNormals = v; }, COL.amber);
-    const tB = UI.toggle('Dashed back-lines', true, v => { st.showBack = v; }, COL.magenta);
     const bTrace = UI.btn('Trace rays one at a time', () => { st.trace = !st.trace; st.tt = 0; bTrace.textContent = st.trace ? 'Show all rays together' : 'Trace rays one at a time'; }, 'btn go');
-    L.controls.append(sT.el, sN.el, sS.el, el('div', { class: 'break' }), sR.el, bTrace, tF.el, tA.el, tNm.el, tB.el);
+    L.controls.append(sT.el, sN.el, sS.el, el('div', { class: 'break' }), sR.el, bTrace, tNm.el);
     L.setPanel(UI.panel({
-      predict: { q: 'Parallel rays fall on a <b>convex</b> mirror. After reflection, the rays will…', opts: ['stay parallel', 'meet at one point in front of the mirror', 'spread out, as if coming from a point behind the mirror'], ans: 2, why: 'A convex mirror bulges out, so each ray hits a surface tilted a little more away from the axis than the last one.' },
+      predict: { q: 'Parallel rays fall on a <b>convex</b> mirror. After reflection, the rays will…', opts: ['stay parallel', 'come closer together (converge)', 'spread out (diverge)'], ans: 2, why: 'A convex mirror bulges outwards, so the reflected rays spread out.' },
       experiment: ['Switch between the three mirrors, or compare all three.', 'Turn on <b>Normals</b>: every ray makes equal angles with its normal.', 'Press <b>Trace rays one at a time</b> and follow each ray.', 'Rotate the mirror and change the number of rays.'],
-      observe: ['<b>Plane:</b> parallel rays stay parallel. Rotating the mirror turns the whole beam.', '<b>Concave:</b> the rays converge and really meet near F, a <b>real focus</b>.', '<b>Convex:</b> the rays diverge. Traced backwards (dashed), they seem to come from F behind the mirror, a <b>virtual focus</b>.', 'Rays far from the axis cross a little closer to the mirror, so the focus is really a tiny <b>focal region</b>.'],
-      explain: '<p>Every single ray obeys <b>∠i = ∠r</b> at its own normal, and the normal of a spherical mirror always points through the centre C. On a concave mirror the normals lean <b>towards</b> the axis, so reflected rays bend together: it is a <b>converging mirror</b>. On a convex mirror they lean <b>away</b>, so it is a <b>diverging mirror</b>.</p><p>No light goes behind a convex mirror; the virtual focus is only where the reflected rays <b>appear</b> to start.</p><p class="note">Exact law-of-reflection tracing on a true sphere. The school model’s single point F (f = R/2) is exact only for rays close to the axis.</p>'
+      observe: ['<b>Plane mirror:</b> the reflected beams are also parallel.', '<b>Concave mirror:</b> the reflected beams get closer: they <b>converge</b>.', '<b>Convex mirror:</b> the reflected beams spread: they <b>diverge</b>.'],
+      explain: '<p>Even though each ray of light follows the laws of reflection (∠i = ∠r), the <b>curved surface</b> of a spherical mirror makes a parallel beam <b>converge</b> (concave mirror) or <b>diverge</b> (convex mirror).</p><p>So a concave mirror is called a <b>converging mirror</b> and a convex mirror a <b>diverging mirror</b>.</p>'
     }));
     return {
-      reset() { Object.assign(st, { type: 'concave', n: 9, spacing: 44, rot: 0, showF: true, showAxis: true, showNormals: false, showBack: true, trace: false, tt: 0 }); sT.set('concave'); sN.set(9); sS.set(44); sR.set(0); tF.set(true); tA.set(true); tNm.set(false); tB.set(true); bTrace.textContent = 'Trace rays one at a time'; },
+      reset() { Object.assign(st, { type: 'concave', n: 9, spacing: 44, rot: 0, showF: false, showAxis: false, showNormals: false, showBack: false, trace: false, tt: 0 }); sT.set('concave'); sN.set(9); sS.set(44); sR.set(0); tNm.set(false); bTrace.textContent = 'Trace rays one at a time'; },
       replay() { st.tt = 0; },
       onShow() { st.tt = 0; },
       frame(dt, now) {
@@ -76,9 +73,8 @@ LL.add({
         if (st.type !== 'all') {
           const m = { type: st.type, P: P(1000, 350), R: 600, a: 260, rot };
           drawMirrorBeam(c, o, m, { ...base, n: st.n, spacing: st.spacing, ...mk(st.n) }, now);
-          const msg = { plane: 'Plane mirror: parallel rays stay parallel', concave: 'Concave mirror: rays converge at F (real focus)', convex: 'Convex mirror: rays diverge from F (virtual focus)' }[st.type];
+          const msg = { plane: 'Plane mirror: the reflected rays stay parallel', concave: 'Concave mirror: the reflected rays converge', convex: 'Convex mirror: the reflected rays diverge' }[st.type];
           D.text(c, msg, 630, 36, { size: 24, col: st.type === 'convex' ? COL.magenta : st.type === 'concave' ? COL.amber : COL.cyan, bg: 'rgba(255,255,255,.9)' });
-          if (st.type === 'convex' && st.showF) { const Fp = OPT.mirrorFocus(m); D.text(c, 'rays only seem to come from here', Fp.x + 10, Fp.y - 30, { size: 17, col: COL.magenta, align: 'left', bg: 'rgba(255,255,255,.9)' }); }
         } else {
           ['plane', 'concave', 'convex'].forEach((tp, i) => {
             const y = 118 + i * 232;
@@ -103,7 +99,7 @@ LL.add({
     const m = { type: 'concave', P: P(1120, Y), R: 820, a: 250, rot: 0 };
     const lensG = lensGeom('convex', 520, Y, 600, 210);            // Activity 10.11: a convex lens instead of the mirror
     const FxM = OPT.mirrorFocus(m).x, FxL = OPT.lensFocusX(lensG);
-    let dev = 'mirror', xs = 900, sun = true, showF = true, t = 0, heat = 0;
+    let dev = 'mirror', xs = 900, sun = true, t = 0, heat = 0;
     const CH = 46;
     const Fx = () => dev === 'mirror' ? FxM : FxL;
     const fpx = () => dev === 'mirror' ? m.R / 2 : FxL - lensG.X;
@@ -113,8 +109,7 @@ LL.add({
       dev = v; const [a, b] = range(); sX.input.min = a; sX.input.max = b; xs = v === 'mirror' ? 900 : 760; sX.set(xs); heat = 0;
     });
     const tS = UI.toggle('Sunlight', sun, v => { sun = v; }, COL.amber);
-    const tF = UI.toggle('Mark F', showF, v => { showF = v; }, COL.amber);
-    L.controls.append(sDev.el, el('div', { class: 'break' }), sX.el, UI.btn('Put the paper at the focus', () => { xs = bestX(); sX.set(xs); }, 'btn go'), tS.el, tF.el);
+    L.controls.append(sDev.el, el('div', { class: 'break' }), sX.el, UI.btn('Find the sharp bright spot', () => { xs = bestX(); sX.set(xs); }, 'btn go'), tS.el);
     o.cv.parentElement.append(el('div', { class: 'cv-hint' }, 'Drag the paper along the axis'));
     const ro = UI.readout([['d', 'Spot size'], ['c', 'Concentration'], ['h', 'Heating']]);
     const safety = UI.card('safety', 'Safety first', null, el('p', { html: 'Never look at the Sun, or at sunlight reflected or focused by a mirror or lens: it can permanently damage your eyes. Never point focused sunlight at people, animals or anything that can catch fire. Try a real concave mirror only with your teacher.' }));
@@ -124,11 +119,11 @@ LL.add({
       el('li', { html: '<b>Large-scale solar cooking:</b> big concave dish cookers in community kitchens.' }),
       el('li', { html: '<b>Industry:</b> heat for drying, water heating and processing.' })));
     L.setPanel(UI.panel({
-      predict: { q: 'Where should you hold the paper to get the <b>smallest, brightest</b> spot of sunlight?', opts: ['Touching the mirror', 'At the focus F', 'As far from the mirror as possible'], ans: 1, why: 'At F the reflected rays from the whole mirror crowd into the smallest area.' },
-      experiment: ['Drag the paper slowly towards the mirror.', 'Watch the spot in the "paper" view: how big, how bright?', 'Press <b>Put the paper at the focus</b>.', 'Switch to the <b>convex lens</b> (Activity 10.11). Can it burn the paper too?'],
+      predict: { q: 'Where should you hold the paper to get the <b>smallest, brightest</b> spot of sunlight?', opts: ['Touching the mirror', 'At the place where the reflected light comes together', 'As far from the mirror as possible'], ans: 1, why: 'There the reflected light from the whole mirror is concentrated into the smallest area.' },
+      experiment: ['Drag the paper slowly towards the mirror.', 'Watch the spot in the "paper" view: how big, how bright?', 'Press <b>Find the sharp bright spot</b>.', 'Switch to the <b>convex lens</b> (Activity 10.11). Can it burn the paper too?'],
       live: UI.card('live', 'Measurements (qualitative)', null, ro.el),
-      observe: ['Far from F the spot is large and dim.', 'At F it is tiny and dazzlingly bright: the paper heats up fastest.', 'Beyond F the rays cross and spread again, so the spot grows.'],
-      explain: '<p>The Sun is so far away that its rays arrive <b>parallel</b>. A concave mirror reflects them all towards F. The same light energy is squeezed into a much smaller area, so each bit of the paper receives far more energy and gets hot.</p><p>A <b>convex lens</b> does the same job by refraction: sunlight passes through it and converges at F on the other side.</p><p>Devices that concentrate sunlight with mirrors or lenses are called <b>solar concentrators</b>.</p>',
+      observe: ['At most distances the spot is large and dim.', 'At one distance it becomes a <b>sharp, bright spot</b>: the paper heats up fastest and can start to burn.', 'Moved closer still, the light spreads again and the spot grows.'],
+      explain: '<p>The Sun is so far away that its rays arrive <b>parallel</b>. A concave mirror <b>converges</b> them, so the light of the Sun is concentrated on a small spot. This produces enough heat at that point to ignite the paper.</p><p>A <b>convex lens</b> also converges sunlight and can burn paper in the same way (Activity 10.11).</p><p>Devices that concentrate sunlight with mirrors or lenses are called <b>solar concentrators</b>.</p>',
       extra: [safety, apps]
     }));
     dragOn(o, { hit: p => Math.abs(p.x - xs) < 30 && Math.abs(p.y - Y) < CH + 40 ? 'scr' : null, move: (h, p) => { const [a, b] = range(); xs = clamp(p.x, a, b); sX.set(xs); } });
@@ -165,7 +160,7 @@ LL.add({
       xs = keep; const [a, b] = range(); return clamp(best, a, b);
     }
     return {
-      reset() { dev = 'mirror'; sDev.set('mirror'); sX.input.min = 330; sX.input.max = 1080; xs = 900; sX.set(900); sun = true; tS.set(true); showF = true; tF.set(true); heat = 0; },
+      reset() { dev = 'mirror'; sDev.set('mirror'); sX.input.min = 330; sX.input.max = 1080; xs = 900; sX.set(900); sun = true; tS.set(true); heat = 0; },
       replay() { heat = 0; t = 0; },
       frame(dt, now) {
         t += dt;
@@ -190,7 +185,6 @@ LL.add({
         }
         if (dev === 'mirror') D.mirror(c, m, { realistic: true });
         else { const ol = OPT.lensOutline(lensG); c.save(); D.path(c, ol); c.closePath(); c.fillStyle = 'rgba(120,225,255,.2)'; c.fill(); c.strokeStyle = '#1f8fff'; c.lineWidth = 2.5; c.stroke(); c.restore(); }
-        if (showF) D.mark(c, Fx(), Y, 'F', COL.amber);
         // the paper card (side view)
         c.save(); c.fillStyle = '#c9d0de'; c.fillRect(xs - 7, Y - CH, 14, CH * 2); c.restore();
         if (sun && ys.length) { const yc = (Math.max(...ys) + Math.min(...ys)) / 2; D.dot(c, xs + (dev === 'mirror' ? 8 : -8), yc, 4 + 10 * heat, '#fff6c8'); }
@@ -218,7 +212,7 @@ LL.add({
         c.fillStyle = gh; c.fillRect(mx + 10, my + mh * (1 - heat), 16, mh * heat); c.restore();
         D.text(c, heat > .82 ? 'may char!' : heat > .55 ? 'hot' : heat > .25 ? 'warm' : 'cool', mx + 46, my + mh * (1 - heat), { size: 17, col: heat > .82 ? COL.red : COL.amber, align: 'left' });
         // safety banner
-        D.text(c, '⚠ Virtual experiment. Never look at the Sun or at focused sunlight.', 630, 30, { size: 19, col: COL.amber, bg: 'rgba(255,149,0,.14)' });
+        D.text(c, '⚠ On-screen experiment. Never look at the Sun or at focused sunlight.', 630, 30, { size: 19, col: COL.amber, bg: 'rgba(255,149,0,.14)' });
         ro.set('d', sun && ys.length ? (dSpot / 10).toFixed(dSpot < 30 ? 1 : 0) + ' cm across' : '—');
         ro.set('c', sun && ys.length ? '≈ ' + (conc >= 100 ? Math.round(conc / 10) * 10 : conc.toFixed(1)) + '× direct sunlight' : '—', true);
         ro.set('h', !sun ? 'No sunlight' : heat > .82 ? 'Very hot: paper may start to char' : heat > .55 ? 'Hot' : heat > .25 ? 'Warm' : 'Barely warm');
