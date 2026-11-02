@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import {V,lerp,clamp,curve,rng} from './lib.js';
 import {Flow,Drift,molMesh} from './fx.js';
 import {X,mixc} from './worlds/lab.js';
-import {B,gReset,G,PALE,BB,IOD} from './beats1.js';
+import {B,gReset,G,PALE,BB,IOD,predict,verdict} from './beats1.js';
+const OR=[['Set-up A (sunlight)',['Bubbles','No bubbles']],['Set-up B (dark)',['Bubbles','No bubbles']]],OA=['Bubbles','No bubbles'];
 const cap=(S,o)=>S.caption(o),lab=(S,t,p,o)=>S.label(t,p,o);
 const CAUT=t=>`<div class="status bad"><b>Caution —</b> ${t}</div>`;
 const L=(st,x,y,z)=>V(X[st]+x,y,z);
@@ -12,10 +13,10 @@ B.push({id:'oxy',sec:'Oxygen',title:'Activity 10.5 — Bubbles',world:'lab',step
  notes:'Compare A (sunlight) with B (dark). Ask: <i>Where are the bubbles? What gas could it be?</i> The matchstick test is a teacher demonstration.',
  enter(S){const w=S.worlds.lab,p=w.parts.oxy;w.focus(X.oxy);w.setLight(1);p.cover.position.y=.17;p.stick.visible=false;p.sets.forEach(s=>{s.gas.scale.y=.0001;s.tl.scale.y=1;s.tl.position.y=0;});p.sets[0].bub.set(true);},
  step(S,s){const p=S.worlds.lab.parts.oxy;
-  if(s===0){cap(S,{pos:'left',cls:'compact',kicker:'Activity 10.5 · Barkha didi’s set-up',big:'A water plant, two places',mid:'A water plant under an inverted funnel and test tube. <b>A</b> in sunlight; <b>B</b> in the dark (under the cover).'});lab(S,'Inverted test tube',L('oxy',-.14,.21,0),{kind:'abio',lift:40});lab(S,'Funnel',L('oxy',-.18,.06,.02),{kind:'ink',lift:40,side:'down',delay:400});lab(S,'Water plant',L('oxy',-.14,.04,.02),{kind:'bio',lift:70,side:'down',delay:800});}
-  if(s===1){S.rig.fly(sh('oxy',[-.1,.22,.4],[-.14,.17,0],28,2.4));cap(S,{pos:'left',cls:'compact',kicker:'Observe',big:'Bubbles — only in sunlight',mid:'In <b>A</b>, bubbles of gas rise from the plant and collect at the top of the test tube. In <b>B</b> (dark), there are none.'});lab(S,'Gas collects',L('oxy',-.14,.215,0),{kind:'amber',lift:30});
+  if(s===0){lab(S,'Inverted test tube',L('oxy',-.14,.21,0),{kind:'abio',lift:40});lab(S,'Funnel',L('oxy',-.18,.06,.02),{kind:'ink',lift:40,side:'down',delay:400});lab(S,'Water plant',L('oxy',-.14,.04,.02),{kind:'bio',lift:70,side:'down',delay:800});this.pr=predict(S,'Where will gas bubbles appear?',OR,null,{kicker:'Activity 10.5 · Barkha didi’s set-up',big:'A water plant, two places',mid:'Under an inverted funnel and test tube: <b>A</b> in sunlight, <b>B</b> in the dark (under the box).'});}
+  if(s===1){const vd=verdict(this.pr||{},OR,OA);S.closePanel();if(vd)S.later(1200,()=>S.panel(vd,{side:'right',cls:'auto'}));S.rig.fly(sh('oxy',[-.1,.22,.4],[-.14,.17,0],28,2.4));cap(S,{pos:'left',cls:'compact',kicker:'Observe',big:'Bubbles — only in sunlight',mid:'In <b>A</b>, bubbles of gas rise from the plant and collect at the top of the test tube. In <b>B</b> (dark), there are none.'});lab(S,'Gas collects',L('oxy',-.14,.215,0),{kind:'amber',lift:30});
    S.tween(1.5,e=>p.cover.position.y=lerp(.17,.55,e),()=>lab(S,'B: no bubbles',L('oxy',.14,.2,0),{kind:'red',lift:30}));}
-  if(s===2){cap(S,{pos:'left',cls:'compact',kicker:'Test the gas',big:'A lit matchstick…',mid:'Barkha didi closed the tube with her thumb, took it out and quickly inserted a <b>lit matchstick</b>. It burned with an <b class="a">intense flame</b>!'});
+  if(s===2){S.closePanel();cap(S,{pos:'left',cls:'compact',kicker:'Test the gas',big:'A lit matchstick…',mid:'Barkha didi closed the tube with her thumb, took it out and quickly inserted a <b>lit matchstick</b>. It burned with an <b class="a">intense flame</b>!'});
    const st=p.stick;st.visible=true;st.position.set(-.14,.32,0);S.tween(1.6,e=>st.position.y=lerp(.32,.255,e),()=>S.tween(1.4,e=>p.stickFlame.scale.setScalar(lerp(.6,1.7,e))));
    S.panel(`<h3>Safety</h3>${CAUT('Only the teacher should handle a lit matchstick. Keep hair, paper and alcohol away from flames.')}`,{side:'right',cls:'auto'});}
   if(s===3){S.closePanel();cap(S,{pos:'left',cls:'compact',kicker:'Conclusion',big:'Oxygen is released',mid:'The gas is rich in <b style="color:var(--o2)">oxygen</b>. Oxygen is released during photosynthesis, which takes place in the presence of <b class="a">sunlight</b>.'});}}});
@@ -44,7 +45,7 @@ B.push({id:'stomata',sec:'Stomata',title:'Stomata: tiny gateways',world:'leaf',s
  step(S,s){const w=S.worlds.leaf;
   if(s===0){w.glow=true;w.shafts.forEach(x=>x.visible=true);cap(S,{pos:'low',cls:'compact',kicker:'During photosynthesis · in light',big:'CO₂ in · O₂ out',mid:'Carbon dioxide <b>enters</b> the leaf; oxygen is <b>released</b> — both through the stomata.',html:'<div class="legend"><span><i style="background:#9aa3ad"></i>carbon dioxide</span><span><i style="background:#4fd1e3"></i>oxygen</span></div>'});lab(S,'Stoma',w.spots.stoma,{kind:'bio',lift:40});}
   if(s===1){w.glow=false;w.shafts.forEach(x=>x.visible=false);this.co2in.set(false);this.o2out.set(false);this.o2in.set(true);this.co2out.set(true);
-   cap(S,{pos:'low',cls:'compact',kicker:'During respiration · all the time',big:'O₂ in · CO₂ out',mid:'For respiration, oxygen <b>enters</b> and carbon dioxide is <b>released</b>. The same tiny pores serve both processes.'});}}});
+   S.fact('Respiration goes on <b>day and night</b>. In sunlight, photosynthesis is usually faster — so a leaf gives out more oxygen than it uses.<span class="beyond">beyond the book</span>');cap(S,{pos:'low',cls:'compact',kicker:'During respiration · all the time',big:'O₂ in · CO₂ out',mid:'For respiration, oxygen <b>enters</b> and carbon dioxide is <b>released</b>. The same tiny pores serve both processes.'});}}});
 /* ================= TRANSPORT ================= */
 B.push({id:'roots',sec:'Transport',title:'Water and minerals',steps:2,shot:{p:[-.25,-.06,1.05],t:[0,-.18,0],fov:36,dur:3.4},
  notes:'Minerals are important nutrients for growth. How do water and minerals reach all parts? Let’s find out.',
@@ -66,7 +67,7 @@ B.push({id:'section',sec:'Transport',title:'Inside the stem: xylem',world:'stem'
  step(S,s){const w=S.worlds.stem;
   if(s===0){cap(S,{pos:'low',cls:'compact',kicker:'The cut end of twig B (magnified)',big:'Red tubes',mid:'The red ink moved up through thin, tube-like structures called the <b class="b">xylem</b>.'});lab(S,'Xylem (stained red)',V(3.68,7.02,0),{kind:'red',lift:40});lab(S,'Phloem',V(-1.33,7.02,-4.0),{kind:'amber',lift:40,delay:400});}
   if(s===1){w.flows.water.set(true);w.flows.mins.set(true);S.rig.fly({p:[3.2,-2,7],t:[-.5,1.5,0],fov:44,dur:4});cap(S,{pos:'low',cls:'compact',kicker:'Inside the xylem',big:'Water and minerals rise',mid:'Just like the red ink, <b style="color:var(--uv)">minerals dissolved in water</b> move up the stem through the <b class="b">xylem</b> — present in the stem, branches and leaves.'});
-   lab(S,'Xylem',w.spots.xylem,{kind:'abio',lift:40});}}});
+   lab(S,'Xylem',w.spots.xylem,{kind:'abio',lift:40});S.fact('In the tallest trees, water climbs more than <b>100 metres</b> up the xylem to reach the top leaves.');}}});
 B.push({id:'phloem',sec:'Transport',title:'Food travels: phloem',world:'stem',steps:1,shot:{p:[-3.4,.5,7.2],t:[-.6,0,1.4],fov:40,dur:3.4},notes:'Ask: where does the starch in a potato come from? (Made in leaves → carried by phloem → stored.)',
  enter(S){const w=S.worlds.stem;w.paintSection(false);w.flows.water.set(true);w.flows.mins.set(false);w.flows.food.set(true);},
  step(S){cap(S,{pos:'low',cls:'compact',kicker:'10.3.2 · Transport of food',big:'Phloem carries food',mid:'Food prepared in the leaves is carried to all parts of the plant through another set of tubes — the <b class="a">phloem</b>. Food may be <b>stored</b> in roots and seeds.'});

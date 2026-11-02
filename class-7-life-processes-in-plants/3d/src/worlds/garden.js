@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import {Sky} from 'three/examples/jsm/objects/Sky.js';
 import {V,rng,lerp,smooth,clamp,curve,taperTube,groundTex,soilTex,leafCardTex,potTex,canvasTex} from '../lib.js';
 import {makePlant,makePot} from '../plant.js';
 import {motes,Flow,Drift} from '../fx.js';
@@ -12,13 +11,25 @@ export function makeGarden(){
  const scene=new THREE.Scene(),W={name:'garden',scene,exposure:.72,bloom:[.28,.5,.9]};
  const uT={value:0},cut=new THREE.Plane(V(0,0,-1),1e4);W.cutPlane=cut;
  // sky + sun
- const sky=new Sky();sky.scale.setScalar(300);scene.add(sky);const su=sky.material.uniforms;su.turbidity.value=3.2;su.rayleigh.value=2.1;su.mieCoefficient.value=.004;su.mieDirectionalG.value=.82;
+ const su={uSun:{value:V(0,1,0)},uZen:{value:new THREE.Color()},uHor:{value:new THREE.Color()},uSunC:{value:new THREE.Color()},uK:{value:1}};
+ const sky=new THREE.Mesh(new THREE.SphereGeometry(280,48,24),new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,uniforms:su,
+  vertexShader:'varying vec3 vD;void main(){vD=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+  fragmentShader:`uniform vec3 uSun,uZen,uHor,uSunC;uniform float uK;varying vec3 vD;void main(){vec3 d=normalize(vD);float h=d.y;
+   vec3 c=mix(uHor,uZen,pow(clamp(h,0.,1.),.5));c=mix(c,uHor*.85,smoothstep(0.,-.15,h));float sd=max(dot(d,normalize(uSun)),0.);
+   c+=uSunC*(pow(sd,900.)*40.+pow(sd,60.)*.6+pow(sd,6.)*.18)*uK;gl_FragColor=vec4(c*(1.+.6*uK),1.);}`}));sky.renderOrder=-1;scene.add(sky);
+ // clouds
+ const ct=canvasTex(256,128,(g,w,h)=>{g.clearRect(0,0,w,h);const R=rng(77);for(let i=0;i<26;i++){const x=40+R()*176,y=60+R()*30-Math.abs(x-128)*.12,r=18+R()*26;const gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,'rgba(255,255,255,.95)');gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.beginPath();g.arc(x,y,r,0,7);g.fill();}});
+ const clouds=[];for(let i=0;i<16;i++){const m=new THREE.SpriteMaterial({map:ct,transparent:true,opacity:.85,depthWrite:false,fog:false,color:'#ffffff'});const sp=new THREE.Sprite(m);const a=i/16*6.283+.3,r=170+(i%3)*25;sp.position.set(Math.cos(a)*r,32+(i*7)%26,Math.sin(a)*r);sp.scale.set(70+(i%4)*14,30+(i%3)*6,1);scene.add(sp);clouds.push(sp);}
  const sun=new THREE.DirectionalLight('#fff1d6',3.6);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);const sc=sun.shadow.camera;sc.left=-1.6;sc.right=3.6;sc.top=2;sc.bottom=-1.6;sc.near=.5;sc.far=30;sun.shadow.bias=-.0004;sun.shadow.normalBias=.02;
  scene.add(sun,sun.target);const hemi=new THREE.HemisphereLight('#bfdcff','#4a6a2c',.9);scene.add(hemi);
  scene.fog=new THREE.Fog('#d6e6ef',45,260);
- W.setSun=(elev,az=200)=>{const phi=THREE.MathUtils.degToRad(90-elev),th=THREE.MathUtils.degToRad(az),p=new THREE.Vector3().setFromSphericalCoords(1,phi,th);su.sunPosition.value.copy(p);
+ const C=x=>new THREE.Color(x),DAYZ=C('#2a78d8'),DAYH=C('#a8d2f2'),SETZ=C('#41609c'),SETH=C('#f7b77e'),NZ=C('#0a1230'),NH=C('#1c2846'),SC=C('#fff3d6'),SSC=C('#ffb070');
+ W.setSun=(elev,az=200)=>{const phi=THREE.MathUtils.degToRad(90-elev),th=THREE.MathUtils.degToRad(az),p=new THREE.Vector3().setFromSphericalCoords(1,phi,th);su.uSun.value.copy(p);
+  const day=smooth(-6,14,elev),gold=1-smooth(2,22,elev);su.uZen.value.copy(NZ).lerp(SETZ,day).lerp(DAYZ,day*(1-gold));su.uHor.value.copy(NH).lerp(SETH,day).lerp(DAYH,day*(1-gold));su.uSunC.value.copy(SC).lerp(SSC,gold);su.uK.value=day;
+  clouds.forEach(c=>{c.material.color.copy(C('#2a3550')).lerp(C('#ffd2b0'),day).lerp(C('#ffffff'),day*(1-gold));c.material.opacity=.35+.5*day;});
+  sun.color.copy(C('#fff1d6')).lerp(C('#ffb46e'),gold);
   sun.position.copy(p).multiplyScalar(12).add(V(.8,0,0));sun.target.position.set(.8,0,0);const d=smooth(-4,12,elev);sun.intensity=3.6*d;hemi.intensity=.25+.95*d;W.night=1-d;
-  scene.fog.color.setHSL(.58,.45,lerp(.12,.8,d));};
+  scene.fog.color.copy(su.uHor.value).multiplyScalar(.95);};
  W.setSun(32,215);
  // ground
  const gg=new THREE.PlaneGeometry(400,400,160,160).rotateX(-Math.PI/2),gp=gg.attributes.position;for(let i=0;i<gp.count;i++)gp.setY(i,hill(gp.getX(i),gp.getZ(i)));gg.computeVertexNormals();
@@ -72,6 +83,6 @@ export function makeGarden(){
  const sw=new Drift(scene,{kind:'water',n:40,size:.012,box:[V(-.5,-.45,.04),V(.5,-.04,.12)],speed:.01,seed:4,on:false}),sm=new Drift(scene,{kind:'mineral',n:18,size:.009,box:[V(-.5,-.45,.04),V(.5,-.04,.12)],speed:.01,seed:5,on:false});
  W.soilMols=[sw,sm];
  W.quality=q=>{grass.count=Math.min(NG,q.grass);leafMeshes.forEach(m=>m.count=Math.floor(2600*q.leaves));if(sun.shadow.mapSize.x!==q.shadow){sun.shadow.mapSize.set(q.shadow,q.shadow);sun.shadow.map?.dispose();sun.shadow.map=null;}};
- W.update=(dt,t)=>{uT.value=t;hero.sway(t);dust.userData.update(t);sw.update(dt,t);sm.update(dt,t);W.pots.forEach((p,i)=>p.pl.sway(t+i,.6));};
+ W.update=(dt,t)=>{uT.value=t;clouds.forEach((c,i)=>{c.position.x+=dt*.6;if(c.position.x>230)c.position.x=-230;});hero.sway(t);dust.userData.update(t);sw.update(dt,t);sm.update(dt,t);W.pots.forEach((p,i)=>p.pl.sway(t+i,.6));};
  W.enter=S=>{};
  return W;}

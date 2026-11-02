@@ -10,7 +10,7 @@ export function paintedLeaf(len,width,opt={}){const tex=canvasTex(512,256,()=>{}
  const st=Object.assign({base:'#3d9a48',patch:null,margin:null,halfA:null,halfB:null,split:.5,spots:0,spotC:'#b9782f',vein:'rgba(220,255,200,.55)'},opt.state||{});
  mesh.paint=(s={})=>{Object.assign(st,s);tex.redraw((g,w,h)=>{g.clearRect(0,0,w,h);
    if(st.halfA){g.fillStyle=st.halfA;g.fillRect(0,0,w*st.split,h);g.fillStyle=st.halfB;g.fillRect(w*st.split,0,w,h);}else{g.fillStyle=st.margin||st.base;g.fillRect(0,0,w,h);}
-   if(st.patch){g.fillStyle=st.patch;g.beginPath();g.moveTo(w*.06,h*.5);g.bezierCurveTo(w*.2,h*.08,w*.45,h*.18,w*.6,h*.12);g.bezierCurveTo(w*.75,h*.2,w*.85,h*.35,w*.95,h*.5);g.bezierCurveTo(w*.8,h*.7,w*.65,h*.85,w*.5,h*.8);g.bezierCurveTo(w*.3,h*.9,w*.15,h*.75,w*.06,h*.5);g.fill();}
+   if(st.patch){g.fillStyle=st.patch;g.beginPath();const N=40;for(let i=0;i<=N;i++){const u=i/N,x=.1+.78*u,y=.5-(.26*Math.sin(Math.PI*u)**.7)*(1+.18*Math.sin(u*Math.PI*3+.6));i?g.lineTo(w*x,h*y):g.moveTo(w*x,h*.5);}for(let i=N;i>=0;i--){const u=i/N,x=.1+.78*u,y=.5+(.26*Math.sin(Math.PI*u)**.7)*(1+.18*Math.sin(u*Math.PI*2.5+2.1));g.lineTo(w*x,h*y);}g.closePath();g.fill();}
    const R=rng(5);g.globalAlpha=.18;for(let i=0;i<500;i++){g.fillStyle=R()>.5?'#000':'#fff';g.fillRect(R()*w,R()*h,2,2);}g.globalAlpha=1;
    g.strokeStyle=st.vein;g.lineWidth=h*.025;g.beginPath();g.moveTo(0,h/2);g.lineTo(w,h/2);g.stroke();g.lineWidth=h*.01;
    for(let i=1;i<9;i++){const x=w*i/9.5;for(const s of [-1,1]){g.beginPath();g.moveTo(x,h/2);g.quadraticCurveTo(x+w*.06,h/2+s*h*.22,x+w*.14,h/2+s*h*.46);g.stroke();}}
@@ -24,7 +24,7 @@ function flame(){const g=new THREE.Group();const fm=new THREE.ShaderMaterial({tr
  const geo=new THREE.SphereGeometry(.01,16,12);geo.translate(0,.01,0);geo.scale(1,2.2,1);const m=new THREE.Mesh(geo,fm);g.add(m);const m2=m.clone();m2.scale.setScalar(.6);g.add(m2);
  const pl=new THREE.PointLight('#ff9b4a',.35,1.2,2);pl.position.y=.02;g.add(pl);g.userData.update=t=>{fm.uniforms.uT.value=t;pl.intensity=.3+Math.sin(t*17)*.05+Math.sin(t*7)*.04;};g.userData.mat=fm;return g;}
 export function makeLab(){
- const scene=new THREE.Scene(),W={name:'lab',scene,exposure:.8,bloom:[.3,.5,.9]},parts={};W.parts=parts;
+ const scene=new THREE.Scene(),W={name:'lab',scene,exposure:.8,bloom:[.3,.5,.9],dof:true},parts={};W.parts=parts;
  scene.background=new THREE.Color('#0e1216');
  W.init=renderer=>{const pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(new RoomEnvironment(renderer),.04).texture;scene.traverse(o=>{if(o.material){[].concat(o.material).forEach(m=>{if('envMapIntensity' in m)m.envMapIntensity=m.userData.glass?1:m.transparent?.5:.28;});}});};
  scene.fog=new THREE.Fog('#0e1216',3,9);
@@ -44,6 +44,14 @@ export function makeLab(){
  const beakerProf=(r,h)=>[[0,.001],[r,.001],[r,h],[r*1.06,h+.004]];
  const label=(txt,w=.06)=>{const t=canvasTex(256,96,(g)=>{g.fillStyle='#f4efe2';g.fillRect(0,0,256,96);g.fillStyle='#142B45';g.font='700 40px system-ui,sans-serif';g.textAlign='center';g.fillText(txt,128,62);});return new THREE.Mesh(new THREE.PlaneGeometry(w,w*.375),new THREE.MeshStandardMaterial({map:t,roughness:.7}));};
  W.label=label;
+ const kraft=canvasTex(256,256,(g,w,h)=>{const R=rng(12);g.fillStyle='#b48a5a';g.fillRect(0,0,w,h);for(let i=0;i<1800;i++){g.fillStyle=R()>.5?'rgba(120,85,45,.18)':'rgba(225,190,140,.16)';g.fillRect(R()*w,R()*h,2,1+R()*3);}g.fillStyle='rgba(205,190,150,.85)';g.fillRect(w*.42,0,w*.16,h);g.strokeStyle='rgba(90,60,30,.35)';g.lineWidth=3;g.strokeRect(4,4,w-8,h-8);});
+ W.cardboard=(x,y,z)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(x,y,z),new THREE.MeshStandardMaterial({map:kraft,roughness:.95}));m.castShadow=m.receiveShadow=true;return m;};
+ // back shelf with bottles + a bright window: depth and life in the background
+ const shelf=new THREE.Mesh(new THREE.BoxGeometry(12,.025,.18),new THREE.MeshStandardMaterial({map:wt,roughness:.6}));shelf.position.set(5,.62,-.6);shelf.castShadow=shelf.receiveShadow=true;scene.add(shelf);
+ const RB=rng(21),bcols=['#7a3a10','#2f5f8a','#3f7a45','#c9d6de','#8a2a3a'];for(let i=0;i<34;i++){const x=-.6+i*.36+RB()*.1,r=.025+RB()*.03,hh=.08+RB()*.14;const b=new THREE.Mesh(lathe([[0,0],[r,0],[r,hh*.7],[r*.45,hh*.85],[r*.4,hh],[0,hh]],24),new THREE.MeshPhysicalMaterial({color:bcols[i%5],roughness:.15,clearcoat:1,transparent:true,opacity:.85}));b.position.set(x,.633,-.6+(RB()-.5)*.06);scene.add(b);}
+ const win=new THREE.Mesh(new THREE.PlaneGeometry(1.6,1.1),new THREE.MeshBasicMaterial({color:'#dff0ff'}));win.position.set(11.2,1.25,-.69);scene.add(win);
+ const winL=new THREE.PointLight('#cfe6ff',2.5,6,1.5);winL.position.set(11,1.2,-.3);scene.add(winL);
+ const fr=new THREE.MeshStandardMaterial({color:'#e8e6e0',roughness:.6});[[0,.56,1.7,.06],[0,-.56,1.7,.06],[0,0,1.7,.04],[-.8,0,.06,1.16],[.8,0,.06,1.16],[0,0,.04,1.16]].forEach(([x,y,w2,h2])=>{const b=new THREE.Mesh(new THREE.BoxGeometry(w2,h2,.04),fr);b.position.set(11.2+x,1.25+y,-.67);scene.add(b);});
  /* ========== STARCH TEST ========== */
  {const g=new THREE.Group();g.position.x=X.starch;scene.add(g);const metal=new THREE.MeshStandardMaterial({color:'#6b7480',metalness:.8,roughness:.35});
   const ring=new THREE.Mesh(new THREE.TorusGeometry(.075,.004,8,40),metal);ring.rotation.x=Math.PI/2;ring.position.y=.17;g.add(ring);
@@ -68,10 +76,10 @@ export function makeLab(){
  /* ========== VARIEGATED (Activity 10.3) ========== */
  {const g=new THREE.Group();g.position.x=X.vari;scene.add(g);const vs={base:'#3d9a48',patch:'#3d9a48',margin:'#efe8c4'};
   const d1=new THREE.Mesh(lathe([[0,.001],[.08,.001],[.085,.004],[.088,.012],[0,.006]],48),new THREE.MeshStandardMaterial({color:'#cfd3cf',roughness:.4}));const d2=d1.clone();d1.position.set(-.12,0,.08);d2.position.set(.12,0,.08);g.add(d1,d2);
-  const l1=paintedLeaf(.13,.06,{state:vs}),l2=paintedLeaf(.13,.06,{state:vs});l1.position.set(-.185,.008,.08);l2.position.set(.055,.008,.08);g.add(l1,l2);
+  const l1=paintedLeaf(.15,.11,{state:vs}),l2=paintedLeaf(.15,.11,{state:vs});l1.position.set(-.195,.009,.08);l2.position.set(.045,.009,.08);g.add(l1,l2);
   const pt=potTex();const p1=makePot(.05,.08,{tex:pt}),p2=makePot(.05,.08,{tex:pt});p1.position.set(-.14,0,-.2);p2.position.set(.14,0,-.2);g.add(p1,p2);
   const mk=s=>{const p=makePlant({seed:s,H:.2,n:10,leaf:.05,stemR:.004,branches:0,roots:false});return p;};const a=mk(31),b=mk(32);a.group.position.set(-.14,.072,-.2);b.group.position.set(.14,.072,-.2);g.add(a.group,b.group);
-  const cover=new THREE.Mesh(new THREE.BoxGeometry(.2,.32,.2),new THREE.MeshStandardMaterial({color:'#20262e',roughness:.9}));cover.position.set(.14,.16,-.2);g.add(cover);
+  const cover=W.cardboard(.2,.32,.2);cover.position.set(.14,.16,-.2);g.add(cover);
   const sunL=new THREE.SpotLight('#fff2c4',1.8,1.4,.45,.6,1.2);sunL.position.set(-.3,.8,.1);sunL.target=a.group;g.add(sunL);
   const t1=label('SUNLIGHT',.07),t2=label('DARK 36 h',.07);t1.position.set(-.14,.002,.13);t1.rotation.x=-Math.PI/2;t2.position.set(.14,.002,.13);t2.rotation.x=-Math.PI/2;g.add(t1,t2);
   parts.vari={g,l1,l2,cover,a,b};cast(g);}
@@ -103,7 +111,7 @@ export function makeLab(){
    const bub=new Bubbles(s,{n:70,size:.0016,rate:i===0?16:0,emit:R=>V((R()-.5)*.04,.03+R()*.03,(R()-.5)*.02),top:()=>.225-.11+.11-gas.scale.y-.002,on:i===0,
     funnel:(p,dt)=>{if(p.y>.05){const lim=p.y<.075?lerp(.05,.007,(p.y-.005)/.07):.007;if(Math.abs(p.x)>lim)p.x*=.9;if(Math.abs(p.z)>lim)p.z*=.9;}}});
    sets.push({s,tube,gas,bub,tl});});
-  const cover=new THREE.Mesh(new THREE.BoxGeometry(.2,.34,.2),new THREE.MeshStandardMaterial({color:'#1b2028',roughness:.9,transparent:true,opacity:1}));cover.position.set(.14,.17,0);g.add(cover);
+  const cover=W.cardboard(.2,.34,.2);cover.position.set(.14,.17,0);g.add(cover);
   const sunL=new THREE.SpotLight('#fff2c4',1.8,1.6,.35,.6,1.2);sunL.position.set(-.35,.9,.2);sunL.target=sets[0].s;g.add(sunL);
   const tA=label('A · SUNLIGHT',.08),tB=label('B · DARK',.08);tA.position.set(-.14,.002,.12);tA.rotation.x=-Math.PI/2;tB.position.set(.14,.002,.13);tB.rotation.x=-Math.PI/2;g.add(tA,tB);
   const stick=new THREE.Group();stick.add(new THREE.Mesh(new THREE.CylinderGeometry(.0015,.0015,.07,8),new THREE.MeshStandardMaterial({color:'#e8c48a'})));const head=new THREE.Mesh(new THREE.SphereGeometry(.0025,10,8),new THREE.MeshStandardMaterial({color:'#7a1a1a'}));head.position.y=-.035;stick.add(head);
