@@ -1,0 +1,8 @@
+{
+  "name": "life-processes-in-plants-3d",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "node build.mjs ../Life_Processes_in_Plants_Class_7.html" },
+  "dependencies": { "three": "0.160.0" },
+  "devDependencies": { "esbuild": "0.20.2" }
+}

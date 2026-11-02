@@ -1,0 +1,1430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Life Processes in Plants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap">
+<style>
+:root{
+  --bg:#EAF5FF; --bg2:#F5FAFF; --white:#FFFFFF; --ink:#142B45; --ink2:#4A5F78; --line:#D3E3F3;
+  --green:#239B56; --green2:#1C7C45; --lgreen:#DFF5E5; --blue:#3988E8; --lblue:#E3EFFD;
+  --sun:#FFD166; --lsun:#FFF4D6; --o2:#4FD1E3; --co2:#97A1AC; --water:#3B8EEA;
+  --food:#F2A33A; --starch:#1F2347; --iodine:#B9782F; --red:#E0475B; --lred:#FDE7EA;
+  --shadow:0 18px 50px rgba(20,43,69,.10),0 3px 10px rgba(20,43,69,.06);
+  --font:"Inter","Aptos","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#D8EAFB;color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+#stage{position:fixed;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;
+  background:radial-gradient(1400px 800px at 85% -10%,#FFFFFF 0%,rgba(255,255,255,0) 60%),linear-gradient(180deg,#EAF5FF 0%,#E4F2FF 100%)}
+#slides{position:absolute;inset:0 0 96px 0}
+.slide{position:absolute;inset:0;padding:54px 90px 26px;display:none}
+.slide.active{display:block}
+.slide:not(.active) *{animation-play-state:paused!important}
+.slide.in-fwd{animation:inFwd .7s cubic-bezier(.2,.8,.2,1)}
+.slide.in-back{animation:inBack .6s cubic-bezier(.2,.8,.2,1)}
+.slide.in-zoom{animation:inZoom 1s cubic-bezier(.2,.8,.2,1)}
+@keyframes inFwd{from{opacity:0;transform:translateX(60px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes inBack{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:none}}
+@keyframes inZoom{from{opacity:0;transform:scale(1.18);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
+
+/* typography */
+.kicker{display:inline-flex;align-items:center;gap:12px;font-size:24px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+.kicker:before{content:"";width:34px;height:4px;border-radius:4px;background:var(--green)}
+h1{font-size:120px;line-height:1;font-weight:800;letter-spacing:-.03em}
+h2.t{font-size:60px;line-height:1.08;font-weight:800;letter-spacing:-.02em;margin:10px 0 26px}
+h3{font-size:36px;font-weight:750;letter-spacing:-.01em}
+p,li{font-size:30px;line-height:1.38}
+.muted{color:var(--ink2)}
+b,strong{font-weight:750}
+.g{color:var(--green)} .bl{color:var(--blue)} .rd{color:var(--red)} .fd{color:#C67A12}
+sub{font-size:.65em}
+.big{font-size:38px;line-height:1.3}
+
+/* layout */
+.row{display:flex;gap:28px;align-items:center}
+.col{display:flex;flex-direction:column;gap:22px}
+.grid2{display:grid;grid-template-columns:1.45fr 1fr;gap:44px;height:790px}
+.grid2.even{grid-template-columns:1fr 1fr}
+.grid2.wideR{grid-template-columns:1fr 1.25fr}
+.fill{height:100%}
+.card{background:var(--white);border-radius:30px;box-shadow:var(--shadow);padding:28px 34px}
+.card.soft{background:rgba(255,255,255,.75);backdrop-filter:blur(8px)}
+.card.green{background:var(--lgreen)} .card.blue{background:var(--lblue)} .card.sun{background:var(--lsun)}
+.viz{background:var(--white);border-radius:34px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.viz>svg{display:block;width:100%;height:100%}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:8px 20px;border-radius:999px;font-size:24px;font-weight:700;background:var(--lblue);color:var(--blue)}
+.pill.g{background:var(--lgreen);color:var(--green)}
+.pill.y{background:var(--lsun);color:#9A6A00}
+.list{list-style:none;display:flex;flex-direction:column;gap:16px}
+.list li{position:relative;padding-left:44px}
+.list li:before{content:"";position:absolute;left:6px;top:13px;width:18px;height:18px;border-radius:50%;background:var(--green);box-shadow:0 0 0 6px var(--lgreen)}
+.q{display:flex;gap:22px;align-items:center;background:linear-gradient(90deg,#FFF6DD,#FFFDF6);border:2px solid #FFE3A0;border-radius:26px;padding:22px 30px;font-size:34px;font-weight:700}
+.q .qm{flex:none;width:58px;height:58px;border-radius:50%;background:var(--sun);display:grid;place-items:center;font-size:36px;font-weight:900;color:#7A5200}
+.caution{display:flex;gap:18px;align-items:flex-start;background:#FFF0EC;border:2px solid #FFC2B4;border-radius:22px;padding:18px 24px;font-size:26px;line-height:1.35;color:#8A2A12}
+.caution svg{flex:none;width:44px;height:44px}
+.concl{background:linear-gradient(135deg,#239B56,#2FB463);color:#fff;border-radius:28px;padding:26px 34px;font-size:32px;line-height:1.35;font-weight:600;box-shadow:0 18px 40px rgba(35,155,86,.25)}
+.concl b{color:#FFF3C4}
+.fact{background:linear-gradient(135deg,#F3ECFF,#FFFFFF);border:2px solid #E1D2FF;border-radius:26px;padding:24px 30px}
+.fact .tag{font-size:22px;font-weight:800;letter-spacing:.12em;color:#7A4CD9;text-transform:uppercase;margin-bottom:8px}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.rv.on{opacity:1;transform:none;pointer-events:auto}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:12px;font-size:27px;font-weight:700;padding:16px 30px;border-radius:999px;background:var(--white);color:var(--ink);box-shadow:0 6px 18px rgba(20,43,69,.10),inset 0 0 0 2px var(--line);transition:transform .15s,box-shadow .2s,background .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(20,43,69,.14),inset 0 0 0 2px #BFD6EE}
+.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--green);color:#fff;box-shadow:0 10px 24px rgba(35,155,86,.3)}
+.btn.blue{background:var(--blue);color:#fff;box-shadow:0 10px 24px rgba(57,136,232,.3)}
+.btn.sel{background:var(--ink);color:#fff;box-shadow:none}
+.btn[disabled]{opacity:.4;pointer-events:none}
+.btn.sm{font-size:22px;padding:10px 20px}
+.seg{display:inline-flex;background:#fff;border-radius:999px;padding:6px;box-shadow:inset 0 0 0 2px var(--line)}
+.seg button{font-size:25px;font-weight:700;padding:12px 26px;border-radius:999px;color:var(--ink2)}
+.seg button.on{background:var(--ink);color:#fff}
+
+/* stepper */
+.steps{display:flex;flex-direction:column;gap:12px}
+.step{display:flex;gap:18px;align-items:flex-start;padding:16px 20px;border-radius:20px;font-size:27px;line-height:1.3;color:var(--ink2);transition:all .35s}
+.step .n{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#E9F0F8;font-weight:800;font-size:22px;color:var(--ink2)}
+.step.on{background:var(--white);color:var(--ink);box-shadow:var(--shadow)}
+.step.on .n{background:var(--green);color:#fff}
+.step.done .n{background:var(--lgreen);color:var(--green)}
+
+/* tables */
+table.tb{width:100%;border-collapse:separate;border-spacing:0;font-size:26px;background:#fff;border-radius:24px;overflow:hidden;box-shadow:var(--shadow)}
+.tb th{background:var(--ink);color:#fff;font-weight:700;padding:16px 18px;text-align:left;font-size:24px}
+.tb td{padding:16px 18px;border-top:1px solid #E6EEF7;vertical-align:middle}
+.tb tr:nth-child(even) td{background:#F7FBFF}
+.cell-hide{cursor:pointer;color:transparent!important;position:relative}
+.cell-hide:after{content:"tap";position:absolute;inset:8px;border-radius:12px;background:repeating-linear-gradient(45deg,#E9F2FC,#E9F2FC 10px,#F4F8FD 10px,#F4F8FD 20px);color:#8AA2BD;font-size:18px;display:grid;place-items:center;font-weight:700}
+.yes{color:var(--green);font-weight:800} .no{color:var(--red);font-weight:800}
+
+/* svg helpers */
+.lbl{font-family:var(--font);font-weight:700;fill:var(--ink)}
+.lbl-w{font-family:var(--font);font-weight:700;fill:#fff}
+.spin{animation:spin 40s linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pulse{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.55}}
+.bob{animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-10px)}}
+.sway{animation:sway 6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes sway{50%{transform:rotate(1.4deg)}}
+.flick{animation:flick .18s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes flick{to{transform:scaleY(1.12) scaleX(.92)}}
+.dash{stroke-dasharray:14 14;animation:dash 1s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-28}}
+.fadein{animation:fadeIn .8s ease both}
+@keyframes fadeIn{from{opacity:0}}
+.glowleaf{animation:glowleaf 2.2s ease-in-out infinite}
+@keyframes glowleaf{50%{filter:drop-shadow(0 0 26px rgba(255,209,102,.95)) brightness(1.08)}}
+
+/* chrome */
+#bar{position:absolute;left:0;right:0;bottom:0;height:96px;display:flex;align-items:center;gap:14px;padding:0 28px;background:rgba(255,255,255,.82);backdrop-filter:blur(14px);border-top:1px solid rgba(20,43,69,.06);z-index:20}
+#prog{position:absolute;left:0;top:-1px;height:5px;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:0 4px 4px 0;transition:width .5s}
+.cb{display:inline-flex;align-items:center;gap:10px;height:62px;padding:0 20px;border-radius:18px;font-size:22px;font-weight:700;color:var(--ink);transition:background .2s}
+.cb:hover{background:#EEF5FD}
+.cb svg{width:28px;height:28px}
+.cb.nav{background:var(--ink);color:#fff;padding:0 28px}
+.cb.nav:hover{background:#1E3B5E}
+.cb.nav.next{background:var(--green)}
+.cb.nav.next:hover{background:var(--green2)}
+#count{font-size:24px;font-weight:800;min-width:120px;text-align:center;font-variant-numeric:tabular-nums}
+#secname{font-size:22px;font-weight:700;color:var(--ink2);flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#stepdots{display:flex;gap:6px;min-width:60px}
+#stepdots i{width:10px;height:10px;border-radius:50%;background:#C9D9EA}
+#stepdots i.on{background:var(--green)}
+#toc{position:absolute;top:0;left:0;bottom:96px;width:560px;background:rgba(255,255,255,.96);backdrop-filter:blur(16px);box-shadow:30px 0 60px rgba(20,43,69,.15);transform:translateX(-105%);transition:transform .45s cubic-bezier(.2,.8,.2,1);z-index:30;display:flex;flex-direction:column}
+#toc.open{transform:none}
+#toc header{padding:34px 34px 18px;display:flex;align-items:center;justify-content:space-between}
+#toc header h3{font-size:30px}
+#toclist{overflow:auto;padding:0 20px 30px}
+.tsec{font-size:18px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--green);padding:18px 16px 6px}
+.titem{display:flex;gap:14px;width:100%;text-align:left;padding:11px 16px;border-radius:14px;font-size:22px;font-weight:600;color:var(--ink2)}
+.titem span{color:#9AB0C7;font-variant-numeric:tabular-nums;min-width:30px}
+.titem:hover{background:#EEF5FD;color:var(--ink)}
+.titem.cur{background:var(--lgreen);color:var(--green2)}
+#notes{position:absolute;right:28px;bottom:112px;width:620px;background:#142B45;color:#fff;border-radius:24px;padding:24px 28px;font-size:23px;line-height:1.45;box-shadow:0 20px 50px rgba(0,0,0,.25);z-index:25;display:none}
+#notes.open{display:block}
+#notes h4{font-size:18px;letter-spacing:.14em;text-transform:uppercase;color:var(--sun);margin-bottom:8px}
+#scrim{position:absolute;inset:0;background:rgba(20,43,69,.18);z-index:29;opacity:0;pointer-events:none;transition:opacity .3s}
+#scrim.on{opacity:1;pointer-events:auto}
+
+/* quiz */
+.qz-opts{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.qz-opt{display:flex;align-items:center;gap:18px;text-align:left;font-size:29px;font-weight:650;padding:22px 26px;border-radius:22px;background:#fff;box-shadow:inset 0 0 0 3px var(--line);transition:all .2s;line-height:1.25}
+.qz-opt:hover{box-shadow:inset 0 0 0 3px var(--blue)}
+.qz-opt .k{flex:none;width:48px;height:48px;border-radius:14px;background:var(--lblue);color:var(--blue);display:grid;place-items:center;font-weight:800}
+.qz-opt.right{background:#E3F7EA;box-shadow:inset 0 0 0 3px var(--green)}
+.qz-opt.right .k{background:var(--green);color:#fff}
+.qz-opt.wrong{background:#FDECEE;box-shadow:inset 0 0 0 3px var(--red)}
+.qz-opt.wrong .k{background:var(--red);color:#fff}
+.qz-opt.dim{opacity:.5}
+.qz-locked .qz-opt{pointer-events:none}
+.mt{display:grid;grid-template-columns:1fr 1fr;gap:16px 60px}
+.mt button{font-size:27px;font-weight:700;padding:18px 22px;border-radius:18px;background:#fff;box-shadow:inset 0 0 0 3px var(--line);text-align:left}
+.mt button.pick{box-shadow:inset 0 0 0 3px var(--blue);background:var(--lblue)}
+.mt button.ok{box-shadow:inset 0 0 0 3px var(--green);background:#E3F7EA;pointer-events:none}
+.mt button.bad{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.fb{display:flex;gap:24px;align-items:center;border-radius:26px;padding:22px 28px;font-size:27px;line-height:1.38}
+.fb.ok{background:#E3F7EA} .fb.bad{background:#FDECEE}
+.fb svg{flex:none}
+
+/* opening */
+#startbtn{font-size:34px;padding:24px 46px;border-radius:999px;background:var(--green);color:#fff;font-weight:800;box-shadow:0 18px 40px rgba(35,155,86,.35),0 0 0 0 rgba(35,155,86,.5);animation:ring 2.4s infinite;display:inline-flex;gap:16px;align-items:center}
+@keyframes ring{70%{box-shadow:0 18px 40px rgba(35,155,86,.35),0 0 0 26px rgba(35,155,86,0)}100%{box-shadow:0 18px 40px rgba(35,155,86,.35),0 0 0 0 rgba(35,155,86,0)}}
+.zoomout{transition:transform 1.3s cubic-bezier(.6,0,.2,1),opacity 1.3s;transform:scale(4.2);opacity:0}
+.mote{animation:mote linear infinite}
+@keyframes mote{0%{transform:translate(0,0);opacity:0}15%{opacity:.9}100%{transform:translate(60px,-220px);opacity:0}}
+.clk{cursor:pointer}
+.clk:hover{filter:brightness(1.04) drop-shadow(0 6px 14px rgba(20,43,69,.18))}
+.slide.full{padding:0}
+.bubble{position:relative;background:#fff;border-radius:30px;padding:26px 30px;font-size:29px;line-height:1.35;box-shadow:var(--shadow)}
+.kid{display:flex;gap:22px;align-items:flex-start}
+.kid svg{flex:none}
+.chip{position:absolute;padding:10px 20px;border-radius:999px;background:#fff;box-shadow:var(--shadow);font-size:24px;font-weight:750;opacity:0;transform:scale(.8);transition:all .5s cubic-bezier(.3,1.6,.5,1)}
+.chip.on{opacity:1;transform:none}
+.ctrls{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.overlay{position:absolute}
+.hl{background:linear-gradient(transparent 60%,#FFE7A3 60%)}
+
+.btn svg,.row svg,.q svg{flex:none}
+.col>.pill,.col>.pill.g{align-self:flex-start}
+.eqb{white-space:nowrap}
+.card>svg{flex:none}
+
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+ <linearGradient id="gLeaf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4CC97E"/><stop offset="1" stop-color="#1E8A4C"/></linearGradient>
+ <linearGradient id="gLeafD" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3FBF73"/><stop offset="1" stop-color="#17703D"/></linearGradient>
+ <linearGradient id="gStem" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2E9C57"/><stop offset=".5" stop-color="#5BC783"/><stop offset="1" stop-color="#24804A"/></linearGradient>
+ <linearGradient id="gTrunk" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6B4428"/><stop offset=".45" stop-color="#9A6A42"/><stop offset="1" stop-color="#5A381F"/></linearGradient>
+ <linearGradient id="gSoil" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8C6239"/><stop offset="1" stop-color="#5E3F22"/></linearGradient>
+ <linearGradient id="gPot" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#B9573A"/><stop offset=".4" stop-color="#DE7E55"/><stop offset="1" stop-color="#A84B30"/></linearGradient>
+ <linearGradient id="gGlass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".55"/><stop offset=".15" stop-color="#DDEEFF" stop-opacity=".25"/><stop offset=".85" stop-color="#DDEEFF" stop-opacity=".2"/><stop offset="1" stop-color="#FFFFFF" stop-opacity=".6"/></linearGradient>
+ <linearGradient id="gWater" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9FD0FF" stop-opacity=".75"/><stop offset="1" stop-color="#4C9BEA" stop-opacity=".8"/></linearGradient>
+ <linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8CC8FF"/><stop offset=".6" stop-color="#CFE8FF"/><stop offset="1" stop-color="#F1F9FF"/></linearGradient>
+ <linearGradient id="gShaft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6D0" stop-opacity=".85"/><stop offset="1" stop-color="#FFF6D0" stop-opacity="0"/></linearGradient>
+ <linearGradient id="gRay" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD166" stop-opacity=".95"/><stop offset="1" stop-color="#FFD166" stop-opacity=".1"/></linearGradient>
+ <radialGradient id="gSun"><stop offset="0" stop-color="#FFFBE6"/><stop offset=".45" stop-color="#FFE38A"/><stop offset="1" stop-color="#FFC43D"/></radialGradient>
+ <radialGradient id="gSunGlow"><stop offset="0" stop-color="#FFE9A6" stop-opacity=".9"/><stop offset="1" stop-color="#FFE9A6" stop-opacity="0"/></radialGradient>
+ <radialGradient id="gCanopy" cx=".35" cy=".3"><stop offset="0" stop-color="#7FE0A3"/><stop offset=".55" stop-color="#2FAE62"/><stop offset="1" stop-color="#17703D"/></radialGradient>
+ <radialGradient id="gCell" cx=".4" cy=".35"><stop offset="0" stop-color="#F4FFF6"/><stop offset="1" stop-color="#CDEFD7"/></radialGradient>
+ <radialGradient id="gVig"><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient>
+ <filter id="fShadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#142B45" flood-opacity=".18"/></filter>
+ <filter id="fGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="fBlur"><feGaussianBlur stdDeviation="8"/></filter>
+ <marker id="mArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker>
+</defs></svg>
+<div id="stage">
+  <div id="slides"></div>
+  <div id="scrim"></div>
+  <aside id="toc" aria-label="Table of contents"><header><h3>Chapter map</h3><button class="cb" id="tocx" aria-label="Close">✕</button></header><div id="toclist"></div></aside>
+  <div id="notes"><h4>Teacher note</h4><div id="notetext"></div></div>
+  <nav id="bar">
+    <div id="prog"></div>
+    <button class="cb" id="b-toc" title="Contents (C)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Contents</button>
+    <button class="cb" id="b-home" title="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg>Home</button>
+    <div id="secname"></div>
+    <div id="stepdots"></div>
+    <button class="cb nav" id="b-prev" title="Previous (←)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Back</button>
+    <div id="count">1 / 1</div>
+    <button class="cb nav next" id="b-next" title="Next (→ or Space)">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+    <button class="cb" id="b-notes" title="Teacher notes (N)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M9 11h6M9 15h6"/></svg>Notes</button>
+    <button class="cb" id="b-restart" title="Restart presentation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 12a8 8 0 108-8 8 8 0 00-6 2.7"/><path d="M4 4v4h4"/></svg>Restart</button>
+    <button class="cb" id="b-full" title="Fullscreen (F)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span id="fulltxt">Fullscreen</span></button>
+  </nav>
+</div>
+
+<script>
+'use strict';
+/* ============ helpers ============ */
+const NS='http://www.w3.org/2000/svg';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), lerp=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+function rng(seed){let s=seed>>>0||1;return()=>((s=(s*1664525+1013904223)>>>0)/4294967296);}
+function tween(ms,fn,done){let s=null,stop=false;function f(ts){if(stop)return;if(s===null)s=ts;const t=clamp((ts-s)/ms,0,1);fn(ease(t),t);if(t<1)requestAnimationFrame(f);else if(done)done();}requestAnimationFrame(f);return()=>{stop=true};}
+function svgEl(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function hex2rgb(h){h=h.replace('#','');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+function mix(a,b,t){const A=hex2rgb(a),B=hex2rgb(b);return'#'+A.map((v,i)=>Math.round(lerp(v,B[i],t)).toString(16).padStart(2,'0')).join('');}
+function tweenAttr(els,attr,from,to,ms,done){els=[].concat(els).filter(Boolean);return tween(ms,e=>els.forEach(x=>x.setAttribute(attr,mix(from,to,e))),done);}
+/* a cancellable bag of timers/tweens per slide */
+function Bag(){const list=[];return{add(c){list.push(c);return c},later(ms,f){const id=setTimeout(f,ms);list.push(()=>clearTimeout(id));},tw(ms,fn,d){return this.add(tween(ms,fn,d))},clear(){list.splice(0).forEach(c=>c())}};}
+
+/* ============ icons ============ */
+const ICON={
+ warn:'<svg viewBox="0 0 48 48"><path d="M24 4L45 42H3z" fill="#FF7A59"/><path d="M24 17v13" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="24" cy="36" r="3" fill="#fff"/></svg>',
+ sun:'<svg viewBox="0 0 64 64"><g stroke="#F5B300" stroke-width="4" stroke-linecap="round">'+[0,45,90,135,180,225,270,315].map(a=>`<line x1="32" y1="6" x2="32" y2="14" transform="rotate(${a} 32 32)"/>`).join('')+'</g><circle cx="32" cy="32" r="14" fill="url(#gSun)" stroke="#F5B300" stroke-width="2"/></svg>',
+ drop:'<svg viewBox="0 0 64 64"><path d="M32 6C22 22 14 31 14 41a18 18 0 0036 0C50 31 42 22 32 6z" fill="#3B8EEA"/><path d="M24 42a8 8 0 006 8" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" opacity=".8"/></svg>',
+ co2:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#97A1AC"/><text x="32" y="39" text-anchor="middle" font-size="19" font-weight="800" fill="#fff" font-family="Inter,Segoe UI,sans-serif">CO₂</text></svg>',
+ o2:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#4FD1E3"/><text x="32" y="39" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" font-family="Inter,Segoe UI,sans-serif">O₂</text></svg>',
+ leaf:'<svg viewBox="0 0 64 64"><path d="M8 50C10 22 30 8 58 8c0 28-16 46-44 44z" fill="url(#gLeaf)"/><path d="M10 52C24 38 36 26 50 16" stroke="#E8FFF0" stroke-width="3" fill="none" stroke-linecap="round"/></svg>',
+ glucose:'<svg viewBox="0 0 64 64"><path d="M32 6l22 13v26L32 58 10 45V19z" fill="#F2A33A"/><text x="32" y="40" text-anchor="middle" font-size="18" font-weight="800" fill="#fff" font-family="Inter,Segoe UI,sans-serif">C₆</text></svg>',
+ energy:'<svg viewBox="0 0 64 64"><path d="M36 4L12 36h16l-4 24 26-34H34z" fill="#FFC21A" stroke="#E09A00" stroke-width="2" stroke-linejoin="round"/></svg>',
+ bulb:'<svg viewBox="0 0 64 64"><circle cx="32" cy="26" r="17" fill="#FFD166"/><rect x="24" y="42" width="16" height="12" rx="3" fill="#97A1AC"/></svg>',
+ eye:'<svg viewBox="0 0 64 64"><path d="M4 32s10-18 28-18 28 18 28 18-10 18-28 18S4 32 4 32z" fill="#E3EFFD" stroke="#3988E8" stroke-width="3"/><circle cx="32" cy="32" r="9" fill="#3988E8"/></svg>',
+ ok:'<svg viewBox="0 0 64 64" width="64" height="64"><circle cx="32" cy="32" r="28" fill="#239B56"/><path d="M19 33l9 9 17-19" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ bad:'<svg viewBox="0 0 64 64" width="64" height="64"><circle cx="32" cy="32" r="28" fill="#E0475B"/><path d="M22 22l20 20M42 22L22 42" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg>'
+};
+const ic=(k,s=48)=>ICON[k].replace('<svg ',`<svg width="${s}" height="${s}" `);
+const CAUTION=t=>`<div class="caution">${ic('warn',44)}<div><b>Caution — </b>${t}</div></div>`;
+
+/* ============ art ============ */
+const ART={
+ leafPath(L,W){return`M0 0C${L*.25} ${-W} ${L*.7} ${-W*.95} ${L} 0C${L*.7} ${W*.95} ${L*.25} ${W} 0 0Z`;},
+ leaf(x,y,L,W,rot,fill='url(#gLeaf)',vein='#BFF0D0',extra=''){
+  let v=`<path d="M2 0L${L*.94} 0" stroke="${vein}" stroke-width="${Math.max(1.2,W*.08)}" fill="none" stroke-linecap="round"/>`;
+  for(let i=1;i<4;i++){const px=L*i/4.3;v+=`<path d="M${px} 0Q${px+L*.08} ${-W*.35} ${px+L*.16} ${-W*.6}M${px} 0Q${px+L*.08} ${W*.35} ${px+L*.16} ${W*.6}" stroke="${vein}" stroke-width="${Math.max(.8,W*.04)}" fill="none" opacity=".8"/>`;}
+  return`<g transform="translate(${x} ${y}) rotate(${rot})" ${extra}><path d="${ART.leafPath(L,W)}" fill="${fill}"/>${v}</g>`;
+ },
+ sun(cx,cy,r,rays=true){
+  let s=`<circle cx="${cx}" cy="${cy}" r="${r*2.6}" fill="url(#gSunGlow)"/>`;
+  if(rays){s+=`<g class="spin" style="transform-origin:${cx}px ${cy}px">`;for(let a=0;a<360;a+=30)s+=`<path d="M${cx} ${cy-r*1.35}L${cx-r*.14} ${cy-r*1.9}L${cx+r*.14} ${cy-r*1.9}Z" fill="#FFC93D" transform="rotate(${a} ${cx} ${cy})"/>`;s+='</g>';}
+  return s+`<circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#gSun)"/>`;
+ },
+ pot(x,y,w,h){ // x=center, y=top rim
+  return`<g><path d="M${x-w*.42} ${y+h*.16}L${x-w*.32} ${y+h}H${x+w*.32}L${x+w*.42} ${y+h*.16}Z" fill="url(#gPot)"/><rect x="${x-w/2}" y="${y}" width="${w}" height="${h*.2}" rx="${h*.05}" fill="#C9653F"/><rect x="${x-w/2}" y="${y}" width="${w}" height="${h*.06}" rx="${h*.03}" fill="#E48A61"/></g>`;
+ },
+ /* potted / ground plant. g=growth 0..1, droop 0..1, col leaf colour, thin */
+ plant(x,y,o={}){
+  const g=o.g??.5,droop=o.droop||0,col=o.col||null,H=o.H||520,thin=o.thin||0;
+  const h=50+H*g, sw=(3+14*g)*(1-thin*.45), stemC=col?mix('#2E9C57',col,.6):null;
+  const top=[x+Math.sin(g*3)*6+droop*40,y-h*(1-droop*.35)];
+  let s=`<path d="M${x} ${y}Q${x+droop*10} ${y-h*.55} ${top[0]} ${top[1]}" stroke="${stemC||'url(#gStem)'}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`;
+  const n=Math.floor(2+g*10), lf=col||'url(#gLeaf)';
+  for(let i=0;i<n;i++){
+   const t=(i+1)/(n+1), py=y-h*t*(1-droop*.35), px=x+(top[0]-x)*t*t, side=i%2?1:-1;
+   const age=clamp((n-i)/4,.35,1), L=(40+70*g)*age*(1-thin*.2), W=L*.36;
+   const rot=side<0?(-160+droop*95):(-20-droop*95);
+   s+=ART.leaf(px,py,L,W,rot+(side<0?-droop*20:droop*20),lf,col?mix(col,'#ffffff',.4):'#BFF0D0');
+  }
+  if(g>.45&&!o.nobranch){const bg=clamp((g-.45)/.55,0,1);[[.45,-1],[.62,1]].forEach(([t,sd],k)=>{
+    const bx=x+(top[0]-x)*t*t, by=y-h*t*(1-droop*.35), ex=bx+sd*150*bg, ey=by-110*bg+droop*60;
+    s+=`<path d="M${bx} ${by}Q${bx+sd*60*bg} ${by-20*bg} ${ex} ${ey}" stroke="${stemC||'#2E9C57'}" stroke-width="${sw*.55}" fill="none" stroke-linecap="round"/>`;
+    for(let j=1;j<=3;j++){const tt=j/3.2;s+=ART.leaf(bx+(ex-bx)*tt,by+(ey-by)*tt,55*bg+10,20*bg+5,(sd>0?-50:-130)+(j%2?-30:30)*sd+droop*(sd>0?60:-60),lf,col?mix(col,'#ffffff',.4):'#BFF0D0');}
+  });}
+  s+=`<circle cx="${top[0]}" cy="${top[1]}" r="${4+5*g}" fill="${col||'#7BDA9C'}"/>`;
+  return s;
+ },
+ beaker(x,y,w,h,level,liq='url(#gWater)'){ // x,y top-left
+  const ly=y+h*(1-level);
+  return`<g><path d="M${x+6} ${ly}H${x+w-6}V${y+h-14}Q${x+w-6} ${y+h-4} ${x+w-16} ${y+h-4}H${x+16}Q${x+6} ${y+h-4} ${x+6} ${y+h-14}Z" fill="${liq}"/>
+  <path d="M${x-6} ${y}H${x+6}V${y+h-14}Q${x+6} ${y+h} ${x+20} ${y+h}H${x+w-20}Q${x+w-6} ${y+h} ${x+w-6} ${y+h-14}V${y}H${x+w+6}" fill="url(#gGlass)" stroke="#8FB3D4" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M${x+18} ${y+24}V${y+h-30}" stroke="#fff" stroke-width="5" opacity=".7" stroke-linecap="round"/></g>`;
+ },
+ hexPath(r){let d='';for(let i=0;i<6;i++){const a=Math.PI/3*i+Math.PI/6;d+=(i?'L':'M')+(r*Math.cos(a)).toFixed(1)+' '+(r*Math.sin(a)).toFixed(1);}return d+'Z';},
+ mol(kind,r){ // molecule glyph centred at 0,0
+  const f="Inter,Segoe UI,sans-serif";
+  if(kind==='water')return`<path d="M0 ${-r*1.3}C${-r*.6} ${-r*.3} ${-r} ${r*.1} ${-r} ${r*.45}A${r} ${r} 0 0 0 ${r} ${r*.45}C${r} ${r*.1} ${r*.6} ${-r*.3} 0 ${-r*1.3}Z" fill="#3B8EEA"/><circle cx="${-r*.35}" cy="${r*.35}" r="${r*.22}" fill="#fff" opacity=".7"/>`;
+  if(kind==='mineral')return`<rect x="${-r*.7}" y="${-r*.7}" width="${r*1.4}" height="${r*1.4}" rx="${r*.3}" fill="#B16AE0" transform="rotate(45)"/>`;
+  if(kind==='co2')return`<circle r="${r}" fill="#97A1AC"/><text y="${r*.36}" text-anchor="middle" font-size="${r*.95}" font-weight="800" fill="#fff" font-family="${f}">CO₂</text>`;
+  if(kind==='o2')return`<circle r="${r}" fill="#4FD1E3"/><text y="${r*.38}" text-anchor="middle" font-size="${r*1.05}" font-weight="800" fill="#fff" font-family="${f}">O₂</text>`;
+  if(kind==='food')return`<path d="${ART.hexPath(r)}" fill="#F2A33A" stroke="#D9861A" stroke-width="${r*.12}"/>`;
+  if(kind==='energy')return`<path d="M${r*.2} ${-r*1.1}L${-r*.8} ${r*.2}H${-r*.05}L${-r*.3} ${r*1.1}L${r*.8} ${-r*.25}H${r*.05}Z" fill="#FFC21A"/>`;
+  if(kind==='bubble')return`<circle r="${r}" fill="rgba(255,255,255,.55)" stroke="#fff" stroke-width="${Math.max(1,r*.2)}"/>`;
+  if(kind==='photon')return`<circle r="${r}" fill="#FFE27A" filter="url(#fGlow)"/>`;
+  return`<circle r="${r}" fill="#999"/>`;
+ }
+};
+
+/* Particles that travel along an SVG path */
+class Flow{
+ constructor(path,o={}){
+  this.path=path;this.o=Object.assign({n:10,r:8,kind:'water',speed:.18,jitter:0,fade:.12,dir:1},o);
+  this.g=svgEl('g',{'pointer-events':'none'});(o.into||path.parentNode).appendChild(this.g);
+  const R=rng(o.seed||7);this.ps=[];
+  for(let i=0;i<this.o.n;i++){const e=svgEl('g',{},this.g);e.innerHTML=ART.mol(this.o.kind,this.o.r);this.ps.push({e,u:i/this.o.n,j:(R()-.5)*this.o.jitter,s:.85+R()*.3});}
+  this.on=o.on!==false;this.alpha=this.on?1:0;this.len=0;
+ }
+ set(v){this.on=v;}
+ tick(dt){
+  if(!this.len)this.len=this.path.getTotalLength();
+  this.alpha=clamp(this.alpha+(this.on?dt*2.5:-dt*2.5),0,1);this.g.style.opacity=this.alpha;
+  if(this.alpha<=0)return;
+  const L=this.len,f=this.o.fade;
+  for(const p of this.ps){p.u=(p.u+dt*this.o.speed*p.s)%1;const u=this.o.dir>0?p.u:1-p.u;const pt=this.path.getPointAtLength(u*L);
+   const a=Math.min(1,p.u/f,(1-p.u)/f);p.e.setAttribute('transform',`translate(${pt.x+p.j} ${pt.y+p.j*.5})`);p.e.setAttribute('opacity',a.toFixed(2));}
+ }
+}
+
+/* ============ slide registry & navigation ============ */
+const SLIDES=[];const S=o=>SLIDES.push(o);
+const APP={i:0,step:0,max:0,els:[]};
+function maxStep(el,o){let m=o.steps||0;$$('[data-s]',el).forEach(e=>m=Math.max(m,+e.dataset.s));return m;}
+function applyStep(){
+ const el=APP.els[APP.i],o=SLIDES[APP.i];
+ $$('[data-s]',el).forEach(e=>e.classList.toggle('on',+e.dataset.s<=APP.step));
+ if(o.onStep)o.onStep(el,APP.step,o);
+ const d=$('#stepdots');d.innerHTML='';for(let k=1;k<=APP.max;k++){const i=document.createElement('i');if(k<=APP.step)i.className='on';d.appendChild(i);}
+}
+function build(){
+ const box=$('#slides');box.innerHTML='';APP.els=[];
+ SLIDES.forEach((o,i)=>{const el=document.createElement('section');el.className='slide'+(o.cls?' '+o.cls:'');el.id='s-'+o.id;
+  el.innerHTML=(o.bare?'':`<div class="kicker">${o.sec}</div><h2 class="t">${o.head||o.title}</h2>`)+o.html;
+  box.appendChild(el);APP.els.push(el);o._bag=Bag();if(o.init)o.init(el,o);});
+ const tl=$('#toclist');tl.innerHTML='';let last='';
+ SLIDES.forEach((o,i)=>{if(o.sec!==last){last=o.sec;const h=document.createElement('div');h.className='tsec';h.textContent=o.sec;tl.appendChild(h);}
+  const b=document.createElement('button');b.className='titem';b.innerHTML=`<span>${i+1}</span>${o.title}`;b.onclick=()=>{go(i);toc(false)};tl.appendChild(b);});
+}
+function go(i,dir,showAll){
+ i=clamp(i,0,SLIDES.length-1);const prev=APP.els[APP.i],po=SLIDES[APP.i];
+ if(prev&&prev.classList.contains('active')&&po){po._bag.clear();if(po.leave)po.leave(prev,po);prev.classList.remove('active','in-fwd','in-back','in-zoom');}
+ APP.i=i;const el=APP.els[i],o=SLIDES[i];
+ el.classList.add('active',o.zoom&&dir!=='back'?'in-zoom':dir==='back'?'in-back':'in-fwd');
+ APP.max=maxStep(el,o);APP.step=showAll?APP.max:0;
+ if(o.enter)o.enter(el,o);applyStep();
+ $('#count').textContent=`${i+1} / ${SLIDES.length}`;$('#secname').textContent=o.sec+'  ·  '+o.title;
+ $('#prog').style.width=((i+1)/SLIDES.length*100)+'%';
+ $('#notetext').innerHTML=o.notes||'Let students observe and discuss before you click Next.';
+ $$('.titem').forEach((b,k)=>b.classList.toggle('cur',k===i));
+ try{history.replaceState(null,'','#'+(i+1))}catch(e){}
+}
+function next(){const o=SLIDES[APP.i];if(o.onNext&&o.onNext(APP.els[APP.i],o))return;if(APP.step<APP.max){APP.step++;applyStep();}else if(APP.i<SLIDES.length-1)go(APP.i+1,'fwd');}
+function prev(){if(APP.step>0){APP.step--;applyStep();}else if(APP.i>0)go(APP.i-1,'back',true);}
+function toc(v){$('#toc').classList.toggle('open',v);$('#scrim').classList.toggle('on',v);}
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);$('#stage').style.transform=`translate(${(innerWidth-1920*s)/2}px,${(innerHeight-1080*s)/2}px) scale(${s})`;}
+function fullscreen(){const d=document;if(!d.fullscreenElement&&!d.webkitFullscreenElement){const r=d.documentElement;(r.requestFullscreen||r.webkitRequestFullscreen).call(r).catch?.(()=>{});}else{(d.exitFullscreen||d.webkitExitFullscreen).call(d);}}
+function restart(){SLIDES[APP.i]._bag.clear();if(SLIDES[APP.i].leave)SLIDES[APP.i].leave(APP.els[APP.i],SLIDES[APP.i]);APP.els[APP.i].classList.remove('active');APP.i=0;build();go(0);}
+function boot(){
+ build();fit();addEventListener('resize',fit);
+ $('#b-next').onclick=next;$('#b-prev').onclick=prev;$('#b-home').onclick=()=>go(0,'back');
+ $('#b-toc').onclick=()=>toc(!$('#toc').classList.contains('open'));$('#tocx').onclick=()=>toc(false);$('#scrim').onclick=()=>toc(false);
+ $('#b-notes').onclick=()=>$('#notes').classList.toggle('open');$('#b-full').onclick=fullscreen;
+ $('#b-restart').onclick=()=>{if(confirm('Restart the presentation from the beginning? (Quiz score will be reset.)'))restart();};
+ const fsc=()=>{$('#fulltxt').textContent=(document.fullscreenElement||document.webkitFullscreenElement)?'Exit full':'Fullscreen';};
+ document.addEventListener('fullscreenchange',fsc);document.addEventListener('webkitfullscreenchange',fsc);
+ addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.altKey||e.ctrlKey||e.metaKey)return;
+  const k=e.key;
+  if(k==='ArrowRight'||k==='PageDown'||k===' '||k==='Enter'&&e.target===document.body){e.preventDefault();next();}
+  else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();prev();}
+  else if(k==='Home'){go(0,'back');}else if(k==='End'){go(SLIDES.length-1);}
+  else if(k==='f'||k==='F'){fullscreen();}else if(k==='n'||k==='N'){$('#notes').classList.toggle('open');}
+  else if(k==='c'||k==='C'){toc(!$('#toc').classList.contains('open'));}
+  else if(k==='Escape'){toc(false);$('#notes').classList.remove('open');}
+ });
+ /* buttons inside slides should not steal Space/Enter focus */
+ document.addEventListener('mouseup',()=>{const a=document.activeElement;if(a&&a.tagName==='BUTTON')a.blur();});
+ let last=performance.now();(function loop(ts){const dt=Math.min(.05,(ts-last)/1000);last=ts;const o=SLIDES[APP.i];if(o&&o.tick)o.tick(dt,ts/1000,APP.els[APP.i],o);requestAnimationFrame(loop);})(last);
+ const h=parseInt(location.hash.slice(1));go(h>0?h-1:0);
+}
+
+/* ===================== SCENE 1 — OPENING ===================== */
+function avatar(skin,hair,shirt,girl){return`<svg width="110" height="110" viewBox="0 0 110 110"><circle cx="55" cy="55" r="54" fill="#E8F3FF"/><path d="M18 108c4-24 18-34 37-34s33 10 37 34z" fill="${shirt}"/><circle cx="55" cy="48" r="24" fill="${skin}"/>${girl?`<path d="M30 50c-2-22 12-32 25-32s28 10 25 32c-4-12-12-18-25-18s-21 6-25 18z" fill="${hair}"/><path d="M30 48c-4 14-2 26 4 32M80 48c4 14 2 26-4 32" stroke="${hair}" stroke-width="7" fill="none" stroke-linecap="round"/>`:`<path d="M31 46c0-16 10-25 24-25s24 9 24 25c-6-8-14-11-24-11s-18 3-24 11z" fill="${hair}"/>`}<circle cx="46" cy="50" r="3" fill="#142B45"/><circle cx="64" cy="50" r="3" fill="#142B45"/><path d="M47 60q8 6 16 0" stroke="#142B45" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`;}
+
+S({id:'open',sec:'Welcome',title:'Life Processes in Plants',bare:true,cls:'full',
+ notes:'Welcome the class. Ask: <i>“Is a tree alive? How do you know?”</i> Take 2–3 answers, then click <b>Start Exploring</b>.',
+ html:`<svg id="opsvg" viewBox="0 0 1920 984" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;transform-origin:72% 36%">
+  <rect width="1920" height="984" fill="url(#gSky)"/>
+  ${ART.sun(1730,120,58)}
+  <g id="opshafts" style="mix-blend-mode:screen"></g>
+  <path d="M0 700Q300 600 640 660T1280 640T1920 610V984H0Z" fill="#C9EBD3"/>
+  <path d="M0 780Q360 700 760 760T1500 730T1920 720V984H0Z" fill="#94D6A8"/>
+  <g id="optree"></g>
+  <path d="M0 870Q480 830 960 860T1920 850V984H0Z" fill="#5DBB7C"/>
+  <g id="opgrass"></g><g id="opmotes"></g>
+ </svg>
+ <div style="position:absolute;left:110px;top:150px;width:1000px">
+  <div class="kicker">Class 7 · Science · Curiosity · Chapter 10</div>
+  <h1 style="margin:26px 0 22px;font-size:94px;letter-spacing:-.02em">LIFE PROCESSES<br><span class="g">IN PLANTS</span></h1>
+  <p class="big muted" style="margin-bottom:50px;font-size:42px">Discover the Secret Life of a Plant</p>
+  <button id="startbtn">Start Exploring <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+ </div>`,
+ init(el,o){
+  const R=rng(11);
+  let sh='';[[1560,1660,1200,1060,0],[1700,1770,1500,1380,.8],[1460,1510,900,800,1.6],[1800,1880,1760,1640,2.2]].forEach(([a,b,c,d,del])=>sh+=`<polygon points="${a},0 ${b},0 ${c},984 ${d},984" fill="url(#gShaft)" class="pulse" style="animation-delay:-${del}s;opacity:.7"/>`);
+  $('#opshafts',el).innerHTML=sh;
+  let t=`<path d="M1300 905C1330 820 1345 700 1350 560C1352 500 1340 450 1310 395L1355 390C1375 450 1386 480 1392 520C1405 470 1432 428 1478 398L1496 410C1446 462 1422 520 1416 600C1412 720 1426 830 1466 905Z" fill="url(#gTrunk)"/>
+   <path d="M1352 560C1300 520 1250 500 1180 492L1184 478C1250 482 1310 496 1360 530Z" fill="#7A4F2F"/><g class="sway">`;
+  const cols=['#17703D','#1E8A4C','#239B56','#2FB463','#46C277','#68D394'];
+  const blobs=[];for(let i=0;i<110;i++){const a=R()*Math.PI*2,d=Math.sqrt(R());blobs.push({x:1370+Math.cos(a)*d*400,y:330+Math.sin(a)*d*250,r:55+R()*65});}
+  blobs.sort((p,q)=>q.y-p.y);
+  blobs.forEach(b=>{const k=clamp(Math.floor((1-(b.y-80)/500)*5+R()*1.5),0,5);t+=`<circle cx="${b.x.toFixed(0)}" cy="${b.y.toFixed(0)}" r="${b.r.toFixed(0)}" fill="${cols[k]}"/>`;});
+  for(let i=0;i<70;i++){const a=R()*Math.PI*2,d=.5+R()*.5;t+=ART.leaf(1370+Math.cos(a)*d*430,330+Math.sin(a)*d*280,34+R()*18,13,R()*360,R()>.5?'#2FB463':'#7BDA9C','#BFF0D0');}
+  for(let i=0;i<26;i++){t+=`<circle cx="${1250+R()*260}" cy="${140+R()*170}" r="${18+R()*30}" fill="#B6F0C8" opacity="${.25+R()*.3}"/>`;}
+  t+='</g>';$('#optree',el).innerHTML=t;
+  let gr='';for(let i=0;i<90;i++){const x=R()*1920,y=870+R()*110,hh=20+R()*36;gr+=`<path d="M${x} ${y}q${-6+R()*4} ${-hh*.6} ${-4+R()*14} ${-hh}M${x+4} ${y}q4 ${-hh*.5} ${10} ${-hh*.8}" stroke="${R()>.5?'#3FA765':'#2E8F52'}" stroke-width="4" fill="none" stroke-linecap="round"/>`;}
+  for(let i=0;i<14;i++){const x=80+R()*1100,y=900+R()*60;gr+=`<g transform="translate(${x} ${y})">${[0,72,144,216,288].map(a=>`<ellipse rx="7" ry="12" cy="-10" fill="${i%3?'#FFFFFF':'#FFD166'}" transform="rotate(${a})"/>`).join('')}<circle r="6" fill="#F2A33A"/></g>`;}
+  $('#opgrass',el).innerHTML=gr;
+  let m='';for(let i=0;i<46;i++){m+=`<circle cx="${700+R()*1200}" cy="${200+R()*700}" r="${2+R()*4}" fill="#FFF6C8" class="mote" style="animation-duration:${7+R()*9}s;animation-delay:-${R()*12}s"/>`;}
+  $('#opmotes',el).innerHTML=m;
+  $('#startbtn',el).onclick=()=>{$('#opsvg',el).classList.add('zoomout');o._bag.later(1150,()=>go(1,'fwd'));};
+ },
+ leave(el){$('#opsvg',el).classList.remove('zoomout');}
+});
+
+/* ===================== SCENE 2 — GROWTH TIME-LAPSE ===================== */
+S({id:'grow',sec:'10.1 How do plants grow?',title:'Time-lapse: a growing plant',head:'How do plants grow?',
+ notes:'Press <b>Next</b> (or Play) to run the time-lapse. Pause it midway and ask students to describe the changes. Link to Grade 6: all living beings grow and need food.',
+ html:`<div class="grid2"><div class="viz"><svg viewBox="0 0 1000 790">
+   <rect width="1000" height="790" fill="url(#gSky)"/>${ART.sun(110,100,42)}
+   <rect y="640" width="1000" height="150" fill="url(#gSoil)"/><path d="M0 642Q250 628 500 640T1000 638V654H0Z" fill="#5DBB7C"/>
+   <g id="gruler" font-family="Inter,Segoe UI,sans-serif" font-size="20" font-weight="700" fill="#4A5F78"></g>
+   <line id="ghl" x1="470" x2="880" y1="600" y2="600" stroke="#3988E8" stroke-width="3" stroke-dasharray="10 8"/>
+   <g id="gplant"></g>
+   <rect x="30" y="30" width="230" height="74" rx="37" fill="#fff" filter="url(#fShadow)"/><text id="gday" x="145" y="80" text-anchor="middle" class="lbl" font-size="36">Day 1</text>
+  </svg>
+  <div class="ctrls overlay" style="left:30px;bottom:26px"><button class="btn pri" id="gplay">▶ Play time-lapse</button><button class="btn" id="greset">↺ Reset</button></div>
+ </div>
+ <div class="col">
+  <div class="q"><div class="qm">?</div>What changes do you notice in a plant as it grows?</div>
+  <ul class="list" id="gobs" style="margin:10px 0 6px">
+   <li class="rv">New <b>leaves</b> emerge</li><li class="rv">New <b>branches</b> develop</li><li class="rv">Its <b>height increases</b></li><li class="rv">Its <b>stem thickens</b></li></ul>
+  <div class="card sun rv" data-s="1"><p><b>Think:</b> Animals eat food to grow. Have you ever seen a plant <i>eating</i> food like animals do?</p></div>
+  <div class="card green rv" data-s="2"><p>Food gives <b>carbohydrates, fats, proteins, vitamins</b> and <b>minerals</b>. Along with <b>water</b>, these are essential for growth. So how do plants get them?</p></div>
+ </div></div>`,
+ init(el,o){
+  let r='<line x1="900" y1="640" x2="900" y2="110" stroke="#9AB0C7" stroke-width="4"/>';
+  for(let k=0;k<=10;k++){const y=640-k*50;r+=`<line x1="${k%2?888:880}" x2="900" y1="${y}" y2="${y}" stroke="#9AB0C7" stroke-width="3"/>`;if(k%2==0)r+=`<text x="912" y="${y+7}">${k*5}</text>`;}
+  $('#gruler',el).innerHTML=r+'<text x="912" y="94">cm</text>';
+  o.render=()=>{const g=o.g;$('#gplant',el).innerHTML=ART.plant(470,642,{g,H:470});
+   const top=642-(50+470*g);$('#ghl',el).setAttribute('y1',top);$('#ghl',el).setAttribute('y2',top);
+   $('#gday',el).textContent='Day '+(1+Math.round(g*59));
+   $$('#gobs li',el).forEach((li,i)=>li.classList.toggle('on',g>=[.22,.5,.7,.9][i]));};
+  o.play=()=>{if(o.g>=1)o.g=.05;o.playing=true;$('#gplay',el).textContent='❚❚ Pause';};
+  o.pause=()=>{o.playing=false;$('#gplay',el).textContent='▶ Play time-lapse';};
+  $('#gplay',el).onclick=()=>o.playing?o.pause():o.play();
+  $('#greset',el).onclick=()=>{o.pause();o.g=.05;o.render();};
+  o.g=.05;o.render();
+ },
+ enter(el,o){o.pause();if(o.g>=1){}else{o.g=.05;}o.render();},
+ tick(dt,t,el,o){if(o.playing){o.g=Math.min(1,o.g+dt/9);o.render();if(o.g>=1)o.pause();}},
+ onNext(el,o){if(o.g<1){if(o.playing){o.g=1;o.render();o.pause();}else o.play();return true;}return false;}
+});
+
+/* ===================== SCENE 2b — STUDENTS' IDEAS ===================== */
+S({id:'ideas',sec:'10.1 How do plants grow?',title:'What do plants need to grow?',head:'What do plants need to grow?',
+ notes:'Read each idea aloud. Ask the class to vote: which idea do they agree with? Note: the “food from soil” idea will be tested later in the chapter — do not correct it yet.',
+ html:`<div style="display:grid;grid-template-columns:1fr 1fr;gap:34px 50px;margin-top:10px">
+  <div class="kid rv" data-s="1">${avatar('#C98B62','#2B1B12','#3988E8')}<div class="bubble">“When we water plants regularly, they grow better. So, I think <b class="bl">water</b> also contributes to its growth.”</div></div>
+  <div class="kid rv" data-s="2">${avatar('#E0A982','#3A2414','#E0475B',1)}<div class="bubble">“Maybe plants take up <b class="fd">food from the soil</b> through their roots.”</div></div>
+  <div class="kid rv" data-s="3">${avatar('#B97A52','#1A120C','#239B56')}<div class="bubble">“I think <b style="color:#C48A00">sunlight</b> plays some role in the growth of plants.”</div></div>
+  <div class="kid rv" data-s="4">${avatar('#D69B70','#2A1A10','#8E5BD8',1)}<div class="bubble">“I think, maybe, <span style="display:inline-block;width:150px;border-bottom:4px dashed #9AB0C7"></span> plays some role!”</div></div>
+ </div>
+ <div class="concl rv" data-s="5" style="margin-top:46px;display:flex;align-items:center;gap:26px">${ic('eye',70)}<div>Scientists don’t just guess — they <b>test</b> ideas. Let us perform an experiment to test some of these explanations.</div></div>`
+});
+
+/* ===================== SCENE 2c — ACTIVITY 10.1 THREE POTS ===================== */
+S({id:'pots',sec:'10.1 How do plants grow?',title:'Activity 10.1 — Three pots',head:'Activity 10.1: Three pots',
+ notes:'Click each pot to discuss its conditions. Let every student choose a prediction before pressing <b>Fast-forward 2 weeks</b>. The real experiment needs two weeks — plan ahead and keep a daily record.',
+ html:`<div class="row" style="position:absolute;right:90px;top:64px;gap:18px"><div class="pill y" id="pday">Day 1</div><button class="btn pri" id="pff">⏩ Fast-forward 2 weeks</button><button class="btn sm" id="pres">↺</button></div>
+ <div class="viz" style="height:470px"><svg id="potsvg" viewBox="0 0 1740 470"></svg></div>
+ <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:22px" id="pcols"></div>`,
+ init(el,o){
+  const P=[{k:'A',sun:1,wat:1,bg:'url(#gSky)',end:{g:.66}},{k:'B',sun:1,wat:0,bg:'url(#gSky)',end:{g:.28,droop:1,col:'#A8834A'}},{k:'C',sun:0,wat:1,bg:'#1C2B45',end:{g:.40,col:'#CDD46A',thin:1}}];
+  o.P=P;let s='';
+  P.forEach((p,i)=>{const x=i*590;
+   s+=`<g class="clk" id="pp${p.k}" style="transform-origin:${x+280}px 235px;transition:transform .4s"><rect x="${x}" y="0" width="560" height="470" rx="28" fill="${p.bg}"/>`;
+   if(p.sun)s+=ART.sun(x+470,86,34);else s+=`<circle cx="${x+470}" cy="82" r="30" fill="#E6ECF5"/><circle cx="${x+484}" cy="72" r="28" fill="#1C2B45"/>`+[[80,60],[150,120],[360,50],[300,140]].map(([a,b])=>`<circle cx="${x+a}" cy="${b}" r="3" fill="#fff" opacity=".6"/>`).join('');
+   s+=`<text x="${x+34}" y="64" font-size="40" font-weight="800" class="${p.sun?'lbl':'lbl-w'}">Pot ${p.k}</text>`;
+   if(p.wat)s+=`<g transform="translate(${x+90} 120)"><path d="M0 30h60l16-14 8 6-14 18v26H0z" fill="#3988E8"/><path d="M0 30Q-20 30-20 50" stroke="#3988E8" stroke-width="8" fill="none"/>${[0,1,2].map(j=>`<path d="M92 ${30+j*6}c-4 6-6 9-6 12a6 6 0 0012 0c0-3-2-6-6-12z" fill="#3B8EEA" class="mote" style="animation:dropf 1.4s ${j*.45}s infinite ease-in"/>`).join('')}</g>`;
+   s+=`<g id="pl${p.k}"></g>`+ART.pot(x+280,330,210,130)+`<ellipse cx="${x+280}" cy="336" rx="96" ry="12" fill="${p.wat?'#5E3F22':'#B89068'}"/>`;
+   if(!p.wat)s+=`<path d="M${x+215} 336l18 4 10-6 16 7M${x+300} 333l14 6 18-5" stroke="#8A6A45" stroke-width="3" fill="none"/>`;
+   s+=`<text id="pt${p.k}" x="${x+280}" y="448" text-anchor="middle" font-size="25" font-weight="700" class="${p.sun?'lbl':'lbl-w'}"></text></g>`;});
+  $('#potsvg',el).innerHTML=`<style>@keyframes dropf{0%{transform:translate(0,0);opacity:0}20%{opacity:1}100%{transform:translate(8px,120px);opacity:0}}</style>`+s;
+  $('#pcols',el).innerHTML=P.map(p=>`<div class="card" id="pc${p.k}" style="padding:20px 26px;transition:box-shadow .3s">
+   <div class="row" style="gap:18px;font-size:25px;font-weight:700;margin-bottom:12px"><span>${ic('sun',34)} ${p.sun?'<span class="yes">Direct sunlight</span>':'<span class="no">In the dark</span>'}</span><span>${ic('drop',30)} ${p.wat?'<span class="yes">Water daily</span>':'<span class="no">No water</span>'}</span></div>
+   <div class="row" style="gap:10px"><span style="font-size:22px;font-weight:700;color:var(--ink2)">Predict:</span>${['Grows well','Grows less','May die'].map(t=>`<button class="btn sm" style="font-size:20px;padding:10px 16px;white-space:nowrap" data-p="${p.k}">${t}</button>`).join('')}</div>
+   <div class="pres" style="font-size:25px;font-weight:650;margin-top:12px;min-height:34px;color:var(--ink2)"></div></div>`).join('');
+  o.state={};const R={A:'Grew well — taller, more new leaves, green',B:'Wilted — it may die without water',C:'Less growth than A — leaves turn pale/yellow'};o.R=R;
+  o.draw=t=>{P.forEach(p=>{const e=p.end,st={g:lerp(.28,e.g,t),droop:(e.droop||0)*t,thin:(e.thin||0)*t,H:300,nobranch:1};if(e.col)st.col=mix('#3DB26A',e.col,t);$('#pl'+p.k,el).innerHTML=ART.plant(p.k==='A'?280:p.k==='B'?870:1460,334,st);});$('#pday',el).textContent='Day '+(1+Math.round(t*13));};
+  o.reset=()=>{o.t=0;o.done=false;o.draw(0);P.forEach(p=>{$('#pt'+p.k,el).textContent='';$('#pc'+p.k+' .pres',el).textContent='';});$$('[data-p]',el).forEach(b=>b.classList.remove('sel'));o.state={};};
+  $$('[data-p]',el).forEach(b=>b.onclick=()=>{const k=b.dataset.p;$$(`[data-p="${k}"]`,el).forEach(x=>x.classList.toggle('sel',x===b));o.state[k]=b.textContent;$('#pt'+k,el).textContent='Prediction: '+b.textContent;});
+  P.forEach(p=>$('#pp'+p.k,el).onclick=()=>{P.forEach(q=>{$('#pp'+q.k,el).style.transform=q===p?'scale(1.03)':'';$('#pc'+q.k,el).style.boxShadow=q===p?'0 0 0 4px #3988E8, var(--shadow)':'';});});
+  o.ff=()=>{if(o.done)return;o._bag.tw(4200,e=>{o.t=e;o.draw(e);},()=>{o.done=true;P.forEach(p=>{$('#pc'+p.k+' .pres',el).innerHTML='<b style="color:var(--ink)">After 2 weeks:</b> '+R[p.k];$('#pt'+p.k,el).textContent=R[p.k].split(' — ')[0];});});};
+  $('#pff',el).onclick=o.ff;$('#pres',el).onclick=()=>{o._bag.clear();o.reset();};
+  o.reset();
+ },
+ enter(el,o){if(!o.done)o.reset();},
+ onNext(el,o){if(!o.done){o.ff();return true;}return false;}
+});
+
+/* ===================== SCENE 2d — TABLE 10.1 + CONCLUSION ===================== */
+S({id:'t101',sec:'10.1 How do plants grow?',title:'Observations & conclusion',head:'What did we observe after two weeks?',
+ notes:'These are typical observations. Your class results may differ slightly — that is fine. Ask: <i>Which pot has the maximum growth? The least?</i> before revealing.',
+ html:`<table class="tb"><tr><th>Pot kept under different conditions</th><th>Sunlight</th><th>Water</th><th>Height</th><th>Number of leaves</th><th>Colour of leaves</th></tr>
+  <tr><td><b>Pot A:</b> direct sunlight, with water</td><td class="yes">Yes</td><td class="yes">Yes</td><td>Increased the most</td><td>More new leaves</td><td>Green</td></tr>
+  <tr><td><b>Pot B:</b> direct sunlight, without water</td><td class="yes">Yes</td><td class="no">No</td><td>No growth, drooping</td><td>Leaves dry and fall</td><td>Yellow / brown</td></tr>
+  <tr><td><b>Pot C:</b> in the dark, with water</td><td class="no">No</td><td class="yes">Yes</td><td>Less than Pot A</td><td>Fewer new leaves</td><td>Pale / yellow</td></tr></table>
+ <p class="muted" style="font-size:22px;margin:10px 4px 0">Table 10.1: Effect of sunlight and water on plant growth (typical observations)</p>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:26px">
+  <div class="card rv" data-s="1"><h3>Maximum growth?</h3><p><b class="g">Pot A</b> — it got both sunlight and water.</p></div>
+  <div class="card rv" data-s="2"><h3>Least growth?</h3><p><b class="rd">Pot B</b> — it may die without water, even with sunlight.</p></div></div>
+ <div class="concl rv" data-s="3" style="margin-top:26px">Conclusion: plants require <b>both sunlight and water</b> for their growth.</div>`
+});
+
+/* ===================== FASCINATING FACT — VRIKSHAYURVEDA ===================== */
+S({id:'vrik',sec:'10.1 How do plants grow?',title:'Fascinating fact: Vrikshayurveda',head:'Fascinating fact',
+ notes:'Connect with Indian knowledge traditions: careful observation over time, written down to guide farmers.',
+ html:`<div class="grid2 wideR" style="height:740px"><div class="viz" style="background:linear-gradient(160deg,#FFF6DD,#FFFFFF)"><svg viewBox="0 0 800 740">
+   <rect x="120" y="110" width="560" height="520" rx="24" fill="#F7E7C4" filter="url(#fShadow)"/><rect x="90" y="90" width="620" height="60" rx="30" fill="#D9B77A"/><rect x="90" y="590" width="620" height="60" rx="30" fill="#D9B77A"/>
+   ${[0,1,2,3,4,5].map(i=>`<rect x="170" y="${200+i*58}" width="${440-((i*53)%120)}" height="14" rx="7" fill="#D7BF8E"/>`).join('')}
+   <g transform="translate(580 560)">${ART.plant(0,0,{g:.55,H:240,nobranch:1})}</g></svg></div>
+  <div class="col">
+   <div class="fact"><div class="tag">Vrikshayurveda</div><p style="font-size:42px;line-height:1.5;font-weight:700">फलकुसुमसंपदुचिता रोपणतो भवति केवलान्न यतः ।</p><p style="font-size:32px;font-style:italic;margin-top:8px">“Trees do not produce fruits and flowers merely because they are planted.”</p></div>
+   <p class="rv" data-s="1">This line is from an ancient Indian text named <b><i>Vrikshayurveda</i></b>. It records useful observations about <b>plant growth, soil</b> and <b>agricultural practices</b> to improve crop health and production.</p>
+   <p class="rv" data-s="2">Its ideas came from practical experience and patterns seen over time — for example, preparing <b>organic manure</b> by mixing water, barley and seeds like green, black and horse grams.</p>
+  </div></div>`
+});
+
+/* ===================== 10.2 HOW DO PLANTS GET FOOD? ===================== */
+S({id:'food',sec:'10.2 Leaves: the food factories',title:'How do plants get food?',head:'How do plants get food for their growth?',zoom:true,
+ notes:'Ask: <i>Where does a goat’s food come from? A tiger’s?</i> Lead them to: all food can be traced back to plants. Then: but plants do not eat!',
+ html:`<div class="row" style="gap:30px;margin-top:20px;justify-content:center">
+  <div class="card rv" data-s="1" style="width:420px;text-align:center"><svg width="220" height="230" viewBox="0 0 220 230">${ART.pot(110,160,120,70)}${ART.plant(110,164,{g:.45,H:200,nobranch:1})}</svg><h3>Plants</h3></div>
+  <div class="rv" data-s="2" style="font-size:70px;color:#9AB0C7">→</div>
+  <div class="card rv" data-s="2" style="width:420px;text-align:center"><div style="font-size:150px;line-height:230px">🐐</div><h3>Eat plants directly</h3></div>
+  <div class="rv" data-s="3" style="font-size:70px;color:#9AB0C7">→</div>
+  <div class="card rv" data-s="3" style="width:420px;text-align:center"><div style="font-size:150px;line-height:230px">🐅</div><h3>Eat animals that eat plants</h3></div></div>
+ <div class="q rv" data-s="4" style="margin-top:44px"><div class="qm">?</div><div>Animals get food from plants. But <span class="hl">unlike animals, plants do not <i>eat</i> food.</span> So how do plants obtain the food they need to grow?</div></div>`
+});
+
+/* ===================== LEAF — FOOD FACTORY ===================== */
+S({id:'leaf',sec:'10.2 Leaves: the food factories',title:'Leaves: the food factories',head:'Leaves: the ‘food factories’ of plants',
+ notes:'Click <b>Shine sunlight</b> to make the leaf glow. Use the magnifier to show that the green colour comes from a pigment inside the leaf cells. Ask: why might leaves be broad and flat?',
+ html:`<div class="grid2"><div class="viz" style="background:linear-gradient(160deg,#F2FAFF,#FFFFFF)"><svg viewBox="0 0 1040 790">
+   ${ART.sun(110,100,48)}
+   <g id="lrays" opacity="0" style="transition:opacity .8s">${[0,1,2,3,4].map(i=>`<line x1="${150+i*30}" y1="${140+i*10}" x2="${420+i*110}" y2="${300+i*40}" stroke="url(#gRay)" stroke-width="10" class="dash" stroke-linecap="round"/>`).join('')}</g>
+   <g id="bigleaf" transform="translate(250 420) rotate(-12)">
+    <path d="M-40 10Q-110 30-170 90" stroke="#2E9C57" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <path d="${ART.leafPath(640,200)}" fill="url(#gLeafD)"/>
+    <path d="M0 0L610 0" stroke="#BFF0D0" stroke-width="9" stroke-linecap="round"/>
+    ${[1,2,3,4,5,6].map(i=>{const x=i*86;return`<path d="M${x} 0Q${x+40} -60 ${x+90} ${-140+i*12}M${x} 0Q${x+40} 60 ${x+90} ${140-i*12}" stroke="#A8EBC0" stroke-width="5" fill="none"/>`}).join('')}
+   </g>
+   <circle cx="560" cy="400" r="34" fill="none" stroke="#142B45" stroke-width="5"/>
+   <line x1="586" y1="424" x2="690" y2="500" stroke="#142B45" stroke-width="4" stroke-dasharray="8 8"/>
+   <g transform="translate(800 585)"><circle r="160" fill="#F4FFF6" stroke="#142B45" stroke-width="10" filter="url(#fShadow)"/>
+    <clipPath id="lmag"><circle r="152"/></clipPath><g clip-path="url(#lmag)" id="lcells"></g>
+    <text y="190" text-anchor="middle" class="lbl" font-size="24">Magnified: leaf cells</text></g>
+   <g id="lchl" opacity="0" style="transition:opacity .6s"><path d="M690 610L620 640" stroke="#239B56" stroke-width="4"/><rect x="290" y="616" width="340" height="52" rx="26" fill="#239B56"/><text x="460" y="651" text-anchor="middle" class="lbl-w" font-size="24">green pigment: chlorophyll</text></g>
+  </svg><div class="ctrls overlay" style="right:30px;top:26px"><button class="btn" id="lsun" style="background:#FFF4D6">☀ Shine sunlight</button></div></div>
+  <div class="col">
+   <div class="card rv" data-s="1"><p>Plants store food in the form of <b>starch</b>, a type of <b>carbohydrate</b>. This starch is produced in the <b class="g">leaves</b>.</p></div>
+   <div class="card rv" data-s="2"><p>Leaves are generally <b>broad and flat</b> — a large surface to receive sunlight.</p></div>
+   <div class="card green rv" data-s="3"><p>Leaves are mostly green because of a green pigment called <b class="g">chlorophyll</b>.</p></div>
+   <div class="card sun rv" data-s="4"><p>Chlorophyll helps in <b>capturing sunlight efficiently</b>.</p></div>
+   <div class="concl rv" data-s="5" style="font-size:29px">Leaves are where the plant makes its food — the plant’s <b>food factories</b>!</div>
+  </div></div>`,
+ init(el,o){
+  const R=rng(5);let c='';for(let yy=-170;yy<170;yy+=58)for(let xx=-190;xx<190;xx+=74){const ox=(Math.floor(yy/58)%2)*37;c+=`<rect x="${xx+ox}" y="${yy}" width="68" height="52" rx="20" fill="url(#gCell)" stroke="#9AD8AE" stroke-width="3"/>`;for(let k=0;k<6;k++)c+=`<ellipse cx="${xx+ox+12+R()*44}" cy="${yy+10+R()*32}" rx="7" ry="4.5" fill="#2FB463" transform="rotate(${R()*180} ${xx+ox+34} ${yy+26})"/>`;}
+  $('#lcells',el).innerHTML=c;
+  o.sun=v=>{o.on=v;$('#lrays',el).setAttribute('opacity',v?1:0);$('#bigleaf',el).classList.toggle('glowleaf',v);$('#lsun',el).textContent=v?'☾ Remove sunlight':'☀ Shine sunlight';};
+  $('#lsun',el).onclick=()=>o.sun(!o.on);
+ },
+ enter(el,o){o.sun(false);},
+ onStep(el,s,o){$('#lchl',el).setAttribute('opacity',s>=3?1:0);if(s>=4)o.sun(true);}
+});
+
+/* ===================== ACTIVITY 10.2 — STARCH TEST ===================== */
+const GREEN='#2FA862',PALE='#EFE6C4',BB='#232A52',IOD='#C98A3C';
+function stepList(items){return`<div class="steps">${items.map((t,i)=>`<div class="step"><div class="n">${i+1}</div><div>${t}</div></div>`).join('')}</div>`;}
+function markSteps(el,s){$$('.step',el).forEach((d,i)=>{d.classList.toggle('on',i===s-1);d.classList.toggle('done',i<s-1);});}
+
+S({id:'starch',sec:'10.2 Starch test',title:'Activity 10.2 — Starch test',head:'Activity 10.2: Testing a leaf for starch',zoom:true,
+ notes:'Demonstration by the teacher only. Press <b>Next</b> to move through each step; the animation plays for that step. Emphasise: the test tube of alcohol is heated <b>in a water bath</b>, never directly on the flame.',
+ html:`<div class="grid2"><div class="viz" style="background:linear-gradient(170deg,#F4F9FF,#FFFFFF)"><svg viewBox="0 0 1040 790" id="stsvg">
+  <rect x="0" y="760" width="1040" height="30" fill="#E3ECF5"/>
+  <g id="st-heat">
+   <path d="M175 604H505" stroke="#5A6B7E" stroke-width="10" stroke-linecap="round"/><path d="M185 612V600M495 612V600" stroke="#5A6B7E" stroke-width="6"/>
+   <path d="M200 606L160 760M480 606L520 760M340 606V760" stroke="#5A6B7E" stroke-width="9" stroke-linecap="round"/>
+   <path d="M190 600q15-10 30 0t30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0" stroke="#8A9AAD" stroke-width="3" fill="none"/>
+   <g transform="translate(340 690)"><path d="M-55 70Q-62 10 -20 0H20Q62 10 55 70Z" fill="url(#gGlass)" stroke="#8FB3D4" stroke-width="4"/><path d="M-50 70Q-55 30 -30 26H30Q55 30 50 70Z" fill="#CFE6FA"/><rect x="-8" y="-22" width="16" height="24" rx="4" fill="#C9C1A8"/>
+    <g class="flick"><path d="M0 -84C-16 -60 -18 -40 0 -24C18 -40 16 -60 0 -84Z" fill="#FFB238"/><path d="M0 -66C-8 -52 -8 -40 0 -30C8 -40 8 -52 0 -66Z" fill="#FFF0B0"/></g></g>
+   ${ART.beaker(200,300,280,296,.78)}
+   <g id="st-bub">${Array.from({length:14},(_,i)=>`<circle cx="${225+(i*37)%230}" cy="580" r="${4+i%4*2}" fill="#fff" opacity=".8" style="animation:stbub ${1.6+(i%5)*.3}s ${-(i*.37)}s linear infinite"/>`).join('')}</g>
+   <text x="200" y="285" class="lbl" font-size="24">Boiling water</text>
+   <text x="560" y="610" class="lbl" font-size="22" fill="#4A5F78">Wire gauze</text><text x="420" y="740" class="lbl" font-size="22">Spirit lamp</text>
+  </g>
+  <g id="st-l1" opacity="0"><g transform="translate(245 500) rotate(-22)"><path id="stleaf1" d="${ART.leafPath(170,52)}" fill="${GREEN}"/></g>
+   <g transform="translate(560 330)"><rect width="190" height="70" rx="35" fill="#142B45"/><text id="sttimer" x="95" y="46" text-anchor="middle" class="lbl-w" font-size="32">0 min</text></g></g>
+  <g id="st-l2" opacity="0">
+   <path d="M306 210V540a30 30 0 0060 0V210" fill="url(#gGlass)" stroke="#8FB3D4" stroke-width="5"/>
+   <path id="stalc" d="M311 330V540a25 25 0 0050 0V330Z" fill="#EAF6FF" opacity=".95"/>
+   <g transform="translate(336 350) rotate(90)"><path id="stleaf2" d="${ART.leafPath(190,22)}" fill="${GREEN}"/></g>
+   <path d="M380 340H560" stroke="#142B45" stroke-width="3"/><text x="570" y="348" class="lbl" font-size="24">Alcohol in a test tube</text>
+   <path d="M372 470H560" stroke="#142B45" stroke-width="3"/><text x="570" y="478" class="lbl" font-size="24">Leaf losing its colour</text>
+   <text x="570" y="520" font-size="21" fill="#4A5F78" font-family="Inter,sans-serif" font-weight="600">(test tube kept in a hot water bath)</text></g>
+  <g id="st-plate" opacity="0" transform="translate(520 440) scale(1.45) translate(-760 -600)">
+   <ellipse cx="760" cy="640" rx="230" ry="66" fill="#DCE6F0"/><ellipse cx="760" cy="630" rx="230" ry="62" fill="#fff" stroke="#C9D7E5" stroke-width="4"/><ellipse cx="760" cy="630" rx="180" ry="44" fill="#F5F9FD"/>
+   <g transform="translate(615 640) rotate(-8)"><path id="stleaf3" d="${ART.leafPath(300,80)}" fill="${PALE}" stroke="#D8CDA8" stroke-width="3"/><g id="stspots"></g></g>
+   <text x="760" y="740" text-anchor="middle" class="lbl" font-size="24" id="stplbl">Decolourised leaf on a plate</text></g>
+  <g id="st-drop" opacity="0" transform="translate(520 440) scale(1.45) translate(-760 -600)">
+   <g transform="translate(930 470)"><rect x="-40" y="-90" width="80" height="120" rx="14" fill="#8A4B12"/><rect x="-22" y="-112" width="44" height="26" rx="6" fill="#3D2A1A"/><rect x="-32" y="-50" width="64" height="44" rx="6" fill="#fff"/><text y="-30" text-anchor="middle" font-size="13" font-weight="800" fill="#142B45" font-family="Inter,sans-serif">Iodine</text><text y="-14" text-anchor="middle" font-size="13" font-weight="800" fill="#142B45" font-family="Inter,sans-serif">solution</text></g>
+   <g id="stdropper" transform="translate(760 300)"><rect x="-8" y="0" width="16" height="170" rx="6" fill="url(#gGlass)" stroke="#8FB3D4" stroke-width="3"/><rect x="-5" y="110" width="10" height="56" fill="${IOD}"/><ellipse cx="0" cy="-12" rx="22" ry="30" fill="#E0475B"/></g>
+   <g id="stdrops"></g></g>
+  <g id="st-res" opacity="0"><rect x="300" y="40" width="440" height="110" rx="26" fill="${BB}"/><text x="520" y="88" text-anchor="middle" class="lbl-w" font-size="30">Blue-black colour</text><text x="520" y="126" text-anchor="middle" font-size="24" fill="#FFE7A3" font-weight="700" font-family="Inter,sans-serif">→ starch is present</text></g>
+ </svg><style>@keyframes stbub{0%{transform:translateY(0);opacity:0}15%{opacity:.9}100%{transform:translateY(-210px);opacity:0}}</style></div>
+ <div class="col" style="gap:16px">${stepList(['Keep a leaf in <b>boiling water</b> for five minutes to soften it.','Dip it in <b>alcohol</b> in a test tube; place the tube in a beaker of boiling water until the leaf becomes <b>colourless</b>.','Take out the leaf and place it on a <b>plate</b>.','Put a few drops of <b>diluted iodine solution</b> with a dropper.','Wait a few minutes. <b>Blue-black</b> colour shows the presence of <b>starch</b>.'])}
+  ${CAUTION('Alcohol should <b>never</b> be placed near a heat source directly. It is highly flammable and can easily lead to fire and burns.')}</div></div>`,
+ steps:5,
+ onStep(el,s,o){
+  o._bag.clear();markSteps(el,s);
+  const show=(id,v)=>$(id,el).setAttribute('opacity',v?1:0);
+  show('#st-heat',s<=2);show('#st-l1',s===1);show('#st-l2',s===2);show('#st-plate',s>=3);show('#st-drop',s===4);show('#st-res',s===5);
+  $('#st-bub',el).style.display=s<=2?'':'none';
+  $('.caution',el).style.boxShadow=s===2?'0 0 0 5px #FF9C80':'';
+  const L1=$('#stleaf1',el),L2=$('#stleaf2',el),L3=$('#stleaf3',el),A=$('#stalc',el),sp=$('#stspots',el);
+  L1.setAttribute('fill',GREEN);L2.setAttribute('fill',GREEN);A.setAttribute('fill','#EAF6FF');L3.setAttribute('fill',PALE);sp.innerHTML='';$('#stdrops',el).innerHTML='';
+  $('#stplbl',el).textContent=s===5?'Leaf after iodine test':s===4?'Adding diluted iodine solution':'Decolourised leaf on a plate';
+  if(s===1)o._bag.tw(2600,e=>$('#sttimer',el).textContent=Math.round(e*5)+' min');
+  if(s===2){o._bag.add(tweenAttr(L2,'fill',GREEN,PALE,3800));o._bag.add(tweenAttr(A,'fill','#EAF6FF','#A7DDA9',3800));}
+  const spots=()=>{sp.innerHTML=[[70,0,26],[150,-8,30],[220,6,22],[120,18,18]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r*.6}" fill="${IOD}" opacity=".85"/>`).join('');};
+  if(s===4){const d=$('#stdropper',el);o._bag.tw(900,e=>d.setAttribute('transform',`translate(${lerp(930,760,e)} ${lerp(260,400,e)})`),()=>{
+    let n=0;const drop=()=>{if(n++>=4){spots();return;}const c=svgEl('circle',{cx:760,cy:600,r:9,fill:IOD},$('#stdrops',el));o._bag.tw(500,e=>c.setAttribute('cy',lerp(600,632,e)),()=>{c.remove();spots();o._bag.later(200,drop);});};drop();});}
+  if(s===5){spots();$$('ellipse',sp).forEach(e=>e.setAttribute('fill',BB));o._bag.add(tweenAttr(L3,'fill',PALE,BB,2600));}
+ }
+});
+
+/* ===================== WHY DECOLOURISE + BEFORE/AFTER ===================== */
+function leafCard(fill,label,sub,vein){return`<div class="card" style="text-align:center;padding:24px"><svg width="380" height="210" viewBox="0 0 380 210"><g transform="translate(30 105)"><path d="${ART.leafPath(320,90)}" fill="${fill}"/><path d="M4 0H300" stroke="${vein||'rgba(255,255,255,.55)'}" stroke-width="6" stroke-linecap="round"/></g></svg><h3>${label}</h3><p class="muted" style="font-size:24px">${sub}</p></div>`;}
+S({id:'decol',sec:'10.2 Starch test',title:'Why decolourise the leaf?',head:'Why do we decolourise the leaf first?',
+ notes:'Ask the question first and let students think. Then reveal the side-by-side: iodine on a green leaf is hard to see.',
+ html:`<div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:20px;align-items:center">
+   ${leafCard(GREEN,'Fresh leaf','Green due to chlorophyll')}<div style="font-size:60px;color:#9AB0C7">→</div>
+   ${leafCard(PALE,'Decolourised','After alcohol in water bath','#D8CDA8')}<div style="font-size:60px;color:#9AB0C7">→</div>
+   ${leafCard(BB,'After iodine','Blue-black = starch present')}</div>
+  <div class="q" style="margin-top:34px"><div class="qm">?</div>Did you wonder why we decolourise the leaf at the beginning of this activity?</div>
+  <div class="grid2 even rv" data-s="1" style="height:auto;margin-top:26px;gap:30px">
+   <div class="fact" style="background:linear-gradient(135deg,#E3EFFD,#fff);border-color:#BFD6EE"><div class="tag" style="color:#3988E8">Dive deeper</div><p>Decolourisation removes the green colour, so we can <b>easily observe the colour change</b> — and thus the presence of starch.</p></div>
+   <div class="card green"><p><b>So far:</b> Activity 10.1 — water and sunlight are essential for growth. Activity 10.2 — <b>green leaves store starch</b> as food.</p></div></div>`
+});
+
+/* ===================== ACTIVITY 10.3 — VARIEGATED LEAF ===================== */
+function varLeaf(id){return`<g id="${id}"><clipPath id="${id}c"><path d="${ART.leafPath(520,150)}"/></clipPath>
+  <path class="vm" d="${ART.leafPath(520,150)}" fill="#F3F0D2"/>
+  <g clip-path="url(#${id}c)"><path class="vp" d="M40 0C70 -60 120 -95 190 -88C240 -110 300 -70 340 -84C400 -60 430 -30 470 -10C440 20 410 50 360 60C310 96 250 70 210 92C150 100 100 70 40 0Z" fill="${GREEN}"/></g>
+  <path d="M6 0H500" stroke="rgba(255,255,255,.5)" stroke-width="6" stroke-linecap="round"/>
+  <path class="vt" d="${ART.leafPath(520,150)}M40 0C70 -60 120 -95 190 -88C240 -110 300 -70 340 -84C400 -60 430 -30 470 -10C440 20 410 50 360 60C310 96 250 70 210 92C150 100 100 70 40 0Z" fill="none" stroke="#3988E8" stroke-width="4" stroke-dasharray="10 8" opacity="0"/></g>`;}
+S({id:'a103',sec:'10.2 Why is chlorophyll important?',title:'Activity 10.3 — Variegated leaf',head:'Activity 10.3: How does sunlight help make starch?',zoom:true,
+ notes:'Bhaskar uses a leaf with green and non-green patches (e.g. croton, coleus). Ask students to <b>predict</b> which parts will turn blue-black before you run the test. Press Next: trace → iodine test → observations.',
+ html:`<div class="viz" style="height:470px"><svg viewBox="0 0 1740 470">
+   <rect width="860" height="470" rx="28" fill="url(#gSky)"/>${ART.sun(780,80,36)}<rect x="880" width="860" height="470" rx="28" fill="#1C2B45"/>
+   <circle cx="1650" cy="80" r="30" fill="#E6ECF5"/><circle cx="1664" cy="70" r="28" fill="#1C2B45"/>
+   <text x="36" y="62" class="lbl" font-size="34">Plant kept in sunlight</text><text x="916" y="62" class="lbl-w" font-size="34">Plant kept in the dark — 36 hours</text>
+   <g transform="translate(170 260)">${varLeaf('vl1')}</g><g transform="translate(1050 260)">${varLeaf('vl2')}</g>
+   <g font-family="Inter,sans-serif" font-weight="700" font-size="26"><rect x="270" y="384" width="320" height="52" rx="26" fill="#fff"/><text id="vcap1" x="430" y="419" text-anchor="middle" fill="#142B45">Before the test</text>
+   <rect x="1150" y="384" width="320" height="52" rx="26" fill="#fff"/><text id="vcap2" x="1310" y="419" text-anchor="middle" fill="#142B45">Before the test</text></g>
+  </svg></div>
+  <div style="display:grid;grid-template-columns:1fr 1.25fr;gap:30px;margin-top:22px">
+   <div class="col" style="gap:14px"><div class="q" style="font-size:29px"><div class="qm">?</div>Predict: which parts of each leaf will turn blue-black?</div>
+    <div class="ctrls"><button class="btn" id="vtr">✎ Trace patches</button><button class="btn pri" id="vgo">Do the iodine test</button><button class="btn sm" id="vrs">↺</button></div></div>
+   <table class="tb rv" data-s="3"><tr><th>Light condition</th><th>Before test</th><th>After iodine test</th></tr>
+    <tr><td>Plant in <b>sunlight</b></td><td>Green and non-green patches</td><td><b>Green patches turned blue-black</b></td></tr>
+    <tr><td>Plant in the <b>dark</b></td><td>Green and non-green patches</td><td><b>No change in colour</b></td></tr></table></div>`,
+ steps:3,
+ init(el,o){
+  const parts=id=>({m:$('#'+id+' .vm',el),p:$('#'+id+' .vp',el),t:$('#'+id+' .vt',el)});
+  o.set=(stage)=>{o._bag.clear();const a=parts('vl1'),b=parts('vl2');
+   [a,b].forEach(x=>{x.m.setAttribute('fill','#F3F0D2');x.p.setAttribute('fill',GREEN);x.t.setAttribute('opacity',stage>=1?1:0);});
+   $('#vcap1',el).textContent=$('#vcap2',el).textContent=stage>=1?'Patches traced':'Before the test';
+   if(stage>=2){const run=()=>{$('#vcap1',el).textContent=$('#vcap2',el).textContent='Decolourising…';
+     o._bag.add(tweenAttr([a.p,b.p],'fill',GREEN,PALE,1400,()=>{$('#vcap1',el).textContent=$('#vcap2',el).textContent='Adding iodine…';
+      o._bag.add(tweenAttr([a.m,b.m],'fill','#F3F0D2',IOD,1800));o._bag.add(tweenAttr(a.p,'fill',PALE,BB,1800));o._bag.add(tweenAttr(b.p,'fill',PALE,'#D6AA6B',1800,()=>{
+       $('#vcap1',el).textContent='Green parts: blue-black';$('#vcap2',el).textContent='No blue-black anywhere';}));}));};run();}
+  };
+  $('#vtr',el).onclick=()=>{APP.step=Math.max(APP.step,1);applyStep();};
+  $('#vgo',el).onclick=()=>{APP.step=Math.max(APP.step,2);applyStep();};
+  $('#vrs',el).onclick=()=>{APP.step=0;applyStep();};
+ },
+ onStep(el,s,o){if(s!==o.last){if(!(o.last>=2&&s>=2))o.set(s);o.last=s;}},
+ enter(el,o){o.last=-1;}
+});
+
+/* ===================== 10.3 INFERENCE + COLOURED LEAVES ===================== */
+S({id:'chl',sec:'10.2 Why is chlorophyll important?',title:'Chlorophyll is essential',head:'What do we infer?',
+ notes:'Discuss the tricky question: the non-green patches may still have a little chlorophyll — just not enough to make detectable starch. Then the coloured-leaves fact: click a leaf.',
+ html:`<div class="grid2 even" style="height:auto">
+  <div class="col">
+   <div class="card rv" data-s="1"><p>Starch is produced <b>only where the green patches are</b> — and only when the plant gets <b>sunlight</b>.</p></div>
+   <div class="q rv" data-s="2" style="font-size:28px"><div class="qm">?</div>Non-green patches did not turn blue-black. Does it mean there is no chlorophyll there?</div>
+   <div class="card blue rv" data-s="3"><p>Not necessarily! They <b>may not have sufficient chlorophyll</b> to prepare enough starch to be detected by the iodine test.</p></div>
+   <div class="concl rv" data-s="4"><b>Chlorophyll is essential</b> for preparing starch in the presence of sunlight. Hence leaves are called the <b>‘food factories’</b> of plants.</div>
+  </div>
+  <div class="fact rv" data-s="5"><div class="tag">Fascinating fact</div><h3 style="margin-bottom:10px">Red, violet and brown leaves</h3>
+   <svg viewBox="0 0 760 260" style="width:100%;height:250px">${[['#B3263E',0],['#6E3B8E',250],['#8A5A2B',500]].map(([c,x],i)=>`<g class="clk" data-cl="${i}" transform="translate(${x+20} 130) rotate(-20)"><path d="${ART.leafPath(220,70)}" fill="${c}"/><path class="hid" d="${ART.leafPath(220,70)}" fill="${GREEN}" opacity="0" style="transition:opacity .6s"/><path d="M4 0H206" stroke="rgba(255,255,255,.5)" stroke-width="5"/></g>`).join('')}</svg>
+   <p style="font-size:27px">They contain <b>more of these coloured pigments</b> than green chlorophyll, which <b>hides the green colour</b>. Some of these pigments also help in photosynthesis. An iodine test shows starch in these leaves too! <span class="muted">(Tap a leaf.)</span></p></div></div>`,
+ init(el){$$('[data-cl]',el).forEach(g=>g.onclick=()=>{const h=$('.hid',g);h.setAttribute('opacity',h.getAttribute('opacity')==='0'?.55:0);});}
+});
+
+/* ===================== 10.2.2 ROLE OF AIR — QUESTION ===================== */
+S({id:'airq',sec:'10.2 Role of carbon dioxide',title:'What about air?',head:'Is sunlight and chlorophyll enough?',zoom:true,
+ notes:'Pose the question. Accept guesses (oxygen? carbon dioxide? nitrogen?). Do not confirm yet — the experiment will tell us.',
+ html:`<div class="grid2 wideR" style="height:740px"><div class="viz" style="background:linear-gradient(170deg,#F2F7FC,#fff)"><svg viewBox="0 0 800 740" id="airsvg">
+  <g transform="translate(400 620)">${ART.pot(0,0,240,120)}</g>${ART.plant(400,624,{g:.55,H:360})}
+  <path id="airp1" d="M60 220C200 120 300 360 460 260S700 200 760 320" fill="none"/><path id="airp2" d="M40 500C160 420 260 520 380 420S620 380 770 470" fill="none"/>
+  <text x="400" y="80" text-anchor="middle" class="lbl" font-size="38">Air around the plant…</text></svg></div>
+  <div class="col">
+   <div class="kid">${avatar('#D69B70','#2A1A10','#8E5BD8',1)}<div class="bubble">“My sister told me that <b>air</b> plays a role in the process of food preparation in plants.”</div></div>
+   <div class="q rv" data-s="1"><div class="qm">?</div>Which gas from the air is essential for preparing food in plants?</div>
+   <div class="row rv" data-s="2" style="gap:20px">${ic('o2',90)}${ic('co2',90)}<div style="font-size:26px;font-weight:700;color:var(--ink2)">…and other gases. <br>Let’s experiment!</div></div>
+  </div></div>`,
+ init(el,o){o.f=[new Flow($('#airp1',el),{kind:'co2',r:30,n:5,speed:.06}),new Flow($('#airp2',el),{kind:'o2',r:30,n:5,speed:.05,seed:3})];},
+ tick(dt,t,el,o){o.f.forEach(f=>f.tick(dt));}
+});
+
+/* ===================== ACTIVITY 10.4 — CO2 BOTTLE ===================== */
+S({id:'a104',sec:'10.2 Role of carbon dioxide',title:'Activity 10.4 — Caustic soda bottle',head:'Activity 10.4: Is carbon dioxide needed?',
+ notes:'Demonstration by the teacher only. Caustic soda (sodium hydroxide) absorbs carbon dioxide, so the air inside the bottle has no CO₂. Everything else (water, sunlight, chlorophyll) is the same for both halves of the leaf.',
+ html:`<div class="grid2"><div class="viz" style="background:linear-gradient(170deg,#F2F7FC,#fff)"><svg viewBox="0 0 1040 790" id="c4svg">
+  <g id="c4sun" opacity="0" style="transition:opacity .8s">${ART.sun(110,100,46)}${[0,1,2].map(i=>`<line x1="${170+i*20}" y1="${150+i*30}" x2="${520+i*40}" y2="${130+i*60}" stroke="url(#gRay)" stroke-width="10" class="dash" stroke-linecap="round"/>`).join('')}</g>
+  <g transform="translate(300 640)">${ART.pot(0,0,250,130)}</g>
+  ${ART.plant(300,644,{g:.42,H:380,nobranch:1})}
+  <path d="M305 420Q440 150 665 118" stroke="#2E9C57" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <g id="c4bottle" opacity="0" style="transition:opacity .6s">
+   <path d="M650 250V300Q560 320 560 380V700Q560 730 590 730H830Q860 730 860 700V380Q860 320 770 300V250" fill="url(#gGlass)" stroke="#8FB3D4" stroke-width="5"/>
+   <path d="M566 640H854V700Q854 724 830 724H590Q566 724 566 700Z" fill="#F4E9F7" opacity=".9"/>
+   <text x="710" y="772" text-anchor="middle" class="lbl" font-size="23">Caustic soda (sodium hydroxide) solution</text>
+   <rect x="636" y="222" width="148" height="36" rx="8" fill="#B07A47"/><path d="M710 222V258" stroke="#6E4722" stroke-width="3"/>
+   <g id="c4in"></g><text x="900" y="430" class="lbl" font-size="22" id="c4nolbl" opacity="0">No CO₂</text><text x="900" y="458" class="lbl" font-size="22" id="c4nolbl2" opacity="0">inside</text></g>
+  <g transform="translate(665 118) rotate(70)">
+   <clipPath id="c4co"><rect x="-10" y="-120" width="140" height="240"/></clipPath><clipPath id="c4ci"><rect x="130" y="-120" width="300" height="240"/></clipPath>
+   <path id="c4lo" clip-path="url(#c4co)" d="${ART.leafPath(360,90)}" fill="${GREEN}"/><path id="c4li" clip-path="url(#c4ci)" d="${ART.leafPath(360,90)}" fill="${GREEN}"/>
+   <path d="M4 0H340" stroke="rgba(255,255,255,.5)" stroke-width="6"/></g><g id="c4cork" opacity="0"><rect x="636" y="222" width="148" height="36" rx="8" fill="#B07A47" opacity=".92"/><path d="M710 222V258" stroke="#6E4722" stroke-width="3"/></g>
+  <path id="c4path" d="M500 60C600 0 780 40 760 120S600 230 560 140S700 20 840 80" fill="none"/>
+  <g id="c4lbls" opacity="0" font-family="Inter,sans-serif" font-weight="800" font-size="24"><rect x="760" y="60" width="270" height="48" rx="24" fill="${BB}"/><text x="895" y="93" text-anchor="middle" fill="#fff">Outside: blue-black</text>
+   <rect x="640" y="520" width="200" height="80" rx="20" fill="#fff" stroke="#D6AA6B" stroke-width="3"/><text x="740" y="553" text-anchor="middle" fill="#142B45">Inside:</text><text x="740" y="584" text-anchor="middle" fill="#142B45">no blue-black</text></g>
+  <g id="c4dark" opacity="0" style="transition:opacity .8s" pointer-events="none"><rect width="1040" height="790" fill="#142B45" opacity=".82"/><circle cx="900" cy="110" r="44" fill="#E6ECF5"/><circle cx="920" cy="96" r="42" fill="#2A3B56"/><text x="520" y="120" text-anchor="middle" class="lbl-w" font-size="40">In the dark for 2–3 days</text><text x="520" y="166" text-anchor="middle" fill="#C9D7E5" font-size="28" font-family="Inter,sans-serif" font-weight="600">The plant uses up its stored starch (destarching)</text></g>
+ </svg></div>
+ <div class="col" style="gap:14px">${stepList(['Keep a potted plant in the <b>dark for 2–3 days</b> to destarch it.','Pour <b>caustic soda</b> into a wide-mouthed bottle — it <b>absorbs carbon dioxide</b>.','Insert <b>half of a leaf</b> into the bottle through a split cork; the other half stays outside.','Place the set-up in <b>sunlight</b> for a few hours.','Remove the leaf and do the <b>iodine test</b>.'])}
+  ${CAUTION('Caustic soda is a strong chemical that can cause skin burns; <b>only teachers</b> should handle it.')}</div></div>`,
+ steps:5,
+ init(el,o){
+  o.out=new Flow($('#c4path',el),{kind:'co2',r:17,n:6,speed:.05,seed:9});o.out.set(false);
+  const box=$('#c4in',el);o.inm=[];for(let i=0;i<6;i++){const g=svgEl('g',{},box);g.innerHTML=ART.mol('co2',16);o.inm.push({g,x:600+(i%3)*90,y:360+Math.floor(i/3)*110,v:0});}
+ },
+ onStep(el,s,o){
+  o._bag.clear();markSteps(el,s);const sh=(id,v)=>$(id,el).setAttribute('opacity',v?1:0);
+  sh('#c4dark',s===1);sh('#c4bottle',s>=2);sh('#c4cork',s>=2);sh('#c4sun',s>=4);sh('#c4lbls',s>=5&&o.done);
+  o.out.set(s>=2);o.absorb=s>=2;o.inm.forEach((m,i)=>{m.y=360+Math.floor(i/3)*110;m.gone=s>=3;m.g.style.opacity=m.gone?0:1;});
+  sh('#c4nolbl',s>=3);sh('#c4nolbl2',s>=3);
+  const lo=$('#c4lo',el),li=$('#c4li',el);lo.setAttribute('fill',GREEN);li.setAttribute('fill',GREEN);
+  $('#c4lo',el).classList.toggle('glowleaf',s===4);
+  if(s===5){o.done=false;o._bag.add(tweenAttr([lo,li],'fill',GREEN,PALE,1300,()=>{o._bag.add(tweenAttr(lo,'fill',PALE,BB,1800));o._bag.add(tweenAttr(li,'fill',PALE,'#D6AA6B',1800,()=>{o.done=true;sh('#c4lbls',1);}));}));}
+ },
+ tick(dt,t,el,o){o.out.tick(dt);if(o.absorb)o.inm.forEach((m,i)=>{if(m.gone)return;m.y+=dt*(60+i*12);m.g.setAttribute('transform',`translate(${m.x+Math.sin(t*2+i)*14} ${m.y})`);if(m.y>625){m.gone=true;m.g.style.transition='opacity .4s';m.g.style.opacity=0;}});
+  else o.inm.forEach((m,i)=>m.g.setAttribute('transform',`translate(${m.x+Math.sin(t*2+i)*14} ${m.y})`));}
+});
+
+/* ===================== TABLE 10.3 + DEFINITION ===================== */
+const Y='<span class="yes">Yes</span>',N='<span class="no">No</span>';
+S({id:'t103',sec:'10.2 Role of carbon dioxide',title:'Table 10.3 & conclusion',head:'What does this experiment show?',
+ notes:'Tap each shaded cell to fill in Table 10.3 with the class. Only ONE condition differs between the two halves — carbon dioxide.',
+ html:`<table class="tb" id="t103"><tr><th>Part of the leaf</th><th>Water</th><th>Sunlight</th><th>Chlorophyll</th><th>Carbon dioxide</th><th>Starch present?</th></tr>
+  <tr><td><b>Inside</b> the bottle</td><td class="cell-hide">${Y}</td><td class="cell-hide">${Y}</td><td class="cell-hide">${Y}</td><td class="cell-hide">${N}</td><td class="cell-hide">${N}</td></tr>
+  <tr><td><b>Outside</b> the bottle</td><td class="cell-hide">${Y}</td><td class="cell-hide">${Y}</td><td class="cell-hide">${Y}</td><td class="cell-hide">${Y}</td><td class="cell-hide">${Y}</td></tr></table>
+  <div class="ctrls" style="margin-top:14px"><button class="btn sm" id="t3all">Fill all cells</button></div>
+  <div class="concl rv" data-s="1" style="margin-top:22px">Carbon dioxide present in the air is <b>essential</b> for plants to prepare starch.</div>
+  <div class="card rv" data-s="2" style="margin-top:22px"><p>Sunlight, water, chlorophyll and carbon dioxide are essential for making food. The process by which plants prepare food in the presence of sunlight and chlorophyll is called <b class="g" style="font-size:36px">photosynthesis</b>.</p></div>
+  <div class="row rv" data-s="3" style="margin-top:22px;gap:26px"><div class="card green" style="flex:1"><p>A <b>leaf</b> is the primary site for photosynthesis.</p></div><div class="card green" style="flex:1"><p><b>Other green parts</b> having chlorophyll also perform photosynthesis.</p></div></div>`,
+ init(el){const fill=c=>c.classList.remove('cell-hide');$$('.cell-hide',el).forEach(c=>c.onclick=()=>fill(c));$('#t3all',el).onclick=()=>$$('.cell-hide',el).forEach(fill);}
+});
+
+/* ===================== FOUR INGREDIENTS ===================== */
+S({id:'ingr',sec:'10.2 Photosynthesis',title:'Four essentials',head:'Photosynthesis needs four things',zoom:true,
+ notes:'Recap the evidence: Activity 10.1 (sunlight, water), 10.3 (chlorophyll + sunlight), 10.4 (carbon dioxide). Each card appears on Next.',
+ html:`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:30px;margin-top:20px">
+  ${[['sun','Sunlight','Provides the energy','#FFF4D6','Activity 10.1 & 10.3'],['drop','Water','Taken up by the roots from the soil','#E3EFFD','Activity 10.1'],['co2','Carbon dioxide','Taken in from the air','#EEF1F4','Activity 10.4'],['leaf','Chlorophyll','Green pigment that captures sunlight','#DFF5E5','Activity 10.3']].map(([k,t,d,bg,ev],i)=>`
+  <div class="card rv" data-s="${i+1}" style="background:${bg};text-align:center;padding:40px 26px;height:480px;display:flex;flex-direction:column;align-items:center;gap:20px"><div class="bob" style="animation-delay:-${i*.7}s">${ic(k,150)}</div><h3 style="font-size:42px">${t}</h3><p>${d}</p><div class="pill" style="margin-top:auto;background:#fff">Evidence: ${ev}</div></div>`).join('')}</div>
+  <div class="concl rv" data-s="5" style="margin-top:34px;text-align:center">Together, they let the leaf make <b>glucose</b> — and release <b>oxygen</b>.</div>`
+});
+
+/* ===================== THE MAIN EVENT — CINEMATIC JOURNEY ===================== */
+const PJ=[
+ {t:'Journey into a living plant',d:'Let us use a magical camera to travel inside a plant and watch it make its own food.',vb:[0,0,1740,760]},
+ {t:'Step 1 · Water absorption',d:'<b class="bl">Water</b> (with minerals) is taken up by the <b>roots</b> from the soil and travels up the <b>stem</b> to the leaves.',vb:[0,0,1740,760]},
+ {t:'Step 2 · Carbon dioxide enters',d:'<b>Carbon dioxide</b> from the air enters the leaf through tiny pores called <b>stomata</b>.',vb:[900,118,640,279]},
+ {t:'Step 3 · Sunlight is captured',d:'<b style="color:#C48A00">Sunlight</b> falls on the leaf. The green pigment <b class="g">chlorophyll</b> captures it.',vb:[900,118,640,279]},
+ {t:'Step 4 · Food is made',d:'Using the energy of sunlight, the leaf makes <b class="fd">glucose</b> (a simple carbohydrate) from carbon dioxide and water.',vb:[930,140,560,244]},
+ {t:'Step 5 · Oxygen is released',d:'<b style="color:#1AA6BA">Oxygen</b> is released and leaves through the stomata into the air.',vb:[900,118,640,279]},
+ {t:'Step 6 · Food is used and stored',d:'Glucose is an <b>instant source of energy</b>. Later it is converted into <b>starch</b> for storage, and food is carried to other parts of the plant.',vb:[640,60,1000,437]}];
+S({id:'journey',sec:'10.2 Photosynthesis',title:'★ Photosynthesis — the main event',head:'Photosynthesis: inside the food factory',
+ notes:'The centrepiece. Press <b>Next</b> for each of the 6 steps — the camera zooms in automatically. Pause on each step and ask students to say what they see. Point out: the plant does <b>not</b> take food from the soil; it takes water and minerals.',
+ html:`<div class="viz" style="height:770px"><svg id="pjsvg" viewBox="0 0 1740 760" preserveAspectRatio="xMidYMid slice">
+  <rect x="-200" y="-200" width="2200" height="720" fill="url(#gSky)"/>
+  <g id="pjsun">${ART.sun(150,110,56)}</g>
+  <rect x="-200" y="520" width="2200" height="440" fill="url(#gSoil)"/><path d="M-200 522Q400 505 870 522T2000 518V536H-200Z" fill="#5DBB7C"/>
+  <g id="pjsoil"></g>
+  <g id="pjroots" stroke="#C9A06A" stroke-linecap="round" fill="none"><path d="M760 520V730" stroke-width="16"/><path d="M760 580Q700 610 620 700M760 600Q830 640 900 710M760 650Q720 690 690 745M760 640Q800 670 840 750M700 640L660 650M830 660L870 650" stroke-width="7"/></g>
+  <path d="M760 522Q752 340 768 150" stroke="url(#gStem)" stroke-width="26" fill="none" stroke-linecap="round"/>
+  <path d="M762 330Q880 270 1002 252" stroke="#2E9C57" stroke-width="12" fill="none" stroke-linecap="round"/>
+  ${ART.leaf(760,250,210,64,-150)}${ART.leaf(762,420,180,56,-165)}${ART.leaf(768,160,150,48,-70)}${ART.leaf(764,200,170,52,-118)}${ART.leaf(760,470,150,46,-20)}
+  <g id="pjleaf" transform="translate(1000 252)"><path d="${ART.leafPath(420,120)}" fill="url(#gLeafD)"/>
+   <clipPath id="pjclip"><path d="${ART.leafPath(420,120)}"/></clipPath>
+   <g id="pjcells" clip-path="url(#pjclip)" opacity="0" style="transition:opacity 1s"></g>
+   <path d="M4 0H400" stroke="#BFF0D0" stroke-width="4" stroke-linecap="round"/><g id="pjstoma"></g><g id="pjfood"></g></g>
+  <g id="pjflows"></g>
+  <path id="pw1" d="M600 700Q690 690 760 690V300Q880 270 1002 252H1250" fill="none"/>
+  <path id="pw2" d="M920 715Q850 650 760 640V320Q880 268 1002 252H1330" fill="none"/>
+  <g id="pjlbl" font-family="Inter,sans-serif" font-weight="800">
+   <g class="L0"><text x="600" y="770" font-size="30" fill="#fff">Roots</text><text x="800" y="420" font-size="30" fill="#142B45">Stem</text><text x="1180" y="190" font-size="30" fill="#142B45">Leaf</text></g>
+   <g class="L2" opacity="0"><text id="pjstl" font-size="13" fill="#142B45">stomata (tiny pores)</text></g></g>
+ </svg>
+ <div class="card soft overlay" style="left:26px;bottom:26px;width:760px;padding:24px 30px"><div class="pill g" id="pjstep" style="margin-bottom:10px">Overview</div><h3 id="pjt" style="font-size:38px;margin-bottom:8px"></h3><p id="pjd" style="font-size:28px"></p></div>
+ <div class="ctrls overlay" style="right:26px;bottom:26px"><button class="btn" id="pjb">◀</button><button class="btn pri" id="pjn">Next step ▶</button></div>
+ <div class="overlay" style="right:26px;top:22px;display:flex;gap:8px" id="pjdots">${PJ.map((_,i)=>`<i style="width:14px;height:14px;border-radius:50%;background:#C9D9EA;display:block"></i>`).join('')}</div></div>`,
+ steps:6,
+ init(el,o){
+  const svg=$('#pjsvg',el),L=420,W=120;
+  // soil water drops & minerals
+  const R=rng(21);let s='';for(let i=0;i<36;i++){const x=420+R()*700,y=560+R()*190;s+=`<g transform="translate(${x} ${y})">${ART.mol(i%4?'water':'mineral',i%4?8:6)}</g>`;}$('#pjsoil',el).innerHTML=s;
+  // leaf cells
+  let c='';const cells=[];for(let y=-70;y<70;y+=17)for(let x=-10;x<440;x+=23){const ox=(Math.round(y/17)%2)*11;c+=`<rect x="${x+ox}" y="${y}" width="21" height="15" rx="6" fill="url(#gCell)" stroke="#8ED3A6" stroke-width="1"/>`;for(let k=0;k<3;k++)c+=`<ellipse class="chl" cx="${x+ox+4+R()*13}" cy="${y+4+R()*7}" rx="2.6" ry="1.7" fill="#22A35A"/>`;if(Math.abs(y)<40&&x>40&&x<380)cells.push([x+ox+10,y+7]);}
+  $('#pjcells',el).innerHTML=c;
+  // stomata along lower edge (cubic bezier)
+  const bz=t=>{const P=[[0,0],[L*.25,W],[L*.7,W*.95],[L,0]],u=1-t;return[0,1].map(k=>u*u*u*P[0][k]+3*u*u*t*P[1][k]+3*u*t*t*P[2][k]+t*t*t*P[3][k]);};
+  o.st=[.3,.45,.6,.75].map(t=>{const p=bz(t);return[p[0],p[1]-3];});
+  $('#pjstoma',el).innerHTML=o.st.map(([x,y])=>`<g transform="translate(${x} ${y})"><ellipse cx="-4" rx="4" ry="6" fill="#178048"/><ellipse cx="4" rx="4" ry="6" fill="#178048"/><ellipse rx="1.6" ry="4.5" fill="#0E3B23"/></g>`).join('');
+  const sl=$('#pjstl',el);sl.setAttribute('x',1000+o.st[0][0]-20);sl.setAttribute('y',252+o.st[0][1]+32);
+  // flows (world coords)
+  const F=$('#pjflows',el),mk=(d)=>svgEl('path',{d,fill:'none'},F);
+  o.fw=[new Flow($('#pw1',el),{kind:'water',r:9,n:14,speed:.09,into:F}),new Flow($('#pw2',el),{kind:'water',r:9,n:14,speed:.08,seed:4,into:F})];
+  o.fc=o.st.map(([x,y],i)=>new Flow(mk(`M${1000+x-60+i*20} 470Q${1000+x-10} 360 ${1000+x} ${252+y}L${1000+x+6} ${252+y-30}`),{kind:'co2',r:7,n:3,speed:.25,seed:i+2,into:F}));
+  o.fp=[0,1,2,3,4].map(i=>new Flow(mk(`M${880+i*40} 100L${1080+i*70} ${226+(i%2)*14}`),{kind:'photon',r:4,n:4,speed:.6,seed:i+9,into:F}));
+  o.fo=o.st.map(([x,y],i)=>new Flow(mk(`M${1000+x+4} ${252+y-26}L${1000+x+4} ${252+y}Q${1000+x+40} 360 ${1000+x+70-i*10} 480`),{kind:'o2',r:7,n:3,speed:.22,seed:i+30,into:F}));
+  o.ff=[new Flow(mk('M1100 252H1002Q880 270 762 330V510'),{kind:'food',r:9,n:7,speed:.1,into:F})];
+  o.all=[...o.fw,...o.fc,...o.fp,...o.fo,...o.ff];o.all.forEach(f=>{f.set(false);f.alpha=0;});
+  o.cellpts=cells;o.vb=[0,0,1740,760];
+  o.setVB=v=>{o.vb=v;svg.setAttribute('viewBox',v.map(n=>n.toFixed(1)).join(' '));};
+  $('#pjn',el).onclick=()=>next();$('#pjb',el).onclick=()=>prev();
+ },
+ enter(el,o){o.setVB([0,0,1740,760]);},
+ onStep(el,s,o){
+  o._bag.clear();const p=PJ[s];$('#pjt',el).textContent=p.t;$('#pjd',el).innerHTML=p.d;$('#pjstep',el).textContent=s?`Step ${s} of 6`:'Overview';
+  $$('#pjdots i',el).forEach((d,i)=>d.style.background=i<=s?'#239B56':'#C9D9EA');
+  const from=o.vb.slice(),to=p.vb;o._bag.tw(1600,e=>o.setVB(from.map((v,i)=>lerp(v,to[i],e))));
+  o.fw.forEach(f=>f.set(s>=1&&s!==6||s===6));o.fc.forEach(f=>f.set(s>=2&&s<=5));o.fp.forEach(f=>f.set(s>=3&&s<=5));o.fo.forEach(f=>f.set(s>=5));o.ff.forEach(f=>f.set(s>=6));
+  $('#pjcells',el).setAttribute('opacity',s>=2?1:0);$('.L2',el).setAttribute('opacity',s===2||s===5?1:0);$('.L0',el).setAttribute('opacity',s<=1?1:0);
+  $('#pjleaf',el).classList.toggle('glowleaf',s===3||s===4);
+  $$('.chl',el).forEach(c=>c.setAttribute('fill',s>=3?'#3FD47A':'#22A35A'));
+  const fd=$('#pjfood',el);fd.innerHTML='';
+  if(s>=4){const pts=o.cellpts.filter((_,i)=>i%9===0).slice(0,12);
+   pts.forEach((q,i)=>{const g=svgEl('g',{transform:`translate(${q[0]} ${q[1]}) scale(0)`},fd);g.innerHTML=ART.mol('food',7);
+    if(s===4)o._bag.later(300+i*220,()=>o._bag.tw(500,e=>g.setAttribute('transform',`translate(${q[0]} ${q[1]}) scale(${e})`)));else g.setAttribute('transform',`translate(${q[0]} ${q[1]}) scale(1)`);});
+   if(s===4){const t=svgEl('g',{},fd);t.innerHTML=`<rect x="150" y="-104" width="230" height="30" rx="15" fill="#fff" opacity=".95"/><text x="265" y="-83" text-anchor="middle" font-size="15" font-weight="800" fill="#142B45" font-family="Inter,sans-serif">CO₂ + water → glucose</text>`;}
+  }
+  if(s===6){const ch=svgEl('g',{},fd);let h='';for(let i=0;i<7;i++)h+=`<g transform="translate(${150+i*15} ${-50+(i%2)*8})">${ART.mol('food',8)}</g>`;
+   ch.innerHTML=h+`<rect x="128" y="-96" width="150" height="30" rx="15" fill="#fff"/><text x="203" y="-75" text-anchor="middle" font-size="17" font-weight="800" fill="#142B45" font-family="Inter,sans-serif">starch (stored)</text>`+[0,1,2].map(i=>`<g class="pulse" style="animation-delay:-${i*.6}s" transform="translate(${300+i*28} ${30-i*6})">${ART.mol('energy',10)}</g>`).join('')+`<rect x="282" y="44" width="80" height="26" rx="13" fill="#fff"/><text x="322" y="62" text-anchor="middle" font-size="15" font-weight="800" fill="#142B45" font-family="Inter,sans-serif">energy</text>`;}
+ },
+ tick(dt,t,el,o){o.all.forEach(f=>f.tick(dt));}
+});
+
+/* ===================== WORD EQUATION (interactive) ===================== */
+const EQ={co2:['Carbon dioxide','co2','Taken in from the <b>air</b> through the <b>stomata</b> of leaves.'],water:['Water','drop','Absorbed from the <b>soil</b> by the <b>roots</b> and carried up to the leaves (along with minerals).'],
+ sun:['Sunlight','sun','Provides the <b>energy</b> needed for making food. Photosynthesis takes place only in light.'],chl:['Chlorophyll','leaf','The <b>green pigment</b> in leaves that <b>captures sunlight</b>.'],
+ glu:['Glucose','glucose','The <b>food</b> made — a simple carbohydrate. An instant source of energy; later converted to <b>starch</b> for storage.'],o2:['Oxygen','o2','Released into the <b>air</b> through the stomata. We and other living beings use it to respire.']};
+S({id:'eqn',sec:'10.2 Photosynthesis',title:'The word equation',head:'Photosynthesis in a nutshell',
+ notes:'Click each part of the equation to show its role. Stress: sunlight and chlorophyll are written <b>above and below the arrow</b> — they are needed, but are not raw materials.',
+ html:`<div class="card" style="padding:50px 40px;text-align:center">
+  <div style="display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:nowrap">
+   <button class="btn eqb" data-k="co2" style="font-size:36px;padding:20px 28px">${ic('co2',56)} Carbon dioxide</button><span style="font-size:52px;font-weight:800">+</span>
+   <button class="btn eqb" data-k="water" style="font-size:36px;padding:20px 28px">${ic('drop',56)} Water</button>
+   <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:300px"><button class="btn eqb sm" data-k="sun" style="background:#FFF4D6">${ic('sun',36)} Sunlight</button>
+    <svg width="300" height="34" viewBox="0 0 300 34"><path d="M6 17H282" stroke="#142B45" stroke-width="6" stroke-linecap="round"/><path d="M270 5L292 17L270 29" fill="none" stroke="#142B45" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <button class="btn eqb sm" data-k="chl" style="background:#DFF5E5">${ic('leaf',36)} Chlorophyll</button></div>
+   <button class="btn eqb" data-k="glu" style="font-size:36px;padding:20px 28px">${ic('glucose',56)} Glucose</button><span style="font-size:52px;font-weight:800">+</span>
+   <button class="btn eqb" data-k="o2" style="font-size:36px;padding:20px 28px">${ic('o2',56)} Oxygen</button></div>
+  <div id="eqinfo" class="row" style="justify-content:center;margin-top:40px;min-height:130px;gap:26px"><p class="muted">👆 Tap any part of the equation to learn its role.</p></div></div>
+ <div class="grid2 even" style="height:auto;margin-top:30px;gap:30px">
+  <div class="caution rv" data-s="1" style="background:#FFF6DD;border-color:#FFE3A0;color:#6B4A00;font-size:28px">${ic('warn',44)}<div><b>Myth buster:</b> plants do <b>not</b> take ready-made food from the soil. They take <b>water and minerals</b> from the soil and <b>make their own food</b> in the leaves.</div></div>
+  <div class="card green rv" data-s="2"><p>Food is made as <b>glucose</b>. Glucose is an instant source of energy and is later converted into <b>starch</b> for storage.</p></div></div>`,
+ init(el){$$('.eqb',el).forEach(b=>b.onclick=()=>{const [t,k,d]=EQ[b.dataset.k];$$('.eqb',el).forEach(x=>x.style.outline=x===b?'4px solid #3988E8':'');$('#eqinfo',el).innerHTML=`<div class="bob">${ic(k,110)}</div><div style="text-align:left;max-width:1100px"><h3 style="font-size:40px">${t}</h3><p>${d}</p></div>`;});},
+ enter(el){$('#eqinfo',el).innerHTML='<p class="muted">👆 Tap any part of the equation to learn its role.</p>';$$('.eqb',el).forEach(x=>x.style.outline='');}
+});
+
+/* ===================== ACTIVITY 10.5 — OXYGEN ===================== */
+function o2setup(x,dark){
+ return`<rect x="${x}" y="0" width="510" height="790" rx="26" fill="${dark?'#1C2B45':'url(#gSky)'}"/>
+ <text x="${x+30}" y="60" font-size="38" font-weight="800" class="${dark?'lbl-w':'lbl'}">${dark?'B — in the dark':'A — in sunlight'}</text>
+ ${dark?`<circle cx="${x+440}" cy="60" r="26" fill="#E6ECF5"/><circle cx="${x+452}" cy="52" r="24" fill="#1C2B45"/>`:ART.sun(x+440,64,30)}
+ ${ART.beaker(x+80,290,350,450,.86)}
+ <g stroke="#2E9C57" stroke-width="5" fill="none" stroke-linecap="round">${[0,1,2].map(j=>`<path d="M${x+215+j*40} 735Q${x+205+j*40} 680 ${x+225+j*38} 610"/>`).join('')}</g>
+ ${[0,1,2].map(j=>[0,1,2,3,4].map(k=>`<g transform="translate(${x+214+j*39-k*1.5} ${720-k*24})">${[-50,-20,20,50].map(a=>`<ellipse rx="11" ry="3.5" cx="9" fill="#3DB26A" transform="rotate(${a+(k%2)*15}) "/>`).join('')}</g>`).join('')).join('')}
+ <path d="M${x+130} 735L${x+238} 520V440H${x+272}V520L${x+380} 735" fill="url(#gGlass)" stroke="#8FB3D4" stroke-width="5" stroke-linejoin="round"/>
+ <path d="M${x+228} 470V230a27 27 0 0154 0V470" fill="rgba(160,205,250,.35)" stroke="#8FB3D4" stroke-width="5"/>
+ <rect id="gas${dark?'B':'A'}" x="${x+231}" y="205" width="48" height="0" fill="#FFFFFF" opacity=".9"/>
+ <g id="bub${dark?'B':'A'}"></g>
+ <text x="${x+300}" y="250" font-size="22" font-weight="700" class="${dark?'lbl-w':'lbl'}">Inverted test tube</text>
+ <text x="${x+300}" y="560" font-size="22" font-weight="700" class="lbl">Funnel</text><text x="${x+86}" y="775" font-size="22" font-weight="700" class="${dark?'lbl-w':'lbl'}">Water plant in water</text>`;}
+S({id:'a105',sec:'10.2 Oxygen is released',title:'Activity 10.5 — Bubbles of oxygen',head:'Activity 10.5: Do plants release something?',zoom:true,
+ notes:'Compare set-ups A and B. Ask: <i>Where do you see bubbles? Which gas could it be?</i> Then reveal Barkha didi’s matchstick test (teacher demonstration only).',
+ html:`<div class="grid2" style="grid-template-columns:1.32fr 1fr"><div class="viz"><svg viewBox="0 0 1040 790">${o2setup(0,0)}${o2setup(530,1)}</svg></div>
+ <div class="col" style="gap:12px">
+  <div class="q" style="font-size:27px;padding:16px 24px"><div class="qm">?</div><div>What difference do you observe between set-ups A and B?</div></div>
+  <div class="card rv" data-s="1" style="padding:16px 24px"><p style="font-size:27px">In <b>A (sunlight)</b>, bubbles of gas rise from the plant and collect at the top of the test tube. In <b>B (dark)</b> there are no bubbles.</p></div>
+  <div class="card rv" data-s="2" style="padding:18px 24px;display:flex;gap:20px;align-items:center"><svg width="170" height="210" viewBox="0 0 170 210" id="mtsvg">
+    <path d="M60 60V170a25 25 0 0050 0V60" fill="rgba(220,240,255,.6)" stroke="#8FB3D4" stroke-width="5"/>
+    <g id="mtstick" transform="translate(85 0)"><rect x="-3" y="20" width="6" height="110" fill="#E8C48A"/><circle cy="20" r="6" fill="#B3263E"/><g id="mtflame" class="flick" style="transform-origin:0 18px"><path d="M0 -26C-12 -8 -12 6 0 16C12 6 12 -8 0 -26Z" fill="#FFB238"/><path d="M0 -12C-5 -2 -5 6 0 12C5 6 5 -2 0 -12Z" fill="#FFF3B0"/></g></g></svg>
+   <div><p style="font-size:25px">Barkha didi closed the tube with her thumb, took it out, and quickly inserted a <b>lit matchstick</b>. It burned with an <b>intense flame</b>!</p><button class="btn sm pri" id="mtgo" style="margin-top:12px">🔥 Insert lit matchstick</button></div></div>
+  <div class="rv" data-s="2">${CAUTION('Only the teacher should handle a lit matchstick.')}</div>
+  <div class="concl rv" data-s="3" style="font-size:26px;padding:20px 28px">The gas is rich in <b>oxygen</b>. Oxygen is released during photosynthesis, which occurs in the presence of <b>sunlight</b>.</div>
+ </div></div>`,
+ init(el,o){
+  o.bs=[];o.gas=0;const box=$('#bubA',el);
+  o.spawn=()=>{const c=svgEl('circle',{r:3+Math.random()*4,fill:'rgba(255,255,255,.75)',stroke:'#fff','stroke-width':1.5},box);o.bs.push({c,x:205+Math.random()*110,y:640+Math.random()*60,v:70+Math.random()*50});};
+  o.reset=()=>{o.bs.forEach(b=>b.c.remove());o.bs=[];o.gas=0;$('#gasA',el).setAttribute('height',0);o.acc=0;const f=$('#mtflame',el);f.setAttribute('transform','');f.style.filter='';$('#mtstick',el).setAttribute('transform','translate(85 0)');};
+  $('#mtgo',el).onclick=()=>{const st=$('#mtstick',el),f=$('#mtflame',el);o._bag.tw(800,e=>st.setAttribute('transform',`translate(85 ${e*70})`),()=>o._bag.tw(700,e=>{f.setAttribute('transform',`scale(${1+e*1.4})`);f.style.filter=`drop-shadow(0 0 ${e*14}px #FFD166)`;}));};
+ },
+ enter(el,o){o.reset();},
+ tick(dt,t,el,o){o.acc=(o.acc||0)+dt;if(o.acc>.12&&o.bs.length<40){o.acc=0;o.spawn();}
+  const top=205+o.gas;
+  o.bs=o.bs.filter(b=>{b.y-=b.v*dt;const tx=255;if(b.y<540)b.x=lerp(b.x,tx,clamp(dt*4,0,1));b.c.setAttribute('cx',b.x+Math.sin(b.y/9)*1.5);b.c.setAttribute('cy',b.y);
+   if(b.y<top+4){b.c.remove();o.gas=Math.min(120,o.gas+.35);return false;}return true;});
+  $('#gasA',el).setAttribute('height',o.gas);}
+});
+
+/* ===================== ACTIVITY 10.6 — STOMATA (leaf peel) ===================== */
+S({id:'a106',sec:'10.2 Stomata: tiny gateways',title:'Activity 10.6 — Leaf peel',head:'Activity 10.6: Where do gases enter and leave?',zoom:true,
+ notes:'Teacher demonstration. Rhoeo leaves give the best peel. Use <b>Low power / High power</b> to zoom the microscope view. Students should spot the tiny pores — stomata.',
+ html:`<div class="grid2" style="grid-template-columns:1fr 1.05fr">
+  <div class="col" style="gap:10px">${stepList(['Collect a leaf (rhoeo, money plant, onion, hibiscus, coleus or grass) and put it in a beaker of water.','Carefully <b>peel a thin layer</b> from the <b>lower surface</b> of the leaf; keep it in a watch glass with water.','Put a drop of water on a slide and transfer the peel with <b>forceps</b>.','Add a drop of <b>ink</b> with a dropper, cover with a <b>coverslip</b>.','Observe it under a <b>microscope</b>.'])}
+   <div class="concl rv" data-s="6" style="font-size:28px">These tiny pores are called <b>stomata</b>. Stomata on the surface of leaves help in the <b>exchange of gases</b>.</div></div>
+  <div class="viz" style="background:#0F1C2E;display:grid;place-items:center"><svg viewBox="0 0 800 790" style="width:100%;height:100%">
+   <defs><clipPath id="mcl"><circle cx="400" cy="370" r="330"/></clipPath></defs>
+   <circle cx="400" cy="370" r="345" fill="#2A3B56"/>
+   <g clip-path="url(#mcl)"><rect x="0" y="0" width="800" height="790" fill="#E6E9FA"/><g id="peel" style="transition:transform 1.4s cubic-bezier(.4,0,.2,1);transform-origin:400px 370px"></g><circle cx="400" cy="370" r="330" fill="url(#gVig)"/></g>
+   <g id="mlbl" opacity="0" style="transition:opacity .6s"><path d="M470 300L600 170" stroke="#142B45" stroke-width="4"/><rect x="520" y="110" width="250" height="60" rx="30" fill="#142B45"/><text x="645" y="149" text-anchor="middle" class="lbl-w" font-size="25">Stoma (tiny pore)</text></g>
+   <g transform="translate(110 690)"><rect width="160" height="8" fill="#fff"/><text x="80" y="38" text-anchor="middle" class="lbl-w" font-size="22">0.1 mm</text></g>
+   <text x="400" y="770" text-anchor="middle" class="lbl-w" font-size="24" id="mmag">Low power</text></svg>
+   <div class="ctrls overlay" style="right:22px;top:22px"><div class="seg"><button id="mlo" class="on">Low power</button><button id="mhi">High power</button></div></div></div></div>`,
+ steps:6,
+ init(el,o){
+  const R=rng(33),cw=74,chh=48,cols=24,rows=30,V=[];for(let j=0;j<=rows;j++){V[j]=[];for(let i=0;i<=cols;i++)V[j][i]=[(i-cols/2)*cw+400+(j%2)*cw/2+(R()-.5)*26,(j-rows/2)*chh+370+(R()-.5)*18];}
+  let s='';const sto=[];
+  for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){const a=V[j][i],b=V[j][i+1],c=V[j+1][i+1],d=V[j+1][i];s+=`<path d="M${a}L${b}L${c}L${d}Z" fill="#DCE1F6" stroke="#6E62B8" stroke-width="3" stroke-linejoin="round"/>`;
+   if(R()<.075)sto.push([(a[0]+c[0])/2,(a[1]+c[1])/2,R()*60-30]);}
+  sto.push([432,328,-20]);
+  sto.forEach(([x,y,r])=>{s+=`<g transform="translate(${x} ${y}) rotate(${r})"><ellipse cx="-11" rx="11" ry="20" fill="#9ED39A" stroke="#3F7A45" stroke-width="2.5"/><ellipse cx="11" rx="11" ry="20" fill="#9ED39A" stroke="#3F7A45" stroke-width="2.5"/><ellipse rx="3.6" ry="13" fill="#2B2350"/>${[[-12,-8],[-13,6],[12,-6],[11,8]].map(([p,q])=>`<circle cx="${p}" cy="${q}" r="3" fill="#3F9A4A"/>`).join('')}</g>`;});
+  $('#peel',el).innerHTML=s;
+  o.mag=hi=>{$('#peel',el).style.transform=hi?'scale(1.9)':'scale(.55)';$('#mlo',el).classList.toggle('on',!hi);$('#mhi',el).classList.toggle('on',hi);$('#mmag',el).textContent=hi?'High power':'Low power';$('#mlbl',el).setAttribute('opacity',hi?1:0);};
+  $('#mlo',el).onclick=()=>o.mag(false);$('#mhi',el).onclick=()=>o.mag(true);
+ },
+ onStep(el,s,o){markSteps(el,Math.min(s,5));if(s>=6)$$('.step',el).forEach(d=>{d.classList.remove('on');d.classList.add('done');});o.mag(s>=5);}
+});
+
+/* ===================== STOMATA — GAS EXCHANGE ===================== */
+S({id:'gasx',sec:'10.2 Stomata: tiny gateways',title:'Gas exchange through stomata',head:'Stomata: the tiny gateways',
+ notes:'Toggle between the two processes. In sunlight, carbon dioxide goes in and oxygen comes out (photosynthesis). For respiration, oxygen goes in and carbon dioxide comes out — this happens all the time, day and night.',
+ html:`<div class="grid2"><div class="viz" style="background:linear-gradient(180deg,#F4FBFF,#fff)"><svg viewBox="0 0 1040 790" id="gxsvg">
+  <g id="gxsun">${ART.sun(90,80,40)}</g>
+  
+  <rect x="40" y="130" width="960" height="420" rx="40" fill="#E9F8EE"/>
+  <g id="gxcells"></g>
+  <text x="60" y="610" class="lbl" font-size="24">Lower surface of the leaf</text><text x="60" y="122" class="lbl" font-size="24">Upper surface</text>
+  <g id="gxf"></g>
+  <path id="gin" d="M440 780Q470 640 505 520Q515 470 470 400" fill="none"/><path id="gout" d="M570 400Q530 470 535 520Q560 640 610 780" fill="none"/>
+  <g font-family="Inter,sans-serif" font-weight="800" font-size="26"><rect x="150" y="690" width="210" height="50" rx="25" fill="#fff" stroke="#C9D7E5" stroke-width="2"/><text x="255" y="724" text-anchor="middle" fill="#142B45" id="gxin">CO₂ goes in</text>
+  <rect x="680" y="690" width="230" height="50" rx="25" fill="#fff" stroke="#C9D7E5" stroke-width="2"/><text x="795" y="724" text-anchor="middle" fill="#142B45" id="gxout">O₂ comes out</text></g>
+  <path d="M520 600L600 650" stroke="#142B45" stroke-width="3"/><text x="606" y="664" class="lbl" font-size="22">Stoma (pore)</text>
+ </svg><div class="ctrls overlay" style="right:24px;top:96px"><div class="seg"><button id="gxp" class="on">Photosynthesis</button><button id="gxr">Respiration</button></div></div></div>
+ <div class="col">
+  <div class="card"><p class="muted" style="font-size:23px;margin-bottom:6px">Picture: section through a leaf (magnified)</p><p>Stomata are tiny pores, mostly on the <b>lower surface</b> of leaves. They help in the <b>exchange of gases</b>.</p></div>
+  <div class="card sun rv" data-s="1"><h3>During photosynthesis</h3><p><b>Carbon dioxide enters</b> the leaf; <b>oxygen is released</b>.</p></div>
+  <div class="card blue rv" data-s="2"><h3>During respiration</h3><p><b>Oxygen enters</b>; <b>carbon dioxide is released</b>.</p></div>
+  <div class="concl rv" data-s="3" style="font-size:28px">The same tiny pores serve <b>both</b> processes.</div></div></div>`,
+ init(el,o){
+  const R=rng(8);let s='';for(let x=60;x<990;x+=52)s+=`<rect x="${x}" y="140" width="48" height="34" rx="10" fill="#F4FFF6" stroke="#9AD8AE" stroke-width="2"/>`;
+  for(let x=64;x<980;x+=40)s+=`<rect x="${x}" y="182" width="34" height="140" rx="16" fill="url(#gCell)" stroke="#8ED3A6" stroke-width="2"/>`+[0,1,2,3,4].map(k=>`<ellipse cx="${x+10+(k%2)*14}" cy="${200+k*25}" rx="6" ry="4" fill="#2FB463"/>`).join('');
+  for(let i=0;i<34;i++){const x=80+R()*880,y=350+R()*130;if(Math.abs(x-520)<70&&y>420)continue;s+=`<circle cx="${x}" cy="${y}" r="${22+R()*12}" fill="url(#gCell)" stroke="#8ED3A6" stroke-width="2"/><circle cx="${x+6}" cy="${y-4}" r="4" fill="#2FB463"/><circle cx="${x-8}" cy="${y+6}" r="4" fill="#2FB463"/>`;}
+  for(let x=60;x<990;x+=52){if(x>440&&x<580)continue;s+=`<rect x="${x}" y="505" width="48" height="34" rx="10" fill="#F4FFF6" stroke="#9AD8AE" stroke-width="2"/>`;}
+  s+=`<ellipse cx="488" cy="522" rx="26" ry="20" fill="#7FCB8A" stroke="#3F7A45" stroke-width="3"/><ellipse cx="552" cy="522" rx="26" ry="20" fill="#7FCB8A" stroke="#3F7A45" stroke-width="3"/>`;
+  $('#gxcells',el).innerHTML=s;
+  const F=$('#gxf',el);o.f={ci:new Flow($('#gin',el),{kind:'co2',r:16,n:4,speed:.16,into:F}),oo:new Flow($('#gout',el),{kind:'o2',r:16,n:4,speed:.16,seed:5,into:F}),oi:new Flow($('#gin',el),{kind:'o2',r:16,n:4,speed:.16,seed:6,into:F}),co:new Flow($('#gout',el),{kind:'co2',r:16,n:4,speed:.16,seed:7,into:F})};
+  o.mode=m=>{o.m=m;const p=m==='p';o.f.ci.set(p);o.f.oo.set(p);o.f.oi.set(!p);o.f.co.set(!p);$('#gxp',el).classList.toggle('on',p);$('#gxr',el).classList.toggle('on',!p);
+   $('#gxin',el).textContent=p?'CO₂ goes in':'O₂ goes in';$('#gxout',el).textContent=p?'O₂ comes out':'CO₂ comes out';$('#gxsun',el).style.opacity=p?1:.25;};
+  $('#gxp',el).onclick=()=>o.mode('p');$('#gxr',el).onclick=()=>o.mode('r');
+ },
+ onStep(el,s,o){if(s===1)o.mode('p');if(s===2)o.mode('r');if(s===0)o.mode('p');},
+ tick(dt,t,el,o){Object.values(o.f).forEach(f=>f.tick(dt));}
+});
+
+/* ===================== 10.3 TRANSPORT OF WATER & MINERALS ===================== */
+const ROUTE=['Roots','Stem','Branches','Leaves'];
+S({id:'xyl',sec:'10.3 Transport: xylem',title:'Water travels up',head:'How do water and minerals reach the leaves?',zoom:true,
+ notes:'Take students underground. Press Next to follow the water: roots → stem → branches → leaves. Blue drops = water; purple diamonds = dissolved minerals.',
+ html:`<div class="grid2"><div class="viz"><svg viewBox="0 0 1040 790">
+  <rect width="1040" height="380" fill="url(#gSky)"/><rect y="380" width="1040" height="410" fill="url(#gSoil)"/><path d="M0 382Q260 370 520 382T1040 378V392H0Z" fill="#5DBB7C"/>
+  <g id="xsoil"></g>
+  <g stroke="#D8B27D" stroke-linecap="round" fill="none"><path d="M520 380V700" stroke-width="22"/><path d="M520 450Q440 480 360 560M520 480Q610 520 690 600M520 560Q470 620 420 700M520 600Q580 670 640 740" stroke-width="11"/>
+   <g stroke-width="2.5" stroke="#EBD3AE">${[[380,545],[400,525],[430,505],[660,575],[630,553],[600,530],[435,680],[455,655],[620,715],[600,690]].map(([x,y])=>`<path d="M${x} ${y}l-14 10M${x} ${y}l10 14"/>`).join('')}</g></g>
+  <path d="M520 382V110" stroke="url(#gStem)" stroke-width="40" stroke-linecap="round"/><path d="M520 380V112" stroke="#BFE0FF" stroke-width="12" stroke-linecap="round" opacity=".9"/>
+  <path d="M520 220Q420 170 330 140M520 190Q620 140 720 110" stroke="#2E9C57" stroke-width="18" fill="none" stroke-linecap="round"/><path d="M520 220Q420 170 330 140M520 190Q620 140 720 110" stroke="#BFE0FF" stroke-width="5" fill="none" stroke-linecap="round"/>
+  ${ART.leaf(330,140,150,50,-160)}${ART.leaf(720,110,150,50,-20)}${ART.leaf(520,112,130,44,-90)}${ART.leaf(520,300,120,40,-30)}${ART.leaf(520,280,120,40,-150)}
+  <g id="xflows"></g>
+  <g font-family="Inter,sans-serif" font-weight="800" font-size="26" id="xlbls">
+   <g class="xl" opacity="0"><rect x="730" y="470" width="130" height="46" rx="23" fill="#fff"/><text x="795" y="502" text-anchor="middle" fill="#142B45">Roots</text></g>
+   <g class="xl" opacity="0"><rect x="560" y="290" width="120" height="46" rx="23" fill="#fff"/><text x="620" y="322" text-anchor="middle" fill="#142B45">Stem</text></g>
+   <g class="xl" opacity="0"><rect x="770" y="160" width="170" height="46" rx="23" fill="#fff"/><text x="855" y="192" text-anchor="middle" fill="#142B45">Branches</text></g>
+   <g class="xl" opacity="0"><rect x="820" y="40" width="150" height="46" rx="23" fill="#fff"/><text x="895" y="72" text-anchor="middle" fill="#142B45">Leaves</text></g>
+   <g id="xxl" opacity="0" style="transition:opacity .6s"><path d="M528 330L340 330" stroke="#142B45" stroke-width="3"/><rect x="60" y="306" width="290" height="50" rx="25" fill="#3988E8"/><text x="205" y="340" text-anchor="middle" fill="#fff">XYLEM (tubes)</text></g></g>
+ </svg></div>
+ <div class="col">
+  <div class="card"><p>Water, along with <b>minerals</b> in the soil, is taken up by the <b>roots</b>. Minerals are important nutrients for plant growth.</p></div>
+  <div class="row" id="xroute" style="gap:10px;flex-wrap:wrap">${ROUTE.map((r,i)=>`<div class="pill" style="font-size:28px;padding:12px 22px;background:#EEF3F8;color:#8AA2BD;transition:all .4s">${r}</div>${i<3?'<span style="font-size:32px;color:#9AB0C7">→</span>':''}`).join('')}</div>
+  <div class="row" style="gap:24px;font-size:25px;font-weight:700"><span class="row" style="gap:8px">${'<svg width="30" height="36" viewBox="-12 -16 24 30">'+ART.mol('water',10)+'</svg>'} water</span><span class="row" style="gap:8px">${'<svg width="30" height="30" viewBox="-12 -12 24 24">'+ART.mol('mineral',9)+'</svg>'} minerals</span></div>
+  <div class="concl rv" data-s="5" style="font-size:29px">Water and dissolved minerals move up through thin tube-like structures called <b>xylem</b>, present in the stem, branches and leaves.</div>
+ </div></div>`,
+ steps:5,
+ init(el,o){
+  const R=rng(41);let s='';for(let i=0;i<30;i++){const x=60+R()*920,y=420+R()*350;s+=`<g transform="translate(${x} ${y})">${ART.mol(i%3?'water':'mineral',i%3?9:7)}</g>`;}$('#xsoil',el).innerHTML=s;
+  const F=$('#xflows',el),P=d=>svgEl('path',{d,fill:'none'},F);
+  const seg=[
+   [['M250 600Q320 570 372 548','M300 720Q380 690 428 686','M830 640Q750 610 684 596','M760 760Q690 740 632 734','M180 470Q300 480 370 536']],
+   [['M360 560Q440 480 520 450V380','M690 600Q610 520 520 480V380','M420 700Q470 620 520 560V380','M640 740Q580 670 520 600V380']],
+   [['M520 380V220']],
+   [['M520 220Q420 170 330 140','M520 190Q620 140 720 110','M520 220V112']],
+   [['M330 140L200 100','M720 110L850 70','M520 112V-10']]];
+  o.seg=seg.map((g,k)=>g[0].map((d,i)=>[new Flow(P(d),{kind:'water',r:8,n:k===2?6:3,speed:k===2?.35:.45,seed:k*10+i,into:F}),new Flow(P(d),{kind:'mineral',r:6,n:k===2?3:1,speed:k===2?.3:.4,seed:k*10+i+5,into:F})]).flat());
+  o.seg.flat().forEach(f=>f.set(false));
+ },
+ onStep(el,s,o){o.seg.forEach((g,k)=>g.forEach(f=>f.set(s>=1&&k<=s)));
+  $$('.xl',el).forEach((g,i)=>g.setAttribute('opacity',s>=i+1?1:0));$('#xxl',el).setAttribute('opacity',s>=5?1:0);
+  $$('#xroute .pill',el).forEach((p,i)=>{const on=s>=i+1;p.style.background=on?'#3988E8':'#EEF3F8';p.style.color=on?'#fff':'#8AA2BD';});},
+ tick(dt,t,el,o){o.seg.flat().forEach(f=>f.tick(dt));}
+});
+
+/* ===================== ACTIVITY 10.7 — RED INK ===================== */
+function twig(x,id,red){
+ const lv=[[300,-150],[360,-30],[430,-160],[500,-20]];
+ return`<g id="${id}">
+  ${red?`<linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="0" y1="720" x2="0" y2="150"><stop class="s1" offset="0" stop-color="#C8364A"/><stop class="s2" offset="0" stop-color="#2E9C57"/></linearGradient>`:''}
+  <path d="M${x} 720V170" stroke="${red?`url(#${id}g)`:'#2E9C57'}" stroke-width="12" stroke-linecap="round"/>
+  <path d="M${x} 190Q${x-40} 150 ${x-70} 130M${x} 200Q${x+40} 160 ${x+66} 140" stroke="${red?`url(#${id}g)`:'#2E9C57'}" stroke-width="7" fill="none" stroke-linecap="round"/>
+  ${lv.map(([y,r])=>`<g transform="translate(${x} ${y}) rotate(${r})"><path d="${ART.leafPath(120,40)}" fill="url(#gLeaf)"/><path class="vein" d="M4 0H112M30 0l20-18M30 0l20 18M60 0l20-16M60 0l20 16" stroke="#BFF0D0" stroke-width="3" fill="none"/></g>`).join('')}
+  ${[[x-74,126],[x+70,136]].map(([fx,fy])=>`<g transform="translate(${fx} ${fy})">${[0,72,144,216,288].map(a=>`<g transform="rotate(${a})"><ellipse class="pet" cy="-24" rx="15" ry="24" fill="#FFFFFF" stroke="#E3E8EE" stroke-width="2"/><path class="pv" d="M0 -6V-40" stroke="#E0475B" stroke-width="2.5" opacity="0"/></g>`).join('')}<circle r="9" fill="#FFD166"/></g>`).join('')}
+ </g>`;}
+function tumbler(x,red,lbl){return`<path d="M${x-80} 470L${x-66} 740H${x+66}L${x+80} 470" fill="url(#gGlass)" stroke="#8FB3D4" stroke-width="5" stroke-linejoin="round"/>
+ <path d="M${x-75} 650L${x-68} 735H${x+68}L${x+75} 650Z" fill="${red?'#E0475B':'#9FD0FF'}" opacity="${red?.75:.6}"/><text x="${x}" y="780" text-anchor="middle" class="lbl" font-size="30">${lbl}</text>`;}
+S({id:'a107',sec:'10.3 Transport: xylem',title:'Activity 10.7 — Red ink',head:'Activity 10.7: The red ink experiment',zoom:true,
+ notes:'Use twigs with white flowers (white sadabahar, balsam). Cut the stem obliquely <b>under water</b>. Press Next: one day later → observe → cut the stem and look with a magnifying glass.',
+ html:`<div class="grid2"><div class="viz" style="background:linear-gradient(180deg,#F7FBFF,#fff)"><svg viewBox="0 0 1040 790">
+  ${twig(270,'twA',0)}${twig(720,'twB',1)}${tumbler(270,0,'A — water')}${tumbler(720,1,'B — water + red ink')}
+  <g transform="translate(860 40)"><rect width="150" height="56" rx="28" fill="#142B45"/><text id="rday" x="75" y="38" text-anchor="middle" class="lbl-w" font-size="26">Day 1</text></g>
+  <g id="xsec" opacity="0" style="transition:opacity .8s" pointer-events="none"><rect width="1040" height="790" fill="rgba(255,255,255,.88)"/>
+   <circle cx="520" cy="380" r="280" fill="#7CC98F"/><circle cx="520" cy="380" r="262" fill="#E8F6E1"/>
+   ${Array.from({length:10},(_,i)=>{const a=i/10*Math.PI*2,cx=520+Math.cos(a)*175,cy=380+Math.sin(a)*175;return`<g transform="translate(${cx} ${cy}) rotate(${a*180/Math.PI+90})"><ellipse cy="-22" rx="34" ry="22" fill="#F4E2B8" stroke="#D4B87A" stroke-width="2"/><ellipse cy="14" rx="30" ry="28" fill="#D7334B"/>${[[-10,8],[8,10],[0,22],[-6,-2],[10,-2]].map(([p,q])=>`<circle cx="${p}" cy="${q+6}" r="5" fill="#8E1426"/>`).join('')}</g>`}).join('')}
+   <path d="M610 170L760 90" stroke="#142B45" stroke-width="3"/><rect x="740" y="60" width="200" height="50" rx="25" fill="#F2A33A"/><text x="840" y="94" text-anchor="middle" class="lbl-w" font-size="24">Phloem</text>
+   <path d="M690 390L800 470" stroke="#142B45" stroke-width="3"/><rect x="770" y="460" width="250" height="50" rx="25" fill="#D7334B"/><text x="895" y="494" text-anchor="middle" class="lbl-w" font-size="24">Xylem (red)</text>
+   <text x="520" y="720" text-anchor="middle" class="lbl" font-size="28">Cut end of the stem of twig B (magnified)</text></g>
+ </svg><div class="ctrls overlay" style="left:24px;top:24px"><button class="btn sm" id="rcut">✂ Cut the stem</button></div></div>
+ <div class="col" style="gap:14px">${stepList(['Fill one-third of tumblers A and B with water. Add a few drops of <b>red ink</b> to B.','Cut the stems <b>obliquely under water</b> and place one twig in each tumbler.','Observe the twigs the <b>next day</b>.'])}
+  <div class="card rv" data-s="2" style="padding:20px 26px"><p>Twig B shows <b class="rd">red colour</b> in its <b>stem, leaves and flowers</b>. Twig A shows no change.</p></div>
+  <div class="card rv" data-s="3" style="padding:20px 26px"><p>Cutting the upper stem shows red-coloured <b>tube-like structures</b> — the <b class="rd">xylem</b>.</p></div>
+  <div class="concl rv" data-s="4" style="font-size:28px">Just like red ink, <b>minerals dissolved in water</b> move up the stem through the <b>xylem</b>.</div></div></div>`,
+ steps:4,
+ init(el,o){
+  o.paint=t=>{const B=$('#twB',el);$$('stop',B).forEach(st=>st.setAttribute('offset',t));$$('.vein',B).forEach(v=>v.setAttribute('stroke',mix('#BFF0D0','#E0475B',clamp((t-.4)/.4,0,1))));
+   const f=clamp((t-.75)/.25,0,1);$$('.pet',B).forEach(p=>p.setAttribute('fill',mix('#FFFFFF','#F7BCC7',f)));$$('.pv',B).forEach(p=>p.setAttribute('opacity',f));$('#rday',el).textContent=t>=1?'Next day':'Day 1';};
+  $('#rcut',el).onclick=()=>{const x=$('#xsec',el);const on=x.getAttribute('opacity')!=='1';x.setAttribute('opacity',on?1:0);$('#rcut',el).textContent=on?'✕ Close section':'✂ Cut the stem';if(on&&APP.step<3){APP.step=3;applyStep();}};
+ },
+ onStep(el,s,o){o._bag.clear();markSteps(el,s>=1?3:0);
+  if(s===1){o.paint(0);o._bag.tw(4200,e=>o.paint(e));}else o.paint(s>=1?1:0);
+  $('#xsec',el).setAttribute('opacity',s===3?1:0);$('#rcut',el).textContent=s===3?'✕ Close section':'✂ Cut the stem';}
+});
+
+/* ===================== 10.3.2 PHLOEM ===================== */
+S({id:'phl',sec:'10.3 Transport: phloem',title:'Food travels through phloem',head:'How does food reach other parts of the plant?',zoom:true,
+ notes:'Use the toggle to show xylem only, phloem only, or both. Ask: <i>Where does the starch in a potato come from?</i> (Made in leaves, carried by phloem, stored underground.)',
+ html:`<div class="grid2"><div class="viz"><svg viewBox="0 0 1040 790">
+  <rect width="1040" height="520" fill="url(#gSky)"/><rect y="520" width="1040" height="270" fill="url(#gSoil)"/><path d="M0 522Q520 508 1040 522V534H0Z" fill="#5DBB7C"/>
+  <path d="M520 520C470 560 470 660 520 760C570 660 570 560 520 520Z" fill="#E9A15C" stroke="#C47A35" stroke-width="4"/><path d="M500 580l-30-6M540 620l30-6M505 680l-26 4" stroke="#C47A35" stroke-width="3"/>
+  <path d="M520 522V90" stroke="url(#gStem)" stroke-width="56" stroke-linecap="round"/>
+  <path d="M508 700V96" stroke="#9FD0FF" stroke-width="10" stroke-linecap="round" id="phx" opacity=".95"/><path d="M533 700V96" stroke="#F8D49A" stroke-width="10" stroke-linecap="round" id="php" opacity=".95"/>
+  <path d="M510 300Q400 260 290 250M530 260Q640 210 760 200" stroke="#2E9C57" stroke-width="16" fill="none" stroke-linecap="round"/>
+  ${ART.leaf(290,250,190,64,-170)}${ART.leaf(760,200,190,64,-12)}${ART.leaf(520,96,150,50,-90)}${ART.leaf(520,420,140,46,-150)}${ART.leaf(520,380,140,46,-30)}
+  <path d="M530 160Q610 120 650 80" stroke="#2E9C57" stroke-width="8" fill="none"/><g transform="translate(660 70) rotate(-40)"><rect x="-14" y="-60" width="28" height="90" rx="14" fill="#8CC63F"/>${[0,1,2].map(i=>`<circle cy="${-40+i*24}" r="8" fill="#C9E88E"/>`).join('')}</g>
+  <g id="phf"></g>
+  <g font-family="Inter,sans-serif" font-weight="800" font-size="24">
+   <rect x="40" y="40" width="250" height="48" rx="24" fill="#fff"/><text x="165" y="72" text-anchor="middle" fill="#142B45">Leaves make food</text>
+   <rect x="700" y="20" width="250" height="48" rx="24" fill="#fff"/><text x="825" y="52" text-anchor="middle" fill="#142B45">Seeds store food</text>
+   <rect x="600" y="690" width="260" height="48" rx="24" fill="#fff"/><text x="730" y="722" text-anchor="middle" fill="#142B45">Roots store food</text>
+   <g id="phlx"><rect x="200" y="460" width="190" height="48" rx="24" fill="#3988E8"/><text x="295" y="492" text-anchor="middle" fill="#fff">Xylem ↑</text></g>
+   <g id="phlp"><rect x="650" y="460" width="190" height="48" rx="24" fill="#E08E1B"/><text x="745" y="492" text-anchor="middle" fill="#fff">Phloem</text></g></g>
+ </svg><div class="ctrls overlay" style="left:24px;bottom:24px"><div class="seg"><button data-m="x">Xylem</button><button data-m="p" class="on">Phloem</button><button data-m="b">Both</button></div></div></div>
+ <div class="col">
+  <div class="card"><p>Leaves are the primary site of photosynthesis. The food prepared in the leaves is transported to <b>all parts</b> of the plant.</p></div>
+  <div class="card sun rv" data-s="1"><p>Food travels through another set of thin tube-like structures called the <b class="fd" style="font-size:34px">phloem</b>.</p></div>
+  <div class="card green rv" data-s="2"><p>The transported food may also be <b>stored</b> in other parts, such as <b>seeds</b> and <b>roots</b>.</p></div>
+  <div class="row rv" data-s="2" style="gap:24px;font-size:25px;font-weight:700"><span class="row" style="gap:8px"><svg width="30" height="30" viewBox="-12 -12 24 24">${ART.mol('food',10)}</svg> food (from leaves)</span><span class="row" style="gap:8px"><svg width="30" height="36" viewBox="-12 -16 24 30">${ART.mol('water',10)}</svg> water</span></div></div></div>`,
+ init(el,o){const F=$('#phf',el),P=d=>svgEl('path',{d,fill:'none'},F);
+  o.x=[new Flow(P('M508 700V110'),{kind:'water',r:9,n:10,speed:.12,into:F}),new Flow(P('M508 290Q400 262 300 252'),{kind:'water',r:8,n:3,speed:.3,into:F,seed:3}),new Flow(P('M508 250Q640 212 750 202'),{kind:'water',r:8,n:3,speed:.3,into:F,seed:4})];
+  o.p=[new Flow(P('M300 248Q420 262 533 300V700'),{kind:'food',r:10,n:9,speed:.1,into:F,seed:5}),new Flow(P('M750 198Q640 210 533 262V170Q600 125 650 85'),{kind:'food',r:10,n:6,speed:.12,into:F,seed:6}),new Flow(P('M760 202Q640 212 533 262V700'),{kind:'food',r:10,n:8,speed:.09,into:F,seed:8})];
+  o.mode=m=>{o.m=m;o.x.forEach(f=>f.set(m!=='p'));o.p.forEach(f=>f.set(m!=='x'));$$('[data-m]',el).forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+   $('#phx',el).setAttribute('opacity',m!=='p'?.95:.25);$('#php',el).setAttribute('opacity',m!=='x'?.95:.25);$('#phlx',el).setAttribute('opacity',m!=='p'?1:.2);$('#phlp',el).setAttribute('opacity',m!=='x'?1:.2);};
+  $$('[data-m]',el).forEach(b=>b.onclick=()=>o.mode(b.dataset.m));},
+ enter(el,o){o.mode('p');},
+ tick(dt,t,el,o){[...o.x,...o.p].forEach(f=>f.tick(dt));}
+});
+
+/* ===================== XYLEM vs PHLOEM ===================== */
+function tube(col,up,kind){return`<svg width="150" height="330" viewBox="0 0 150 330"><rect x="45" y="10" width="60" height="310" rx="30" fill="${col}" opacity=".18"/><rect x="58" y="10" width="34" height="310" rx="17" fill="${col}" opacity=".35"/>
+ ${[0,1,2,3,4].map(i=>`<g style="animation:${up?'tup':'tdn'} 2.6s ${-i*.52}s linear infinite">${'<g transform="translate(75 0)">'+ART.mol(kind,12)+'</g>'}</g>`).join('')}
+ <path d="M130 ${up?'250L130 70':'70L130 250'}" stroke="${col}" stroke-width="6" marker-end="url(#mArrow)"/></svg>`;}
+S({id:'xvp',sec:'10.3 Transport: phloem',title:'Xylem vs Phloem',head:'Two transport systems: xylem and phloem',
+ notes:'Make the distinction crisp: <b>X</b>ylem — water (think “X goes up from the roots”); <b>Ph</b>loem — food. Ask students to explain the potato question using this slide.',
+ html:`<style>@keyframes tup{from{transform:translateY(320px)}to{transform:translateY(0)}}@keyframes tdn{from{transform:translateY(0)}to{transform:translateY(320px)}}</style>
+ <div class="grid2 even" style="height:auto;gap:40px">
+  <div class="card" style="display:flex;gap:26px;align-items:center;border-top:12px solid #3988E8">${tube('#3988E8',1,'water')}<div class="col" style="gap:14px"><h3 style="font-size:52px;color:#3988E8">Xylem</h3><ul class="list"><li>Carries <b>water and minerals</b></li><li>From the <b>roots</b> to the stem, branches, <b>leaves</b> and other parts</li><li>Shown by the <b>red ink</b> experiment</li></ul></div></div>
+  <div class="card rv" data-s="1" style="display:flex;gap:26px;align-items:center;border-top:12px solid #E08E1B">${tube('#E08E1B',0,'food')}<div class="col" style="gap:14px"><h3 style="font-size:52px;color:#C67A12">Phloem</h3><ul class="list"><li>Carries <b>prepared food</b></li><li>From the <b>leaves</b> to all other parts of the plant</li><li>Food may be <b>stored</b> in roots and seeds</li></ul></div></div></div>
+ <div class="q rv" data-s="2" style="margin-top:34px"><div class="qm">?</div>A potato slice turns blue-black with iodine. Where did its starch come from?</div>
+ <div class="concl rv" data-s="3" style="margin-top:20px;font-size:29px">It was made in the <b>leaves</b> by photosynthesis, carried down by the <b>phloem</b>, and <b>stored</b> in the potato.</div>`
+});
+
+/* ===================== 10.4 DO PLANTS RESPIRE? ===================== */
+S({id:'respq',sec:'10.4 Do plants respire?',title:'Do plants need energy?',head:'Plants make their own food. But do they also need energy?',zoom:true,
+ notes:'Recall Grade 6: all living beings respire. Ask: <i>Do plants breathe like us? Do they have lungs?</i> Let them wonder — the next activity gives evidence.',
+ html:`<div class="grid2 wideR" style="height:720px"><div class="viz" style="background:linear-gradient(170deg,#FFF9E8,#fff)"><svg viewBox="0 0 800 720">
+  <rect y="560" width="800" height="160" fill="url(#gSoil)"/><path d="M0 562Q400 548 800 562V574H0Z" fill="#5DBB7C"/>
+  ${ART.plant(400,562,{g:.8,H:420})}
+  ${[[300,250],[520,200],[420,120],[260,400],[560,380],[400,640]].map(([x,y],i)=>`<g class="pulse" style="animation-delay:-${i*.4}s" transform="translate(${x} ${y})">${ART.mol('energy',22)}</g>`).join('')}</svg></div>
+  <div class="col">
+   <div class="card rv" data-s="1"><p>Growing new leaves, making flowers and seeds, absorbing water — every life activity needs <b>energy</b>.</p></div>
+   <div class="card blue rv" data-s="2"><p>In Grade 6 we learnt that <b>all living beings respire</b>. Do plants also respire like we do?</p></div>
+   <div class="concl rv" data-s="3">Let us find out with germinating seeds!</div></div></div>`
+});
+
+/* ===================== ACTIVITY 10.8 — LIMEWATER ===================== */
+S({id:'a108',sec:'10.4 Do plants respire?',title:'Activity 10.8 — Germinating seeds',head:'Activity 10.8: Do germinating seeds give out carbon dioxide?',
+ notes:'Teacher demonstration. Soak moong seeds overnight. Press Next: set-up → 24 hours in the dark (animation) → compare the two test tubes → explain. The unconnected tube is for comparison.',
+ html:`<div class="grid2"><div class="viz"><svg viewBox="0 0 1040 790" id="lmsvg">
+  <rect width="1040" height="790" fill="#F7FBFF"/><rect id="lmdark" width="1040" height="790" fill="#142B45" opacity="0" style="transition:opacity 1s"/>
+  <rect x="80" y="700" width="900" height="40" rx="8" fill="#B3532B"/><rect x="100" y="740" width="860" height="20" fill="#8A3E20"/>
+  <path d="M290 340V270H350V340L470 690H170Z" fill="url(#gGlass)" stroke="#8FB3D4" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M190 645Q220 630 250 645T310 645T370 645T450 645L462 688H178Z" fill="#FFFFFF" stroke="#E2E8EF" stroke-width="2"/>
+  <g id="lmseeds"></g>
+  <rect x="278" y="244" width="84" height="34" rx="8" fill="#8A3E20"/>
+  <path d="M302 250V150H220" stroke="#B7C6D6" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M338 270V600" stroke="#B7C6D6" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <path id="lmpipe" d="M338 250V150Q338 100 400 100H600Q672 100 672 160V455" stroke="#E8842C" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <rect x="600" y="460" width="300" height="20" rx="6" fill="#C9774A"/><rect x="610" y="480" width="16" height="220" fill="#B3663B"/><rect x="874" y="480" width="16" height="220" fill="#B3663B"/><rect x="600" y="620" width="300" height="16" rx="6" fill="#C9774A"/>
+  ${[650,790].map((x,i)=>`<path d="M${x} 430V650a22 22 0 0044 0V430" fill="url(#gGlass)" stroke="#8FB3D4" stroke-width="4"/><path class="lw" id="lw${i}" d="M${x+3} 540V650a19 19 0 0038 0V540Z" fill="#BFE3F7" opacity=".9"/>`).join('')}
+  <g id="lwm" opacity="0"><circle cx="655" cy="560" r="2.5" fill="#D9D5C5"/><circle cx="668" cy="589" r="2.5" fill="#D9D5C5"/><circle cx="681" cy="618" r="2.5" fill="#D9D5C5"/><circle cx="660" cy="647" r="2.5" fill="#D9D5C5"/><circle cx="673" cy="576" r="2.5" fill="#D9D5C5"/><circle cx="686" cy="605" r="2.5" fill="#D9D5C5"/><circle cx="665" cy="634" r="2.5" fill="#D9D5C5"/><circle cx="678" cy="563" r="2.5" fill="#D9D5C5"/><circle cx="657" cy="592" r="2.5" fill="#D9D5C5"/><circle cx="670" cy="621" r="2.5" fill="#D9D5C5"/><circle cx="683" cy="650" r="2.5" fill="#D9D5C5"/><circle cx="662" cy="579" r="2.5" fill="#D9D5C5"/><circle cx="675" cy="608" r="2.5" fill="#D9D5C5"/><circle cx="688" cy="637" r="2.5" fill="#D9D5C5"/></g><rect x="644" y="420" width="56" height="26" rx="6" fill="#8A3E20"/><path d="M672 440V640" stroke="#B7C6D6" stroke-width="7"/>
+  <path id="lmflow" d="M330 600V260 M338 250V150Q338 100 400 100H600Q672 100 672 160V640" fill="none"/>
+  <g id="lmf"></g>
+  <g font-family="Inter,sans-serif" font-weight="700" font-size="23" id="lmlbl">
+   <text x="130" y="140" class="lbl">Tube A</text><text x="360" y="420" class="lbl">Tube B</text><text x="120" y="610" class="lbl">Germinating seeds</text>
+   <text x="700" y="380" class="lbl">Lime water</text><path d="M760 390L690 520M780 390L810 520" stroke="#142B45" stroke-width="2.5"/>
+   <text x="672" y="786" text-anchor="middle" class="lbl" font-size="20">connected</text><text x="812" y="786" text-anchor="middle" class="lbl" font-size="20">not connected</text></g>
+  <g transform="translate(830 40)"><rect width="180" height="60" rx="30" fill="#142B45"/><text id="lmclock" x="90" y="40" text-anchor="middle" class="lbl-w" font-size="28">0 h</text></g>
+ </svg></div>
+ <div class="col" style="gap:14px">${stepList(['Soak <b>moong</b> seeds overnight; place them on <b>wet cotton</b> in a conical flask.','Close the flask with a <b>two-holed cork</b> with tubes A and B; connect it by a rubber pipe to a test tube of <b>lime water</b>.','Keep a second test tube of lime water for comparison. Leave everything <b>undisturbed for 24 hours in the dark</b>.'])}
+  <div class="card rv" data-s="3" style="padding:20px 26px"><p>Only the lime water <b>connected to the flask</b> turns <b>milky</b>.</p></div>
+  <div class="concl rv" data-s="4" style="font-size:28px">Lime water turns milky due to <b>more carbon dioxide</b> in the flask. This extra CO₂ is produced by the seeds as they <b>respire</b>.</div></div></div>`,
+ steps:4,
+ init(el,o){
+  const R=rng(17);o.seeds=[];let s='';for(let i=0;i<26;i++){const x=200+R()*250,y=628+R()*18;s+=`<g transform="translate(${x.toFixed(0)} ${y.toFixed(0)}) rotate(${R()*60-30})"><path class="rt" d="M8 2q6 8 2 16" stroke="#FFF7E0" stroke-width="3" fill="none" stroke-linecap="round" opacity="0"/><ellipse rx="10" ry="7" fill="${R()>.5?'#5DAA3C':'#76BE4A'}" stroke="#3C7A26" stroke-width="1.5"/></g>`;}
+  $('#lmseeds',el).innerHTML=s;
+  o.flow=new Flow($('#lmpipe',el),{kind:'co2',r:13,n:8,speed:.12,into:$('#lmf',el)});o.flow.set(false);
+  o.state=t=>{$('#lw0',el).setAttribute('fill',mix('#BFE3F7','#FBFAF4',t));$('#lw0',el).setAttribute('opacity',.9+t*.1);$('#lwm',el).setAttribute('opacity',t);$$('.rt',el).forEach(r=>r.setAttribute('opacity',t));$('#lmclock',el).textContent=Math.round(t*24)+' h';};
+ },
+ onStep(el,s,o){o._bag.clear();markSteps(el,Math.min(s,3));$('#lmdark',el).setAttribute('opacity',0);o.flow.set(false);
+  if(s<3)o.state(0);
+  if(s===3){$('#lmdark',el).setAttribute('opacity',.55);o.flow.set(true);o._bag.tw(6000,e=>o.state(e),()=>{$('#lmdark',el).setAttribute('opacity',0);o.flow.set(false);});}
+  if(s>=4)o.state(1);},
+ tick(dt,t,el,o){o.flow.tick(dt);}
+});
+
+/* ===================== RESPIRATION EQUATION ===================== */
+S({id:'resp',sec:'10.4 Do plants respire?',title:'The respiration equation',head:'Respiration: releasing energy from food',
+ notes:'Point out the difference: photosynthesis <b>makes</b> food (only in green parts, in light); respiration <b>breaks down</b> food to release energy (in <b>all</b> parts, all the time).',
+ html:`<div class="card" style="padding:44px;text-align:center"><div style="display:flex;align-items:center;justify-content:center;gap:18px;font-size:38px;font-weight:800;white-space:nowrap">
+  <span class="row rv" data-s="1" style="gap:10px">${ic('glucose',64)}Glucose</span><span class="rv" data-s="1">+</span><span class="row rv" data-s="1" style="gap:10px">${ic('o2',64)}Oxygen</span>
+  <svg class="rv" data-s="2" width="200" height="34" viewBox="0 0 200 34"><path d="M6 17H182" stroke="#142B45" stroke-width="6" stroke-linecap="round"/><path d="M170 5L192 17L170 29" fill="none" stroke="#142B45" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span class="row rv" data-s="2" style="gap:10px">${ic('co2',64)}Carbon dioxide</span><span class="rv" data-s="2">+</span><span class="row rv" data-s="2" style="gap:10px">${ic('drop',58)}Water</span><span class="rv" data-s="2">+</span><span class="row rv pulse" data-s="2" style="gap:10px">${ic('energy',64)}Energy</span></div></div>
+ <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:30px">
+  <div class="card rv" data-s="3"><p><b>Glucose is broken down</b> in the presence of <b>oxygen</b>.</p></div>
+  <div class="card rv" data-s="3"><p><b>Carbon dioxide</b> and <b>water</b> are released.</p></div>
+  <div class="card sun rv" data-s="3"><p>The <b>energy</b> is used by plants for their <b>growth and development</b>.</p></div></div>
+ <div class="grid2 even rv" data-s="4" style="height:auto;margin-top:26px;gap:26px"><div class="concl" style="font-size:29px"><b>All parts</b> of a plant — green or non-green (roots, stem, leaves, flowers, seeds) — carry out respiration.</div>
+  <div class="caution" style="font-size:27px">${ic('warn',44)}<div><b>Don’t mix them up!</b> Photosynthesis and respiration are two <b>different</b> processes.</div></div></div>`
+});
+
+/* ===================== PHOTOSYNTHESIS vs RESPIRATION ===================== */
+const CMP={p:{inp:['co2','water'],out:['food','o2'],col:'#239B56',name:'Photosynthesis'},r:{inp:['food','o2'],out:['co2','water','energy'],col:'#3988E8',name:'Respiration'}};
+S({id:'cmp',sec:'Compare the processes',title:'Photosynthesis vs Respiration',head:'Photosynthesis vs Respiration',zoom:true,
+ notes:'Click each process to animate its inputs and outputs. Ask students to complete the textbook table (Q1) aloud before revealing rows.',
+ html:`<div class="grid2" style="grid-template-columns:1fr 1.35fr;height:780px"><div class="viz"><svg viewBox="0 0 700 780" id="cmsvg">
+  <g id="cmsun">${ART.sun(350,80,40)}</g>
+  <rect x="215" y="270" width="270" height="240" rx="90" fill="#DFF5E5" stroke="#239B56" stroke-width="5" id="cmbox"/>
+  <text x="350" y="380" text-anchor="middle" class="lbl" font-size="30" id="cmname">Photosynthesis</text><text x="350" y="420" text-anchor="middle" font-size="22" fill="#4A5F78" font-family="Inter,sans-serif" font-weight="600" id="cmwhere">in green parts</text>
+  <path id="ci0" d="M20 250Q140 300 230 360" fill="none"/><path id="ci1" d="M20 560Q140 480 230 430" fill="none"/>
+  <path id="co0" d="M470 340Q580 270 690 230" fill="none"/><path id="co1" d="M470 400H690" fill="none"/><path id="co2p" d="M470 450Q580 520 690 580" fill="none"/>
+  <path id="cph" d="M350 140V270" fill="none"/>
+  <g id="cmf"></g><text x="40" y="660" class="lbl" font-size="28">IN</text><text x="600" y="660" class="lbl" font-size="28">OUT</text></svg>
+  <div class="ctrls overlay" style="left:50%;transform:translateX(-50%);bottom:24px"><div class="seg"><button id="cmp-p" class="on">Photosynthesis</button><button id="cmp-r">Respiration</button></div></div></div>
+ <table class="tb" id="cmtb" style="align-self:start"><tr><th style="width:24%">Feature</th><th id="th-p">Photosynthesis</th><th id="th-r">Respiration</th></tr>
+  <tr class="rv" data-s="1"><td><b>Raw materials</b></td><td>Carbon dioxide + Water</td><td>Glucose + Oxygen</td></tr>
+  <tr class="rv" data-s="2"><td><b>Products</b></td><td>Glucose + Oxygen</td><td>Carbon dioxide + Water + Energy</td></tr>
+  <tr class="rv" data-s="3"><td><b>Requirement</b></td><td>Sunlight and chlorophyll</td><td>Oxygen</td></tr>
+  <tr class="rv" data-s="4"><td><b>Where / when</b></td><td>Green parts, in sunlight</td><td>All parts, all the time</td></tr>
+  <tr class="rv" data-s="5"><td><b>Main purpose</b></td><td>Food preparation</td><td>Energy release</td></tr>
+  <tr class="rv" data-s="6"><td><b>Word equation</b></td><td style="font-size:22px">Carbon dioxide + Water → Glucose + Oxygen <i>(sunlight, chlorophyll)</i></td><td style="font-size:22px">Glucose + Oxygen → Carbon dioxide + Water + Energy</td></tr></table></div>`,
+ init(el,o){const F=$('#cmf',el);o.fl={};
+  const mk=(id,kind,seed)=>new Flow($('#'+id,el),{kind,r:22,n:3,speed:.22,seed,into:F});
+  o.fl.p=[mk('ci0','co2',1),mk('ci1','water',2),mk('co0','food',3),mk('co2p','o2',4),new Flow($('#cph',el),{kind:'photon',r:8,n:4,speed:.6,into:F})];
+  o.fl.r=[mk('ci0','food',5),mk('ci1','o2',6),mk('co0','co2',7),mk('co1','water',8),mk('co2p','energy',9)];
+  o.mode=m=>{o.m=m;const c=CMP[m];o.fl.p.forEach(f=>f.set(m==='p'));o.fl.r.forEach(f=>f.set(m==='r'));
+   $('#cmp-p',el).classList.toggle('on',m==='p');$('#cmp-r',el).classList.toggle('on',m==='r');$('#cmname',el).textContent=c.name;$('#cmwhere',el).textContent=m==='p'?'in green parts, in light':'in all living parts';
+   $('#cmbox',el).setAttribute('stroke',c.col);$('#cmbox',el).setAttribute('fill',m==='p'?'#DFF5E5':'#E3EFFD');$('#cmsun',el).style.opacity=m==='p'?1:.15;
+   $$('#cmtb tr',el).forEach(tr=>{const td=tr.children;if(td.length<3)return;td[1].style.background=m==='p'?'#E8F8EE':'';td[2].style.background=m==='r'?'#E6F0FD':'';});
+   $('#th-p',el).style.background=m==='p'?'#239B56':'';$('#th-r',el).style.background=m==='r'?'#3988E8':'';};
+  $('#cmp-p',el).onclick=()=>o.mode('p');$('#cmp-r',el).onclick=()=>o.mode('r');},
+ enter(el,o){o.mode('p');},
+ tick(dt,t,el,o){[...o.fl.p,...o.fl.r].forEach(f=>f.tick(dt));}
+});
+
+/* ===================== SCIENTISTS ===================== */
+function portrait(f){return`<svg width="230" height="270" viewBox="0 0 230 270"><defs><linearGradient id="pbg${f}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${f?'#F3ECFF':'#E3EFFD'}"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs><rect width="230" height="270" rx="30" fill="url(#pbg${f})"/>
+ ${f?`<path d="M40 270C46 205 76 180 115 180S184 205 190 270Z" fill="#7A4CD9"/><path d="M60 270C80 220 100 200 140 190L180 270Z" fill="#B48CF2"/><circle cx="115" cy="122" r="46" fill="#C99470"/><path d="M68 118C66 76 92 64 115 64S166 76 162 118C154 92 136 84 115 84S78 92 68 118Z" fill="#2B1B12"/><circle cx="160" cy="112" r="15" fill="#2B1B12"/><circle cx="115" cy="104" r="3.5" fill="#B3263E"/>`
+ :`<path d="M36 270C42 205 74 180 115 180S188 205 194 270Z" fill="#2E3D52"/><path d="M98 182L115 230L132 182Z" fill="#fff"/><path d="M111 190h8l-2 30h-4z" fill="#8A2A12"/><circle cx="115" cy="122" r="46" fill="#C99470"/><path d="M70 112C70 76 92 64 115 64S160 76 160 112C152 92 138 86 115 86S78 92 70 112Z" fill="#3A3A3A"/><g fill="none" stroke="#142B45" stroke-width="3"><circle cx="97" cy="124" r="12"/><circle cx="133" cy="124" r="12"/><path d="M109 124h12"/></g><path d="M98 150q17 8 34 0" stroke="#5A3A2A" stroke-width="5" fill="none" stroke-linecap="round"/>`}
+ <text x="115" y="258" text-anchor="middle" font-size="13" fill="#8AA2BD" font-family="Inter,sans-serif" font-weight="700">Illustration</text></svg>`;}
+S({id:'sci',sec:'Know a scientist',title:'Scientists behind the discoveries',head:'Know a scientist',zoom:true,
+ notes:'All details are from the textbook. Ask: <i>Which of them studied photosynthesis? Which one worked on respiration?</i>',
+ html:`<div class="grid2 even" style="height:auto;gap:40px">
+  <div class="card" style="display:flex;gap:30px;padding:34px">${portrait(0)}<div class="col" style="gap:12px"><div class="pill g">Photosynthesis</div><h3 style="font-size:40px">Rustom Hormusji Dastur</h3><p class="muted" style="font-size:26px">1896–1961 · Plant scientist</p>
+   <ul class="list" style="gap:10px">${['Head of the Botany Department, Royal Institute of Science, Bombay (now Institute of Science, Mumbai), 1921–1935.','Studied the effects of the <b>amount of water</b> and <b>temperature</b> on photosynthesis.','Examined the importance of water, temperature and the <b>colour of light</b> in photosynthesis.'].map(t=>`<li style="font-size:25px">${t}</li>`).join('')}</ul></div></div>
+  <div class="card rv" data-s="1" style="display:flex;gap:30px;padding:34px">${portrait(1)}<div class="col" style="gap:12px"><div class="pill" style="background:#F3ECFF;color:#7A4CD9">Respiration</div><h3 style="font-size:40px">Kamala Sohonie</h3><p class="muted" style="font-size:26px">1911–1998 · A woman scientist of India</p>
+   <ul class="list" style="gap:10px">${['Received a <b>Ph.D. from Cambridge University</b> for her work on <b>respiration in plants</b>.','Worked at Lady Hardinge Medical College (New Delhi), the Nutrition Research Laboratory (Coonoor), and the Royal Institute of Science, Bombay, where she became <b>Director</b>.','Her work helped improve the <b>nutritive value of plant foods</b>; she worked on coconut palm sap as a nutritive drink, <b>Neera</b>.'].map(t=>`<li style="font-size:25px">${t}</li>`).join('')}</ul></div></div></div>`
+});
+
+/* ===================== BOTTLE GARDEN ===================== */
+S({id:'bottle',sec:'Exploratory project',title:'Bottle garden',head:'A bottle garden: a world in a jar',zoom:true,
+ notes:'Exploratory project from the textbook. If the sealed plant keeps growing well, it is maintaining its own gas exchange. Try it with a spider plant or jade plant.',
+ html:`<div class="grid2"><div class="viz" style="background:radial-gradient(800px 600px at 20% 10%,#FFF6D8,#FFFFFF 60%)"><svg viewBox="0 0 1040 790">
+  ${ART.sun(110,100,44)}${[0,1,2].map(i=>`<line x1="170" y1="${150+i*26}" x2="${420}" y2="${300+i*60}" stroke="url(#gRay)" stroke-width="10" class="dash"/>`).join('')}
+  <path d="M470 90H570V150Q760 190 760 380V700Q760 750 710 750H330Q280 750 280 700V380Q280 190 470 150Z" fill="url(#gGlass)" stroke="#8FB3D4" stroke-width="6"/>
+  <rect x="456" y="62" width="128" height="44" rx="10" fill="#A56B3C"/>
+  <path d="M286 640H754V700Q754 744 710 744H330Q286 744 286 700Z" fill="url(#gSoil)"/><path d="M286 640H754V660H286Z" fill="#6C4A2A"/>
+  ${[0,1,2,3,4,5,6,7,8].map(i=>{const a=-160+i*17.5,L=180+(i%3)*50;const r=a*Math.PI/180;const ex=520+Math.cos(r)*L,ey=640+Math.sin(r)*L*0.9;return`<path d="M520 640Q${520+Math.cos(r)*L*.5} ${640+Math.sin(r)*L*1.05} ${ex.toFixed(0)} ${(ey+ (i%2?40:10)).toFixed(0)}" stroke="${i%2?'#3DB26A':'#6FCB8E'}" stroke-width="16" fill="none" stroke-linecap="round"/>`;}).join('')}
+  <path id="bgl" d="M400 600C330 520 330 360 470 290" fill="none"/><path id="bgr" d="M570 290C710 360 710 520 640 600" fill="none"/>
+  <path d="M400 600C330 520 330 360 470 290" stroke="#97A1AC" stroke-width="5" fill="none" stroke-dasharray="4 10" marker-end="url(#mArrow)"/><path d="M570 290C710 360 710 520 640 600" stroke="#4FD1E3" stroke-width="5" fill="none" stroke-dasharray="4 10" marker-end="url(#mArrow)"/>
+  <g id="bgf"></g>
+  <g font-family="Inter,sans-serif" font-weight="800" font-size="22"><rect x="30" y="400" width="250" height="84" rx="20" fill="#fff" stroke="#C9D2DA" stroke-width="2"/><text x="155" y="434" text-anchor="middle" fill="#4A5F78">CO₂ from respiration</text><text x="155" y="466" text-anchor="middle" fill="#142B45">→ photosynthesis</text>
+   <rect x="770" y="400" width="250" height="84" rx="20" fill="#fff" stroke="#A9E7EF" stroke-width="2"/><text x="895" y="434" text-anchor="middle" fill="#1AA6BA">O₂ from photosynthesis</text><text x="895" y="466" text-anchor="middle" fill="#142B45">→ respiration</text></g>
+  <text x="520" y="40" text-anchor="middle" class="lbl" font-size="26">Sealed bottle</text></svg></div>
+ <div class="col" style="gap:16px">${stepList(['Plant a growing plant like a <b>spider plant</b> or <b>jade plant</b> in a large transparent bottle.','Let it grow properly for some time, then <b>seal</b> the mouth of the bottle.','<b>Observe</b> the growth of the plant.'])}
+  <div class="card green rv" data-s="1" style="padding:20px 26px"><p>If the plant grows well, it is maintaining the <b>exchange of gases</b> inside the bottle.</p></div>
+  <div class="concl rv" data-s="2" style="font-size:27px">Carbon dioxide from <b>respiration</b> is used for <b>photosynthesis</b>, and oxygen from <b>photosynthesis</b> is used in <b>respiration</b>.</div></div></div>`,
+ init(el,o){const F=$('#bgf',el);o.f=[new Flow($('#bgl',el),{kind:'co2',r:18,n:4,speed:.13,into:F}),new Flow($('#bgr',el),{kind:'o2',r:18,n:4,speed:.13,seed:4,into:F})];},
+ tick(dt,t,el,o){o.f.forEach(f=>f.tick(dt));}
+});
+
+/* ===================== MIND MAP ===================== */
+const MM=[
+ ['Plant growth',200,150,'Plants need <b>sunlight and water</b> to grow (Activity 10.1). New leaves and branches emerge, height increases, stem thickens.'],
+ ['Photosynthesis',620,150,'Plants prepare food using <b>carbon dioxide + water</b> in the presence of <b>sunlight and chlorophyll</b>. <br><b>Carbon dioxide + Water → Glucose + Oxygen</b> (sunlight, chlorophyll)'],
+ ['Stomata &|gas exchange',1040,150,'Tiny pores on leaves. Help in the <b>exchange of oxygen and carbon dioxide</b> during photosynthesis and respiration.'],
+ ['Xylem',1460,150,'Tube-like structures that carry <b>water and minerals</b> from the roots to the leaves and other parts (red ink experiment).'],
+ ['Phloem',1460,440,'Tube-like structures that carry <b>food</b> from the leaves to all parts. Food may be stored in roots and seeds.'],
+ ['Respiration',1040,440,'Glucose is broken down using oxygen to release energy. <br><b>Glucose + Oxygen → Carbon dioxide + Water + Energy</b>. Happens in all parts.'],
+ ['Energy for|growth',620,440,'The energy released in respiration is used for <b>growth and development</b> — and the cycle of life continues.']];
+S({id:'mind',sec:'Chapter summary',title:'Mind map',head:'The chapter at a glance',zoom:true,
+ notes:'Press Next to build the map node by node, or click any node to show its key idea. Ask a student to explain each link in their own words.',
+ html:`<div class="viz" style="height:600px"><svg viewBox="0 0 1740 600" id="mmsvg"><g id="mmlinks"></g><g id="mmnodes"></g></svg></div>
+  <div class="card" id="mminfo" style="margin-top:22px;min-height:150px;display:flex;gap:26px;align-items:center"><p class="muted">Click a node to see its key idea.</p></div>`,
+ steps:7,
+ init(el,o){
+  const links=[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6]];let l='';
+  links.forEach(([a,b],i)=>{const A=MM[a],B=MM[b];l+=`<path class="mml" data-i="${i+1}" d="M${A[1]} ${A[2]}L${B[1]} ${B[2]}" stroke="#9AB0C7" stroke-width="6" fill="none" stroke-dasharray="600" stroke-dashoffset="600" style="transition:stroke-dashoffset 1s" marker-end="url(#mArrow)"/>`;});
+  l+=`<path class="mml" data-i="7" d="M560 470Q200 560 180 220" stroke="#239B56" stroke-width="5" fill="none" stroke-dasharray="900" stroke-dashoffset="900" style="transition:stroke-dashoffset 1.2s" marker-end="url(#mArrow)"/>`;
+  $('#mmlinks',el).innerHTML=l;
+  const cols=['#239B56','#2FA862','#4FB9C9','#3988E8','#E08E1B','#5A7BE0','#F2A33A'];
+  $('#mmnodes',el).innerHTML=MM.map(([t,x,y],i)=>`<g class="mmn clk" data-n="${i}" transform="translate(${x} ${y})" style="opacity:0;transition:opacity .5s"><rect x="-175" y="-58" width="350" height="116" rx="58" fill="#fff" stroke="${cols[i]}" stroke-width="6" filter="url(#fShadow)"/><circle cx="-120" r="34" fill="${cols[i]}"/><text x="-120" y="11" text-anchor="middle" class="lbl-w" font-size="30">${i+1}</text>${t.includes('|')?`<text x="30" y="-6" text-anchor="middle" class="lbl" font-size="27">${t.split('|')[0]}</text><text x="30" y="26" text-anchor="middle" class="lbl" font-size="27">${t.split('|')[1]}</text>`:`<text x="30" y="10" text-anchor="middle" class="lbl" font-size="30">${t}</text>`}</g>`).join('');
+  o.show=i=>{$$('.mmn rect',el).forEach((r,k)=>r.setAttribute('fill',k===i?'#F4FFF7':'#fff'));$('#mminfo',el).innerHTML=`<div class="pill g" style="font-size:28px;flex:none">${i+1}. ${MM[i][0].replace('|',' ')}</div><p>${MM[i][3]}</p>`;};
+  $$('.mmn',el).forEach(g=>g.onclick=()=>o.show(+g.dataset.n));
+ },
+ onStep(el,s,o){$$('.mmn',el).forEach((g,i)=>g.style.opacity=i<Math.max(1,s)?1:0);$$('.mml',el).forEach(p=>p.setAttribute('stroke-dashoffset',+p.dataset.i<s?0:p.getAttribute('stroke-dasharray')));
+  if(s>=1)o.show(Math.min(s,7)-1);else $('#mminfo',el).innerHTML='<p class="muted">Press Next to build the map, or click a node.</p>';
+  if(s===7)$$('.mml',el).forEach(p=>p.setAttribute('stroke-dashoffset',0));}
+});
+
+S({id:'nut',sec:'Chapter summary',title:'In a nutshell',head:'In a nutshell',
+ notes:'Read these together. These six points are the core of the chapter.',
+ html:`<ul class="list" style="gap:20px">
+  ${['All living organisms require food that provides energy for their growth and development.','Plants use <b>carbon dioxide</b> and <b>water</b> in the presence of <b>sunlight</b> and <b>chlorophyll</b> to produce <b>glucose</b> and <b>oxygen</b>. This process of synthesis of food is <b>photosynthesis</b>.','Leaves are the <b>‘food factories’</b> of a plant.','Tiny pores on the surface of leaves, called <b>stomata</b>, help in the exchange of oxygen and carbon dioxide during photosynthesis and respiration.','The <b class="bl">xylem</b> transports water and minerals from roots, while the <b class="fd">phloem</b> carries food from leaves to all parts of the plant.','Plants break down glucose and release energy by <b>respiration</b>. They use oxygen and release carbon dioxide in this process.'].map((t,i)=>`<li class="rv" data-s="${i+1}" style="font-size:31px">${t}</li>`).join('')}</ul>`
+});
+
+/* ===================== QUIZ ===================== */
+const QZ=[
+ {t:'MCQ',q:'The green pigment in leaves that helps capture sunlight is:',o:['Starch','Chlorophyll','Iodine','Xylem'],a:1,w:'Chlorophyll is the green pigment that captures sunlight efficiently. Starch is stored food; iodine is used to test for starch.',v:'leaf'},
+ {t:'Predict the result',q:'A few drops of diluted iodine are put on a decolourised leaf that contains starch. The leaf turns:',o:['Red','Blue-black','Milky white','Bright green'],a:1,w:'A blue-black colour with iodine shows that starch is present.',v:'glucose'},
+ {t:'Reasoning',q:'Why is the leaf boiled in alcohol (in a water bath) before the iodine test?',o:['To add starch to it','To remove the green colour so the colour change is easy to see','To make it grow','To kill germs on it'],a:1,w:'Decolourisation removes the green chlorophyll so we can easily observe the blue-black colour of starch.',v:'eye'},
+ {t:'Predict the result',q:'A variegated leaf from a plant kept in the dark for 36 hours is tested with iodine. What will you see?',o:['Only green patches turn blue-black','Only white patches turn blue-black','No blue-black colour anywhere','The whole leaf turns blue-black'],a:2,w:'Without sunlight, no starch is made — not even in the green patches (Activity 10.3).',v:'sun'},
+ {t:'True or False',q:'In Activity 10.4, the half of the leaf inside the bottle with caustic soda turns blue-black.',o:['True','False'],a:1,w:'False. Caustic soda absorbs carbon dioxide, so no starch is made inside. Only the outside half turns blue-black.',v:'co2'},
+ {t:'Identify the structure',q:'Name the tiny pore shown by the arrow in this leaf peel.',fig:'sto',o:['Xylem','Phloem','Stoma','Root hair'],a:2,w:'Stomata are tiny pores on the surface of leaves (mostly the lower surface) that help in the exchange of gases.',v:'eye'},
+ {t:'MCQ',q:'In Activity 10.5, a lit matchstick burns with an intense flame in the gas collected from the water plant kept in sunlight. The gas is rich in:',o:['Carbon dioxide','Nitrogen','Oxygen','Water vapour'],a:2,w:'Oxygen helps things burn brightly. Oxygen is released during photosynthesis.',v:'o2'},
+ {t:'Match the following',q:'Match each part with its job.',m:[['Xylem','Carries water and minerals'],['Phloem','Carries food'],['Stomata','Exchange of gases'],['Chlorophyll','Captures sunlight']],w:'Xylem — water and minerals up from roots; phloem — food from leaves; stomata — gas exchange; chlorophyll — captures sunlight.',v:'leaf'},
+ {t:'Identify the structure',q:'A twig kept in red ink water is cut. Which structure is stained red?',fig:'xyl',o:['Phloem','Xylem','Stomata','Chlorophyll'],a:1,w:'The xylem carries water (and the red ink) up the stem — so it is stained red.',v:'drop'},
+ {t:'Reasoning',q:'A potato slice turns blue-black with iodine. Where did its starch come from?',o:['It was absorbed from the soil','It was made in the leaves and carried by the phloem','It was made by the xylem','It was made in the roots from minerals'],a:1,w:'Food is made in the leaves by photosynthesis and transported by the phloem to be stored.',v:'glucose'},
+ {t:'Predict the result',q:'Why does lime water turn milky in the tube connected to the flask of germinating seeds?',o:['Seeds release oxygen','Seeds release carbon dioxide as they respire','Cotton releases water','Lime water turns milky in the dark'],a:1,w:'Germinating seeds respire and release extra carbon dioxide, which turns lime water milky.',v:'co2'},
+ {t:'Reasoning',q:'X is broken down using Y to release carbon dioxide, Z and energy. X, Y and Z are:',o:['X = oxygen, Y = glucose, Z = water','X = glucose, Y = oxygen, Z = water','X = water, Y = carbon dioxide, Z = glucose','X = starch, Y = water, Z = oxygen'],a:1,w:'Glucose + Oxygen → Carbon dioxide + Water + Energy. So X = glucose, Y = oxygen, Z = water.',v:'energy'},
+ {t:'True or False',q:'Only the green parts of a plant carry out respiration.',o:['True','False'],a:1,w:'False. All parts of a plant, green or non-green, carry out respiration.',v:'energy'},
+ {t:'Predict the result',q:'Vani keeps four plants: (a) sunlight with CO₂, (b) sunlight without CO₂, (c) dark with CO₂, (d) dark without CO₂. In which will starch be formed?',o:['(a) only','(a) and (b)','(a) and (c)','All four'],a:0,w:'Photosynthesis needs both sunlight and carbon dioxide (plus water and chlorophyll). Only plant (a) has both.',v:'sun'},
+ {t:'Know a scientist',q:'Which Indian scientist worked on the sap of the coconut palm as a nutritive drink called Neera?',o:['Rustom Hormusji Dastur','Kamala Sohonie','C. V. Raman','Jagadish Chandra Bose'],a:1,w:'Kamala Sohonie (1911–1998) — Ph.D. from Cambridge on respiration in plants; worked on Neera and the nutritive value of plant foods.',v:'bulb'}];
+const QFIG={sto:`<svg width="300" height="300" viewBox="0 0 300 300"><circle cx="150" cy="150" r="146" fill="#E6E9FA" stroke="#2A3B56" stroke-width="8"/>${[[60,80],[140,60],[220,90],[70,170],[150,150],[230,180],[100,240],[190,240]].map(([x,y])=>`<rect x="${x-38}" y="${y-24}" width="76" height="48" rx="8" fill="#DCE1F6" stroke="#6E62B8" stroke-width="3"/>`).join('')}<g transform="translate(150 150)"><ellipse cx="-13" rx="13" ry="24" fill="#9ED39A" stroke="#3F7A45" stroke-width="3"/><ellipse cx="13" rx="13" ry="24" fill="#9ED39A" stroke="#3F7A45" stroke-width="3"/><ellipse rx="4" ry="15" fill="#2B2350"/></g><path d="M260 40L180 120" stroke="#E0475B" stroke-width="7" marker-end="url(#mArrow)"/></svg>`,
+ xyl:`<svg width="300" height="300" viewBox="0 0 300 300"><circle cx="150" cy="150" r="140" fill="#7CC98F"/><circle cx="150" cy="150" r="128" fill="#E8F6E1"/>${Array.from({length:8},(_,i)=>{const a=i/8*Math.PI*2;return`<g transform="translate(${150+Math.cos(a)*85} ${150+Math.sin(a)*85}) rotate(${a*180/Math.PI+90})"><ellipse cy="-12" rx="18" ry="12" fill="#F4E2B8"/><ellipse cy="8" rx="16" ry="15" fill="#D7334B"/></g>`}).join('')}<path d="M290 260L250 170" stroke="#142B45" stroke-width="6" marker-end="url(#mArrow)"/></svg>`};
+S({id:'quiz',sec:'Knowledge check',title:'Interactive quiz',head:'Knowledge check',zoom:true,
+ notes:'Let students answer (show of hands or teams) before clicking. The explanation appears after each attempt. <b>Next</b> moves to the next question once answered; use <b>Skip</b> to move on without answering.',
+ html:`<div class="row" style="position:absolute;right:90px;top:64px;gap:16px"><div class="pill" id="qzn">Question 1 of ${QZ.length}</div><div class="pill g" id="qzs" style="font-size:28px">Score 0</div></div>
+  <div id="qzbox"></div>`,
+ init(el,o){o.reset=()=>{o.i=0;o.score=0;o.done=false;o.ans=QZ.map(()=>null);o.render();};
+  o.render=()=>{const box=$('#qzbox',el);$('#qzs',el).textContent='Score '+o.score;
+   if(o.i>=QZ.length){o.done=true;$('#qzn',el).textContent='Finished!';const pc=o.score/QZ.length;
+    box.innerHTML=`<div class="card" style="text-align:center;padding:60px"><div class="bob" style="display:inline-block">${ic(pc>=.7?'ok':'bulb',140)}</div><h2 class="t" style="font-size:72px;margin-top:20px">${o.score} / ${QZ.length}</h2><p class="big">${pc>=.8?'Outstanding — you are a plant scientist!':pc>=.5?'Well done! Revise the topics you missed.':'Good try! Let’s revisit the chapter together.'}</p><div class="ctrls" style="justify-content:center;margin-top:30px"><button class="btn" id="qzagain">↺ Try again</button><button class="btn pri" id="qzfin">Final challenge ▶</button></div></div>`;
+    $('#qzagain',el).onclick=o.reset;$('#qzfin',el).onclick=()=>go(APP.i+1,'fwd');return;}
+   const q=QZ[o.i];$('#qzn',el).textContent=`Question ${o.i+1} of ${QZ.length}`;
+   let body='';
+   if(q.m){const right=q.m.map((p,i)=>i).sort((a,b)=>((a*7+3)%5)-((b*7+3)%5));
+    body=`<div class="mt" style="margin-top:10px">${q.m.map((p,i)=>`<button data-l="${i}">${p[0]}</button><button data-r="${right[i]}">${q.m[right[i]][1]}</button>`).join('')}</div>`;}
+   else body=`<div style="display:flex;gap:34px;align-items:center">${q.fig?`<div style="flex:none">${QFIG[q.fig]}</div>`:''}<div class="qz-opts" style="flex:1;${q.o.length===2?'grid-template-columns:1fr 1fr':''}">${q.o.map((t,i)=>`<button class="qz-opt" data-i="${i}"><span class="k">${'ABCD'[i]}</span>${t}</button>`).join('')}</div></div>`;
+   box.innerHTML=`<div class="card" style="padding:34px 40px"><div class="pill y" style="margin-bottom:14px">${q.t}</div><p style="font-size:38px;font-weight:750;line-height:1.3;margin-bottom:26px">${q.q}</p>${body}</div>
+    <div id="qzfb" style="margin-top:22px;min-height:120px"></div><div class="ctrls" style="position:absolute;right:90px;bottom:30px"><button class="btn sm" id="qzskip">Skip</button><button class="btn pri" id="qznext" style="display:none">Next question ▶</button></div>`;
+   $('#qzskip',el).onclick=()=>{o.i++;o.render();};$('#qznext',el).onclick=()=>{o.i++;o.render();};
+   const fb=(ok)=>{o.ans[o.i]=ok;if(ok)o.score++;$('#qzs',el).textContent='Score '+o.score;$('#qzfb',el).innerHTML=`<div class="fb ${ok?'ok':'bad'}">${ic(ok?'ok':'bad',64)}<div style="flex:1"><b>${ok?'Correct!':'Not quite.'}</b> ${q.w}</div>${ic(q.v,90)}</div>`;$('#qzskip',el).style.display='none';$('#qznext',el).style.display='';};
+   if(q.m){let pick=null,mist=0,got=0;$$('.mt button',el).forEach(b=>b.onclick=()=>{
+     if(b.dataset.l!==undefined){$$('[data-l]',el).forEach(x=>x.classList.remove('pick'));b.classList.add('pick');pick=b;return;}
+     if(!pick)return;if(pick.dataset.l===b.dataset.r){pick.classList.remove('pick');pick.classList.add('ok');b.classList.add('ok');pick=null;if(++got===q.m.length)fb(mist===0);}
+     else{mist++;b.classList.remove('bad');void b.offsetWidth;b.classList.add('bad');}});}
+   else $$('.qz-opt',el).forEach(b=>b.onclick=()=>{if(o.ans[o.i]!==null)return;const k=+b.dataset.i,ok=k===q.a;$('.qz-opts',el).parentElement.classList.add('qz-locked');
+     $$('.qz-opt',el).forEach((x,j)=>{if(j===q.a)x.classList.add('right');else if(j===k)x.classList.add('wrong');else x.classList.add('dim');});fb(ok);});
+  };
+  o.reset();},
+ onNext(el,o){if(o.done)return false;if(o.ans[o.i]!==null){o.i++;o.render();}return true;}
+});
+
+/* ===================== FINAL CHALLENGE ===================== */
+S({id:'final',sec:'Final challenge',title:'What if…?',head:'Final challenge',zoom:true,
+ notes:'Give students a full minute to think (use the timer). Take answers from several students, then reveal the guided explanation step by step. This links to textbook questions 2 and 10.',
+ html:`<div class="q" style="font-size:42px;padding:34px 40px"><div class="qm" style="width:76px;height:76px;font-size:46px">?</div>If all photosynthetic organisms suddenly disappeared from Earth, what would happen to life?</div>
+  <div class="row" style="margin:26px 0;gap:20px"><button class="btn blue" id="fnt">⏱ Start 60-second think time</button><div id="fntime" style="font-size:44px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--blue)"></div></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:26px">
+   <div class="card rv" data-s="1"><div style="font-size:56px">🍽️</div><h3>No new food</h3><p>Plants make food for all. Animals eat plants, or animals that eat plants — food chains would collapse.</p></div>
+   <div class="card rv" data-s="2"><div style="font-size:56px">🫁</div><h3>Oxygen runs out</h3><p>Photosynthesis releases oxygen. Without it, the oxygen used in respiration would not be replaced.</p></div>
+   <div class="card rv" data-s="3"><div style="font-size:56px">🌫️</div><h3>Carbon dioxide builds up</h3><p>Carbon dioxide from respiration would no longer be used — the balance in nature would be lost.</p></div></div>
+  <div class="concl rv" data-s="4" style="margin-top:26px;font-size:30px">Photosynthesis and respiration together keep the <b>balance in nature</b>. Life on Earth depends on photosynthesis.</div>`,
+ init(el,o){$('#fnt',el).onclick=()=>{o._bag.clear();let n=60;$('#fntime',el).textContent=n+' s';const id=setInterval(()=>{n--;$('#fntime',el).textContent=n>0?n+' s':'Time’s up!';if(n<=0)clearInterval(id);},1000);o._bag.add(()=>clearInterval(id));};},
+ enter(el){$('#fntime',el).textContent='';}
+});
+S({id:'end',sec:'Final challenge',title:'Every leaf is a tiny food factory',bare:true,cls:'full',
+ notes:'Close the lesson. Optional homework: start a bottle garden or the warm vs cold water-transport experiment (textbook Q9).',
+ html:`<svg viewBox="0 0 1920 984" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%"><rect width="1920" height="984" fill="url(#gSky)"/>${ART.sun(1700,140,70)}
+  <path d="M0 800Q480 740 960 790T1920 770V984H0Z" fill="#94D6A8"/><path d="M0 880Q600 850 1200 880T1920 870V984H0Z" fill="#5DBB7C"/>
+  <g class="sway">${ART.plant(1500,880,{g:1,H:560})}</g></svg>
+  <div style="position:absolute;left:120px;top:200px;width:1150px" class="col">
+   <div class="kicker">Remember</div>
+   <p style="font-size:66px;line-height:1.18;font-weight:800;letter-spacing:-.02em">Every leaf is a tiny <span class="g">food factory</span>.<br>Every root is a <span class="bl">gateway</span>.<br>Every plant is a <span style="color:#C67A12">living system</span>.</p>
+   <div class="ctrls" style="margin-top:30px"><button class="btn pri" onclick="go(0,'back')">⌂ Back to start</button><button class="btn" onclick="toc(true)">☰ Chapter map</button></div></div>`
+});
+
+boot();
+</script>
+</body>
+</html>

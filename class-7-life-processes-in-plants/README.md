@@ -1,43 +1,52 @@
-# Life Processes in Plants: interactive lesson (Class 7)
+# Life Processes in Plants: cinematic 3D lesson (Class 7)
 
-An interactive classroom presentation for **Grade 7 Science (Curiosity, 2026–27), Chapter 10: Life Processes in Plants**, built for a 65-inch classroom TV.
+A real-time 3D classroom film for **Grade 7 Science (Curiosity, 2026–27), Chapter 10: Life Processes in Plants**, built for a 65-inch classroom TV.
 
-**File to open:** `Life_Processes_in_Plants_Class_7.html`. It is a single standalone file: all CSS, JavaScript and SVG illustrations are inside it.
+**File to open:** `Life_Processes_in_Plants_Class_7.html` (one standalone file, about 820 KB: Three.js, all scenes, styles and text are inside it).
 
 ## How to open it
 
 1. Copy `Life_Processes_in_Plants_Class_7.html` to the classroom laptop.
-2. Right-click it → **Open with → Google Chrome** (Edge also works).
-3. Click **Fullscreen** in the bottom bar, or press **F**. Press **Esc** to leave fullscreen.
-
-The stage is a fixed 1920×1080 frame that scales to fit any screen, so the layout never breaks on a TV, a projector or a laptop.
+2. Right-click it → **Open with → Google Chrome** (or Edge). It needs WebGL, which every recent laptop has.
+3. Wait for the short loading bar, then press **F** (or the **Fullscreen** button). **Esc** leaves fullscreen.
 
 ## Controls
 
 | Action | Keys / buttons |
 |---|---|
-| Next step or slide | → · Space · Page Down · **Next** |
-| Previous | ← · Page Up · **Back** |
-| Fullscreen on/off | F · **Fullscreen** (Esc exits) |
-| Chapter map (jump to any topic) | C · **Contents** |
-| Teacher note for the slide | N · **Notes** |
-| First / last slide | Home / End · **Home** |
-| Start again (resets quiz) | **Restart** |
+| Next step / next scene | → · Space · Page Down · **›** |
+| Back | ← · Page Up · **‹** |
+| Jump to any scene | C or I · **Jump to** (or click a section in the bottom bar) |
+| Teacher note | N · **Teacher notes** |
+| Graphics quality | Q · **Quality** (High / Fast) |
+| Fullscreen | F · **Fullscreen** |
+| Start again | Home · **Home** |
 
-On each slide, **Next** first reveals the slide's ideas one at a time (the dots in the bar show how many remain), then moves on. On experiment slides, each Next plays the next step of the experiment.
+The bar at the top and bottom fades away after a few seconds without mouse movement, leaving a clean picture; move the mouse to bring it back. A pulsing **›** means the current scene still has more steps.
 
-## What's inside (36 slides)
+**If the animation stutters** on an older laptop, press **Q** to switch to *Fast* quality (less grass, softer shadows). The lesson also switches automatically if the first few seconds run slowly.
 
-Opening → plant growth time-lapse → students' ideas → **Activity 10.1** three pots (predict, then fast-forward 2 weeks) → Table 10.1 → Vrikshayurveda → leaves as food factories → **Activity 10.2** starch test (5 animated steps, alcohol safety) → why decolourise → **Activity 10.3** variegated leaf → chlorophyll & coloured leaves → role of air → **Activity 10.4** caustic soda bottle → Table 10.3 → four essentials → **photosynthesis journey** (6-step camera zoom from roots into the leaf) → interactive word equation → **Activity 10.5** oxygen bubbles & matchstick → **Activity 10.6** leaf peel under a microscope → stomata gas exchange → xylem (soil → roots → stem → branches → leaves) → **Activity 10.7** red ink → phloem → xylem vs phloem → do plants respire? → **Activity 10.8** germinating seeds & lime water → respiration equation → photosynthesis vs respiration → scientists (Dastur, Sohonie) → bottle garden → mind map → In a nutshell → 15-question quiz → final challenge → closing.
+## Worlds and scenes (38)
 
-## Dependencies
+- **Garden:** a living sapling in a sunlit meadow (sky, wind-blown grass, trees), a 60-day time-lapse with the sun rising and setting, the Activity 10.1 three-pots patio, and a soil cutaway that shows roots drinking water and minerals.
+- **Inside a leaf:** a magnified section with cells, chlorophyll bodies, a vein and stomata. Carbon dioxide, water, sunlight, glucose and oxygen move as 3D molecules; glucose turns to starch and food leaves through the vein.
+- **Lab bench:** every textbook activity as a 3D demonstration. These are the starch test (10.2), variegated leaves (10.3), the caustic soda bottle (10.4), oxygen bubbles and the matchstick test (10.5), the leaf peel under a microscope (10.6), red ink (10.7), germinating seeds and lime water (10.8), and the bottle garden.
+- **Inside a stem:** red-stained xylem in the cross-section, water and minerals rising in the xylem, and food moving in the phloem.
 
-None are required. The Inter font loads from Google Fonts when online; offline, the page uses the system font and still works fully.
+The lesson also covers the word equations, stomata in photosynthesis and respiration, xylem vs phloem, photosynthesis vs respiration, both scientists (R. H. Dastur, Kamala Sohonie), the final challenge, In a nutshell, and a 15-question quiz with a score.
 
 ## Editing
 
-The source is in `src/` (`engine.js` holds navigation and the drawing helpers, `s1.js` to `s5.js` hold the scenes). After editing, rebuild the single file:
+The source is in `3d/src/`:
+
+- `core.js`: renderer, camera rig, captions, labels and navigation.
+- `worlds/`: the four 3D worlds.
+- `beats1.js` … `beats4.js`: the lesson content, one block per scene.
+
+To rebuild:
 
 ```
-python3 build.py
+cd 3d && npm install && npm run build
 ```
+
+The earlier 2D (SVG) version of this lesson is kept in `2d-version/` as a lightweight fallback for computers without WebGL.

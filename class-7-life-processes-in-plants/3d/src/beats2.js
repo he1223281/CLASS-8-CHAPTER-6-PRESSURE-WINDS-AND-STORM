@@ -1,0 +1,106 @@
+import * as THREE from 'three';
+import {V,lerp,clamp,curve} from './lib.js';
+import {Flow,Drift} from './fx.js';
+import {X,mixc} from './worlds/lab.js';
+import {B,gReset,G,PALE,BB,IOD,outside} from './beats1.js';
+const cap=(S,o)=>S.caption(o),lab=(S,t,p,o)=>S.label(t,p,o);
+const CAUT=t=>`<div class="status bad"><b>Caution —</b> ${t}</div>`;
+const L=(st,x,y,z)=>V(X[st]+x,y,z);
+const sh=(st,p,t,fov=30,dur=2.6)=>({p:[X[st]+p[0],p[1],p[2]],t:[X[st]+t[0],t[1],t[2]],fov,dur});
+/* ================= STARCH TEST ================= */
+B.push({id:'starch',sec:'Starch test',title:'Activity 10.2 — Starch test',world:'lab',steps:6,from:sh('starch',[-.4,.5,1.1],[.1,.12,0],34),shot:sh('starch',[.05,.32,.66],[.12,.13,0],30,3),
+ notes:'Teacher demonstration only. Each → plays the next step. Emphasise: the alcohol tube is heated <b>in a water bath</b>, never directly on a flame.',
+ enter(S){const w=S.worlds.lab,p=w.parts.starch;w.reset();w.focus(X.starch+.1);w.setLight(1);p.leafT.visible=false;p.leafB.visible=false;p.leafP.visible=false;},
+ step(S,s){const w=S.worlds.lab,p=w.parts.starch,rig=S.rig;
+  if(s===0){cap(S,{pos:'left',cls:'compact',kicker:'Activity 10.2 · Let us check · demonstration',big:'Is there starch in a leaf?',mid:'We need: boiling water, alcohol in a test tube, a plate and <b class="a">diluted iodine</b> solution.'});
+   lab(S,'Spirit lamp',L('starch',0,.09,0),{kind:'amber',lift:40,side:'down'});lab(S,'Boiling water',L('starch',-.03,.22,0),{kind:'abio',lift:60,delay:400});lab(S,'Iodine solution',L('starch',.45,.09,-.05),{kind:'amber',lift:50,delay:800});lab(S,'Plate',L('starch',.3,.01,.04),{kind:'ink',lift:40,delay:1100,side:'down'});}
+  if(s===1){p.leafB.visible=true;p.tt.visible=false;p.bubbles.set(true);rig.fly(sh('starch',[-.03,.26,.36],[0,.21,0],30,2));cap(S,{pos:'left',cls:'compact',kicker:'Step 1',big:'Boil for five minutes',mid:'Keep a leaf in <b>boiling water</b> for five minutes to soften it.',html:'<div class="daycount">Minutes <b id="mn">0</b></div>'});
+   S.tween(4,(e,k)=>{const d=document.getElementById('mn');if(d)d.textContent=Math.round(k*5);});}
+  if(s===2){p.leafB.visible=false;p.tt.visible=true;p.leafT.visible=true;p.bubbles.set(true);rig.fly(sh('starch',[.02,.26,.33],[.01,.22,0],28,2));
+   cap(S,{pos:'left',cls:'compact',kicker:'Step 2 · water bath',big:'Alcohol removes the green',mid:'Dip the leaf in <b>alcohol</b> in a test tube. Place the tube in the beaker of boiling water until the leaf becomes <b>colourless</b>. The alcohol turns green.'});
+   S.panel(`<h3>Safety</h3><h2>Never heat alcohol directly</h2>${CAUT('Alcohol should never be placed near a heat source directly, as it is highly flammable and can easily lead to fire and burns. This is why the test tube sits in a <b>hot water bath</b>.')}`,{side:'right',cls:'auto'});
+   S.tween(6,e=>{p.leafT.paint({base:mixc(G,PALE,e)});const c=mixc('#eef7ff','#9fd89c',e);p.alc.material.color.set(c);p.alc.material.attenuationColor.set(c);});
+   lab(S,'Alcohol',L('starch',.02,.21,0),{kind:'bio',lift:40,delay:600});}
+  if(s===3){S.closePanel();p.bubbles.set(false);p.leafT.visible=false;p.leafP.visible=true;p.leafP.paint({base:PALE,spots:0});rig.fly(sh('starch',[.32,.2,.3],[.3,.01,.04],30,2.2));
+   cap(S,{pos:'left',cls:'compact',kicker:'Step 3',big:'Onto a plate',mid:'Take out the decolourised leaf and place it on a plate.'});lab(S,'Decolourised leaf',L('starch',.3,.01,.04),{kind:'ink',lift:50});}
+  if(s===4){cap(S,{pos:'left',cls:'compact',kicker:'Step 4',big:'A few drops of iodine',mid:'Put a few drops of <b class="a">diluted iodine</b> solution on the leaf with a dropper. Wait a few minutes.'});
+   const d=p.dropper;S.tween(1.4,e=>d.position.set(lerp(.45,.3,e),lerp(.1,.075,e),lerp(-.05,.04,e)),()=>{let n=0;const drip=()=>{if(n++>=4)return;p.drop.visible=true;S.tween(.5,e=>p.drop.position.set(.3,lerp(.072,.012,e*e),.04),()=>{p.drop.visible=false;p.leafP.paint({spots:Math.min(1,n*.3)});S.later(250,drip);});};drip();});}
+  if(s===5){p.leafP.paint({spots:1});rig.fly(sh('starch',[.36,.24,.3],[.3,.01,.04],30,2));cap(S,{pos:'left',cls:'compact',kicker:'Step 5 · observe',big:'Blue-black!',mid:'A <b>blue-black</b> colour shows that <b class="a">starch</b> is present in the leaf.'});
+   S.tween(3,e=>p.leafP.paint({base:mixc(PALE,BB,e),spotC:mixc(IOD,BB,e)}));S.later(1500,()=>lab(S,'Starch present',L('starch',.3,.012,.04),{kind:'amber',lift:50}));}}});
+B.push({id:'decol',sec:'Starch test',title:'Why decolourise?',world:'lab',steps:2,shot:sh('starch',[.2,.22,.34],[.2,.08,0],30),
+ notes:'Ask the question first. Let students think before revealing.',enter(S){const p=S.worlds.lab.parts.starch;S.worlds.lab.reset();p.leafB.visible=true;p.leafB.position.set(-.035,.2,0);p.leafP.visible=true;p.leafP.paint({base:BB,spots:0});},
+ step(S,s){if(s===0)cap(S,{pos:'left',cls:'compact',kicker:'Think',big:'Why remove the green first?',mid:'Did you wonder why we decolourised the leaf at the beginning of the activity?'});
+  if(s===1){cap(S,{pos:'left',cls:'compact',kicker:'Dive deeper',big:'To see the colour change',mid:'Decolourisation removes the green, so we can <b>easily observe the colour change</b> — and thus the presence of starch.'});
+   S.panel(`<h3>So far</h3><h2>What we have learnt</h2><table class="t"><tr><td><b>Activity 10.1</b></td><td>Water and sunlight are essential for plant growth.</td></tr><tr><td><b>Activity 10.2</b></td><td>Green leaves store <b>starch</b> as food.</td></tr></table>`,{side:'right',cls:'auto'});}}});
+/* ================= CHLOROPHYLL (10.3) ================= */
+B.push({id:'vari',sec:'Chlorophyll',title:'Activity 10.3 — Variegated leaves',world:'lab',steps:3,from:sh('vari',[0,.5,1],[0,.1,0],34),shot:sh('vari',[.12,.42,.62],[.1,.02,0],34,3),
+ notes:'Bhaskar uses leaves with green and non-green patches (croton, coleus). Ask students to predict which parts will turn blue-black before pressing →.',
+ enter(S){const w=S.worlds.lab,p=w.parts.vari;w.focus(X.vari);w.setLight(1);[p.l1,p.l2].forEach(l=>l.paint({base:G,patch:G,margin:'#efe8c4',spots:0}));},
+ step(S,s){const p=S.worlds.lab.parts.vari;
+  if(s===0){cap(S,{pos:'left',cls:'compact',kicker:'Activity 10.3 · Bhaskar’s question',big:'Does sunlight help make starch?',mid:'Two similar potted plants with <b>green and non-green patches</b>. One kept in <b class="a">sunlight</b>; one kept in the <b>dark for 36 hours</b>. He traces the patches, then does the iodine test.'});
+   lab(S,'From the plant in sunlight',L('vari',-.12,.01,.08),{kind:'amber',lift:60});lab(S,'From the plant kept in dark',L('vari',.12,.01,.08),{kind:'abio',lift:60,delay:500});}
+  if(s===1){cap(S,{pos:'left',cls:'compact',kicker:'Iodine test',big:'Watch the patches',mid:'First decolourised… then a few drops of iodine.'});
+   S.tween(2,e=>[p.l1,p.l2].forEach(l=>l.paint({patch:mixc(G,PALE,e),margin:mixc('#efe8c4',PALE,e)})),()=>S.tween(3,e=>{p.l1.paint({patch:mixc(PALE,BB,e),margin:mixc(PALE,'#d2a868',e)});p.l2.paint({patch:mixc(PALE,'#d2a868',e),margin:mixc(PALE,'#d2a868',e)});},()=>{
+    lab(S,'Green parts: blue-black',L('vari',-.13,.012,.08),{kind:'amber',lift:40});lab(S,'No blue-black',L('vari',.12,.012,.08),{kind:'red',lift:40,delay:300});}));}
+  if(s===2){cap(S,{pos:'left',cls:'compact',kicker:'Inference',big:'Chlorophyll is essential',mid:'Starch forms only where the leaf is <b class="g">green</b>, and only in <b class="a">sunlight</b>. Chlorophyll helps prepare starch in the presence of sunlight.'});
+   S.panel(`<h3>Table 10.2</h3><h2>Starch in green and non-green parts</h2><table class="t"><tr><th>Plant kept in</th><th>Before</th><th>After iodine test</th></tr><tr><td><b>Sunlight</b></td><td>Green + non-green patches</td><td>Green patches turned <b>blue-black</b></td></tr><tr><td><b>Dark</b></td><td>Green + non-green patches</td><td><b>No change</b> in colour</td></tr></table>
+    <div class="reveal-q"><button onclick="this.parentNode.classList.toggle('open')">Non-green patches did not turn blue-black. Do they have no chlorophyll at all?</button><div class="ans">Not necessarily. They may not have <b>sufficient chlorophyll</b> to prepare enough starch to be detected by the iodine test.</div></div>`,{side:'right',cls:'auto'});}}});
+B.push({id:'pigments',sec:'Chlorophyll',title:'Fascinating fact: red leaves',steps:1,shot:S=>outside(S,12,.36,.12,32),
+ notes:'Leaves of plants like red amaranth or coleus look red/violet because other pigments hide chlorophyll.',
+ enter(S){gReset(S);},exit(S){S.worlds.garden.hero.setTint('#fff',0);},
+ step(S){const h=S.worlds.garden.hero;S.tween(4,e=>h.setTint('#8a1f45',e*.75));cap(S,{pos:'left',cls:'compact',kicker:'Fascinating fact',big:'Red, violet, brown leaves',mid:'They contain <b class="r">more of these coloured pigments</b> than green chlorophyll, which hides the green. Some of these pigments also help in photosynthesis — an iodine test shows starch in them too.'});}});
+/* ================= CARBON DIOXIDE ================= */
+B.push({id:'air',sec:'Carbon dioxide',title:'What about air?',steps:2,shot:{p:[.7,.5,1.1],t:[0,.38,0],fov:32,dur:3},notes:'Accept guesses (oxygen? carbon dioxide?). Do not confirm yet — the experiment decides.',
+ enter(S){gReset(S);const sc=S.worlds.garden.scene;S.addFx(new Drift(sc,{kind:'co2',n:30,size:.014,box:[V(-.5,.1,-.4),V(.5,.8,.5)],speed:.03,seed:5}));S.addFx(new Drift(sc,{kind:'o2',n:24,size:.012,box:[V(-.5,.1,-.4),V(.5,.8,.5)],speed:.03,seed:6}));},
+ step(S,s){if(s===0)cap(S,{pos:'left',cls:'compact',kicker:'10.2.2 · Role of air',big:'Is sunlight and chlorophyll enough?',mid:'“My sister told me that <b>air</b> plays a role in food preparation in plants.”'});
+  if(s===1)cap(S,{pos:'left',cls:'compact',kicker:'Air is a mixture of gases',big:'Which gas is needed?',mid:'Air contains <b class="b">oxygen</b>, <b>carbon dioxide</b> and other gases. Let’s test one of them.',html:'<div class="legend"><span><i style="background:#9aa3ad"></i>carbon dioxide</span><span><i style="background:#4fd1e3"></i>oxygen</span></div>'});}});
+B.push({id:'co2',sec:'Carbon dioxide',title:'Activity 10.4 — Caustic soda bottle',world:'lab',steps:5,from:sh('co2',[-.5,.6,1.2],[0,.2,0],34),shot:sh('co2',[.05,.38,.72],[.0,.2,0],32,3),
+ notes:'Teacher demonstration. Caustic soda (sodium hydroxide) absorbs carbon dioxide, so the leaf half inside the bottle gets everything <b>except</b> CO₂.',
+ enter(S){const w=S.worlds.lab,p=w.parts.co2;w.focus(X.co2);w.setLight(.25);p.leaf.paint({halfA:G,halfB:G,split:.38});p.inside.reset();p.inside.set(false);p.outside.set(false);},exit(S){S.worlds.lab.setLight(1);},
+ step(S,s){const w=S.worlds.lab,p=w.parts.co2;
+  if(s===0){cap(S,{pos:'left',cls:'compact',kicker:'Activity 10.4 · demonstration · step 1',big:'Destarch the plant',mid:'Keep a potted plant in the <b>dark for two to three days</b>, so it uses up its stored starch.'});lab(S,'Destarched plant',L('co2',-.16,.3,0),{kind:'bio',lift:40});}
+  if(s===1){S.tween(1.5,e=>w.setLight(lerp(.25,1,e)));p.inside.set(true);p.outside.set(true);cap(S,{pos:'left',cls:'compact',kicker:'Step 2 · the set-up',big:'Half the leaf in the bottle',mid:'The bottle contains <b>caustic soda</b> (sodium hydroxide), which <b>absorbs carbon dioxide</b>. Half the leaf goes in through a split cork; the other half stays outside.'});
+   lab(S,'Caustic soda',L('co2',.12,.04,.06),{kind:'uv',lift:40,side:'down'});lab(S,'Inside: CO₂ absorbed',L('co2',.15,.2,0),{kind:'red',lift:40,delay:600});lab(S,'Outside: air with CO₂',L('co2',.1,.4,0),{kind:'ink',lift:30,delay:900});
+   S.panel(`<h3>Safety</h3>${CAUT('Caustic soda is a strong chemical that can cause skin burns; only teachers should handle it.')}`,{side:'right',cls:'auto'});}
+  if(s===2){S.closePanel();S.tween(1.2,e=>w.setLight(lerp(1,1.6,e)));cap(S,{pos:'left',cls:'compact',kicker:'Step 3',big:'Sunlight for a few hours',mid:'Both halves get <b class="b">water</b>, <b class="a">sunlight</b> and <b class="g">chlorophyll</b>. Only one thing differs: <b>carbon dioxide</b>.',html:'<div class="daycount">Hours <b id="hr">0</b></div>'});
+   S.tween(4,(e,k)=>{const d=document.getElementById('hr');if(d)d.textContent=Math.round(k*4);});}
+  if(s===3){p.outside.set(false);p.inside.set(false);S.tween(1,e=>w.setLight(lerp(1.6,1,e)));S.rig.fly(sh('co2',[.14,.34,.5],[.11,.26,0],30,2));cap(S,{pos:'left',cls:'compact',kicker:'Step 4 · iodine test',big:'Compare the two halves',mid:'Remove the leaf and test it for starch.'});
+   S.tween(2,e=>p.leaf.paint({halfA:mixc(G,PALE,e),halfB:mixc(G,PALE,e)}),()=>S.tween(3,e=>p.leaf.paint({halfA:mixc(PALE,BB,e),halfB:mixc(PALE,'#d2a868',e)}),()=>{lab(S,'Outside half: blue-black',L('co2',.115,.31,0),{kind:'amber',lift:40});lab(S,'Inside half: no starch',L('co2',.115,.21,0),{kind:'red',lift:50,side:'down',delay:300});}));}
+  if(s===4){cap(S,{pos:'left',cls:'compact',kicker:'Conclusion',big:'Carbon dioxide is essential',mid:'Carbon dioxide present in the air is essential for plants to prepare starch.'});
+   const Y='<b style="color:var(--bio)">Yes</b>',N='<b style="color:var(--red)">No</b>';
+   S.panel(`<h3>Table 10.3</h3><h2>Role of air in making starch</h2><table class="t"><tr><th>Leaf part</th><th>Water</th><th>Sun</th><th>Chlorophyll</th><th>CO₂</th><th>Starch</th></tr><tr><td><b>Inside</b></td><td>${Y}</td><td>${Y}</td><td>${Y}</td><td>${N}</td><td>${N}</td></tr><tr><td><b>Outside</b></td><td>${Y}</td><td>${Y}</td><td>${Y}</td><td>${Y}</td><td>${Y}</td></tr></table>`,{side:'right',cls:'auto'});}}});
+B.push({id:'define',sec:'Carbon dioxide',title:'Photosynthesis — the name',steps:2,shot:{p:[-.9,.6,1.6],t:[0,.35,0],fov:32,dur:3.2},notes:'Recap: which activity gave evidence for each ingredient?',enter(S){gReset(S,{elev:42});},
+ step(S,s){if(s===0)cap(S,{pos:'center',kicker:'Putting it together',big:'Four things are needed',html:`<div class="steps5"><div style="--c:var(--amber)"><b>Sunlight</b><span>energy · Activity 10.1, 10.3</span></div><div style="--c:var(--abio)"><b>Water</b><span>from the soil · Activity 10.1</span></div><div style="--c:#c9d1d9"><b>Carbon dioxide</b><span>from the air · Activity 10.4</span></div><div style="--c:var(--bio)"><b>Chlorophyll</b><span>green pigment · Activity 10.3</span></div></div>`});
+  if(s===1)cap(S,{pos:'center',cls:'def',kicker:'Definition',big:'Photosynthesis',mid:'The process by which plants prepare food in the presence of sunlight and chlorophyll. The <b class="g">leaf</b> is its primary site — but other green parts with chlorophyll do it too.'});}});
+/* ================= PHOTOSYNTHESIS ================= */
+B.push({id:'pswater',sec:'Photosynthesis',title:'Step 1 · Water from the soil',steps:2,shot:{p:[.12,.02,1.25],t:[0,-.14,0],fov:36,dur:3.4},
+ notes:'The ground is cut away so we can see the roots. Blue = water, purple = minerals.',
+ enter(S){gReset(S,{cut:true});const h=S.worlds.garden.hero;const P=[];
+  h.roots.slice(1).forEach(rc=>{const a=rc.getPoints(10).reverse();const st=h.stem.getPoints(12);P.push(curve([...a,...st]));});
+  this.f=S.addFx(new Flow(h.inner,{curves:P,kind:'water',n:40,size:.011,speed:.07,seed:3}));this.m=S.addFx(new Flow(h.inner,{curves:P,kind:'mineral',n:14,size:.008,speed:.07,seed:4}));},
+ step(S,s){const h=S.worlds.garden.hero;
+  if(s===0){cap(S,{pos:'left',cls:'compact',kicker:'Photosynthesis · step 1',big:'Roots drink',mid:'Water, along with <b class="uv" style="color:var(--uv)">minerals</b> in the soil, is taken up by the <b class="s">roots</b>.'});lab(S,'Roots',()=>h.stemWorld(0).add(V(.12,-.22,.05)),{kind:'soil',lift:40});lab(S,'Water + minerals',V(-.3,-.25,.08),{kind:'abio',lift:40,delay:500});}
+  if(s===1){S.rig.fly({p:[.5,.45,1.2],t:[0,.32,0],fov:32,dur:3.2});S.worlds.garden.setCut(false);cap(S,{pos:'left',cls:'compact',kicker:'Up the stem',big:'To every leaf',mid:'The water travels up the <b>stem</b> to the leaves — where the food factory is waiting.'});lab(S,'Stem',()=>h.stemWorld(.3),{kind:'abio',lift:50});}}});
+B.push({id:'psleaf',sec:'Photosynthesis',title:'★ Inside the food factory',world:'leaf',steps:5,from:{p:[0,8,20],t:[0,1,0],fov:44},shot:{p:[3.8,-2.3,8.4],t:[2.4,-.9,.9],fov:40,dur:4},
+ notes:'The centrepiece. Each → plays the next stage. Pause on each one and ask students what they see.',
+ enter(S){const w=S.worlds.leaf;w.glow=false;Object.values(w.mol).forEach(f=>f.set(false));w.shafts.forEach(s=>s.visible=false);w.starch.visible=false;w.glucose.forEach(m=>m.scale.setScalar(1e-4));w.open=1;},
+ step(S,s){const w=S.worlds.leaf,m=w.mol,sp=w.spots,rig=S.rig;
+  if(s===0){m.air.set(true);m.cIn.set(true);cap(S,{pos:'low',cls:'compact',kicker:'Step 2 · carbon dioxide',big:'In through the stomata',mid:'<b>Carbon dioxide</b> from the air enters the leaf through tiny pores called <b class="g">stomata</b>.'});lab(S,'Stoma',sp.stoma,{kind:'bio',lift:50});}
+  if(s===1){rig.fly({p:[-2,4.6,9],t:[-1,2,1],fov:40,dur:3.4});w.shafts.forEach(x=>x.visible=true);m.photons.set(true);w.glow=true;cap(S,{pos:'low',cls:'compact',kicker:'Step 3 · sunlight',big:'Chlorophyll captures light',mid:'<b class="a">Sunlight</b> falls on the leaf. The green <b class="g">chlorophyll</b> captures its energy.'});lab(S,'Chlorophyll',sp.chl,{kind:'bio',lift:50});}
+  if(s===2){rig.fly({p:[-4.6,1.8,7],t:[-2.6,.9,1],fov:40,dur:3});m.wX.set(true);m.wIn.set(true);cap(S,{pos:'low',cls:'compact',kicker:'Step 1 arrives',big:'Water reaches the cells',mid:'Water from the roots arrives through the <b class="b">vein</b> and spreads to the cells.'});lab(S,'Vein',sp.vein,{kind:'abio',lift:60});}
+  if(s===3){rig.fly({p:[-.5,2.6,7.4],t:[-.5,1.9,1],fov:38,dur:2.6});cap(S,{pos:'low',cls:'compact',kicker:'Step 4 · food is made',big:'Glucose!',mid:'Using sunlight’s energy, the leaf turns carbon dioxide and water into <b class="a">glucose</b> — a simple carbohydrate. This is the plant’s food.'});
+   w.glucose.forEach((g,i)=>S.later(300+i*140,()=>S.tween(.6,e=>g.scale.setScalar(.15*e))));S.later(1200,()=>lab(S,'Glucose',()=>w.glucose[3].position,{kind:'amber',lift:50}));}
+  if(s===4){rig.fly({p:[4.4,-2,8.6],t:[2.6,-1,.9],fov:40,dur:3});m.oOut.set(true);cap(S,{pos:'low',cls:'compact',kicker:'Step 5 · oxygen',big:'Oxygen is released',mid:'<b class="b" style="color:var(--o2)">Oxygen</b> is produced and leaves through the stomata into the air.'});lab(S,'Oxygen out',sp.stoma.clone().add(V(.9,-1.2,.3)),{kind:'abio',lift:30});}}});
+B.push({id:'psstore',sec:'Photosynthesis',title:'Step 6 · Food is used and stored',world:'leaf',steps:2,shot:{p:[-1.6,2.3,8.5],t:[-1.5,1.4,1],fov:40,dur:3},
+ notes:'Glucose is the instant energy source; it is later converted to starch for storage and carried to other parts.',
+ enter(S){const w=S.worlds.leaf;w.glow=true;w.glucose.forEach(m=>m.scale.setScalar(.15));w.shafts.forEach(s=>s.visible=true);Object.values(w.mol).forEach(f=>f.set(false));w.mol.photons.set(true);},
+ step(S,s){const w=S.worlds.leaf;
+  if(s===0){w.starch.visible=true;cap(S,{pos:'low',cls:'compact',kicker:'Step 6',big:'Glucose → starch',mid:'Glucose is an <b class="a">instant source of energy</b>. Later it is converted into <b class="a">starch</b> for storage.'});lab(S,'Starch (stored)',V(.5,1.95,1.6),{kind:'amber',lift:40});}
+  if(s===1){w.mol.ph.set(true);w.mol.ph2.set(true);S.rig.fly({p:[-4.8,1.2,6.4],t:[-3,.4,1],fov:40,dur:3});cap(S,{pos:'low',cls:'compact',kicker:'Food travels',big:'Food leaves the leaf',mid:'Prepared food moves into tubes in the vein and is carried to other parts of the plant.'});lab(S,'Food tubes',w.spots.phloem,{kind:'amber',lift:40,side:'down'});}}});
+const EQ={co2:['Carbon dioxide','Taken in from the <b>air</b> through the <b>stomata</b>.'],water:['Water','Absorbed from the <b>soil</b> by the <b>roots</b>; carried up to the leaves.'],sun:['Sunlight','Provides the <b>energy</b>. Photosynthesis happens only in light.'],chl:['Chlorophyll','The <b>green pigment</b> that captures sunlight.'],glu:['Glucose','The <b>food</b> made — a simple carbohydrate; later stored as <b>starch</b>.'],o2:['Oxygen','Released into the <b>air</b> through the stomata.']};
+B.push({id:'eqn',sec:'Photosynthesis',title:'The word equation',world:'leaf',steps:2,shot:{p:[1.5,3.4,11],t:[0,2.2,0],fov:44,dur:3},
+ notes:'Tap each part. Sunlight and chlorophyll go <b>above and below the arrow</b>: they are needed, but they are not raw materials.',
+ enter(S){const w=S.worlds.leaf;w.glow=true;Object.values(w.mol).forEach(f=>f.set(false));['air','cIn','oOut','photons','wX'].forEach(k=>w.mol[k].set(true));w.shafts.forEach(s=>s.visible=true);},
+ step(S,s){if(s===0){const p=S.panel(`<h3>Photosynthesis in a nutshell</h3><div class="eqbig"><button data-k="co2">Carbon dioxide</button> + <button data-k="water">Water</button><span class="arrow"><button data-k="sun">Sunlight</button><i></i><button data-k="chl">Chlorophyll</button></span><button data-k="glu">Glucose</button> + <button data-k="o2">Oxygen</button></div><div class="status" id="eqi">Tap any part of the equation to see its role.</div>`,{side:'center',cls:'auto eqp'});
+   p.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const [t,d]=EQ[b.dataset.k];p.querySelectorAll('[data-k]').forEach(x=>x.classList.toggle('on',x===b));p.querySelector('#eqi').innerHTML=`<b>${t}</b> — ${d}`;});}
+  if(s===1)S.fact('<b>Myth buster:</b> plants do <b>not</b> take ready-made food from the soil. They take water and minerals — and <b>make</b> their food in the leaves.');}});
