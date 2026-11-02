@@ -127,3 +127,8 @@ table.t td{padding:10px 8px;border-bottom:1px solid var(--line);color:var(--ink2
 
 .cap.pos-top{left:50%;top:80px;transform:translate(-50%,10px);text-align:center;max-width:min(980px,80vw)}.cap.pos-top.on{transform:translate(-50%,0)}.cap.pos-top.off{transform:translate(-50%,-8px)}
 .cap.pos-top.glass{padding:20px 30px 22px}.cap.pos-top .big{font-size:clamp(28px,2.8vw,46px)}.cap.pos-top .mid{font-size:clamp(17px,1.35vw,22px);margin-top:10px}.cap.pos-top .status{text-align:left}
+
+.items{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}.item{padding:12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.04);text-align:center;font-size:17px}
+.item .bb{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:8px}.item .bb button{font-size:12.5px;padding:5px 8px;border-radius:99px;border:1px solid var(--line);color:var(--ink2)}.item .bb button:hover{background:rgba(255,255,255,.12)}
+.item.ok{border-color:rgba(155,227,109,.65);background:rgba(155,227,109,.12)}.item.no{border-color:rgba(255,107,107,.6);background:rgba(255,107,107,.1)}.item .fb{font-size:14px;color:var(--ink2);margin-top:6px;min-height:18px}
+.steps5.five div{width:196px}

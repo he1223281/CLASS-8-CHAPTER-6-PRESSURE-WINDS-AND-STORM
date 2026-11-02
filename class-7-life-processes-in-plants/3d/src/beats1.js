@@ -3,10 +3,10 @@ import {V,lerp,clamp,smooth,curve,rng} from './lib.js';
 import {Flow,Drift} from './fx.js';
 import {X,mixc} from './worlds/lab.js';
 export const G='#3d9a48',PALE='#e6dcb4',BB='#121533',IOD='#b9782f';
-export const SECTIONS=['Welcome','How plants grow','Food factories','Starch test','Chlorophyll','Carbon dioxide','Photosynthesis','Oxygen','Stomata','Transport','Respiration','Balance','Review'];
+export const SECTIONS=['Welcome','Nutrition','How plants grow','Food factories','Starch test','Chlorophyll','Carbon dioxide','Photosynthesis','Oxygen','Stomata','Transport','Respiration','Balance','Review'];
 const cap=(S,o)=>S.caption(o),lab=(S,t,p,o)=>S.label(t,p,o);
 export function gReset(S,o={}){const g=S.worlds.garden;g.setCut(!!o.cut);g.setSun(o.elev??32,o.az??215);const h=g.hero;h.setGrowth(o.growth??1);h.setDroop(0);h.setTint('#ffffff',0);g.soilMols.forEach(m=>m.set(!!o.cut));
- g.pots.forEach(p=>{p.pl.setGrowth(.35);p.pl.setDroop(0);p.pl.setTint('#fff',0);});g.darkBox.position.set(2.75,.25,.55);}
+ g.pots.forEach(p=>{p.pl.setGrowth(.35);p.pl.setDroop(0);p.pl.setTint('#fff',0);});g.darkBox.position.set(2.75,.25,.55);g.nut.visible=!!o.nut;}
 const leafP=(i,dx=0,dy=0,dz=0)=>S=>{const p=S.worlds.garden.hero.leafWorld(i);return V(p.x+dx,p.y+dy,p.z+dz);};
 export function outside(S,i,d=.3,up=.1,fov=30){const h=S.worlds.garden.hero,p=h.leafWorld(i),a=h.stemWorld(.5);const dir=V(p.x-a.x,0,p.z-a.z).normalize();if(dir.z<0)dir.z=Math.abs(dir.z)*.6+.4;dir.normalize();return{p:[p.x+dir.x*d,p.y+up,p.z+dir.z*d],t:[p.x,p.y,p.z],fov,dur:3.4};}
 const heroShot={p:[.6,.66,1.3],t:[0,.33,0],fov:32,dur:3.2};
@@ -21,6 +21,43 @@ B.push({id:'open',sec:'Welcome',title:'Life Processes in Plants',steps:2,from:{p
  enter(S){gReset(S,{elev:24,az:230});},
  step(S,s){if(s===0)cap(S,{pos:'left',kicker:'Grade 7 · Science · Curiosity · Chapter 10',big:'Life Processes<br>in Plants',mid:'Discover the secret life of a plant.',small:'Press → or Space to begin'});
   if(s===1)cap(S,{pos:'left',cls:'compact',kicker:'A question to begin',big:'It never eats.<br>Yet it grows.',mid:'We eat food to grow. Have you ever seen a plant <i>eat</i>? So where does a plant get the food it needs?'});}});
+
+/* ================= MODES OF NUTRITION ================= */
+const NUTSHOT={p:[-.15,.42,1.15],t:[0,.17,0],fov:38,dur:3.2};
+B.push({id:'nutr',sec:'Nutrition',title:'What is nutrition?',steps:2,shot:{p:[.5,.5,1.4],t:[0,.3,0],fov:34,dur:3.4},
+ notes:'Start from experience: Why do we eat? Take answers — energy, growth, health. Then give the word <b>nutrition</b>.',
+ enter(S){gReset(S,{nut:true});},
+ step(S,s){if(s===0)cap(S,{pos:'left',cls:'compact',kicker:'Before we begin',big:'Every living thing needs food',mid:'Food gives <b class="a">energy</b> to work and move, helps the body <b class="g">grow</b>, and <b>repairs</b> it. A plant, a cow, a mushroom and you — all need food.'});
+  if(s===1)cap(S,{pos:'left',cls:'compact def',kicker:'Key word',big:'Nutrition',mid:'Nutrition is the way an organism <b>obtains its food</b> and <b>uses it</b> for energy, growth and repair.'});}});
+B.push({id:'modes',sec:'Nutrition',title:'Two modes: autotrophic and heterotrophic',steps:3,shot:NUTSHOT,
+ notes:'Write the word roots on the board: auto = self, hetero = other, trophos = food/nourishment.',
+ enter(S){gReset(S,{nut:true});},
+ step(S,s){const g=S.worlds.garden;
+  if(s===0)cap(S,{pos:'top',kicker:'Modes of nutrition',big:'Two main ways to get food',mid:'Some living things <b class="g">make their own food</b>. Others <b class="a">depend on other living things</b> for food.'});
+  if(s===1){cap(S,{pos:'left',cls:'compact',kicker:'auto = self · trophos = nourishment',big:'Autotrophic nutrition',mid:'Organisms that <b class="g">make their own food</b> are <b>autotrophs</b>. Green plants make food using <b>carbon dioxide, water, sunlight</b> and <b class="g">chlorophyll</b>. This is called <b>photosynthesis</b> — we will see it step by step.'});
+   lab(S,'Autotroph',()=>g.hero.stemWorld(.75),{kind:'bio',sub:'green plant · makes its own food',lift:40});}
+  if(s===2){cap(S,{pos:'left',cls:'compact',kicker:'hetero = other',big:'Heterotrophic nutrition',mid:'Organisms that <b class="a">cannot make their own food</b> and take it from plants or animals are <b>heterotrophs</b>. All animals (including us), fungi like mushrooms, and most bacteria are heterotrophs.'});
+   lab(S,'Autotroph',()=>g.hero.stemWorld(.75),{kind:'bio',lift:40});lab(S,'Heterotroph',g.mushroomAt,{kind:'amber',sub:'mushroom (fungus)',lift:40,delay:400});
+   S.fact('Even a lion depends on plants: it eats deer, and deer eat grass. All food can be traced back to <b>autotrophs</b>.');}}});
+B.push({id:'others',sec:'Nutrition',title:'Other modes of nutrition',steps:4,shot:{p:[.85,.35,.55],t:[.55,.18,-.2],fov:36,dur:3},
+ notes:'Show real examples if possible: Cuscuta (amarbel) on a hedge, bread mould, a mushroom. Pitcher plant and lichens can be shown as pictures.',
+ enter(S){gReset(S,{nut:true});},
+ step(S,s){const g=S.worlds.garden;
+  if(s===0){cap(S,{pos:'left',cls:'compact',kicker:'1 · Parasitic nutrition',big:'Living on another plant',mid:'<b style="color:#f2c230">Cuscuta</b> (amarbel) is a yellow, wire-like plant with <b>no chlorophyll</b>. It climbs on a <b>host</b> plant and takes food from it. The one that gives food is the <b>host</b>; the one that takes it is the <b>parasite</b>.'});
+   lab(S,'Cuscuta (parasite)',g.cuscutaAt,{kind:'amber',lift:40});lab(S,'Host plant',g.hostAt,{kind:'bio',lift:30,delay:400});}
+  if(s===1){S.rig.fly({p:[-.3,.3,.75],t:[-.48,.08,.2],fov:34,dur:2.6});cap(S,{pos:'left',cls:'compact',kicker:'2 · Saprotrophic nutrition',big:'Feeding on dead matter',mid:'<b class="a">Fungi</b> such as mushrooms and bread mould get food from <b>dead and decaying</b> things — like this old log. They release juices that dissolve it, then absorb the food. These organisms are <b>saprotrophs</b>.'});
+   lab(S,'Mushrooms (saprotrophs)',g.mushroomAt,{kind:'amber',lift:40});lab(S,'Dead, decaying log',V(-.5,.07,.18),{kind:'soil',lift:40,side:'down',delay:400});
+   S.fact('Saprotrophs clean up dead leaves and animals and return their nutrients to the soil.');}
+  if(s===2){S.rig.fly({p:[0,.55,1.6],t:[0,.3,0],fov:34,dur:2.6});cap(S,{pos:'left',cls:'compact',kicker:'3 · Insectivorous plants',big:'Plants that trap insects',mid:'The <b class="g">pitcher plant</b> is green and <b>makes its own food</b>. But its soil lacks some nutrients (like nitrogen), so its leaf forms a pitcher that <b>traps insects</b> and digests them for those extra nutrients. Venus flytrap is another example.'});
+   S.panel(`<h3>Insectivorous plant</h3><h2>Pitcher plant</h2><svg viewBox="0 0 300 260" style="width:100%;max-width:360px;display:block;margin:6px auto"><path d="M60 250Q70 160 150 150" stroke="#3d9a48" stroke-width="7" fill="none"/><path d="M110 160C70 120 80 40 140 30C200 20 230 90 210 160C200 210 150 230 120 200Z" fill="#6aa84f" stroke="#2f6a2e" stroke-width="4"/><path d="M135 35C150 10 210 10 220 40C200 30 160 30 135 35Z" fill="#8a2a3a"/><ellipse cx="172" cy="38" rx="40" ry="10" fill="#3a1418"/><path d="M175 110l14 8M168 130l14 8" stroke="#222" stroke-width="3"/><circle cx="178" cy="112" r="6" fill="#333"/><text x="235" y="25" fill="#f4f2ea" font-size="14">lid</text><text x="225" y="120" fill="#f4f2ea" font-size="14">pitcher</text><text x="20" y="245" fill="#f4f2ea" font-size="14">leaf stalk</text></svg><p>Insects slip into the pitcher, the lid closes, and digestive juices break them down. <b>Green, so it also makes its own food.</b></p>`,{side:'right',cls:'auto'});}
+  if(s===3){S.closePanel();cap(S,{pos:'left',cls:'compact',kicker:'4 · Symbiotic relationship',big:'Living together, helping each other',mid:'In a <b>lichen</b>, an <b class="g">alga</b> (has chlorophyll) makes food, and a <b class="a">fungus</b> gives it shelter, water and minerals. <b>Rhizobium</b> bacteria live in the roots of pulse plants (gram, peas, moong) — they give the plant nitrogen and get food in return.'});
+   S.panel(`<h3>Summary</h3><h2>Modes of nutrition</h2><table class="t"><tr><th>Mode</th><th>How food is obtained</th><th>Example</th></tr><tr><td><b>Autotrophic</b></td><td>Makes its own food (photosynthesis)</td><td>Green plants</td></tr><tr><td><b>Heterotrophic</b></td><td>Depends on others for food</td><td>Animals, humans, fungi</td></tr><tr><td><b>Parasitic</b></td><td>Takes food from a living host</td><td>Cuscuta</td></tr><tr><td><b>Saprotrophic</b></td><td>Feeds on dead, decaying matter</td><td>Mushroom, bread mould</td></tr><tr><td><b>Insectivorous</b></td><td>Makes food + traps insects for extra nutrients</td><td>Pitcher plant</td></tr><tr><td><b>Symbiotic</b></td><td>Two organisms live together and help each other</td><td>Lichen, Rhizobium</td></tr></table>`,{side:'right',cls:'auto'});}}});
+const MC=[['Mango tree','Autotrophic'],['Cow','Heterotrophic'],['Mushroom','Saprotrophic'],['Cuscuta (amarbel)','Parasitic'],['Pitcher plant','Insectivorous'],['Lichen','Symbiotic'],['Human','Heterotrophic'],['Bread mould','Saprotrophic']];
+const MO=['Autotrophic','Heterotrophic','Parasitic','Saprotrophic','Insectivorous','Symbiotic'];
+B.push({id:'modecheck',sec:'Nutrition',title:'Check: which mode?',steps:1,shot:{p:[-.6,.6,1.6],t:[0,.3,0],fov:36,dur:3},notes:'Call students one by one to choose the mode for each card.',
+ enter(S){gReset(S,{nut:true});},
+ step(S){let sc=0;const p=S.panel(`<h3>Quick check <span class="score" id="mcs">0 / ${MC.length}</span></h3><h2>Which mode of nutrition?</h2><div class="items">${MC.map(([n],i)=>`<div class="item" data-i="${i}"><b>${n}</b><div class="bb">${MO.map(m=>`<button data-m="${m}">${m}</button>`).join('')}</div><div class="fb"></div></div>`).join('')}</div>`,{side:'center',cls:'practice'});
+  p.querySelectorAll('.item').forEach(it=>{const ans=MC[+it.dataset.i][1];it.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(it.classList.contains('ok')||it.classList.contains('no'))return;const ok=b.dataset.m===ans;it.classList.add(ok?'ok':'no');if(ok)sc++;it.querySelector('.fb').innerHTML=ok?'Correct!':`It is <b>${ans}</b>`;p.querySelector('#mcs').textContent=`${sc} / ${MC.length}`;});});}});
 /* ================= HOW PLANTS GROW ================= */
 B.push({id:'grow',sec:'How plants grow',title:'Time-lapse: 60 days',steps:3,shot:{p:[.85,.62,1.45],t:[0,.32,0],fov:32,dur:3},
  notes:'Watch the time-lapse. Ask students to call out every change they see. Link to Grade 6: all living beings grow and need food.',

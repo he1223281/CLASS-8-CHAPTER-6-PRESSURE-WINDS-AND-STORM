@@ -54,7 +54,7 @@ export function makeLeafWorld(){
  const photons=new Flow(scene,{curves:[0,1,2,3,4,5].map(i=>curve([[-6+i*2.4,9,2],[-5+i*2.4+.8,1.8,1.4]])),kind:'photon',n:24,size:.09,speed:.55,on:false,seed:1});
  W.mol={air,cIn,oOut,wIn,wX,ph,ph2,photons};
  // glucose made inside palisade cells
- const glu=new THREE.Group();scene.add(glu);const gl=[];for(let i=0;i<22;i++){const p=pal[(i*7+3)%pal.length];if(p.z<-3){continue;}const m=molMesh('glucose',.0001);m.position.set(p.x+(R()-.5)*.2,p.y+(R()-.5)*.9,p.z+.15);glu.add(m);gl.push(m);}W.glucose=gl;
+ const glu=new THREE.Group();scene.add(glu);const gl=[];const front=pal.filter(p=>p.z>.6);for(let i=0;i<18;i++){const p=front[(i*5+2)%front.length];const m=molMesh('glucose',.0001);m.position.set(p.x+(R()-.5)*.2,p.y+(R()-.5)*.9,p.z+.42);glu.add(m);gl.push(m);}W.glucose=gl;
  const starch=new THREE.Group();scene.add(starch);for(let i=0;i<10;i++){const m=molMesh('glucose',.16);m.position.set(-.6+i*.24,1.85+Math.sin(i)*.12,1.6);m.rotation.z=i*.3;starch.add(m);}starch.visible=false;W.starch=starch;
  W.spots={cuticle:V(-5,3.42,2.2),epi:V(-6.5,3.02,2.2),pal:V(-1.1,1.85,2.1),spongy:V(5,.5,2.2),vein:V(vx,vy,ZE),xylem:V(vx+.05,vy+.35,ZE),phloem:V(vx+.15,vy-.45,ZE),stoma:V(2.4,-.62,1.5),lower:V(-5.5,-.62,2.2),chl:V(-2.2,2.3,2.25)};
  W.update=(dt,t)=>{mo.userData.update(t);Object.values(W.mol).forEach(f=>f.update(dt,t));sh.forEach(s=>s.userData.update(t));

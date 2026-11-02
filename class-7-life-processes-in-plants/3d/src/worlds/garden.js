@@ -67,6 +67,20 @@ export function makeGarden(){
  const soilFace=new THREE.Mesh(new THREE.PlaneGeometry(14,2.2),new THREE.MeshStandardMaterial({map:st,roughness:1,transparent:true,opacity:.8,depthWrite:false,emissive:'#6b4a2e',emissiveMap:st,emissiveIntensity:.55}));soilFace.position.set(0,-1.1,.02);soilFace.visible=false;scene.add(soilFace);
  const soilBack=new THREE.Mesh(new THREE.PlaneGeometry(14,2.2),new THREE.MeshStandardMaterial({color:'#5a3d24',roughness:1,emissive:'#2a1a0e',emissiveIntensity:.6}));soilBack.position.set(0,-1.1,-.9);soilBack.visible=false;scene.add(soilBack);
  W.setCut=v=>{cut.constant=v?.02:1e4;cut.normal.set(0,0,v?-1:-1);soilFace.visible=soilBack.visible=v;hero.showRoots(v);W.cutOn=v;};
+ // nutrition props: mushrooms (saprotroph) and Cuscuta on a host plant (parasite)
+ const nut=new THREE.Group();nut.visible=false;scene.add(nut);W.nut=nut;
+ const capM=new THREE.MeshStandardMaterial({color:'#c9874f',roughness:.6}),stM=new THREE.MeshStandardMaterial({color:'#efe6d2',roughness:.8}),gillM=new THREE.MeshStandardMaterial({color:'#8a6a4a',roughness:.9,side:THREE.DoubleSide});
+ const log=new THREE.Mesh(new THREE.CylinderGeometry(.045,.05,.42,20).rotateZ(Math.PI/2),new THREE.MeshStandardMaterial({color:'#5a4130',roughness:1}));log.position.set(-.5,.04,.18);log.rotation.y=.35;log.castShadow=log.receiveShadow=true;nut.add(log);
+ [[-.6,.08,.2,.035],[-.52,.08,.24,.028],[-.42,.075,.14,.04],[-.36,.0,.26,.03],[-.64,0,.3,.025]].forEach(([x,y,z,r],i)=>{const m=new THREE.Group();const st=new THREE.Mesh(new THREE.CylinderGeometry(r*.28,r*.36,r*1.4,12).translate(0,r*.7,0),stM);
+  const cp=new THREE.Mesh(new THREE.SphereGeometry(r,24,12,0,Math.PI*2,0,Math.PI/2).scale(1,.62,1),capM);cp.position.y=r*1.35;const gl=new THREE.Mesh(new THREE.CircleGeometry(r*.98,24).rotateX(Math.PI/2),gillM);gl.position.y=r*1.36;
+  m.add(st,cp,gl);m.position.set(x,y,z);m.rotation.z=(i%2?.12:-.1);m.children.forEach(c=>c.castShadow=true);nut.add(m);});
+ W.mushroomAt=V(-.47,.12,.2);
+ const host=makePlant({seed:61,H:.34,n:12,leaf:.07,stemR:.006,branches:1,roots:false});host.group.position.set(.55,0,-.2);nut.add(host.group);
+ const cm2=new THREE.MeshStandardMaterial({color:'#f2c230',roughness:.45,emissive:'#5a3a00',emissiveIntensity:.25});
+ for(let k=0;k<3;k++){const pts=[];for(let i=0;i<=60;i++){const t=i/60,a=t*Math.PI*8+k*2.1,r=.012+.004*Math.sin(t*9);pts.push(V(.55+Math.cos(a)*r+(k-1)*.004,.02+t*.3,-.2+Math.sin(a)*r));}
+  for(let i=0;i<6;i++)pts.push(V(.55+.05*Math.cos(k+i)+(i*.02),.32-i*.03,-.2+.05*Math.sin(k+i)));
+  nut.add(new THREE.Mesh(taperTube(curve(pts),{r0:.0022,r1:.0016,seg:200,radial:6}),cm2));}
+ W.cuscutaAt=V(.55,.2,-.2);W.hostAt=V(.6,.3,-.2);
  // pots patio
  const slab=new THREE.Mesh(new THREE.BoxGeometry(1.25,.04,.5),new THREE.MeshStandardMaterial({color:'#b9b2a4',roughness:.9}));slab.position.set(2.4,.02,.55);slab.receiveShadow=slab.castShadow=true;scene.add(slab);
  const ptex=potTex();W.pots=[];
