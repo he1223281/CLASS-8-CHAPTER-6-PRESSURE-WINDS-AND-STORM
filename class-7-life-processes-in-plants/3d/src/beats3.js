@@ -35,13 +35,13 @@ B.push({id:'peel',sec:'Stomata',title:'Activity 10.6 — Leaf peel',world:'lab',
  step(S,s){if(s===0){cap(S,{pos:'left',cls:'compact',kicker:'Activity 10.6 · Let us examine',big:'Peel the lower surface',mid:'Peel a thin layer from the <b>lower surface</b> of a leaf (rhoeo, money plant, onion, hibiscus, coleus or grass). Put it in water on a slide, add a drop of <b>ink</b>, cover with a coverslip and observe.'});
    lab(S,'Slide with peel',L('peel',0,.106,0),{kind:'uv',lift:40});lab(S,'Watch glass',L('peel',.16,.01,.05),{kind:'abio',lift:40,delay:400});lab(S,'Forceps',L('peel',.1,.004,.12),{kind:'ink',lift:30,delay:800,side:'down'});}
   if(s===1){PEEL=PEEL||peelArt();S.clearLabels();S.scope(true,`<img src="${PEEL}" alt="Leaf peel under the microscope">`);cap(S,{pos:'left',cls:'compact',kicker:'Under the microscope',big:'Tiny pores!',mid:'These tiny pores are called <b class="g">stomata</b>. Stomata on the surface of leaves help in the <b>exchange of gases</b>.'});}}});
-B.push({id:'stomata',sec:'Stomata',title:'Stomata: tiny gateways',world:'leaf',steps:2,shot:{p:[4.6,-2.2,8.2],t:[2.4,-.8,.9],fov:38,dur:3.4},
+B.push({id:'stomata',sec:'Stomata',title:'Stomata: tiny gateways',world:'leaf',steps:2,shot:{p:[2.6,-.6,9.4],t:[2.5,-.5,2.4],fov:40,dur:3},
  notes:'The same pores serve both processes. Photosynthesis happens only in light; respiration happens all the time.',
  enter(S){const w=S.worlds.leaf;Object.values(w.mol).forEach(f=>f.set(false));w.glow=false;w.shafts.forEach(s=>s.visible=false);w.starch.visible=false;
-  const st=w.stoma;this.co2in=S.addFx(new Flow(w.scene,{curves:[0,1,2].map(i=>curve([[1+i,-3.2,1.6],[2.35,-1.2,.9],[2.35,-.6,.9],[2+i*.4,.6,.8]])),kind:'co2',n:12,size:.17,speed:.16}));
-  this.o2out=S.addFx(new Flow(w.scene,{curves:[0,1,2].map(i=>curve([[2.2+i*.4,.6,.8],[2.45,-.6,.9],[2.5,-1.2,.9],[3.4+i,-3.2,1.6]])),kind:'o2',n:12,size:.17,speed:.16,seed:4}));
-  this.o2in=S.addFx(new Flow(w.scene,{curves:[0,1,2].map(i=>curve([[1+i,-3.2,1.6],[2.35,-1.2,.9],[2.35,-.6,.9],[2+i*.4,.6,.8]])),kind:'o2',n:12,size:.17,speed:.16,seed:5,on:false}));
-  this.co2out=S.addFx(new Flow(w.scene,{curves:[0,1,2].map(i=>curve([[2.2+i*.4,.6,.8],[2.45,-.6,.9],[2.5,-1.2,.9],[3.4+i,-3.2,1.6]])),kind:'co2',n:12,size:.17,speed:.16,seed:6,on:false}));},
+  const st=w.stoma;this.co2in=S.addFx(new Flow(w.scene,{curves:[0,1,2].map(i=>curve([[1.4+i*.8,-3.2,2.52],[2.4,-1.3,2.52],[2.4,-.62,2.52],[1.9+i*.5,.5,2.52]])),kind:'co2',n:12,size:.17,speed:.16}));
+  this.o2out=S.addFx(new Flow(w.scene,{curves:[0,1,2].map(i=>curve([[2.1+i*.4,.5,2.52],[2.4,-.62,2.52],[2.45,-1.3,2.52],[3.2+i*.8,-3.2,2.52]])),kind:'o2',n:12,size:.17,speed:.16,seed:4}));
+  this.o2in=S.addFx(new Flow(w.scene,{curves:[0,1,2].map(i=>curve([[1.4+i*.8,-3.2,2.52],[2.4,-1.3,2.52],[2.4,-.62,2.52],[1.9+i*.5,.5,2.52]])),kind:'o2',n:12,size:.17,speed:.16,seed:5,on:false}));
+  this.co2out=S.addFx(new Flow(w.scene,{curves:[0,1,2].map(i=>curve([[2.1+i*.4,.5,2.52],[2.4,-.62,2.52],[2.45,-1.3,2.52],[3.2+i*.8,-3.2,2.52]])),kind:'co2',n:12,size:.17,speed:.16,seed:6,on:false}));},
  step(S,s){const w=S.worlds.leaf;
   if(s===0){w.glow=true;w.shafts.forEach(x=>x.visible=true);cap(S,{pos:'low',cls:'compact',kicker:'During photosynthesis · in light',big:'CO₂ in · O₂ out',mid:'Carbon dioxide <b>enters</b> the leaf; oxygen is <b>released</b> — both through the stomata.',html:'<div class="legend"><span><i style="background:#9aa3ad"></i>carbon dioxide</span><span><i style="background:#4fd1e3"></i>oxygen</span></div>'});lab(S,'Stoma',w.spots.stoma,{kind:'bio',lift:40});}
   if(s===1){w.glow=false;w.shafts.forEach(x=>x.visible=false);this.co2in.set(false);this.o2out.set(false);this.o2in.set(true);this.co2out.set(true);

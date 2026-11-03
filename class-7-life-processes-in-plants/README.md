@@ -26,7 +26,7 @@ The bar at the top and bottom fades away after a few seconds without mouse movem
 
 **If the animation stutters** on an older laptop, press **Q** to switch to *Fast* quality (less grass, softer shadows). The lesson also switches automatically if the first few seconds run slowly.
 
-## Worlds and scenes (45)
+## Worlds and scenes (47)
 
 - **Modes of nutrition (new, first section):** nutrition, autotrophic and heterotrophic, then parasitic (Cuscuta), saprotrophic (mushrooms), insectivorous (pitcher plant) and symbiotic (lichen, Rhizobium), with a quick check.
 - **Garden:** a living sapling in a sunlit meadow (sky, wind-blown grass, trees), a 60-day time-lapse with the sun rising and setting, the Activity 10.1 three-pots patio, and a soil cutaway that shows roots drinking water and minerals.

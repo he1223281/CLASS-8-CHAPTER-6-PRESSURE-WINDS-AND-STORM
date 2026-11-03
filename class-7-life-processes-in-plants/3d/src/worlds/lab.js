@@ -3,7 +3,8 @@ import {RoomEnvironment} from 'three/examples/jsm/environments/RoomEnvironment.j
 import {V,rng,lerp,clamp,curve,taperTube,lathe,woodTex,canvasTex,glassMat,liquidMat,leafGeometry,paintLeaf,potTex,tintable} from '../lib.js';
 import {makePlant,makePot} from '../plant.js';
 import {Bubbles,Drift,Flow,molMesh} from '../fx.js';
-export const X={starch:0,vari:1.4,co2:2.8,oxy:4.25,peel:5.7,ink:7.1,resp:8.55,jar:10};
+import {makePitcherPlant} from '../pitcher.js';
+export const X={starch:0,vari:1.4,co2:2.8,oxy:4.25,peel:5.7,ink:7.1,resp:8.55,jar:10,pitcher:11.4};
 /* leaf with a repaintable texture; state={base,patch,halfA,halfB,spots} */
 export function paintedLeaf(len,width,opt={}){const tex=canvasTex(512,256,()=>{});const m=new THREE.MeshStandardMaterial({map:tex,roughness:.75,side:THREE.DoubleSide});
  const mesh=new THREE.Mesh(leafGeometry({len,width,cup:opt.cup??.05,curl:opt.curl??.02,segU:20,segV:10}),m);mesh.castShadow=true;mesh.receiveShadow=true;
@@ -171,6 +172,10 @@ export function makeLab(){
   const loopA=curve([[-.06,.12,.05],[-.11,.2,.04],[-.05,.3,.03],[.02,.26,.04]]),loopB=curve([[.03,.27,-.03],[.1,.22,-.04],[.08,.13,-.04],[.02,.12,-.03]]);
   const fa=new Flow(g,{curve:loopA,kind:'co2',n:7,size:.009,speed:.15,on:false}),fb=new Flow(g,{curve:loopB,kind:'o2',n:7,size:.009,speed:.15,on:false,seed:5});
   parts.jar={g,fa,fb};cast(g);}
+ /* ========== PITCHER PLANT (potted, by the window) ========== */
+ {const g=new THREE.Group();g.position.x=X.pitcher;scene.add(g);const pot=makePot(.13,.12,{tex:potTex()});g.add(pot);
+  const moss=new THREE.Mesh(new THREE.CircleGeometry(.118,40).rotateX(-Math.PI/2),new THREE.MeshStandardMaterial({color:'#4f6e2c',roughness:1}));moss.position.y=.109;g.add(moss);
+  const pp=makePitcherPlant();pp.group.position.y=.11;pp.group.scale.setScalar(1.5);g.add(pp.group);W.pp=pp;cast(g);}
  W.flows=[parts.starch.bubbles,parts.co2.inside,parts.co2.outside,...parts.oxy.sets.map(s=>s.bub),parts.resp.co2,parts.resp.bub,parts.jar.fa,parts.jar.fb];
  W.update=(dt,t)=>{parts.starch.flame.userData.update(t);parts.oxy.stickFlame.userData.update(t);W.flows.forEach(f=>f.update(dt,t));
   parts.oxy.sets.forEach(s=>{if(s.bub.popped){s.gas.scale.y=Math.min(.06,s.gas.scale.y+s.bub.popped*.00035);s.gas.position.y=s.gas.scale.y/2+.001;s.tl.scale.y=1-s.gas.scale.y/.108;s.tl.position.y=s.gas.scale.y;s.bub.popped=0;}});
