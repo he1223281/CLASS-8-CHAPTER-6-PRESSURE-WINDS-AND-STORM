@@ -5,17 +5,19 @@
 import os, sys, json, base64
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MEDIA, SRC2D, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
+V3D = sys.argv[4] if len(sys.argv) > 4 else None
 S = lambda f: open(os.path.join(ROOT, 'src', f), encoding='utf-8').read()
 imgs = json.load(open(os.path.join(MEDIA, 'images.json')))
 vid = 'data:video/mp4;base64,' + base64.b64encode(open(os.path.join(MEDIA, 'oxalis.mp4'), 'rb').read()).decode()
 engine = S('engine.js')
-engine = engine.replace("if(o.init)o.init(el,o);", "if(o.init)o.init(el,o);if(typeof wireVslots==='function')wireVslots(el);")
+engine = engine.replace("if(o.init)o.init(el,o);", "if(o.init)o.init(el,o);if(typeof wireVslots==='function')wireVslots(el);if(typeof add3d==='function'&&typeof HTML3D!=='undefined')add3d(el,o);")
 engine = engine.replace("if(prev&&prev.classList.contains('active')&&po){", "if(prev&&prev.classList.contains('active')&&po){$$('video',prev).forEach(v=>v.pause());")
 # quiz, final challenge and closing slide are reused from the 2D lesson
 s5 = open(os.path.join(SRC2D, 's5.js'), encoding='utf-8').read()
 quiz = s5[s5.index('const QZ=['):]
-data = 'const IMG=' + json.dumps(imgs) + ';\nconst VIDS={oxalis:"' + vid + '"};\n'
-js = '\n'.join([data, engine, S('helpers.js'), S('p1.js'), S('p2.js'), S('p3.js'), quiz, S('p5.js'), 'boot();'])
+h3 = ('const HTML3D=' + json.dumps(open(V3D, encoding='utf-8').read()).replace('</', '<\\/') + ';\n') if V3D else ''
+data = h3 + 'const IMG=' + json.dumps(imgs) + ';\nconst VIDS={oxalis:"' + vid + '"};\n'
+js = '\n'.join([data, engine, S('helpers.js'), S('v3d.js') if V3D else '', S('p1.js'), S('p2.js'), S('p3.js'), quiz, S('p5.js'), 'boot();'])
 css = S('style.css') + '\n' + S('extra.css')
 fonts = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap">')

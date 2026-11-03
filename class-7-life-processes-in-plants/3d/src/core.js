@@ -31,7 +31,7 @@ class Rig{constructor(cam){this.cam=cam;this.p=V(0,1,3);this.t=V();this.fov=38;t
 
 /* ---------------- engine ---------------- */
 export function createEngine({worlds,beats,sections}){
- const canvas=$('#gl');let qual=localStorage.getItem('lpq')||'high';try{}catch(e){}
+ const canvas=$('#gl');const LSget=k=>{try{return localStorage.getItem(k)}catch(e){return null}};let qual=LSget('lpq')||(window.__Q3D||'high');
  const renderer=new THREE.WebGLRenderer({canvas,antialias:false,powerPreference:'high-performance',stencil:false});
  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;
  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.localClippingEnabled=true;
@@ -50,7 +50,7 @@ export function createEngine({worlds,beats,sections}){
  const S={THREE,V,rig,camera,renderer,worlds,engine:null,view,
   caption(o){$$caps();const d=document.createElement('div');const pos=o.pos||'low';d.className=`cap pos-${pos} ${o.cls||''} ${pos==='center'?'':'glass'}`;
    view.capShift=o.shift??(pos==='left'?.16:pos==='low'?.1:0);view.target=panels.querySelector('.panel')?0:view.capShift;
-   d.innerHTML=(o.kicker?`<div class="kick">${o.kicker}</div>`:'')+(o.big?`<div class="big">${o.big}</div>`:'')+(o.mid?`<div class="mid">${o.mid}</div>`:'')+(o.html||'')+(o.small?`<div class="small">${o.small}</div>`:'');
+   d.innerHTML=(o.kicker?`<div class="kick">${o.kicker}</div>`:'')+(o.big?`<div class="big">${o.big}</div>`:'')+(o.mid?`<div class="mid">${o.mid}</div>`:'')+(o.html||'')+(o.note?`<div class="notebox"><b>✎ Note it down</b><ul>${o.note.map(n=>`<li>${n}</li>`).join('')}</ul></div>`:'')+(o.small?`<div class="small">${o.small}</div>`:'');
    caps.appendChild(d);requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('on')));return d;},
   fact(html,pos='fact'){const old=caps.querySelector('.factcard');if(old){old.classList.remove('on');old.classList.add('off');setTimeout(()=>old.remove(),800);}
    const d=document.createElement('div');d.className=`cap factcard pos-${pos}`;d.innerHTML=`<div class="fk"><i></i>Did you know?</div><div class="ft">${html}</div>`;caps.appendChild(d);setTimeout(()=>d.classList.add('on'),900);return d;},
@@ -102,12 +102,12 @@ export function createEngine({worlds,beats,sections}){
  addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;const k=e.key;
   if(k==='ArrowRight'||k==='PageDown'||k===' '){e.preventDefault();next();}else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();prev();}
   else if(k==='f'||k==='F')fs();else if(k==='i'||k==='I'||k==='c'||k==='C')$('#idx').classList.toggle('open');else if(k==='n'||k==='N')$('#notes').classList.toggle('on');
-  else if(k==='Home')enterBeat(0);else if(k==='q'||k==='Q')setQ(qual==='high'?'low':'high');else if(k==='Escape'){$('#idx').classList.remove('open');$('#notes').classList.remove('on');}});
+  else if(k==='Home')enterBeat(0);else if(k==='q'||k==='Q')setQ(qual==='high'?'low':'high');else if(k==='Escape'){if(window.parent!==window)window.parent.postMessage({close3d:true},'*');$('#idx').classList.remove('open');$('#notes').classList.remove('on');}});
  document.addEventListener('mouseup',()=>{const a=document.activeElement;if(a&&a.tagName==='BUTTON')a.blur();});
  let idleT=0;addEventListener('mousemove',()=>{idleT=0;document.body.classList.remove('idle');});
  /* ---------------- loop ---------------- */
  const clock=new THREE.Clock();let fpsAcc=0,fpsN=0,fpsChecked=false,el=0;const pv=V();
- function frame(){requestAnimationFrame(frame);try{frameBody();}catch(e){console.error(e);}}
+ let paused=false;function frame(){requestAnimationFrame(frame);if(paused){clock.getDelta();return;}try{frameBody();}catch(e){console.error(e);}}
  function frameBody(){const dt=Math.min(clock.getDelta(),window.__DTMAX||.05);el+=dt;idleT+=dt;if(idleT>4&&!$('#idx').classList.contains('open'))document.body.classList.add('idle');
   rig.update(dt,el);{const run=bag;bag=[];const keep=[],dn=[];for(const T of run){if(!T.fn){keep.push(T);continue;}T.k=Math.min(1,T.k+dt/T.dur);T.fn(ease(T.k),T.k);if(T.k>=1)dn.push(T);else keep.push(T);}bag=keep.concat(bag);dn.forEach(T=>T.done&&T.done());}
   fx.forEach(f=>f.update&&f.update(dt,el));if(world){world.update&&world.update(dt,el,S);const b=beats[cur];b&&b.update&&b.update(S,dt,el);}
@@ -115,7 +115,7 @@ export function createEngine({worlds,beats,sections}){
   if(bokeh.enabled){bokeh.uniforms.focus.value=camera.position.distanceTo(rig.t);}
   grade.uniforms.uT.value=el;composer.render(dt);
   layoutLabels();
-  if(!fpsChecked&&el>4){fpsAcc+=dt;fpsN++;if(fpsAcc>4){fpsChecked=true;const fps=fpsN/fpsAcc;if(fps<26&&qual==='high'&&!localStorage.getItem('lpq'))setQ('low');}}}
+  if(!fpsChecked&&el>4){fpsAcc+=dt;fpsN++;if(fpsAcc>4){fpsChecked=true;const fps=fpsN/fpsAcc;if(fps<26&&qual==='high'&&!LSget('lpq'))setQ('low');}}}
  /* labels: project, then nudge so pills never overlap captions, panels or each other */
  function layoutLabels(){const w=innerWidth,h=innerHeight,obs=[];caps.querySelectorAll('.cap.on').forEach(c=>{const r=c.getBoundingClientRect();obs.push([r.left-12,r.top-12,r.right+12,r.bottom+12]);});
   panels.querySelectorAll('.panel.on').forEach(c=>{const r=c.getBoundingClientRect();obs.push([r.left-8,r.top-8,r.right+8,r.bottom+8]);});
@@ -129,5 +129,5 @@ export function createEngine({worlds,beats,sections}){
   for(const L of labels){L.el.classList.toggle('on',!!L.vis);if(L.vis)L.el.style.transform=`translate(${L.x}px,${L.y}px)`;}}
  S.engine={next,prev,go:enterBeat,get index(){return cur},get step(){return step}};
  return{S,start(){Object.values(worlds).forEach(w=>w.quality&&w.quality(Q[qual]));$('#bQ').textContent=qual==='high'?'Quality: High':'Quality: Fast';
-  const id=location.hash.slice(1),k=beats.findIndex(b=>b.id===id);enterBeat(k>0?k:0);requestAnimationFrame(frame);},renderer,composer,camera};
+  const id=window.__START__||location.hash.slice(1),k=beats.findIndex(b=>b.id===id);addEventListener('message',e=>{const d=e.data||{};if(d.go){const j=beats.findIndex(b=>b.id===d.go);if(j>=0){paused=false;enterBeat(j);}}if('pause' in d)paused=!!d.pause;});enterBeat(k>0?k:0);requestAnimationFrame(frame);},renderer,composer,camera};
 }
