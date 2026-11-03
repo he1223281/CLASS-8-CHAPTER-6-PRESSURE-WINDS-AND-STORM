@@ -4,7 +4,7 @@ import {V,rng,lerp,clamp,curve,taperTube,lathe,woodTex,canvasTex,glassMat,liquid
 import {makePlant,makePot} from '../plant.js';
 import {Bubbles,Drift,Flow,molMesh} from '../fx.js';
 import {makePitcherPlant} from '../pitcher.js';
-export const X={starch:0,vari:1.4,co2:2.8,oxy:4.25,peel:5.7,ink:7.1,resp:8.55,jar:10,pitcher:11.4};
+export const X={starch:0,vari:1.4,co2:2.8,oxy:4.25,peel:5.7,ink:7.1,resp:8.55,jar:10,pitcher:10.8};
 /* leaf with a repaintable texture; state={base,patch,halfA,halfB,spots} */
 export function paintedLeaf(len,width,opt={}){const tex=canvasTex(512,256,()=>{});const m=new THREE.MeshStandardMaterial({map:tex,roughness:.75,side:THREE.DoubleSide});
  const mesh=new THREE.Mesh(leafGeometry({len,width,cup:opt.cup??.05,curl:opt.curl??.02,segU:20,segV:10}),m);mesh.castShadow=true;mesh.receiveShadow=true;

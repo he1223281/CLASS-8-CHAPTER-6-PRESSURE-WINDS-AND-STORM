@@ -51,25 +51,25 @@ B.push({id:'others',sec:'Nutrition',title:'Other modes: parasitic and saprotroph
 }});
 
 /* pitcher plant: dedicated showcase */
-const PPC=(S,d=.26,up=.12,fov=34,dur=3)=>{const pp=S.worlds.lab.pp,t=pp.world(0,V(0,.045,0)),c=pp.group.position,dir=V(t.x-c.x,0,t.z-c.z).normalize();const side=V(-dir.z,0,dir.x);return{p:[t.x+dir.x*d*.55+side.x*d*.85,t.y+up,t.z+dir.z*d*.55+side.z*d*.85],t:[t.x,t.y,t.z],fov,dur};};
+const PPC=(S,d=.26,up=.12,fov=34,dur=3)=>{const pp=S.worlds.lab.pp,t=pp.world(0,V(0,.055,0)),c=pp.group.position,dir=V(t.x-c.x,0,t.z-c.z).normalize();const side=V(-dir.z,0,dir.x);return{p:[t.x+dir.x*d*.55+side.x*d*.85,t.y+up,t.z+dir.z*d*.55+side.z*d*.85],t:[t.x,t.y,t.z],fov,dur};};
 B.push({id:'pitcher',sec:'Nutrition',title:'3 · Insectivorous plant: the pitcher plant',world:'lab',steps:5,shot:S=>PPC(S,.75,.28,36,3.4),
  notes:'Ask first: <i>Is the pitcher plant an autotroph or a heterotroph?</i> (It makes its own food, but also gets extra nutrients from insects.) India’s own pitcher plant, <i>Nepenthes khasiana</i>, grows in Meghalaya.',
- enter(S){const L=S.worlds.lab;L.focus(11.4,.15);L.setLight(1.1);const pp=L.pp;pp.setXray(0);pp.ant.visible=false;pp.pitchers.forEach(p=>p.lid.rotation.x=-.5);},
+ enter(S){const L=S.worlds.lab;L.focus(10.8,.15);L.setLight(1.1);const pp=L.pp;pp.setXray(0);pp.ant.visible=false;pp.pitchers.forEach(p=>p.lid.rotation.x=-.5);},
  exit(S){const pp=S.worlds.lab.pp;pp.setXray(0);pp.ant.visible=false;},
  step(S,s){const g=S.worlds.lab,pp=g.pp,P=pp.pitchers[0];
   if(s===0){cap(S,{pos:'left',cls:'compact',kicker:'3 · Insectivorous plants',big:'Meet the pitcher plant',mid:'Its <b class="g">green leaves</b> have chlorophyll, so it <b>makes its own food</b> by photosynthesis. But the tip of each leaf grows into a <b>tendril</b> that ends in a jug-like <b class="r">pitcher</b>.'});
-   lab(S,'Green leaf',()=>g.pp.group.localToWorld(V(.07,.02,.02)),{kind:'bio',lift:50});lab(S,'Tendril',()=>pp.world(0,V(0,.09,-.06)),{kind:'bio',lift:40,delay:300});lab(S,'Pitcher',()=>pp.world(0,V(0,.04,0)),{kind:'red',sub:'a changed leaf',lift:60,delay:600});lab(S,'Lid',()=>pp.world(0,V(0,.1,-.012)),{kind:'amber',lift:40,delay:900});}
+   lab(S,'Green leaf',()=>g.pp.group.localToWorld(V(.09,.04,.03)),{kind:'bio',lift:50});lab(S,'Tendril',()=>pp.tendril(0),{kind:'bio',lift:40,side:'down',delay:300});lab(S,'Pitcher',()=>pp.world(0,V(0,.03,.02)),{kind:'red',sub:'a changed leaf',lift:60,side:'down',delay:600});lab(S,'Lid',()=>pp.lidAt(0),{kind:'amber',lift:40,delay:900});}
   if(s===1){S.rig.fly(PPC(S,.6,.22,32,2.6));cap(S,{pos:'left',cls:'compact',kicker:'Why trap insects?',big:'Poor soil',mid:'It grows in soil that has <b>too little nitrogen</b> and some other minerals. Insects are rich in these nutrients — so the plant gets them by <b>catching insects</b>.'});
    S.fact('India’s own pitcher plant, <b>Nepenthes khasiana</b>, grows only in the hills of <b>Meghalaya</b>.');}
   if(s===2){S.rig.fly(PPC(S,.42,.2,30,2.4));const a=pp.ant;a.visible=true;const m=P.mouth;
    cap(S,{pos:'left',cls:'compact',kicker:'The trap · step 1',big:'Lured to the rim',mid:'The colourful, sweet-smelling <b class="r">rim</b> attracts an insect. The rim is very <b>slippery</b>…'});
-   lab(S,'Slippery rim',()=>pp.world(0,V(.02,.082,0)),{kind:'red',lift:40});
-   S.tween(4,(e,k)=>{const ang=k*Math.PI*1.2;a.position.copy(pp.world(0,V(Math.cos(ang)*.021,.0835,Math.sin(ang)*.021)));a.rotation.y=-ang-Math.PI/2;});}
+   lab(S,'Slippery rim',()=>pp.rim(0,0),{kind:'red',lift:40});
+   S.tween(4,(e,k)=>{const ang=Math.PI*.8-k*Math.PI*.8;a.position.copy(pp.rim(0,ang));a.rotation.y=ang;});}
   if(s===3){const a=pp.ant;a.visible=true;pp.setXray(.85);S.rig.fly(PPC(S,.45,.1,30,2.2));
    cap(S,{pos:'left',cls:'compact',kicker:'The trap · step 2',big:'It slips inside',mid:'The insect slides down the smooth inside wall into a pool of <b>digestive juice</b> at the bottom. It cannot climb out.'});
-   const st=pp.world(0,V(.021,.083,0)),en=pp.world(0,V(.004,.016,0));S.tween(2.4,e=>{a.position.lerpVectors(st,en,e*e);a.rotation.z=e*2.4;});
-   S.later(1600,()=>lab(S,'Digestive juice',()=>pp.world(0,V(0,.014,0)),{kind:'amber',lift:50}));}
-  if(s===4){const a=pp.ant;a.visible=true;a.position.copy(pp.world(0,V(.004,.016,0)));pp.setXray(.85);
+   const st=pp.rim(0,0),en=pp.world(0,V(0,.02,.004));S.tween(2.4,e=>{a.position.lerpVectors(st,en,e*e);a.rotation.z=e*2.4;});
+   S.later(1600,()=>lab(S,'Digestive juice',()=>pp.world(0,V(0,.018,0)),{kind:'amber',lift:50}));}
+  if(s===4){const a=pp.ant;a.visible=true;a.position.copy(pp.world(0,V(0,.02,.004)));pp.setXray(.85);
    cap(S,{pos:'left',cls:'compact',kicker:'The trap · step 3',big:'Digested for nutrients',mid:'The juices break the insect down, and the pitcher <b>absorbs its nutrients</b>. So the pitcher plant <b class="g">makes its own food</b> <i>and</i> gets <b>extra nutrients</b> from insects.'});
    S.tween(5,e=>a.scale.setScalar(1.7*Math.max(.05,1-e*.9)));
    S.panel(`<h3>Insectivorous plants</h3><h2>Two ways at once</h2><table class="t"><tr><td><b>Food (glucose)</b></td><td>Made by its green leaves — photosynthesis</td></tr><tr><td><b>Extra nutrients</b> (nitrogen)</td><td>From insects trapped and digested in the pitcher</td></tr><tr><td><b>Other examples</b></td><td>Venus flytrap, sundew, bladderwort</td></tr></table>`,{side:'right',cls:'auto'});}}});
